@@ -1,0 +1,166 @@
+/* ============================================================
+   ATLAS — the shared foundation for IGRED's products.
+   The map and the Brief are siblings, not two visual languages:
+   one set of tokens, one type system, one set of chrome. Each
+   product adds only its own layout on top of this file.
+   ============================================================ */
+
+:root {
+  /* Self-hosted (site/fonts). Identical on every device — only the size changes per screen,
+     never the family. The generic fallback only covers the moment before the file lands. */
+  --display: "Fraunces", serif;
+  --text: "Inter", sans-serif;
+
+  --bg: #FBFAF7;
+  --fg: #0E0E0C;
+  --fg-2: #4B4A44;
+  --hair: rgba(14, 14, 12, 0.16);
+  --hair-soft: rgba(14, 14, 12, 0.09);
+  --land: #100F0D;
+  --coast: rgba(14, 14, 12, 0.55);
+  --stipple-opacity: 0.30;
+
+  /* One warm scale for the automatic stream. Intensity is carried by colour,
+     size and opacity together, so it survives greyscale and colour-blind vision. */
+  --s1: #B98A1E;
+  --s2: #BB6415;
+  --s3: #AB4517;
+  --s4: #902B15;
+  --s5: #6B120E;
+  /* Reserved: manually IGRED-verified, never used for anything else. */
+  --verified: #B01267;
+
+  --gutter: clamp(18px, 5vw, 44px);
+  --rail-gap: clamp(20px, 3vw, 40px);
+}
+
+:root[data-theme="dark"] {
+  --bg: #0C0C0B;
+  --fg: #F7F5EF;
+  --fg-2: #A8A498;
+  --hair: rgba(247, 245, 239, 0.18);
+  --hair-soft: rgba(247, 245, 239, 0.10);
+  --land: #F7F5EF;
+  --coast: rgba(247, 245, 239, 0.4);
+  --stipple-opacity: 0.18;
+
+  --s1: #F5CB56;
+  --s2: #F2A040;
+  --s3: #EC7334;
+  --s4: #E04C2C;
+  --s5: #C82C24;
+  --verified: #FF57A8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #0C0C0B; --fg: #F7F5EF; --fg-2: #A8A498;
+    --hair: rgba(247, 245, 239, 0.18); --hair-soft: rgba(247, 245, 239, 0.10);
+    --land: #F7F5EF; --coast: rgba(247, 245, 239, 0.4); --stipple-opacity: 0.18;
+    --s1: #F5CB56; --s2: #F2A040; --s3: #EC7334; --s4: #E04C2C; --s5: #C82C24;
+    --verified: #FF57A8;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--text);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+
+.skip {
+  position: absolute; left: -9999px; top: 0;
+  background: var(--bg); color: var(--fg); padding: 12px 18px; z-index: 20;
+}
+.skip:focus { left: 0; }
+
+/* ---------- masthead and controls ---------------------------- */
+
+.masthead {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  padding-bottom: 4px;
+}
+
+.wordmark {
+  margin: 0;
+  font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; font-weight: 600;
+}
+.wordmark span { font-weight: 400; opacity: 0.72; }
+
+.controls { display: flex; gap: 18px; flex: none; }
+
+.link-button {
+  font: inherit; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--fg); background: none; border: 0; padding: 2px 0; cursor: pointer;
+  border-bottom: 1px solid var(--fg);
+}
+.link-button:hover { color: var(--s3); border-bottom-color: var(--s3); }
+
+/* ---------- the monumental title ----------------------------- */
+
+/* Scale contrast is the signature: enormous display against very small data.
+   Fraunces carries a far larger x-height than the placeholder face did, so it reads bigger
+   at the same pixel size — the scale below is retuned for it, not inherited. */
+.title {
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(40px, 11.5vw, 84px);
+  line-height: 0.92;
+  letter-spacing: -0.028em;
+  margin: 0;
+  text-wrap: balance;
+  font-optical-sizing: auto;
+  /* Fraunces' own optical-size axis, pushed high so display sizes get the refined,
+     high-contrast cut rather than the sturdy text one. */
+  font-variation-settings: "opsz" 144;
+}
+.title span { display: block; }
+.title .italic { font-style: italic; }
+
+.standfirst { margin: 0; max-width: 44ch; font-size: clamp(14px, 1.15vw, 16.5px); line-height: 1.65; }
+.standfirst b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.standfirst .quiet { color: var(--fg-2); }
+
+/* ---------- honest states ------------------------------------ */
+
+/* ---------- banner: honest states ---------------------------- */
+
+.banner {
+  padding: 12px var(--gutter);
+  border-bottom: 1px solid var(--hair);
+  font-size: 13px; line-height: 1.6;
+  background: var(--bg);
+}
+.banner strong { font-weight: 600; }
+.banner code { font-size: 12px; word-break: break-all; }
+
+/* The stage measures itself against the viewport, so a visible banner has to come
+
+/* ---------- colophon ----------------------------------------- */
+
+/* ---------- colophon ----------------------------------------- */
+
+.colophon {
+  margin: clamp(30px, 5vw, 60px) var(--gutter) clamp(40px, 6vw, 80px);
+  padding-top: 18px; border-top: 1px solid var(--hair);
+  font-size: 12.5px; line-height: 1.75; color: var(--fg-2);
+  display: grid; gap: 10px;
+}
+.colophon p { margin: 0; max-width: 78ch; }
+.colophon a { color: var(--fg-2); }
+.colophon-meta { font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

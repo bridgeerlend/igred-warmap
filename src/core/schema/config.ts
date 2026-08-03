@@ -82,6 +82,25 @@ export const themesConfig = z.object({
 });
 export type ThemesConfig = z.infer<typeof themesConfig>;
 
+export const briefConfig = z.object({
+  schemaVersion: z.literal(1),
+  leadCount: z.number().int().positive(),
+  ai: z.strictObject({
+    enabled: z.boolean(),
+    credentialEnvVar: z.string().min(1),
+    model: z.string().min(1),
+    maxWords: z.number().int().positive(),
+    timeoutMs: z.number().int().positive(),
+    $fallbackNote: z.string().optional(),
+  }),
+  citation: z.strictObject({
+    publisher: z.string().min(1),
+    title: z.string().min(1),
+    baseUrl: z.url(),
+  }),
+});
+export type BriefConfig = z.infer<typeof briefConfig>;
+
 export const storiesConfig = z.object({
   schemaVersion: z.literal(1),
   harvest: z.strictObject({

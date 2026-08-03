@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The IGRED Brief</title>
+<meta name="description" content="A dated daily briefing on geopolitical risk and economic development. Every story carries the outlets that reported it, with links.">
+<meta name="color-scheme" content="light dark">
+<link rel="preload" href="../fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<link rel="stylesheet" href="../atlas.css">
+<link rel="stylesheet" href="brief.css">
+</head>
+<body>
+
+<a class="skip" href="#edition">Skip to the briefing</a>
+
+<div class="banner" id="banner" hidden></div>
+
+<header class="masthead brief-masthead">
+  <p class="wordmark">IGRED <span>The Brief</span></p>
+  <div class="controls">
+    <a class="link-button" href="../">Map</a>
+    <button type="button" class="link-button" id="lang" aria-label="Bytt til norsk">NO</button>
+    <button type="button" class="link-button" id="theme">Dark</button>
+  </div>
+</header>
+
+<main class="edition" id="edition">
+  <div class="dateline">
+    <h1 class="title" id="edition-date"></h1>
+    <p class="standfirst" id="standfirst"></p>
+  </div>
+
+  <div id="sections"></div>
+</main>
+
+<aside class="archive" aria-labelledby="archive-heading">
+  <h2 id="archive-heading" data-i18n="archive">Earlier editions</h2>
+  <div class="archive-list" id="archive-list"></div>
+</aside>
+
+<footer class="colophon">
+  <p class="cite" id="cite"></p>
+  <p id="colophon-text"></p>
+  <p class="colophon-meta" id="colophon-meta"></p>
+</footer>
+
+<script type="module" src="brief.js"></script>
+</body>
+</html>

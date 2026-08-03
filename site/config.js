@@ -10,16 +10,22 @@ export const CONFIG = {
   repoSlug: 'REPLACE_WITH/igred-warmap',
   branch: 'main',
   contactEmail: 'map@igred.org',
+  briefBaseUrl: 'https://map.igred.org/brief/',
 };
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]', '']);
+
+/** Pages sit at different depths (/site/ and /site/brief/), so the relative fallback differs. */
+function localDataPath() {
+  return location.pathname.includes('/brief/') ? '../../data/' : '../data/';
+}
 
 export function dataBaseUrl() {
   const override = new URLSearchParams(location.search).get('data');
   if (override) return override.endsWith('/') ? override : `${override}/`;
 
-  if (LOCAL_HOSTS.has(location.hostname)) return '../data/';
-  if (CONFIG.repoSlug.startsWith('REPLACE_WITH')) return '../data/';
+  if (LOCAL_HOSTS.has(location.hostname)) return localDataPath();
+  if (CONFIG.repoSlug.startsWith('REPLACE_WITH')) return localDataPath();
 
   return `https://raw.githubusercontent.com/${CONFIG.repoSlug}/${CONFIG.branch}/data/`;
 }

@@ -1,0 +1,83 @@
+name: Brief
+
+# One edition each morning, after the hourly ingest has had a run to refresh the stories.
+# Like the ingest, this writes only to data/, so it never triggers a site deploy.
+on:
+  schedule:
+    - cron: '20 6 * * *'
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Edition date (YYYY-MM-DD). Leave blank for today.'
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: brief
+  cancel-in-progress: false
+
+jobs:
+  brief:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # The edition is entirely sourced records, so it publishes without review. The
+      # approval flow in the brief applies to authored prose, which comes later in this job.
+      - name: Build and publish the edition
+        id: edition
+        run: |
+          DATE="${{ inputs.date }}"
+          if [ -n "$DATE" ]; then npm run edition -- --date "$DATE"; else npm run edition; fi
+          echo "date=${DATE:-$(date -u +%F)}" >> "$GITHUB_OUTPUT"
+
+      - name: Commit the edition
+        run: |
+          if [ -z "$(git status --porcelain data/editions)" ]; then
+            echo "No new edition to commit."
+            exit 0
+          fi
+          git config user.name "igred-bot"
+          git config user.email "map@igred.org"
+          git add data/editions
+          git commit -m "brief: edition ${{ steps.edition.outputs.date }}"
+          git push
+
+      # Prose is drafted separately and never lands without a human merging it. A failure
+      # here — no key, spent quota, a rejected draft — leaves the edition exactly as it is.
+      - name: Draft the lead paragraphs
+        id: draft
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          npm run draft -- --date "${{ steps.edition.outputs.date }}" --pr-body /tmp/pr-body.md | tee /tmp/draft.log
+          grep -o 'SUMMARIES=[0-9]*' /tmp/draft.log | tail -1 >> "$GITHUB_OUTPUT"
+
+      - name: Open the approval pull request
+        if: steps.draft.outputs.SUMMARIES != '0' && steps.draft.outputs.SUMMARIES != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DATE="${{ steps.edition.outputs.date }}"
+          BRANCH="brief-summaries-$DATE"
+          git config user.name "igred-bot"
+          git config user.email "map@igred.org"
+          git checkout -b "$BRANCH"
+          git add "data/editions/$DATE.summaries.json"
+          git commit -m "brief: drafted paragraphs for $DATE"
+          git push --force origin "$BRANCH"
+          gh pr create \
+            --title "Brief $DATE — approve drafted paragraphs" \
+            --body-file /tmp/pr-body.md \
+            --label brief-approval \
+            --head "$BRANCH" || gh pr edit "$BRANCH" --body-file /tmp/pr-body.md

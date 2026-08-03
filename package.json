@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "IGRED Global Conflict Monitor — automated, fully sourced global conflict map",
+  "description": "IGRED Global Conflict Monitor \u2014 automated, fully sourced global conflict map",
   "license": "UNLICENSED",
   "engines": {
     "node": ">=22"
@@ -22,7 +22,9 @@
     "preview:data": "tsx scripts/build-preview-data.ts",
     "site:snapshot": "tsx scripts/build-preview-data.ts && tsx scripts/build-site-snapshot.ts",
     "serve": "tsx scripts/serve-design.ts",
-    "fonts": "tsx scripts/fetch-fonts.ts"
+    "fonts": "tsx scripts/fetch-fonts.ts",
+    "edition": "tsx src/core/cli/edition.ts",
+    "draft": "tsx src/core/cli/draft-summaries.ts"
   },
   "dependencies": {
     "fast-xml-parser": "^5.10.1",

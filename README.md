@@ -3,15 +3,15 @@
 An automated global conflict map. Every figure on it carries a source, a timestamp and a
 link to the original. It runs on free infrastructure and needs no routine maintenance.
 
-Status: **steps 1–3 of 6 complete** — the data core, the chosen design direction (Atlas),
-and the map itself. See `docs/roadmap.md`.
+Status: **steps 1–4 of 6 complete** — the data core, the chosen design direction (Atlas),
+the map itself, and the Brief. See `docs/roadmap.md`.
 
 ## Principles enforced in code, not just documented
 
 | Principle | Where it is enforced |
 | --- | --- |
 | Nothing displays without a source | `provenanceList` requires at least one entry on every published record (`src/core/schema/common.ts`) |
-| No model invents facts | No model is called anywhere in this codebase. Clustering, deduplication and detection are deterministic |
+| No model invents facts | A model is called in exactly one place — drafting Brief paragraphs — and every figure it returns is checked against the source text before the draft survives (`guardDraft`). Clustering, deduplication, classification and detection never call one |
 | No ACLED, ever | Rejected at config load (`src/core/config.ts`); the licence forbids third-party display and LLM use |
 | Data never triggers a site build | The ingest workflow writes only to `data/` |
 | Nothing half-written is published | Artifacts are schema-validated before write, then written via a temp file and renamed |
@@ -21,7 +21,7 @@ and the map itself. See `docs/roadmap.md`.
 
 ```
 config/     thresholds, sources, publisher whitelist, taxonomy — adding a source is a config change
-src/core/   the shared data core; the news synthesiser will sit on this same core
+src/core/   the shared data core, feeding both the map and the Brief
   schema/   zod schemas for everything read and written
   sources/  one isolated module per source
   cluster/  deterministic deduplication
@@ -29,6 +29,8 @@ src/core/   the shared data core; the news synthesiser will sit on this same cor
   pipeline/ source isolation, health, atomic validated writes
 data/       published JSON artifacts, committed hourly with full git history
 site/       the map — plain HTML, CSS and ES modules, deployed to map.igred.org
+site/brief/ the Brief — one dated edition each morning, same Atlas language
+site/atlas.css  the design foundation both products share
 design/     the three design explorations that preceded the map
 ```
 
@@ -39,9 +41,21 @@ once and fetches its data from the repository at view time, so the hourly data c
 never trigger a deploy — that separation is what keeps the whole thing free.
 
 ```bash
-npm run serve          # http://localhost:4321/site/
+npm run serve          # map at /site/, Brief at /site/brief/
 npm run site:snapshot  # one self-contained file for offline review
+npm run edition        # publish today's Brief
+npm run draft          # draft its lead paragraphs (needs GEMINI_API_KEY)
 ```
+
+## The Brief
+
+The second product on the same core. One dated edition each morning, immutable once
+published so it can be cited, with stories grouped by field and theme and every story
+carrying the outlets that reported it.
+
+Prose appears under a story only where a paragraph was drafted from the listed sources and
+approved by hand. The guard that enforces this is in code, not in the prompt: any figure the
+model produces that is absent from the source headlines rejects the paragraph outright.
 
 ## Data sources
 
@@ -50,7 +64,9 @@ npm run site:snapshot  # one self-contained file for offline review
 | GDELT 2.0 | Live pulse, every 15 minutes. Treated as a news-activity stream, never as verified events | none |
 | UCDP | Verified backbone. Decides which conflicts exist and supplies verified figures | free token |
 
-Later steps add NASA FIRMS, agency RSS, Bluesky, Telegram and curated video.
+| Curated feeds (RSS) | The Brief's main food: broadcasters as live pulse, quality papers for depth, institutions for context | none |
+
+Later steps add NASA FIRMS, Bluesky, Telegram and curated video.
 
 ## Commands
 

@@ -7,6 +7,7 @@ import {
   feedsConfig,
   themesConfig,
   storiesConfig,
+  briefConfig,
   countryAliasesConfig,
   publishConfig,
   detectionConfig,
@@ -17,6 +18,7 @@ import {
   type FeedDefinition,
   type ThemesConfig,
   type StoriesConfig,
+  type BriefConfig,
   type PublishConfig,
   type DetectionConfig,
   type PublisherEntry,
@@ -44,6 +46,7 @@ export interface AppConfig {
   feeds: FeedDefinition[];
   themes: ThemesConfig;
   stories: StoriesConfig;
+  brief: BriefConfig;
 }
 
 let cached: AppConfig | undefined;
@@ -61,6 +64,7 @@ export function loadConfig(): AppConfig {
   const feeds = load('feeds.json', feedsConfig).feeds;
   const themes = load('themes.json', themesConfig);
   const stories = load('stories.json', storiesConfig);
+  const brief = load('brief.json', briefConfig);
 
   if (sources.some((source) => source.id.toLowerCase().includes('acled'))) {
     throw new Error('ACLED is forbidden by licence and must never appear in the source registry.');
@@ -77,6 +81,7 @@ export function loadConfig(): AppConfig {
     feeds,
     themes,
     stories,
+    brief,
   };
   return cached;
 }

@@ -6,6 +6,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 export const repoRoot = path.resolve(here, '..', '..', '..');
 export const configDir = path.join(repoRoot, 'config');
 export const dataDir = path.join(repoRoot, 'data');
+export const editionsDir = path.join(dataDir, 'editions');
 
 export const dataPaths = {
   events: path.join(dataDir, 'events.json'),

@@ -1,0 +1,191 @@
+/* ============================================================
+   The Brief — layout only. Tokens, typography and shared chrome
+   come from atlas.css, the same file the map loads.
+
+   The map's monument is a plate you look at. The Brief's is the
+   date: an edition is a dated, fixed thing you cite, so the date
+   is set at display size and everything else is small and exact.
+   ============================================================ */
+
+.brief-masthead {
+  padding: clamp(16px, 3.5vw, 40px) var(--gutter) 0;
+}
+
+.edition {
+  padding: clamp(18px, 3vw, 34px) var(--gutter) 0;
+}
+
+.dateline {
+  padding-bottom: clamp(20px, 3vw, 34px);
+  margin-bottom: clamp(24px, 4vw, 44px);
+  border-bottom: 1px solid var(--hair);
+}
+
+/* The date carries the monumental weight the map gives its title. */
+#edition-date {
+  font-size: clamp(40px, 10vw, 86px);
+}
+#edition-date .weekday { font-style: italic; }
+
+.standfirst { margin-top: clamp(14px, 2vw, 22px); }
+
+/* ---------- sections ----------------------------------------- */
+
+.field {
+  margin-bottom: clamp(34px, 5vw, 60px);
+}
+
+.field-heading {
+  font-family: var(--display);
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-size: clamp(24px, 3vw, 36px);
+  letter-spacing: -0.015em;
+  margin: 0 0 4px;
+}
+
+.field-count {
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-2);
+  margin: 0 0 clamp(16px, 2vw, 24px);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--hair-soft);
+}
+
+.theme-heading {
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 600;
+  margin: clamp(20px, 3vw, 30px) 0 12px;
+}
+
+/* ---------- stories ------------------------------------------ */
+
+.stories { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(18px, 2.4vw, 28px); }
+
+.story {
+  display: grid;
+  gap: 8px;
+  padding-bottom: clamp(16px, 2vw, 22px);
+  border-bottom: 1px solid var(--hair-soft);
+}
+
+.story-headline {
+  font-family: var(--display);
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-size: clamp(19px, 1.9vw, 25px);
+  line-height: 1.22;
+  letter-spacing: -0.012em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.story-headline a { color: inherit; text-decoration: none; }
+.story-headline a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+.story-meta {
+  display: flex; flex-wrap: wrap; gap: 2px 18px;
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-2);
+}
+.story-meta .lead { color: var(--fg); }
+
+/* An approved paragraph is visibly a different kind of thing from a sourced record. */
+.story-summary {
+  margin: 4px 0 2px;
+  padding-left: clamp(12px, 1.4vw, 18px);
+  border-left: 2px solid var(--s3);
+  font-size: clamp(14px, 1.1vw, 15.5px);
+  line-height: 1.62;
+}
+
+.story-summary .attribution {
+  display: block;
+  margin-top: 6px;
+  font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-2);
+}
+
+.sources { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 3px 14px; }
+.sources li { font-size: 12.5px; }
+.sources a { color: var(--fg-2); text-underline-offset: 3px; }
+.sources a:hover { color: var(--fg); }
+
+/* ---------- archive ------------------------------------------ */
+
+.archive {
+  margin: clamp(20px, 4vw, 40px) var(--gutter) 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--hair);
+}
+
+.archive h2 {
+  font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; font-weight: 500;
+  color: var(--fg-2); margin: 0 0 14px;
+}
+
+.archive-list { display: grid; gap: 0; }
+
+.archive-list a {
+  display: grid;
+  grid-template-columns: 7.5em minmax(0, 1fr) auto;
+  gap: 4px 16px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--hair-soft);
+  color: var(--fg);
+  text-decoration: none;
+  font-size: 13.5px;
+}
+.archive-list a:hover .lead-headline { color: var(--s3); }
+.archive-list .when { font-variant-numeric: tabular-nums; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-2); }
+.archive-list .lead-headline { min-width: 0; }
+.archive-list .count { font-variant-numeric: tabular-nums; font-size: 11px; color: var(--fg-2); }
+.archive-list a[aria-current="page"] .lead-headline { font-weight: 600; }
+
+/* A citation line is the point of a dated edition, so it is given its own weight. */
+.cite {
+  font-size: 12.5px;
+  color: var(--fg);
+  border-left: 2px solid var(--hair);
+  padding-left: 12px;
+}
+
+/* ============================================================
+   Wider screens: the briefing becomes a reading column beside
+   its dateline, rather than one long stack.
+   ============================================================ */
+
+@media (min-width: 900px) {
+  .edition {
+    display: grid;
+    grid-template-columns: minmax(240px, 27%) minmax(0, 1fr);
+    column-gap: clamp(32px, 4vw, 64px);
+    align-items: start;
+  }
+
+  /* The dateline holds its place while the briefing scrolls past it. */
+  .dateline {
+    position: sticky;
+    top: clamp(18px, 3vw, 34px);
+    border-bottom: 0;
+    border-right: 1px solid var(--hair);
+    padding-right: clamp(20px, 2.5vw, 36px);
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  #edition-date { font-size: clamp(46px, 5vw, 76px); }
+  .standfirst { max-width: 34ch; }
+
+  /* Body text wants a measure, not the full width of a large screen. */
+  #sections { max-width: 72ch; }
+}
+
+@media (min-width: 1700px) {
+  .edition { grid-template-columns: minmax(300px, 24%) minmax(0, 1fr); }
+  #edition-date { font-size: clamp(76px, 5.4vw, 104px); }
+  #sections { max-width: 78ch; }
+}
+
+@media (min-width: 2300px) {
+  .brief-masthead, .edition, .archive, .colophon, .banner {
+    max-width: 2200px; margin-inline: auto;
+  }
+}

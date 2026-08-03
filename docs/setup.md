@@ -33,10 +33,14 @@ map. See the display-gate section in the README for why.
 2. Request a MAP_KEY (free, arrives by email)
 3. Add it as a repository secret named `FIRMS_MAP_KEY`
 
-## 4. Free key for the AI text step — needed at step 5
+## 4. Free key for the AI text step — optional, adds prose to the Brief
 
-Used only to draft background prose for a new conflict, which you then approve. The step is
-built to fall back to no text when the quota runs out, so it can never cost money.
+Used only to draft a paragraph for the Brief's few lead stories, and later for background
+prose on a new conflict. Both go through your approval before anyone sees them.
+
+Everything works without this key. The Brief publishes each morning either way; it simply
+carries sourced records and no prose. Nothing here can cost money: no key, an exhausted
+quota, a timeout or a rejected draft all end the same way.
 
 1. Go to https://aistudio.google.com/apikey
 2. Create a free API key

@@ -1,0 +1,19 @@
+{
+  "$comment": "The Brief: one dated edition each morning. The edition itself is all sourced material and publishes directly. Prose is drafted for a handful of lead stories only and reaches the site solely through an approved pull request.",
+  "$guardNote": "The model is given nothing but headlines and standfirsts already fetched from the publishers. Anything it returns containing a number absent from that material is discarded outright — a summary is allowed to compress what the sources said and nothing else.",
+  "schemaVersion": 1,
+  "leadCount": 5,
+  "ai": {
+    "enabled": true,
+    "credentialEnvVar": "GEMINI_API_KEY",
+    "model": "gemini-2.0-flash",
+    "maxWords": 90,
+    "timeoutMs": 30000,
+    "$fallbackNote": "No key, empty quota, a timeout or a failed guard all end the same way: the edition publishes without prose. It must never cost money and never block the run."
+  },
+  "citation": {
+    "publisher": "IGRED",
+    "title": "IGRED Brief",
+    "baseUrl": "https://map.igred.org/brief/"
+  }
+}
