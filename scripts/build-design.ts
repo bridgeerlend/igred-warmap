@@ -12,6 +12,7 @@ import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { repoRoot } from '../src/core/util/paths.js';
 import { toView } from './lib/projection.js';
+import { intensityOf } from '../src/core/util/intensity.js';
 
 const designDir = path.join(repoRoot, 'design');
 const srcDir = path.join(designDir, 'src');
@@ -19,7 +20,7 @@ const buildDir = path.join(designDir, 'build');
 
 const read = (file: string) => JSON.parse(readFileSync(path.join(buildDir, file), 'utf-8'));
 
-const world = read('world.json');
+const world = JSON.parse(readFileSync(path.join(repoRoot, 'site', 'world.json'), 'utf-8'));
 const fixture = read('sample-events.json');
 const register = read('placeholder-register.json');
 
@@ -43,20 +44,6 @@ interface FixtureEvent {
 }
 
 const round = (value: number) => Number(value.toFixed(1));
-
-/**
- * Category severity alone renders almost flat: 88% of a real day is armed clashes, all
- * carrying the same value. Intensity blends the category with how widely the incident was
- * reported, log-scaled so one enormous story cannot dominate.
- *
- * The result is deliberately bottom-heavy, because the data is: 71% of incidents have a
- * single source. That is the honest shape — a quiet field of small embers with genuinely
- * rare bright ones — rather than a spread manufactured to look busy.
- */
-function intensityOf(severity: number, reports: number): number {
-  const corroboration = 1 + Math.log2(Math.max(1, reports));
-  return Math.max(1, Math.min(5, Math.round(0.4 * severity + 0.7 * corroboration - 0.6)));
-}
 
 /**
  * Compact field names and projected coordinates: the fixture is inlined into every page,

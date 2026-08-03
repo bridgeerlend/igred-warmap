@@ -8,6 +8,7 @@ import {
   type Observation,
 } from '../sources/gdelt/map.js';
 import { stableId } from '../util/misc.js';
+import { intensityOf } from '../util/intensity.js';
 
 const MAX_PROVENANCE_PER_EVENT = 25;
 const MAX_ACTORS_PER_EVENT = 6;
@@ -153,6 +154,7 @@ export function clusterObservations(observations: Observation[]): ClusterResult 
       actors: collectActors(group),
       confidence: whitelisted || corroborated ? 'reported' : 'unconfirmed',
       severity: representative.severity,
+      intensity: intensityOf(representative.severity, distinctUrls.size),
       reportCount: distinctUrls.size,
       distinctPublishers: distinctDomains.size,
       provenance: collectProvenance(group),
@@ -211,6 +213,10 @@ function mergeEvent(previous: ConflictEvent, incoming: ConflictEvent): ConflictE
     reportCount: Math.max(previous.reportCount, incoming.reportCount),
     distinctPublishers: Math.max(previous.distinctPublishers, incoming.distinctPublishers),
     severity: Math.max(previous.severity, incoming.severity),
+    intensity: intensityOf(
+      Math.max(previous.severity, incoming.severity),
+      Math.max(previous.reportCount, incoming.reportCount),
+    ),
     confidence: previous.confidence === 'reported' ? 'reported' : incoming.confidence,
     provenance: provenance.slice(0, MAX_PROVENANCE_PER_EVENT),
   };

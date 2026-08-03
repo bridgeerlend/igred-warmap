@@ -3,8 +3,8 @@
 An automated global conflict map. Every figure on it carries a source, a timestamp and a
 link to the original. It runs on free infrastructure and needs no routine maintenance.
 
-Status: **step 1 of 6 complete** — the data core. The map itself is not built yet; design
-directions are chosen first (see `docs/roadmap.md`).
+Status: **steps 1–3 of 6 complete** — the data core, the chosen design direction (Atlas),
+and the map itself. See `docs/roadmap.md`.
 
 ## Principles enforced in code, not just documented
 
@@ -28,6 +28,19 @@ src/core/   the shared data core; the news synthesiser will sit on this same cor
   detect/   rolling baseline and anomaly scoring
   pipeline/ source isolation, health, atomic validated writes
 data/       published JSON artifacts, committed hourly with full git history
+site/       the map — plain HTML, CSS and ES modules, deployed to map.igred.org
+design/     the three design explorations that preceded the map
+```
+
+## The map
+
+`site/` is deployed to map.igred.org by a workflow filtered to `site/**`. The page is built
+once and fetches its data from the repository at view time, so the hourly data commits
+never trigger a deploy — that separation is what keeps the whole thing free.
+
+```bash
+npm run serve          # http://localhost:4321/site/
+npm run site:snapshot  # one self-contained file for offline review
 ```
 
 ## Data sources

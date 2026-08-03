@@ -12,6 +12,7 @@ import { repoRoot } from '../src/core/util/paths.js';
 import { toView, VIEW_HEIGHT, VIEW_WIDTH, X_MAX, Y_MAX } from './lib/projection.js';
 
 const buildDir = path.join(repoRoot, 'design', 'build');
+const siteDir = path.join(repoRoot, 'site');
 
 const round = (value: number): string => value.toFixed(1).replace(/\.0$/, '');
 
@@ -147,7 +148,8 @@ const output = {
   countries,
 };
 
-writeFileSync(path.join(buildDir, 'world.json'), JSON.stringify(output), 'utf-8');
+// The site is the canonical consumer; the design explorations read the same file.
+writeFileSync(path.join(siteDir, 'world.json'), JSON.stringify(output), 'utf-8');
 
 const bytes = JSON.stringify(output).length;
 console.log(

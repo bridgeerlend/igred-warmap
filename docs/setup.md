@@ -42,11 +42,28 @@ built to fall back to no text when the quota runs out, so it can never cost mone
 2. Create a free API key
 3. Add it as a repository secret named `GEMINI_API_KEY`
 
-## 5. DNS for map.igred.org — needed at step 3
+## 5. Publish the map — needed now
 
-Exact values depend on where the map is hosted; this will be confirmed when the map is
-built. For GitHub Pages it is a `CNAME` record for `map` pointing at
-`<your-github-username>.github.io`.
+The map is built. Three steps put it online.
+
+**5a. Point the page at the repository.** Open `site/config.js` and replace
+`REPLACE_WITH/igred-warmap` with your actual repository, for example
+`bridgeerlend/igred-warmap`. The map fetches its data straight from the repository at view
+time, which is what keeps hourly data commits from rebuilding the site. The deploy fails on
+purpose if this is still a placeholder.
+
+**5b. Turn on GitHub Pages.** In the repository: **Settings → Pages → Build and deployment
+→ Source**, choose **GitHub Actions**. Then open the **Actions** tab, pick **Deploy map**
+and click **Run workflow**.
+
+**5c. DNS for map.igred.org.** With your domain provider, add a `CNAME` record:
+
+- Host / name: `map`
+- Value / target: `<your-github-username>.github.io`
+
+Then in **Settings → Pages → Custom domain**, enter `map.igred.org` and tick **Enforce
+HTTPS** once the certificate is issued. The repository already contains the matching
+`site/CNAME` file.
 
 The existing `igred.org` site on Netlify is not touched.
 

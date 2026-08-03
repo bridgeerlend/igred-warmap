@@ -145,6 +145,7 @@ const event: ConflictEvent = {
   actors: [],
   confidence: 'reported',
   severity: 4,
+  intensity: 4,
   reportCount: 5,
   distinctPublishers: 4,
   provenance: [

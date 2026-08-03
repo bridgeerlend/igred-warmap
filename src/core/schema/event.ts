@@ -45,6 +45,11 @@ export const conflictEvent = z.strictObject({
   confidence: confidence,
   /** Ordinal 1-5 display weight from the taxonomy. Not a casualty estimate. */
   severity: z.number().int().min(1).max(5),
+  /**
+   * 1-5 reading strength for the map, blending category severity with corroboration.
+   * Computed in the pipeline so every consumer renders the same scale.
+   */
+  intensity: z.number().int().min(1).max(5),
   /** How many raw source records collapsed into this single point. */
   reportCount: z.number().int().min(1),
   distinctPublishers: z.number().int().min(0),
