@@ -99,6 +99,30 @@ export const channelsConfig = z.object({
 });
 export type ChannelsConfig = z.infer<typeof channelsConfig>;
 
+/**
+ * A conflict confirmed by hand, supplementing the verified register. Detection can only
+ * report abnormal coverage; this file is where a human turns that into a claim the map makes.
+ */
+export const verifiedConflictsConfig = z.object({
+  schemaVersion: z.literal(1),
+  conflicts: z.array(
+    z.strictObject({
+      id: z.string().min(1),
+      name: z.string().min(1),
+      countries: z
+        .array(z.strictObject({ name: z.string().min(1), fips: z.string().length(2) }))
+        .min(1),
+      confirmedOn: z.iso.date(),
+      /** The candidate this came from, so the decision can be traced back. */
+      candidateId: z.string().min(1),
+      /** Copied from the candidate rather than referenced: candidates expire. */
+      sources: z.array(z.url()).min(1),
+      note: z.string().min(1).optional(),
+    }),
+  ),
+});
+export type VerifiedConflictsConfig = z.infer<typeof verifiedConflictsConfig>;
+
 export const briefConfig = z.object({
   schemaVersion: z.literal(1),
   leadCount: z.number().int().positive(),
@@ -112,6 +136,7 @@ export const briefConfig = z.object({
     $fallbackNote: z.string().optional(),
     $modelNote: z.string().optional(),
     $tokenNote: z.string().optional(),
+    $enabledNote: z.string().optional(),
   }),
   citation: z.strictObject({
     publisher: z.string().min(1),

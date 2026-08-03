@@ -3,8 +3,8 @@
 An automated global conflict map. Every figure on it carries a source, a timestamp and a
 link to the original. It runs on free infrastructure and needs no routine maintenance.
 
-Status: **steps 1–5 of 6 complete** — the data core, the chosen design direction (Atlas),
-the map itself, the Brief, and the remaining data sources. See `docs/roadmap.md`.
+Status: **all six steps complete** — the data core, the chosen design direction (Atlas),
+the map, the Brief, the remaining data sources, and the acceptance list. See `docs/roadmap.md`.
 
 ## Principles enforced in code, not just documented
 
@@ -73,7 +73,7 @@ model produces that is absent from the source headlines rejects the paragraph ou
 ## Commands
 
 ```bash
-npm run verify         # typecheck + tests
+npm run verify         # typecheck + tests, including the acceptance list
 npm run ingest         # one pipeline run
 npm run backfill -- --days 60
 npm run detect-report  # detection diagnostic and backtest

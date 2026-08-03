@@ -18,4 +18,5 @@ export const dataPaths = {
   heat: path.join(dataDir, 'heat.json'),
   media: path.join(dataDir, 'media.json'),
   cursor: path.join(dataDir, 'internal', 'gdelt-cursor.json'),
+  pendingClusters: path.join(dataDir, 'internal', 'pending-clusters.json'),
 } as const;

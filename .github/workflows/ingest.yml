@@ -45,6 +45,38 @@ jobs:
           git commit -m "data: ingest $(date -u +%Y-%m-%dT%H:%MZ)"
           git push
 
+      # A candidate is only ever a request for a decision. Opening the pull request is the
+      # whole point of detection — without it the finding sits in a JSON file nobody reads.
+      - name: Propose a new conflict for review
+        id: propose
+        continue-on-error: true
+        run: |
+          npm run propose-conflict -- --pr-body /tmp/conflict-pr.md | tee /tmp/propose.log
+          grep -oE '(PROPOSED|CANDIDATE_ID|COUNTRY)=[^ ]*' /tmp/propose.log >> "$GITHUB_OUTPUT" || true
+
+      - name: Open the confirmation pull request
+        if: steps.propose.outputs.PROPOSED == '1'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="conflict-${{ steps.propose.outputs.CANDIDATE_ID }}"
+          # Already asked once: do not reopen the same question every hour.
+          if gh pr list --state all --head "$BRANCH" --json number --jq '.[0].number' | grep -q .; then
+            echo "Already proposed on $BRANCH."
+            exit 0
+          fi
+          git config user.name "igred-bot"
+          git config user.email "map@igred.org"
+          git checkout -b "$BRANCH"
+          git add config/verified-conflicts.json
+          git commit -m "propose: ${{ steps.propose.outputs.COUNTRY }} for review"
+          git push origin "$BRANCH"
+          gh pr create \
+            --title "Possible new conflict: ${{ steps.propose.outputs.COUNTRY }}" \
+            --body-file /tmp/conflict-pr.md \
+            --label conflict-review \
+            --head "$BRANCH"
+
       # Runs after the commit so good data is never lost to an alert.
       - name: Check source health
         id: health

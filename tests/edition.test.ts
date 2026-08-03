@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { guardDraft } from '../src/core/edition/draft.js';
 import { buildSections } from '../src/core/edition/build.js';
+import { verifiedConflicts } from '../src/core/detect/verified.js';
 
 /**
  * The guard is the mechanism that turns "a model never invents facts" from a principle into
@@ -128,5 +129,58 @@ describe('reading the model reply', () => {
 
   it('handles a reply with no reasoning part at all', () => {
     expect(answerFrom([{ text: 'A plain answer.' }])).toBe('A plain answer.');
+  });
+});
+
+describe('confirmed conflicts', () => {
+  /**
+   * The other half of detection. Detection can only report abnormal coverage; merging the
+   * pull request it generates is what turns that into a conflict the map will display.
+   */
+  it('builds a register conflict from a confirmed entry, carrying its sources', () => {
+    const conflicts = verifiedConflicts(
+      {
+        schemaVersion: 1,
+        conflicts: [
+          {
+            id: 'igred-sudan-2026-08',
+            name: 'Sudan — under review',
+            countries: [{ name: 'Sudan', fips: 'SU' }],
+            confirmedOn: '2026-08-03',
+            candidateId: 'cand_x',
+            sources: ['https://example.org/a', 'https://example.org/b'],
+          },
+        ],
+      },
+      '2026-08-03T09:00:00.000Z',
+    );
+
+    expect(conflicts).toHaveLength(1);
+    expect(conflicts[0]?.origin).toBe('igred_verified');
+    expect(conflicts[0]?.status).toBe('active');
+    expect(conflicts[0]?.countries[0]?.fips).toBe('SU');
+    expect(conflicts[0]?.provenance).toHaveLength(2);
+    for (const source of conflicts[0]!.provenance) {
+      expect(source.url).toMatch(/^https?:/);
+      expect(source.retrievedAt).toBeTruthy();
+    }
+  });
+
+  it('claims nothing beyond what a human confirmed', () => {
+    const [conflict] = verifiedConflicts(
+      {
+        schemaVersion: 1,
+        conflicts: [
+          {
+            id: 'x', name: 'X', countries: [{ name: 'X', fips: 'XX' }],
+            confirmedOn: '2026-08-03', candidateId: 'c', sources: ['https://example.org/a'],
+          },
+        ],
+      },
+      '2026-08-03T09:00:00.000Z',
+    );
+    // No parties and no figures were confirmed, so none are asserted.
+    expect(conflict?.parties).toEqual([]);
+    expect(conflict?.figures).toEqual({});
   });
 });

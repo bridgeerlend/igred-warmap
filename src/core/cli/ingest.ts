@@ -7,11 +7,13 @@ import {
   eventsArtifact,
   healthArtifact,
   storiesArtifact,
+  pendingClustersArtifact,
   type SourceHealth,
 } from '../schema/artifact.js';
 import { clusterObservations, mergeEventWindow, selectDisplayEvents } from '../cluster/dedupe.js';
 import { detectAnomalies, toCandidate } from '../detect/anomaly.js';
 import { mergeCandidates, suppressedCountries } from '../detect/candidates.js';
+import { verifiedConflicts } from '../detect/verified.js';
 import { emptyBaseline, updateBaseline } from '../detect/baseline.js';
 import { overallStatus, runSource, type PreviousHealth } from '../pipeline/runner.js';
 import { readArtifact, writeArtifact } from '../pipeline/store.js';
@@ -26,6 +28,9 @@ import type { UcdpDataset } from '../sources/ucdp/map.js';
 import { CountryResolver } from '../util/country.js';
 import { dataPaths } from '../util/paths.js';
 import { stableId } from '../util/misc.js';
+
+/** Long enough to cover a weekend before a candidate is reviewed. */
+const PENDING_RETAIN_DAYS = 4;
 
 function previousHealthFor(entries: SourceHealth[], sourceId: string): PreviousHealth {
   const entry = entries.find((candidate) => candidate.sourceId === sourceId);
@@ -149,7 +154,11 @@ export async function ingest(): Promise<void> {
   );
 
   // Failure of one source must never discard the other's good data.
-  const conflicts = ucdpOutcome.data?.conflicts ?? previousConflicts;
+  const fromUcdp = ucdpOutcome.data?.conflicts ?? previousConflicts.filter((entry) => entry.origin === 'ucdp');
+  // Hand-confirmed conflicts come from config, so they survive a UCDP outage and appear even
+  // before the token exists — this is what closes the detection loop.
+  const confirmed = verifiedConflicts(config.verifiedConflicts, now);
+  const conflicts = [...confirmed, ...fromUcdp];
 
   const knownConflictCountries = new Set(
     conflicts
@@ -159,13 +168,45 @@ export async function ingest(): Promise<void> {
   );
 
   const clustered = gdeltOutcome.data ? clusterObservations(gdeltOutcome.data.observations) : undefined;
-  const displayEvents = clustered
-    ? selectDisplayEvents(clustered.clusters, knownConflictCountries)
-    : [];
 
-  const events = clustered
-    ? mergeEventWindow(previousEvents, displayEvents, config.publish.eventWindowDays, new Date(now))
-    : previousEvents;
+  /*
+   * Incidents in countries awaiting a decision are held rather than dropped. A reviewer
+   * confirms a candidate because of what has already happened, so those incidents have to
+   * appear the moment it is confirmed — otherwise the map stays empty for an hour and the
+   * evidence for the decision is nowhere to be seen. Only pending countries are buffered,
+   * so this is a handful of records, not a second copy of the feed.
+   */
+  const pendingCountries = new Set(
+    previousCandidates
+      .filter((candidate) => candidate.status === 'pending_review')
+      .map((candidate) => candidate.countryFips),
+  );
+
+  const bufferCutoff = new Date(Date.now() - PENDING_RETAIN_DAYS * 86_400_000).toISOString();
+  const previousBuffer = readArtifact(dataPaths.pendingClusters, pendingClustersArtifact).value?.events ?? [];
+  const buffer = [...previousBuffer, ...(clustered?.clusters ?? [])]
+    .filter((event) => {
+      const fips = event.location.countryFips;
+      return fips !== undefined && pendingCountries.has(fips) && event.occurredAt >= bufferCutoff;
+    })
+    .filter((event, index, all) => all.findIndex((other) => other.id === event.id) === index);
+
+  const displayEvents = clustered
+    ? selectDisplayEvents([...clustered.clusters, ...buffer], knownConflictCountries)
+    : selectDisplayEvents(buffer, knownConflictCountries);
+
+  /*
+   * The retained window is re-gated every run, not just appended to. Without this an incident
+   * that passed the gate once stayed for thirty days even after its country left the register
+   * — so dismissing a candidate would leave its incidents on the map for a month. The window
+   * has to reflect the register as it is now, not as it was when each incident arrived.
+   */
+  const events = mergeEventWindow(
+    selectDisplayEvents(previousEvents, knownConflictCountries),
+    displayEvents,
+    config.publish.eventWindowDays,
+    new Date(now),
+  );
 
   // The baseline sees every clustered event, gated or not: a new conflict appears in a
   // country the register does not list yet, so gating detection would hide exactly the
@@ -188,8 +229,17 @@ export async function ingest(): Promise<void> {
     suppressedCountries: suppressedCountries(previousCandidates, config.detection, today),
   });
 
+  // A candidate whose country now sits in the register has been acted on; the record says so
+  // rather than sitting at pending_review forever.
+  const confirmedCandidateIds = new Set(config.verifiedConflicts.conflicts.map((entry) => entry.candidateId));
+  const reconciled = previousCandidates.map((candidate) =>
+    confirmedCandidateIds.has(candidate.id) && candidate.status === 'pending_review'
+      ? { ...candidate, status: 'confirmed' as const, resolvedAt: now, resolutionNote: 'Confirmed by hand.' }
+      : candidate,
+  );
+
   const candidates = mergeCandidates(
-    previousCandidates,
+    reconciled,
     // Ungated clusters: a candidate must cite the articles behind it, and its country is
     // not in the register yet, so nothing of its own survives the display gate.
     detections.map((detection) => toCandidate(detection, clustered?.clusters ?? [], now)),
@@ -263,6 +313,13 @@ export async function ingest(): Promise<void> {
       videos: mediaOutcome.data.videos,
     });
   }
+
+  writeArtifact(dataPaths.pendingClusters, pendingClustersArtifact, {
+    artifactVersion: ARTIFACT_VERSION,
+    generatedAt: now,
+    retainDays: PENDING_RETAIN_DAYS,
+    events: buffer,
+  });
 
   writeArtifact(dataPaths.baseline, baselineArtifact, baseline);
   if (gdeltOutcome.data) writeArtifact(dataPaths.cursor, gdeltCursor, gdeltOutcome.data.cursor);

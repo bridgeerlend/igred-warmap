@@ -47,6 +47,22 @@ export const storiesArtifact = z.strictObject({
 });
 export type StoriesArtifact = z.infer<typeof storiesArtifact>;
 
+/**
+ * Incidents held back by the display gate, kept only for countries awaiting a decision.
+ *
+ * Confirming a candidate is a judgement about what has already happened, so the incidents
+ * that justified it must appear the moment it is confirmed — not only the ones that arrive
+ * afterwards. Buffering is limited to countries with a pending candidate, which is normally
+ * one or two, so this stays small.
+ */
+export const pendingClustersArtifact = z.strictObject({
+  artifactVersion,
+  generatedAt: isoDateTime,
+  retainDays: z.number().int().positive(),
+  events: z.array(conflictEvent),
+});
+export type PendingClustersArtifact = z.infer<typeof pendingClustersArtifact>;
+
 export const sourceHealth = z.strictObject({
   sourceId: z.string().min(1),
   status: z.enum(['ok', 'not_configured', 'degraded', 'failed']),

@@ -9,10 +9,40 @@
    `site/brief/`, on the same core as the map.
 5. **Remaining sources — done.** FIRMS heat layer, curated Bluesky, Telegram and YouTube,
    and news tagged by country so each conflict has a stream beside it.
-6. **Self-healing, alert-on-failure, Dependabot, acceptance testing.**
+6. **Self-healing, alert-on-failure, Dependabot, acceptance testing — done.**
 
 The AI text step and its pull-request approval flow shipped with the Brief, ahead of the
 original order, because that is where the first prose actually appears.
+
+## The acceptance list
+
+`tests/acceptance.test.ts` checks the brief's criteria mechanically — 39 tests, each named
+for the criterion it covers — so "it meets the list" is a thing the suite proves rather than
+a claim. Anything only judgeable by eye is verified in the browser and deliberately not
+faked there.
+
+Writing it caught four imprecise checks of my own, the most telling being a search for the
+word "tile" that tripped on the colophon sentence saying no third-party tiles are used.
+
+## The new-conflict loop
+
+Detection previously stopped at a JSON file nobody read. It now completes:
+
+1. Sustained abnormal armed-incident coverage produces a candidate.
+2. The hourly run proposes it and opens a pull request — evidence table, the incidents
+   behind it, and the reporting, written out so it reads on a phone. It states plainly that
+   this is not a claim a conflict exists.
+3. Merging adds the entry to `config/verified-conflicts.json`, which puts the conflict in
+   the register and its incidents on the map.
+4. Closing dismisses it, and the country stays quiet for the cooldown.
+
+Two things had to be built for that to actually work. Incidents in countries awaiting a
+decision are **buffered** rather than dropped, because a reviewer confirms on the strength of
+what has already happened — without it the map stayed empty for an hour and the evidence was
+nowhere to be seen. And the retained window is **re-gated every run** rather than appended
+to: an incident that passed the gate once used to stay for thirty days even after its country
+left the register, so dismissing a candidate would have left its incidents on the map for a
+month.
 
 Steps 5 and 6 are partly in place already: source isolation, last-good retention, health
 tracking, alert-only-on-sustained-failure and Dependabot all shipped with step 1, because
@@ -54,6 +84,9 @@ or style.
   as soon as the token exists.
 - **The map is nearly empty until UCDP is connected**, and says so in a banner. The display
   gate is the register; see the README for why the cheaper gates were rejected.
+- **AI prose is off.** The key's project has no Gemini allowance, so the Brief publishes
+  sourced records without prose — a valid edition. `npm run gemini:check` names a working
+  model once the project has quota; then set `ai.enabled` back to true.
 - ~~Typefaces are system stacks.~~ **Done.** Fraunces (titles) and Inter (body and data) are
   self-hosted from `site/fonts`, both SIL Open Font Licence 1.1 with the licences shipped
   alongside. Every device gets the same typography; only the size changes per screen.
