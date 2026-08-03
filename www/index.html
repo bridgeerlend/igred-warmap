@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IGRED — Institute for Geopolitical Risk and Economic Development</title>
+<meta name="description" content="An independent analysis body monitoring geopolitical risk and economic development worldwide, with sourced, verifiable analysis.">
+<meta name="color-scheme" content="light dark">
+<link rel="preload" href="fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="atlas.css">
+<link rel="stylesheet" href="home.css">
+</head>
+<body>
+
+<a class="skip" href="#what">Skip to the content</a>
+
+<header class="masthead home-masthead">
+  <p class="wordmark">IGRED <span data-i18n="wordmarkFull"></span></p>
+  <div class="controls">
+    <button type="button" class="link-button" id="lang" aria-label="Bytt til norsk">NO</button>
+    <button type="button" class="link-button" id="theme">Dark</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h1 class="title">
+      <span data-i18n="heroLine1">Geopolitical risk</span>
+      <span class="italic" data-i18n="heroLine2">and economic development</span>
+    </h1>
+
+    <p class="standfirst" data-i18n="heroStandfirst"></p>
+
+    <!-- The opening film goes here. Until it lands the space is held by the same stipple the
+         map uses for land, so the page reads as finished rather than as a gap. Replacing it
+         is one element swap: drop a <video> in place of .film-texture. -->
+    <figure class="film" aria-labelledby="film-caption">
+      <div class="film-plate">
+        <svg class="film-texture" aria-hidden="true" focusable="false">
+          <defs>
+            <pattern id="film-stipple" width="3" height="3" patternUnits="userSpaceOnUse">
+              <circle cx="1" cy="1" r="0.52" fill="var(--land)" fill-opacity="var(--stipple-opacity)"></circle>
+              <circle cx="2.5" cy="2.5" r="0.3" fill="var(--land)" fill-opacity="var(--stipple-opacity)"></circle>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#film-stipple)"></rect>
+        </svg>
+      </div>
+      <figcaption id="film-caption" class="film-caption" data-i18n="filmCaption"></figcaption>
+    </figure>
+  </section>
+
+  <section class="band" id="what">
+    <h2 class="band-heading" data-i18n="whatHeading"></h2>
+    <div class="prose">
+      <p class="lede" data-i18n="whatBody1"></p>
+      <p data-i18n="whatBody2"></p>
+    </div>
+  </section>
+
+  <section class="band" id="products">
+    <h2 class="band-heading" data-i18n="productsHeading"></h2>
+
+    <ol class="products">
+      <li class="product">
+        <a class="product-entry" href="https://map.igred.org/">
+          <span class="product-kind" data-i18n="kindLive"></span>
+          <span class="product-name" data-i18n="mapName"></span>
+          <span class="product-body" data-i18n="mapBody"></span>
+          <span class="product-go">map.igred.org</span>
+        </a>
+      </li>
+
+      <li class="product">
+        <a class="product-entry" href="https://map.igred.org/brief/">
+          <span class="product-kind" data-i18n="kindDaily"></span>
+          <span class="product-name" data-i18n="briefName"></span>
+          <span class="product-body" data-i18n="briefBody"></span>
+          <span class="product-go">map.igred.org/brief</span>
+        </a>
+      </li>
+
+      <!-- No link, because there is nothing to link to yet. Saying so plainly is better
+           than a dead link or an invented date. -->
+      <li class="product">
+        <div class="product-entry is-unpublished">
+          <span class="product-kind" data-i18n="kindTwiceYearly"></span>
+          <span class="product-name" data-i18n="reportsName"></span>
+          <span class="product-body" data-i18n="reportsBody"></span>
+        </div>
+      </li>
+
+      <li class="product">
+        <div class="product-entry is-unpublished">
+          <span class="product-kind" data-i18n="kindOngoing"></span>
+          <span class="product-name" data-i18n="baseName"></span>
+          <span class="product-body" data-i18n="baseBody"></span>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="band" id="people">
+    <h2 class="band-heading" data-i18n="peopleHeading"></h2>
+    <ul class="people">
+      <li class="person">
+        <p class="person-name">Erlend B. Moe</p>
+        <p class="person-role" data-i18n="role"></p>
+      </li>
+      <li class="person">
+        <p class="person-name">Viktor</p>
+        <p class="person-role" data-i18n="role"></p>
+      </li>
+    </ul>
+  </section>
+</main>
+
+<footer class="colophon home-colophon">
+  <p class="footer-name" data-i18n="wordmarkFull"></p>
+  <p><a href="mailto:contact@igred.org">contact@igred.org</a></p>
+  <p class="colophon-meta" data-i18n="footerNote"></p>
+</footer>
+
+<script type="module" src="home.js"></script>
+</body>
+</html>

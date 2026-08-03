@@ -1,0 +1,225 @@
+/* ============================================================
+   igred.org — layout only. Tokens, typography and shared chrome
+   come from atlas.css, the same file the map and the Brief load.
+
+   The map's monument is a plate. The Brief's is a date. Here it
+   is the institute's own subject, set at display size above the
+   space held for the opening film.
+   ============================================================ */
+
+.home-masthead {
+  padding: clamp(16px, 3.5vw, 40px) var(--gutter) 0;
+}
+
+main { display: block; }
+
+/* ---------- hero ---------------------------------------------- */
+
+.hero {
+  padding: clamp(24px, 4vw, 52px) var(--gutter) 0;
+}
+
+.hero .title {
+  font-size: clamp(38px, 9.5vw, 92px);
+  max-width: 16ch;
+}
+
+.hero .standfirst {
+  margin-top: clamp(18px, 2.4vw, 30px);
+  max-width: 52ch;
+  font-size: clamp(15px, 1.25vw, 18px);
+}
+
+/* ---------- the film, and the space held for it ---------------- */
+
+.film {
+  margin: clamp(28px, 4vw, 56px) 0 0;
+}
+
+.film-plate {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--hair);
+  overflow: hidden;
+}
+
+.film-texture { display: block; width: 100%; height: 100%; }
+
+.film-caption {
+  margin-top: 10px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+
+/* ---------- bands ---------------------------------------------- */
+
+.band {
+  padding: clamp(34px, 5vw, 72px) var(--gutter) 0;
+}
+
+.band-heading {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--fg-2);
+  margin: 0 0 clamp(16px, 2vw, 24px);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.prose .lede {
+  font-family: var(--display);
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-size: clamp(20px, 2.2vw, 28px);
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+}
+
+.prose {
+  max-width: 62ch;
+  display: grid;
+  gap: 1em;
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.68;
+}
+.prose p { margin: 0; }
+
+/* ---------- the two products ----------------------------------- */
+
+.products {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+
+.product { border-top: 1px solid var(--hair-soft); }
+.product:first-child { border-top: 0; }
+
+.product-entry {
+  display: grid;
+  gap: 6px;
+  padding: clamp(20px, 2.6vw, 32px) 0;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+/* Not yet published: stated quietly rather than dressed up as a link that goes nowhere. */
+.product-entry.is-unpublished .product-name { color: var(--fg-2); }
+.product-entry.is-unpublished .product-body { color: var(--fg-2); }
+
+.product-kind {
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+
+.product-name {
+  font-family: var(--display);
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-size: clamp(26px, 4vw, 46px);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+}
+
+a.product-entry:hover .product-name { color: var(--s3); }
+
+.product-body {
+  max-width: 58ch;
+  font-size: clamp(14px, 1.05vw, 15.5px);
+  line-height: 1.62;
+  color: var(--fg);
+}
+
+.product-go {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  border-bottom: 1px solid var(--hair);
+  justify-self: start;
+  padding-bottom: 2px;
+}
+a.product-entry:hover .product-go { color: var(--fg); border-bottom-color: var(--fg); }
+
+
+/* ---------- people --------------------------------------------- */
+
+.people {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: clamp(16px, 2vw, 26px);
+}
+
+.person { display: grid; gap: 2px; }
+
+.person-name {
+  font-family: var(--display);
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-size: clamp(20px, 2.2vw, 28px);
+  letter-spacing: -0.012em;
+  margin: 0;
+}
+
+.person-role {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+
+/* ---------- footer --------------------------------------------- */
+
+.home-colophon {
+  margin-top: clamp(40px, 6vw, 84px);
+}
+.footer-name { font-size: 13px; }
+
+/* ============================================================
+   Wider screens: the hero splits, so the film sits beside the
+   statement rather than under it, and the bands gain a rail.
+   ============================================================ */
+
+@media (min-width: 900px) {
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    column-gap: clamp(32px, 4vw, 64px);
+    align-items: end;
+  }
+  .hero .title { grid-column: 1; max-width: none; }
+  .hero .standfirst { grid-column: 1; max-width: 44ch; }
+  .film { grid-column: 2; grid-row: 1 / span 2; margin-top: 0; align-self: center; }
+
+  .band {
+    display: grid;
+    grid-template-columns: minmax(180px, 22%) minmax(0, 1fr);
+    column-gap: clamp(32px, 4vw, 64px);
+    align-items: start;
+  }
+  /* The heading becomes a rail label; its rule would look wrong there. */
+  .band-heading { border-bottom: 0; padding-bottom: 0; margin-bottom: 0; }
+  .band > :not(.band-heading) { grid-column: 2; }
+  .products, .people, .prose { grid-column: 2; }
+}
+
+@media (min-width: 1400px) {
+  .hero .title { font-size: clamp(72px, 6.2vw, 108px); }
+  .product-name { font-size: clamp(38px, 3.2vw, 54px); }
+}
+
+@media (min-width: 2300px) {
+  .home-masthead, .hero, .band, .colophon { max-width: 2200px; margin-inline: auto; }
+  .home-masthead, .hero, .band { padding-inline: var(--gutter); }
+}

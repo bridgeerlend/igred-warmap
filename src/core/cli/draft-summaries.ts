@@ -7,12 +7,19 @@
  *
  * Run: npm run draft [-- --date 2026-08-03] [-- --pr-body /tmp/body.md]
  */
-import { writeFileSync } from 'node:fs';
+import { existsSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
 import { loadConfig } from '../config.js';
 import { draftSummaries } from '../edition/draft.js';
 import { editionPath, summariesPath } from '../edition/build.js';
 import { edition as editionSchema, editionSummaries } from '../schema/edition.js';
 import { readArtifact, writeArtifact } from '../pipeline/store.js';
+import { repoRoot } from '../util/paths.js';
+
+// Locally the key lives in a gitignored .env; in Actions it arrives as a real environment
+// variable and this file simply does not exist.
+const envFile = path.join(repoRoot, '.env');
+if (existsSync(envFile)) process.loadEnvFile(envFile);
 
 const args = process.argv.slice(2);
 const flag = (name: string): string | undefined => {
