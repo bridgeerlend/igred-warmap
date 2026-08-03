@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IGRED — Direction C: Atlas</title>
+<style>
+/* ============================================================
+   DIRECTION C — ATLAS
+   Monumental and quiet. Enormous display type against very
+   small precise data, a stippled landmass that reads as an
+   engraving, and almost no interface furniture — detail
+   appears only when something is selected.
+   ============================================================ */
+
+:root {
+  --display: Didot, "Bodoni 72", "Playfair Display", Baskerville, "Times New Roman", serif;
+  --text: "Avenir Next", Avenir, "Helvetica Neue", Helvetica, sans-serif;
+
+  --bg: #FBFAF7;
+  --fg: #0E0E0C;          /* near-black body text, full contrast */
+  --fg-2: #4B4A44;
+  --hair: rgba(14, 14, 12, 0.16);
+  --land: #100F0D;        /* stipple ink colour */
+  --coast: rgba(14, 14, 12, 0.55);
+
+  --s1: #B98A1E;
+  --s2: #BB6415;
+  --s3: #AB4517;
+  --s4: #902B15;
+  --s5: #6B120E;
+  --verified: #B01267;
+  --stipple-opacity: 0.30;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0C0C0B;
+  --fg: #F7F5EF;
+  --fg-2: #A8A498;
+  --hair: rgba(247, 245, 239, 0.18);
+  --land: #F7F5EF;
+  --coast: rgba(247, 245, 239, 0.4);
+
+  --s1: #F5CB56;
+  --s2: #F2A040;
+  --s3: #EC7334;
+  --s4: #E04C2C;
+  --s5: #C82C24;
+  --verified: #FF57A8;
+  --stipple-opacity: 0.18;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; background: var(--bg); color: var(--fg); }
+
+body {
+  font-family: var(--text);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  padding: clamp(20px, 4vw, 56px) clamp(18px, 5vw, 80px) 80px;
+}
+
+/* --- the wall label ----------------------------------------- */
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  margin-bottom: clamp(22px, 4vw, 44px);
+}
+
+.toggle {
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--fg);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  border-bottom: 1px solid var(--fg);
+}
+
+/* Scale contrast is the signature: enormous display against very small data. */
+.title {
+  font-family: var(--display);
+  font-weight: 400;
+  /* Large enough to be monumental, capped so the map still breaks the fold. */
+  font-size: clamp(44px, 10.5vw, 138px);
+  line-height: 0.87;
+  letter-spacing: -0.022em;
+  margin: 0;
+}
+
+.title span { display: block; }
+.title .thin { font-style: italic; }
+
+.subtitle {
+  max-width: 40ch;
+  margin: clamp(18px, 2.4vw, 28px) 0 clamp(20px, 3.2vw, 38px);
+  font-size: clamp(14px, 1.35vw, 17px);
+  line-height: 1.65;
+}
+
+.subtitle b { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* --- the map, given the room of a gallery wall -------------- */
+
+.canvas { position: relative; }
+.canvas svg { display: block; width: 100%; height: auto; }
+
+.land-fill { fill: url(#stipple); }
+.land-line { fill: none; stroke: var(--coast); stroke-width: 0.45; }
+
+.evt { cursor: pointer; }
+.evt circle { transition: opacity 420ms ease; }
+.canvas.dimmed .evt:not(.selected) { opacity: 0.1; }
+.evt.selected .halo { opacity: 0.5 !important; }
+
+.evt:focus-visible { outline: none; }
+.evt:focus-visible .halo { opacity: 0.55 !important; }
+.index button:focus-visible, .toggle:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+}
+
+/* --- detail, revealed only on selection --------------------- */
+
+.detail {
+  min-height: 118px;
+  margin-top: clamp(18px, 3vw, 32px);
+  padding-top: 18px;
+  border-top: 1px solid var(--hair);
+}
+
+.detail .prompt {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+
+.detail-place {
+  font-family: var(--display);
+  font-size: clamp(28px, 4.6vw, 54px);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  margin: 0 0 10px;
+}
+
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 26px;
+  font-size: 12px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.detail-meta a { color: var(--fg); text-underline-offset: 3px; }
+.detail-meta .vmark { color: var(--verified); }
+
+/* --- an index rather than a list of cards ------------------- */
+
+.index {
+  margin-top: clamp(34px, 6vw, 68px);
+  padding-top: 20px;
+  border-top: 1px solid var(--hair);
+  columns: 220px 4;
+  column-gap: 34px;
+}
+
+.index h2 {
+  column-span: all;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin: 0 0 16px;
+  color: var(--fg-2);
+}
+
+.index button {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  width: 100%;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  color: var(--fg);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--hair);
+  padding: 7px 0;
+  cursor: pointer;
+  break-inside: avoid;
+}
+
+.index button:hover { color: var(--s3); }
+.index .count { font-variant-numeric: tabular-nums; font-size: 11px; color: var(--fg-2); }
+
+.footnote {
+  margin-top: clamp(30px, 5vw, 56px);
+  padding-top: 18px;
+  border-top: 1px solid var(--hair);
+  font-size: 12px;
+  line-height: 1.75;
+  max-width: 76ch;
+  color: var(--fg-2);
+}
+
+.footnote strong { color: var(--fg); font-weight: 600; }
+
+@keyframes bloom {
+  0%   { r: var(--r0); opacity: 0.55; }
+  100% { r: calc(var(--r0) * 5); opacity: 0; }
+}
+
+.bloom { animation: bloom 2400ms ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <span>IGRED · Direction C — Atlas</span>
+  <button class="toggle" id="theme">Dark</button>
+</div>
+
+<h1 class="title">
+  <span>The world,</span>
+  <span class="thin">at war</span>
+</h1>
+
+<p class="subtitle">
+  <b id="count">—</b> armed incidents in the last twenty-four hours, across
+  <b id="countries">—</b> countries with a conflict on record. Each carries its outlet, its
+  date, and a link to what was published. Nothing appears here without one.
+</p>
+
+<div class="canvas" id="canvas">
+  <svg id="map" role="img" aria-label="World map of armed incidents in the last 24 hours"></svg>
+</div>
+
+<div class="detail" id="detail">
+  <p class="prompt">Select any point on the map</p>
+</div>
+
+<nav class="index">
+  <h2>Where, today</h2>
+  <div id="index"></div>
+</nav>
+
+<p class="footnote">
+  <strong>About this mockup.</strong>
+  The incidents are real — one live day of the GDELT feed, clustered by this project's own
+  pipeline. The landmass is Natural Earth 1:110m (public domain), drawn as a stipple in the
+  Natural Earth projection; no third-party tiles are used anywhere. Two things stand in for
+  parts not yet built: the set of countries counted as actively at war is a placeholder until
+  the UCDP register is connected, and the magenta points are illustrative — nothing here has
+  yet been verified by hand.
+</p>
+
+<script id="world" type="application/json">"__WORLD__"</script>
+<script id="events" type="application/json">"__EVENTS__"</script>
+<script>
+(() => {
+  const world = JSON.parse(document.getElementById('world').textContent);
+  const data = JSON.parse(document.getElementById('events').textContent);
+  const events = data.events;
+
+  const CATEGORY = {
+    armed_clash: 'Armed clash', armed_assault: 'Armed assault',
+    aerial_strike: 'Aerial or missile strike', mass_violence: 'Mass violence',
+    violent_repression: 'Violent repression', violent_unrest: 'Violent unrest',
+    siege_blockade: 'Siege or blockade',
+  };
+
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('map');
+  svg.setAttribute('viewBox', world.viewBox);
+
+  const make = (name, attrs) => {
+    const node = document.createElementNS(svgNS, name);
+    for (const key in attrs) node.setAttribute(key, attrs[key]);
+    return node;
+  };
+  const escapeHtml = value => String(value).replace(/[&<>"']/g, ch => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[ch]));
+
+  // --- a stipple pattern gives the land an engraved surface ---
+  const defs = make('defs', {});
+  const pattern = make('pattern', { id: 'stipple', width: 3, height: 3, patternUnits: 'userSpaceOnUse' });
+  pattern.appendChild(make('circle', { cx: 1, cy: 1, r: 0.52, fill: 'var(--land)', 'fill-opacity': 'var(--stipple-opacity)' }));
+  pattern.appendChild(make('circle', { cx: 2.5, cy: 2.5, r: 0.3, fill: 'var(--land)', 'fill-opacity': 'var(--stipple-opacity)' }));
+  defs.appendChild(pattern);
+  svg.appendChild(defs);
+
+  const landLayer = make('g', {});
+  const lineLayer = make('g', {});
+  for (const country of world.countries) {
+    landLayer.appendChild(make('path', { d: country.path, class: 'land-fill' }));
+    lineLayer.appendChild(make('path', { d: country.path, class: 'land-line', 'vector-effect': 'non-scaling-stroke' }));
+  }
+  svg.append(landLayer, lineLayer);
+
+  // --- incidents as embers ------------------------------------
+  const pointLayer = make('g', {});
+  const nodes = [];
+
+  events.forEach(event => {
+    const r = 1.1 + event.i * 0.72;
+    const tone = event.v ? 'var(--verified)' : `var(--s${event.i})`;
+    const group = make('g', { class: 'evt', tabindex: '0', role: 'button' });
+    group.style.setProperty('--r0', r);
+
+    const halo = make('circle', {
+      cx: event.x, cy: event.y, r: r * 2.5, class: 'halo',
+      fill: tone, opacity: 0.05 + event.i * 0.035,
+    });
+    const dot = make('circle', {
+      cx: event.x, cy: event.y, r: r, fill: tone, 'fill-opacity': 0.55 + event.i * 0.09,
+    });
+    group.append(halo, dot);
+
+    // Verified points get a ring as well as the accent colour, so the distinction
+    // does not rest on hue alone.
+    if (event.v) {
+      group.appendChild(make('circle', {
+        cx: event.x, cy: event.y, r: r + 2.6, fill: 'none',
+        stroke: 'var(--verified)', 'stroke-width': 0.8, 'vector-effect': 'non-scaling-stroke',
+      }));
+    }
+
+    const title = make('title', {});
+    title.textContent = `${CATEGORY[event.k]} — ${event.p}`;
+    group.appendChild(title);
+
+    pointLayer.appendChild(group);
+    nodes.push({ event, group, halo });
+  });
+  svg.appendChild(pointLayer);
+
+  // --- detail panel -------------------------------------------
+  const canvas = document.getElementById('canvas');
+  const detail = document.getElementById('detail');
+  let selected = null;
+
+  function select(entry) {
+    if (selected === entry) return clear();
+    if (selected) selected.group.classList.remove('selected');
+    selected = entry;
+    canvas.classList.add('dimmed');
+    entry.group.classList.add('selected');
+
+    const e = entry.event;
+    detail.innerHTML =
+      `<h2 class="detail-place">${escapeHtml(e.p)}</h2>` +
+      `<div class="detail-meta">` +
+      `<span>${escapeHtml(CATEGORY[e.k])}</span>` +
+      // Dated to the day: GDELT does not resolve events to an hour.
+      `<span>${e.t.slice(0, 10)}</span>` +
+      `<span>Intensity ${e.i} of 5</span>` +
+      `<span>${e.r} report${e.r === 1 ? '' : 's'} · ${e.n} outlet${e.n === 1 ? '' : 's'}</span>` +
+      (e.v ? `<span class="vmark">IGRED-verified</span>` : '') +
+      `<a href="${escapeHtml(e.u)}" target="_blank" rel="noopener">${escapeHtml(e.b || 'Read the source')}</a>` +
+      `</div>`;
+  }
+
+  function clear() {
+    canvas.classList.remove('dimmed');
+    selected?.group.classList.remove('selected');
+    selected = null;
+    detail.innerHTML = '<p class="prompt">Select any point on the map</p>';
+  }
+
+  nodes.forEach(entry => {
+    entry.group.addEventListener('click', () => select(entry));
+    entry.group.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); select(entry); }
+    });
+  });
+  svg.addEventListener('click', ev => { if (ev.target === svg) clear(); });
+
+  // --- index by place -----------------------------------------
+  const strongest = new Map();
+  for (const entry of nodes) {
+    const key = entry.event.p.split(',')[0].trim();
+    const existing = strongest.get(key);
+    if (!existing || entry.event.i > existing.entry.event.i || (entry.event.i === existing.entry.event.i && entry.event.r > existing.entry.event.r)) {
+      strongest.set(key, { entry, count: (existing?.count ?? 0) + 1 });
+    } else {
+      existing.count += 1;
+    }
+  }
+
+  const index = document.getElementById('index');
+  [...strongest.entries()]
+    .sort((a, b) => b[1].entry.event.i - a[1].entry.event.i || b[1].count - a[1].count || a[0].localeCompare(b[0]))
+    .slice(0, 44)
+    .forEach(([place, info]) => {
+      const button = document.createElement('button');
+      button.innerHTML = `<span>${escapeHtml(place)}</span><span class="count">${info.count}</span>`;
+      button.addEventListener('click', () => {
+        select(info.entry);
+        canvas.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      });
+      index.appendChild(button);
+    });
+
+  // --- headline numbers ---------------------------------------
+  document.getElementById('count').textContent = String(events.length);
+  document.getElementById('countries').textContent = String(new Set(events.map(e => e.c)).size);
+
+  // --- embers bloom briefly as fresh reports land -------------
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const fresh = [...nodes].sort((a, b) => b.event.t.localeCompare(a.event.t)).slice(0, 12);
+    let tick = 0;
+    setInterval(() => {
+      const entry = fresh[tick++ % fresh.length];
+      entry.halo.classList.remove('bloom');
+      void entry.halo.getBoundingClientRect();
+      entry.halo.classList.add('bloom');
+    }, 2600);
+  }
+
+  // --- theme ---------------------------------------------------
+  const root = document.documentElement;
+  const button = document.getElementById('theme');
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme = 'dark';
+  const sync = () => { button.textContent = root.dataset.theme === 'dark' ? 'Light' : 'Dark'; };
+  sync();
+  button.addEventListener('click', () => {
+    root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    sync();
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IGRED — Direction B: Instrument</title>
+<style>
+/* ============================================================
+   DIRECTION B — INSTRUMENT
+   The map as a monitoring instrument, not a dashboard. The
+   graticule is structure rather than decoration, incidents are
+   reticles rather than blobs, and every number is monospaced
+   and aligned. Calibration ticks frame the plot. No cards.
+   ============================================================ */
+
+:root {
+  --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  --bg: #0B0C0D;
+  --fg: #EDEFF0;          /* full-strength text, never grey-on-grey */
+  --fg-2: #9BA3A8;
+  --hair: rgba(237, 239, 240, 0.20);
+  --hair-strong: rgba(237, 239, 240, 0.46);
+  --land: #16191B;
+  --coast: rgba(237, 239, 240, 0.34);
+  --grid: rgba(237, 239, 240, 0.10);
+  --grid-major: rgba(237, 239, 240, 0.18);
+
+  --s1: #E8C766;
+  --s2: #EDA047;
+  --s3: #E9762F;
+  --s4: #DC4A28;
+  --s5: #CE2B26;
+  --verified: #FF57A8;
+}
+
+:root[data-theme="light"] {
+  --bg: #EFF1F2;
+  --fg: #0C0E10;
+  --fg-2: #48525A;
+  --hair: rgba(12, 14, 16, 0.22);
+  --hair-strong: rgba(12, 14, 16, 0.55);
+  --land: #D6DBDE;
+  --coast: rgba(12, 14, 16, 0.5);
+  --grid: rgba(12, 14, 16, 0.13);
+  --grid-major: rgba(12, 14, 16, 0.2);
+
+  --s1: #A87A12;
+  --s2: #AE5F13;
+  --s3: #A34317;
+  --s4: #8B2A15;
+  --s5: #6B130F;
+  --verified: #B01267;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; background: var(--bg); color: var(--fg); }
+
+body {
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- instrument status line (a running readout, not a KPI row) --- */
+
+.statusline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 18px;
+  padding: 12px clamp(12px, 2.5vw, 26px);
+  border-bottom: 1px solid var(--hair-strong);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.statusline .id {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.statusline .sep { color: var(--fg-2); }
+.statusline b { font-weight: 400; font-variant-numeric: tabular-nums; }
+
+.statusline .live::before {
+  content: "";
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--s3);
+  margin-right: 7px;
+  vertical-align: 1px;
+}
+
+.toggle {
+  margin-left: auto;
+  font: inherit;
+  letter-spacing: inherit;
+  color: var(--fg);
+  background: none;
+  border: 1px solid var(--hair-strong);
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.toggle:hover { border-color: var(--fg); }
+
+/* --- layout ------------------------------------------------- */
+
+.frame {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1040px) {
+  .frame { grid-template-columns: minmax(0, 1fr) 328px; }
+  .readout { border-left: 1px solid var(--hair-strong); }
+}
+
+/* --- plot --------------------------------------------------- */
+
+.plot { position: relative; padding: clamp(10px, 2vw, 22px); }
+
+.plot-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  margin-bottom: 10px;
+}
+
+.plot-head span:first-child { color: var(--fg); }
+
+.plot svg { display: block; width: 100%; height: auto; }
+
+.land { fill: var(--land); stroke: var(--coast); stroke-width: 0.4; }
+.grat { fill: none; stroke: var(--grid); stroke-width: 0.35; }
+.frame-line { fill: none; stroke: var(--grid-major); stroke-width: 0.6; }
+.tick { stroke: var(--hair-strong); stroke-width: 0.8; }
+.tick-label { fill: var(--fg-2); font-family: var(--mono); font-size: 7px; letter-spacing: 0.08em; }
+
+.evt { cursor: pointer; }
+.evt .core, .evt .reticle { transition: opacity 300ms ease; }
+.dimmed .evt:not(.selected) { opacity: 0.13; }
+.evt.selected .cross { opacity: 1; }
+.cross { stroke: var(--fg); stroke-width: 0.7; opacity: 0; }
+
+.evt:focus-visible { outline: none; }
+.evt:focus-visible .cross { opacity: 1; }
+.row:focus-visible, .toggle:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
+/* --- readout rail ------------------------------------------- */
+
+.readout { padding: 16px clamp(12px, 2.5vw, 22px) 40px; }
+
+.readout h2 {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  font-weight: 400;
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--hair-strong);
+}
+
+.rows { list-style: none; margin: 0 0 26px; padding: 0; max-height: 40vh; overflow-y: auto; }
+
+@media (max-width: 1039px) { .rows { max-height: none; } }
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 12px;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--hair);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.row:hover { background: rgba(127, 127, 127, 0.09); }
+.row.selected { background: rgba(127, 127, 127, 0.14); box-shadow: inset 2px 0 0 var(--fg); padding-left: 8px; }
+
+.row .place { font-weight: 500; }
+.row .n { font-family: var(--mono); font-size: 11px; font-variant-numeric: tabular-nums; color: var(--fg-2); }
+.row .meta {
+  grid-column: 1 / -1;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  color: var(--fg-2);
+}
+.row .meta a { color: var(--fg-2); }
+.row.is-verified .place::after {
+  content: " ◎";
+  color: var(--verified);
+}
+
+/* --- scale, drawn as a calibrated strip --------------------- */
+
+.scale { margin-bottom: 24px; }
+
+.scale-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
+.scale-bar div { height: 8px; }
+
+.scale-axis {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--fg-2);
+  margin-top: 5px;
+}
+
+.note {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--fg-2);
+  border-top: 1px solid var(--hair);
+  padding-top: 12px;
+}
+
+.note strong { color: var(--fg); font-weight: 400; }
+
+@keyframes ping {
+  0%   { r: var(--r0); opacity: 0.85; }
+  100% { r: calc(var(--r0) * 4.5); opacity: 0; }
+}
+
+.ping { animation: ping 1700ms ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="statusline">
+  <span class="id">IGRED</span>
+  <span class="sep">/</span>
+  <span>GLOBAL CONFLICT MONITOR</span>
+  <span class="sep">/</span>
+  <span class="live">FEED NOMINAL</span>
+  <span class="sep">/</span>
+  <span>WINDOW <b>24H</b></span>
+  <span class="sep">/</span>
+  <span>PLOTTED <b id="n-events">—</b></span>
+  <span class="sep">/</span>
+  <span>THEATRES <b id="n-countries">—</b></span>
+  <span class="sep">/</span>
+  <span>UPDATED <b id="stamp">—</b></span>
+  <button class="toggle" id="theme">LIGHT</button>
+</div>
+
+<div class="frame">
+  <section class="plot">
+    <div class="plot-head">
+      <span>Direction B — Instrument</span>
+      <span>Armed incidents · last 24h</span>
+      <span>Natural Earth projection · 30° graticule</span>
+    </div>
+    <svg id="map" role="img" aria-label="Instrument plot of armed incidents in the last 24 hours"></svg>
+  </section>
+
+  <aside class="readout">
+    <h2>Intensity scale</h2>
+    <div class="scale">
+      <div class="scale-bar">
+        <div style="background: var(--s1)"></div>
+        <div style="background: var(--s2)"></div>
+        <div style="background: var(--s3)"></div>
+        <div style="background: var(--s4)"></div>
+        <div style="background: var(--s5)"></div>
+      </div>
+      <div class="scale-axis"><span>1 · ISOLATED</span><span>5 · HEAVY</span></div>
+      <p class="note" style="border: 0; padding-top: 8px">
+        Intensity combines event type with how widely it was reported. ◎ marks IGRED-verified.
+      </p>
+    </div>
+
+    <h2>Highest intensity</h2>
+    <ul class="rows" id="list"></ul>
+
+    <p class="note">
+      <strong>About this mockup.</strong>
+      Incidents are real, from one live day of the GDELT feed through this project's own
+      clustering. Coastlines are Natural Earth 1:110m (public domain), plotted here — no
+      third-party tiles. Two stand-ins: the active-conflict country set is a placeholder until
+      the UCDP register is connected, and the ◎ marks are illustrative, since nothing here has
+      been verified by hand yet.
+    </p>
+  </aside>
+</div>
+
+<script id="world" type="application/json">"__WORLD__"</script>
+<script id="events" type="application/json">"__EVENTS__"</script>
+<script>
+(() => {
+  const world = JSON.parse(document.getElementById('world').textContent);
+  const data = JSON.parse(document.getElementById('events').textContent);
+  const events = data.events;
+
+  const CATEGORY = {
+    armed_clash: 'Armed clash', armed_assault: 'Armed assault',
+    aerial_strike: 'Aerial / missile strike', mass_violence: 'Mass violence',
+    violent_repression: 'Violent repression', violent_unrest: 'Violent unrest',
+    siege_blockade: 'Siege / blockade',
+  };
+
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('map');
+  const W = world.width, H = world.height;
+  // Asymmetric padding: the latitude labels sit outside the plot on the left.
+  const PAD_L = 34, PAD_T = 20, PAD_R = 10, PAD_B = 8;
+  svg.setAttribute('viewBox', `${-PAD_L} ${-PAD_T} ${W + PAD_L + PAD_R} ${H + PAD_T + PAD_B}`);
+
+  const make = (name, attrs) => {
+    const node = document.createElementNS(svgNS, name);
+    for (const key in attrs) node.setAttribute(key, attrs[key]);
+    return node;
+  };
+
+  // --- land under a visible graticule -----------------------
+  const landLayer = make('g', {});
+  for (const country of world.countries) {
+    landLayer.appendChild(make('path', { d: country.path, class: 'land', 'vector-effect': 'non-scaling-stroke' }));
+  }
+  svg.appendChild(landLayer);
+  svg.appendChild(make('path', { d: world.graticule, class: 'grat', 'vector-effect': 'non-scaling-stroke' }));
+  svg.appendChild(make('path', { d: world.outline, class: 'frame-line', 'vector-effect': 'non-scaling-stroke' }));
+
+  // --- calibration ticks framing the plot -------------------
+  const ticks = make('g', {});
+  for (const tick of world.ticks.lon) {
+    ticks.appendChild(make('line', { x1: tick.x, y1: -9, x2: tick.x, y2: -4, class: 'tick', 'vector-effect': 'non-scaling-stroke' }));
+    const label = make('text', { x: tick.x, y: -13, class: 'tick-label', 'text-anchor': 'middle' });
+    label.textContent = tick.label;
+    ticks.appendChild(label);
+  }
+  for (const tick of world.ticks.lat) {
+    ticks.appendChild(make('line', { x1: -9, y1: tick.y, x2: -4, y2: tick.y, class: 'tick', 'vector-effect': 'non-scaling-stroke' }));
+    const label = make('text', { x: -13, y: tick.y + 2.5, class: 'tick-label', 'text-anchor': 'end' });
+    label.textContent = tick.label;
+    ticks.appendChild(label);
+  }
+  svg.appendChild(ticks);
+
+  // --- incidents as reticles --------------------------------
+  const pointLayer = make('g', {});
+  const nodes = [];
+
+  events.forEach(event => {
+    const r = 0.9 + event.i * 0.6;
+    const tone = event.v ? 'var(--verified)' : `var(--s${event.i})`;
+    const group = make('g', { class: 'evt', tabindex: '0', role: 'button' });
+    group.style.setProperty('--r0', r);
+
+    const ping = make('circle', { cx: event.x, cy: event.y, r: r, fill: 'none', stroke: tone, 'stroke-width': 0.7, opacity: 0, 'vector-effect': 'non-scaling-stroke' });
+    const core = make('circle', { cx: event.x, cy: event.y, r: r, class: 'core', fill: tone, 'fill-opacity': 0.5 + event.i * 0.1 });
+
+    group.append(ping, core);
+
+    // Only strong signals earn the surrounding reticle, so the map stays quiet.
+    if (event.i >= 3 || event.v) {
+      group.appendChild(make('circle', {
+        cx: event.x, cy: event.y, r: r + 2.4, class: 'reticle',
+        fill: 'none', stroke: tone, 'stroke-width': 0.55, 'stroke-opacity': 0.85,
+        'vector-effect': 'non-scaling-stroke',
+      }));
+    }
+    if (event.v) {
+      const t = r + 4.4;
+      group.appendChild(make('path', {
+        d: `M${event.x - t} ${event.y}h2.2M${event.x + t - 2.2} ${event.y}h2.2M${event.x} ${event.y - t}v2.2M${event.x} ${event.y + t - 2.2}v2.2`,
+        stroke: 'var(--verified)', 'stroke-width': 0.8, fill: 'none', 'vector-effect': 'non-scaling-stroke',
+      }));
+    }
+
+    const cross = make('path', {
+      d: `M${event.x - 9} ${event.y}h18M${event.x} ${event.y - 9}v18`,
+      class: 'cross', fill: 'none', 'vector-effect': 'non-scaling-stroke',
+    });
+    group.appendChild(cross);
+
+    const title = make('title', {});
+    title.textContent = `${CATEGORY[event.k]} — ${event.p} · intensity ${event.i} · ${event.r} report${event.r === 1 ? '' : 's'}`;
+    group.appendChild(title);
+
+    pointLayer.appendChild(group);
+    nodes.push({ event, group, ping });
+  });
+  svg.appendChild(pointLayer);
+
+  // --- readout rows -----------------------------------------
+  const list = document.getElementById('list');
+  const escapeHtml = value => String(value).replace(/[&<>"']/g, ch => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[ch]));
+
+  [...nodes]
+    .sort((a, b) => (b.event.v ? 1 : 0) - (a.event.v ? 1 : 0) || b.event.i - a.event.i || b.event.r - a.event.r)
+    .slice(0, 36)
+    .forEach(entry => {
+      const e = entry.event;
+      // GDELT dates events to the day, not the hour. Printing a clock time would imply a
+      // precision the source does not have.
+      const day = e.t.slice(0, 10);
+      const item = document.createElement('li');
+      item.className = 'row' + (e.v ? ' is-verified' : '');
+      item.innerHTML =
+        `<span class="place">${escapeHtml(e.p.split(',')[0].trim())}</span>` +
+        `<span class="n">I${e.i} · ${String(e.r).padStart(2, '0')}×</span>` +
+        `<span class="meta">${day} · ${escapeHtml(CATEGORY[e.k])} · ` +
+        `<a href="${escapeHtml(e.u)}" target="_blank" rel="noopener">${escapeHtml(e.b || 'source')}</a></span>`;
+      item.addEventListener('click', () => select(entry));
+      entry.item = item;
+      list.appendChild(item);
+    });
+
+  // --- selection: isolate without leaving the view -----------
+  let selected = null;
+  const select = entry => {
+    if (selected === entry) return clear();
+    clear();
+    selected = entry;
+    document.querySelector('.plot').classList.add('dimmed');
+    entry.group.classList.add('selected');
+    entry.item?.classList.add('selected');
+    entry.item?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  };
+  const clear = () => {
+    document.querySelector('.plot').classList.remove('dimmed');
+    if (!selected) return;
+    selected.group.classList.remove('selected');
+    selected.item?.classList.remove('selected');
+    selected = null;
+  };
+
+  nodes.forEach(entry => {
+    entry.group.addEventListener('click', () => select(entry));
+    entry.group.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); select(entry); }
+    });
+  });
+  svg.addEventListener('click', ev => { if (ev.target === svg) clear(); });
+
+  // --- status line ------------------------------------------
+  document.getElementById('n-events').textContent = String(events.length);
+  document.getElementById('n-countries').textContent = String(new Set(events.map(e => e.c)).size);
+  document.getElementById('stamp').textContent = new Date(data.capturedAt).toISOString().slice(0, 16).replace('T', ' ') + 'Z';
+
+  // --- a single ping as each fresh report lands --------------
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const fresh = [...nodes].sort((a, b) => b.event.t.localeCompare(a.event.t)).slice(0, 16);
+    let tick = 0;
+    setInterval(() => {
+      const entry = fresh[tick++ % fresh.length];
+      entry.ping.classList.remove('ping');
+      void entry.ping.getBoundingClientRect();
+      entry.ping.classList.add('ping');
+    }, 2100);
+  }
+
+  // --- theme -------------------------------------------------
+  const root = document.documentElement;
+  const button = document.getElementById('theme');
+  if (window.matchMedia('(prefers-color-scheme: light)').matches) root.dataset.theme = 'light';
+  const sync = () => { button.textContent = root.dataset.theme === 'light' ? 'DARK' : 'LIGHT'; };
+  sync();
+  button.addEventListener('click', () => {
+    root.dataset.theme = root.dataset.theme === 'light' ? 'dark' : 'light';
+    sync();
+  });
+})();
+</script>
+</body>
+</html>

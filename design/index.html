@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IGRED — three design directions</title>
+<style>
+:root {
+  --bg: #F3EFE6; --fg: #15120C; --hair: rgba(21,18,12,0.24); --accent: #A84418;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #131108; --fg: #F4EFE3; --hair: rgba(244,239,227,0.24); --accent: #E86F32; }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.6 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding: clamp(24px, 6vw, 72px) clamp(18px, 6vw, 72px) 80px;
+  -webkit-font-smoothing: antialiased;
+}
+h1 {
+  font-family: "Hoefler Text", "Iowan Old Style", Palatino, Georgia, serif;
+  font-size: clamp(28px, 4.5vw, 46px); font-weight: 400; margin: 0 0 8px; letter-spacing: -0.01em;
+}
+.lede { max-width: 62ch; margin: 0 0 40px; }
+ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+li { border-top: 1px solid var(--hair); }
+li:last-child { border-bottom: 1px solid var(--hair); }
+a { display: block; padding: 22px 0; color: inherit; text-decoration: none; }
+a:hover .name { color: var(--accent); }
+.num {
+  font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; opacity: 0.7;
+}
+.name {
+  font-family: "Hoefler Text", "Iowan Old Style", Palatino, Georgia, serif;
+  font-size: clamp(22px, 3vw, 30px); margin: 4px 0 6px;
+}
+.desc { max-width: 64ch; }
+footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--hair); font-size: 13px; max-width: 70ch; }
+</style>
+</head>
+<body>
+<h1>IGRED Global Conflict Monitor</h1>
+<p class="lede">
+  Three design directions for the map, each built on the same real data: one live day of
+  incidents through the project's own pipeline, on cartography drawn from Natural Earth.
+  Pick one and the map gets built in it.
+</p>
+
+<ol>
+  <li><a href="a-dispatch.html">
+    <div class="num">Direction A</div>
+    <div class="name">Dispatch</div>
+    <p class="desc">Editorial. The map as the front page of a serious bulletin — warm paper,
+    an academic serif, datelines, hairline rules. Reads as journalism.</p>
+  </a></li>
+  <li><a href="b-instrument.html">
+    <div class="num">Direction B</div>
+    <div class="name">Instrument</div>
+    <p class="desc">Technical. The map as a monitoring instrument — a visible graticule,
+    incidents as reticles, calibrated ticks, every number monospaced. Reads as measurement.</p>
+  </a></li>
+  <li><a href="c-atlas.html">
+    <div class="num">Direction C</div>
+    <div class="name">Atlas</div>
+    <p class="desc">Monumental. Enormous display type against very small data, a stippled
+    landmass, almost no interface. Reads as a gallery wall.</p>
+  </a></li>
+</ol>
+
+<footer>
+  Each page has a light and dark mode, and responds to <em>prefers-reduced-motion</em>.
+  Two things stand in for parts not yet built: the set of countries counted as actively at war
+  is a placeholder until the UCDP register is connected, and the magenta points are
+  illustrative — nothing has been verified by hand yet.
+</footer>
+</body>
+</html>

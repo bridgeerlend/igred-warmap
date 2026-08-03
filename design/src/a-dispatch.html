@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IGRED — Direction A: Dispatch</title>
+<style>
+/* ============================================================
+   DIRECTION A — DISPATCH
+   The map as the front page of a serious bulletin. Warm paper,
+   an academic serif, hairline rules doing all the dividing work.
+   No boxes, no cards, no rounded corners anywhere.
+   ============================================================ */
+
+:root {
+  --display: "Hoefler Text", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --grotesk: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  /* Newsprint grey rather than the warm cream this kind of page usually reaches for.
+     Uncoated newsstock is grey, not cream — and a cool ground makes the ember scale
+     read hotter, which is the whole point of it. */
+  --paper: #E8E9E4;
+  --ink: #14150F;          /* body text is full-strength ink, never grey */
+  --ink-2: #43463C;
+  --rule: rgba(20, 21, 15, 0.26);
+  --rule-strong: rgba(20, 21, 15, 0.62);
+  --land: #D8DAD3;
+  --land-edge: rgba(20, 21, 15, 0.42);
+  --plate: #E1E3DC;
+
+  /* One warm scale. Severity is carried by hue AND size AND opacity,
+     so it survives colour-blind vision and greyscale printing. */
+  --s1: #B07A16;
+  --s2: #B45F14;
+  --s3: #A84418;
+  --s4: #8E2A16;
+  --s5: #6E1410;
+  --verified: #B01267;     /* reserved: IGRED-verified only */
+  --glow: rgba(168, 68, 24, 0.16);
+}
+
+:root[data-theme="dark"] {
+  --paper: #101210;
+  --ink: #EDEFE7;
+  --ink-2: #B0B4A6;
+  --rule: rgba(237, 239, 231, 0.24);
+  --rule-strong: rgba(237, 239, 231, 0.6);
+  --land: #1D211D;
+  --land-edge: rgba(237, 239, 231, 0.3);
+  --plate: #151815;
+
+  --s1: #F3C64F;
+  --s2: #F09A3C;
+  --s3: #E86F32;
+  --s4: #DC4A2B;
+  --s5: #C32A23;
+  --verified: #FF57A8;
+  --glow: rgba(232, 111, 50, 0.24);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--display);
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  padding: 0 clamp(14px, 3.5vw, 44px) 64px;
+}
+
+/* --- masthead ------------------------------------------------ */
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 22px;
+  padding: 22px 0 12px;
+  border-bottom: 1.5px solid var(--rule-strong);
+}
+
+.wordmark {
+  font-family: var(--display);
+  font-size: clamp(21px, 3.2vw, 30px);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 0;
+}
+
+.wordmark em {
+  font-style: italic;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.masthead-meta {
+  margin-left: auto;
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  font-family: var(--grotesk);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.theme-toggle {
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--rule-strong);
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+.theme-toggle:hover { border-bottom-color: var(--ink); }
+
+/* --- standfirst: an editorial sentence, not a row of KPI tiles --- */
+
+.standfirst {
+  font-size: clamp(17px, 2.1vw, 22px);
+  line-height: 1.5;
+  max-width: 62ch;
+  margin: 18px 0 22px;
+  padding-bottom: 20px;
+  border-bottom: 0.5px solid var(--rule);
+}
+
+.standfirst b { font-weight: 400; font-variant-numeric: tabular-nums; }
+
+.standfirst .lede {
+  font-style: italic;
+}
+
+/* --- layout -------------------------------------------------- */
+
+.spread {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+@media (min-width: 1000px) {
+  .spread {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 0;
+  }
+  .dispatches {
+    border-left: 0.5px solid var(--rule);
+    padding-left: 26px;
+    margin-left: 26px;
+  }
+}
+
+@media (min-width: 1500px) {
+  .spread { grid-template-columns: minmax(0, 1fr) 400px; }
+}
+
+/* --- the plate: map framed like an atlas engraving ----------- */
+
+.plate {
+  position: relative;
+  background: var(--plate);
+  border: 0.5px solid var(--rule-strong);
+  padding: clamp(10px, 1.6vw, 20px);
+}
+
+.plate-caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-family: var(--grotesk);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 0.5px solid var(--rule);
+}
+
+.plate svg { display: block; width: 100%; height: auto; }
+
+.land { fill: var(--land); stroke: var(--land-edge); stroke-width: 0.35; }
+.outline { fill: none; stroke: var(--rule-strong); stroke-width: 0.7; }
+
+/* Countries in the register carry no colour — only a slightly firmer edge,
+   so the eye finds them without the map turning into a choropleth. */
+.land.is-active { stroke: var(--land-edge); stroke-width: 0.9; }
+
+.evt { cursor: pointer; }
+.evt circle { transition: opacity 320ms ease, r 320ms ease; }
+
+.dimmed .evt:not(.selected) { opacity: 0.16; }
+.evt.selected .ring { opacity: 1; }
+
+.ring { fill: none; stroke: var(--ink); stroke-width: 0.8; opacity: 0; }
+
+.evt:focus-visible { outline: none; }
+.evt:focus-visible .ring { opacity: 1; stroke-width: 1.6; }
+.dispatch:focus-visible, .theme-toggle:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.evt-verified .dot { stroke: var(--paper); stroke-width: 0.5; }
+
+/* --- legend -------------------------------------------------- */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 22px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 0.5px solid var(--rule);
+  font-family: var(--grotesk);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ramp { display: flex; align-items: center; gap: 7px; }
+.ramp i {
+  display: block;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* --- dispatch list ------------------------------------------- */
+
+.dispatches h2 {
+  font-family: var(--grotesk);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1.5px solid var(--rule-strong);
+}
+
+.dispatch-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 68vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 999px) { .dispatch-list { max-height: none; } }
+
+.dispatch {
+  padding: 13px 0;
+  border-bottom: 0.5px solid var(--rule);
+  cursor: pointer;
+}
+
+.dispatch:hover { background: var(--plate); }
+.dispatch.selected { background: var(--plate); box-shadow: inset 3px 0 0 var(--ink); padding-left: 11px; }
+
+.dateline {
+  font-family: var(--grotesk);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.dispatch h3 {
+  font-family: var(--display);
+  font-size: 17px;
+  line-height: 1.3;
+  font-weight: 400;
+  margin: 0 0 5px;
+}
+
+.attribution {
+  font-family: var(--grotesk);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.attribution a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
+.mark-verified { color: var(--verified); font-weight: 700; }
+
+/* --- footer -------------------------------------------------- */
+
+.colophon {
+  margin-top: 34px;
+  padding-top: 16px;
+  border-top: 1.5px solid var(--rule-strong);
+  font-family: var(--grotesk);
+  font-size: 11px;
+  line-height: 1.65;
+  max-width: 78ch;
+}
+
+.colophon strong { letter-spacing: 0.1em; text-transform: uppercase; font-size: 10px; }
+
+@keyframes plate-pulse {
+  0%   { r: var(--r0); opacity: 1; }
+  70%  { r: calc(var(--r0) * 3.4); opacity: 0; }
+  100% { r: var(--r0); opacity: 0; }
+}
+
+.pulse { animation: plate-pulse 1900ms ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <h1 class="wordmark">IGRED <em>Global Conflict Monitor</em></h1>
+  <div class="masthead-meta">
+    <span id="edition"></span>
+    <button class="theme-toggle" id="theme">Dark</button>
+  </div>
+</header>
+
+<p class="standfirst">
+  <span class="lede">Direction A — Dispatch.</span>
+  <b id="lede-count">—</b> armed incidents recorded in the last twenty-four hours across
+  <b id="lede-countries">—</b> countries with an active conflict on record. Every point on this
+  plate carries the outlet that reported it, the day it was filed, and a link to the original.
+</p>
+
+<div class="spread">
+  <section class="plate">
+    <div class="plate-caption">
+      <span>Plate I</span>
+      <span>Armed incidents, last 24 hours</span>
+      <span>Natural Earth projection</span>
+    </div>
+    <svg id="map" role="img" aria-label="World map of armed incidents in the last 24 hours"></svg>
+    <div class="legend">
+      <span class="ramp" style="color: var(--s1)"><i style="width:5px;height:5px"></i> Minor</span>
+      <span class="ramp" style="color: var(--s3)"><i style="width:8px;height:8px"></i> Serious</span>
+      <span class="ramp" style="color: var(--s5)"><i style="width:11px;height:11px"></i> Severe</span>
+      <span class="ramp" style="color: var(--verified)"><i style="width:9px;height:9px"></i> IGRED-verified</span>
+      <span style="margin-left:auto">Click any point to isolate it</span>
+    </div>
+  </section>
+
+  <aside class="dispatches">
+    <h2 id="dispatch-heading">Filed today</h2>
+    <ul class="dispatch-list" id="list"></ul>
+  </aside>
+</div>
+
+<footer class="colophon">
+  <strong>About this mockup</strong><br>
+  Incidents are real, captured from one live day of the GDELT feed through the project's own
+  clustering. Cartography is drawn from Natural Earth 1:110m (public domain) in the Natural Earth
+  projection — no third-party tiles. Two things stand in for parts not yet built: the set of
+  countries with an active conflict is a placeholder until the UCDP register is connected, and the
+  four points marked in magenta are illustrative — nothing here has actually been verified by hand.
+</footer>
+
+<script id="world" type="application/json">"__WORLD__"</script>
+<script id="events" type="application/json">"__EVENTS__"</script>
+<script>
+(() => {
+  const world = JSON.parse(document.getElementById('world').textContent);
+  const data = JSON.parse(document.getElementById('events').textContent);
+  const events = data.events;
+
+  const CATEGORY = {
+    armed_clash: 'Armed clash',
+    armed_assault: 'Armed assault',
+    aerial_strike: 'Aerial or missile strike',
+    mass_violence: 'Mass violence',
+    violent_repression: 'Violent repression',
+    violent_unrest: 'Violent unrest',
+    siege_blockade: 'Siege or blockade',
+  };
+
+  const active = new Set(events.map(e => e.c));
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('map');
+  svg.setAttribute('viewBox', world.viewBox);
+
+  const make = (name, attrs) => {
+    const node = document.createElementNS(svgNS, name);
+    for (const key in attrs) node.setAttribute(key, attrs[key]);
+    return node;
+  };
+
+  // --- land -------------------------------------------------
+  const landLayer = make('g', {});
+  for (const country of world.countries) {
+    landLayer.appendChild(make('path', {
+      d: country.path,
+      class: 'land' + (active.has(country.fips) ? ' is-active' : ''),
+      'vector-effect': 'non-scaling-stroke',
+    }));
+  }
+  svg.appendChild(landLayer);
+  svg.appendChild(make('path', { d: world.outline, class: 'outline', 'vector-effect': 'non-scaling-stroke' }));
+
+  // --- incidents --------------------------------------------
+  // Intensity drives colour, size and opacity together, so strength survives greyscale
+  // and colour-blind vision rather than resting on hue alone.
+  const colourFor = i => `var(--s${i})`;
+  const radiusFor = i => 1.15 + i * 0.72;
+
+  const pointLayer = make('g', {});
+  const nodes = [];
+
+  events.forEach((event, index) => {
+    const r = radiusFor(event.i);
+    const tone = event.v ? 'var(--verified)' : colourFor(event.i);
+    const group = make('g', { class: 'evt' + (event.v ? ' evt-verified' : ''), tabindex: '0', role: 'button' });
+    group.style.setProperty('--r0', r);
+
+    const halo = make('circle', { cx: event.x, cy: event.y, r: r, class: 'halo', fill: tone, opacity: '0' });
+    const dot = make('circle', {
+      cx: event.x, cy: event.y, r: r, class: 'dot',
+      fill: tone,
+      'fill-opacity': 0.48 + event.i * 0.1,
+    });
+
+    // Verified incidents carry a second concentric ring, so the distinction is a shape
+    // as well as a colour.
+    const collar = event.v
+      ? make('circle', { cx: event.x, cy: event.y, r: r + 1.9, fill: 'none', stroke: 'var(--verified)', 'stroke-width': 0.9, 'vector-effect': 'non-scaling-stroke' })
+      : null;
+
+    const ring = make('circle', { cx: event.x, cy: event.y, r: r + 3.6, class: 'ring', 'vector-effect': 'non-scaling-stroke' });
+
+    const title = make('title', {});
+    title.textContent = `${CATEGORY[event.k]} — ${event.p} · ${event.r} report${event.r === 1 ? '' : 's'}`;
+
+    group.append(halo, dot);
+    if (collar) group.appendChild(collar);
+    group.append(ring, title);
+    pointLayer.appendChild(group);
+    nodes.push({ event, group, halo, index });
+  });
+  svg.appendChild(pointLayer);
+
+  // --- dispatch list ----------------------------------------
+  const list = document.getElementById('list');
+  const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+
+  const byInterest = [...nodes].sort((a, b) =>
+    (b.event.v ? 1 : 0) - (a.event.v ? 1 : 0) ||
+    b.event.i - a.event.i ||
+    b.event.r - a.event.r
+  ).slice(0, 40);
+
+  byInterest.forEach(entry => {
+    const e = entry.event;
+    const when = new Date(e.t);
+    const city = e.p.split(',')[0].trim().toUpperCase();
+    const item = document.createElement('li');
+    item.className = 'dispatch';
+    item.innerHTML =
+      `<span class="dateline">${city} — ${when.getUTCDate()} ${MONTHS[when.getUTCMonth()]}` +
+      (e.v ? ` <span class="mark-verified">· IGRED-VERIFIED</span>` : '') + `</span>` +
+      `<h3>${CATEGORY[e.k]}, ${escapeHtml(e.p)}</h3>` +
+      `<p class="attribution">${e.r} report${e.r === 1 ? '' : 's'} · ${e.n} outlet${e.n === 1 ? '' : 's'} · ` +
+      `<a href="${escapeHtml(e.u)}" target="_blank" rel="noopener">${escapeHtml(e.b || 'source')}</a></p>`;
+    item.addEventListener('click', () => select(entry));
+    entry.item = item;
+    list.appendChild(item);
+  });
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, ch => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[ch]));
+  }
+
+  // --- selection: highlight and quiet the rest, never a page jump ---
+  let selected = null;
+  function select(entry) {
+    if (selected === entry) { clear(); return; }
+    clear();
+    selected = entry;
+    svg.parentElement.classList.add('dimmed');
+    entry.group.classList.add('selected');
+    if (entry.item) {
+      entry.item.classList.add('selected');
+      entry.item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }
+  function clear() {
+    svg.parentElement.classList.remove('dimmed');
+    if (!selected) return;
+    selected.group.classList.remove('selected');
+    selected.item?.classList.remove('selected');
+    selected = null;
+  }
+
+  nodes.forEach(entry => {
+    entry.group.addEventListener('click', () => select(entry));
+    entry.group.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); select(entry); }
+    });
+  });
+  svg.addEventListener('click', ev => { if (ev.target === svg) clear(); });
+
+  // --- standfirst numbers -----------------------------------
+  document.getElementById('lede-count').textContent = events.length;
+  document.getElementById('lede-countries').textContent = active.size;
+  document.getElementById('edition').textContent =
+    new Date(data.capturedAt).toUTCString().slice(5, 16).toUpperCase();
+
+  // --- a short pulse as fresh reports land -------------------
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const freshest = [...nodes].sort((a, b) => b.event.t.localeCompare(a.event.t)).slice(0, 14);
+  let tick = 0;
+  if (!reduceMotion.matches) {
+    setInterval(() => {
+      const entry = freshest[tick++ % freshest.length];
+      entry.halo.classList.remove('pulse');
+      void entry.halo.getBoundingClientRect();
+      entry.halo.setAttribute('opacity', '0.5');
+      entry.halo.classList.add('pulse');
+    }, 2300);
+  }
+
+  // --- theme -------------------------------------------------
+  const root = document.documentElement;
+  const button = document.getElementById('theme');
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme = 'dark';
+  const sync = () => { button.textContent = root.dataset.theme === 'dark' ? 'Light' : 'Dark'; };
+  sync();
+  button.addEventListener('click', () => {
+    root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
