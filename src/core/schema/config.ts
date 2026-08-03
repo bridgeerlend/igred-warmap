@@ -107,8 +107,11 @@ export const briefConfig = z.object({
     credentialEnvVar: z.string().min(1),
     model: z.string().min(1),
     maxWords: z.number().int().positive(),
+    maxOutputTokens: z.number().int().positive(),
     timeoutMs: z.number().int().positive(),
     $fallbackNote: z.string().optional(),
+    $modelNote: z.string().optional(),
+    $tokenNote: z.string().optional(),
   }),
   citation: z.strictObject({
     publisher: z.string().min(1),

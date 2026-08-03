@@ -103,3 +103,30 @@ describe('buildSections', () => {
     expect(sections).toHaveLength(1);
   });
 });
+
+describe('reading the model reply', () => {
+  /**
+   * Reasoning models return their scratchpad and their answer as separate parts, the
+   * scratchpad flagged `thought: true`. Joining every part produced pages of bullet-point
+   * planning where a paragraph was expected, so the split is pinned here.
+   */
+  const answerFrom = (parts: { text?: string; thought?: boolean }[]) =>
+    parts.filter((part) => part.thought !== true).map((part) => part.text ?? '').join('').trim();
+
+  it('takes the answer and discards the reasoning', () => {
+    expect(
+      answerFrom([
+        { text: '* Task: compress the coverage.\n* Constraint: 90 words.', thought: true },
+        { text: 'A rights group says a drone attack killed 35 at a Darfur court.' },
+      ]),
+    ).toBe('A rights group says a drone attack killed 35 at a Darfur court.');
+  });
+
+  it('returns nothing when the model only ever produced reasoning', () => {
+    expect(answerFrom([{ text: '* Task: compress the coverage.', thought: true }])).toBe('');
+  });
+
+  it('handles a reply with no reasoning part at all', () => {
+    expect(answerFrom([{ text: 'A plain answer.' }])).toBe('A plain answer.');
+  });
+});

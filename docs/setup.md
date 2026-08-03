@@ -46,8 +46,17 @@ carries sourced records and no prose. Nothing here can cost money: no key, an ex
 quota, a timeout or a rejected draft all end the same way.
 
 1. Go to https://aistudio.google.com/apikey
-2. Create a free API key
+2. Create an API key — that page also shows which Google Cloud project each key belongs to
 3. Add it as a repository secret named `GEMINI_API_KEY`
+
+**Check it before relying on it:** `npm run gemini:check` asks the service what the key can
+actually do and names a working model. The API's own errors are not self-explanatory — a
+retired model returns a helpful message, a model outside your tier returns an empty 404, and
+a project with no allowance returns `limit: 0` whether you have used anything or not.
+
+The key currently on file is valid and the Generative Language API is enabled on its
+project, but every Gemini model reports `limit: 0` — the project has no allowance to spend.
+That is a tier or billing setting on the project, not a missing API.
 
 ## 5. Publish the map — needed now
 
