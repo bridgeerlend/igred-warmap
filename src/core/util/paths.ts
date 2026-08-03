@@ -13,5 +13,6 @@ export const dataPaths = {
   candidates: path.join(dataDir, 'candidates.json'),
   baseline: path.join(dataDir, 'baseline.json'),
   health: path.join(dataDir, 'health.json'),
+  stories: path.join(dataDir, 'stories.json'),
   cursor: path.join(dataDir, 'internal', 'gdelt-cursor.json'),
 } as const;

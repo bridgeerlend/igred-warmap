@@ -1,0 +1,25 @@
+{
+  "$comment": "The news synthesiser's own settings. It runs on the same core as the map: same HTTP client, same schema validation, same source isolation, same atomic writes. Nothing here re-fetches anything the map already collects.",
+  "$thresholdNote": "Similarity was compared against a live batch of ~390 articles. At 0.30 the two Federal Reserve stories stayed apart when they were plainly one event; at 0.22 unrelated pieces began merging. 0.26 held the Iran talks together across five publishers while keeping distinct events separate.",
+  "schemaVersion": 1,
+  "harvest": {
+    "maxItemsPerFeed": 80,
+    "concurrency": 6,
+    "maxAgeDaysByTier": {
+      "1": 3,
+      "2": 7,
+      "3": 21
+    }
+  },
+  "clustering": {
+    "windowHours": 48,
+    "similarityThreshold": 0.26,
+    "rareTokenMaxShare": 0.12,
+    "maxArticlesPerStory": 30
+  },
+  "publish": {
+    "windowDays": 7,
+    "maxStories": 200
+  },
+  "$ageNote": "Publishing rhythm differs by role: broadcasters churn hourly, a think tank posts twice a month. One short window silently emptied tier 3."
+}

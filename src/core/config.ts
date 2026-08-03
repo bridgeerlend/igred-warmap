@@ -4,6 +4,9 @@ import type { z } from 'zod';
 import { configDir } from './util/paths.js';
 import {
   clusteringConfig,
+  feedsConfig,
+  themesConfig,
+  storiesConfig,
   countryAliasesConfig,
   publishConfig,
   detectionConfig,
@@ -11,6 +14,9 @@ import {
   sourcesConfig,
   taxonomyConfig,
   type ClusteringConfig,
+  type FeedDefinition,
+  type ThemesConfig,
+  type StoriesConfig,
   type PublishConfig,
   type DetectionConfig,
   type PublisherEntry,
@@ -35,6 +41,9 @@ export interface AppConfig {
   clustering: ClusteringConfig;
   publish: PublishConfig;
   countryAliases: Record<string, string>;
+  feeds: FeedDefinition[];
+  themes: ThemesConfig;
+  stories: StoriesConfig;
 }
 
 let cached: AppConfig | undefined;
@@ -49,6 +58,9 @@ export function loadConfig(): AppConfig {
   const clustering = load('clustering.json', clusteringConfig);
   const publish = load('publish.json', publishConfig);
   const countryAliases = load('country-aliases.json', countryAliasesConfig).aliases;
+  const feeds = load('feeds.json', feedsConfig).feeds;
+  const themes = load('themes.json', themesConfig);
+  const stories = load('stories.json', storiesConfig);
 
   if (sources.some((source) => source.id.toLowerCase().includes('acled'))) {
     throw new Error('ACLED is forbidden by licence and must never appear in the source registry.');
@@ -62,6 +74,9 @@ export function loadConfig(): AppConfig {
     clustering,
     publish,
     countryAliases,
+    feeds,
+    themes,
+    stories,
   };
   return cached;
 }

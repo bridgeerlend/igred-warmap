@@ -62,6 +62,65 @@ export const detectionConfig = z.object({
 });
 export type DetectionConfig = z.infer<typeof detectionConfig>;
 
+export const themesConfig = z.object({
+  schemaVersion: z.literal(1),
+  /** An article scoring below this in every theme is out of the institute's field. */
+  minimumScore: z.number().positive(),
+  titleWeight: z.number().positive(),
+  themes: z
+    .array(
+      z.strictObject({
+        id: z.string().min(1),
+        label: z.string().min(1),
+        field: z.enum(['geopolitical_risk', 'economic_development']),
+        terms: z.array(z.string().min(2)).min(1),
+        /** Decisive on their own when they appear in a headline. */
+        strongTerms: z.array(z.string().min(2)),
+      }),
+    )
+    .min(1),
+});
+export type ThemesConfig = z.infer<typeof themesConfig>;
+
+export const storiesConfig = z.object({
+  schemaVersion: z.literal(1),
+  harvest: z.strictObject({
+    maxItemsPerFeed: z.number().int().positive(),
+    concurrency: z.number().int().positive(),
+    maxAgeDaysByTier: z.strictObject({
+      '1': z.number().positive(),
+      '2': z.number().positive(),
+      '3': z.number().positive(),
+    }),
+  }),
+  clustering: z.strictObject({
+    windowHours: z.number().positive(),
+    similarityThreshold: z.number().min(0).max(1),
+    rareTokenMaxShare: z.number().min(0).max(1),
+    maxArticlesPerStory: z.number().int().positive(),
+  }),
+  publish: z.strictObject({
+    windowDays: z.number().int().positive(),
+    maxStories: z.number().int().positive(),
+  }),
+});
+export type StoriesConfig = z.infer<typeof storiesConfig>;
+
+export const feedDefinition = z.strictObject({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  tier: sourceTier,
+  beat: z.string().min(1),
+  language: z.string().min(2).max(5),
+  url: z.url(),
+});
+export type FeedDefinition = z.infer<typeof feedDefinition>;
+
+export const feedsConfig = z.object({
+  schemaVersion: z.literal(1),
+  feeds: z.array(feedDefinition).min(1),
+});
+
 export const publishConfig = z.object({
   schemaVersion: z.literal(1),
   eventWindowDays: z.number().int().positive(),

@@ -3,6 +3,7 @@ import { isoDate, isoDateTime } from './common.js';
 import { conflictEvent } from './event.js';
 import { conflict } from './conflict.js';
 import { conflictCandidate } from './candidate.js';
+import { story } from './article.js';
 
 /** Bumped whenever a published artifact changes shape, so the map can refuse stale formats. */
 export const ARTIFACT_VERSION = 1;
@@ -32,6 +33,19 @@ export const candidatesArtifact = z.strictObject({
   candidates: z.array(conflictCandidate),
 });
 export type CandidatesArtifact = z.infer<typeof candidatesArtifact>;
+
+export const storiesArtifact = z.strictObject({
+  artifactVersion,
+  generatedAt: isoDateTime,
+  windowDays: z.number().int().positive(),
+  /** Articles seen before the field filter, so the reader can see how much was set aside. */
+  articlesConsidered: z.number().int().min(0),
+  storiesOutOfField: z.number().int().min(0),
+  feedsOk: z.number().int().min(0),
+  feedsTotal: z.number().int().min(0),
+  stories: z.array(story),
+});
+export type StoriesArtifact = z.infer<typeof storiesArtifact>;
 
 export const sourceHealth = z.strictObject({
   sourceId: z.string().min(1),

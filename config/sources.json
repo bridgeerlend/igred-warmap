@@ -22,7 +22,7 @@
     },
     {
       "id": "ucdp",
-      "name": "UCDP — Uppsala Conflict Data Program",
+      "name": "UCDP \u2014 Uppsala Conflict Data Program",
       "tier": 3,
       "role": "verified-backbone",
       "enabled": true,
@@ -35,7 +35,24 @@
         "pageSize": 1000,
         "maxPages": 40,
         "activeSinceYear": 2020,
-        "datasets": ["ucdpprioconflict", "nonstate", "onesided"]
+        "datasets": [
+          "ucdpprioconflict",
+          "nonstate",
+          "onesided"
+        ]
+      }
+    },
+    {
+      "id": "newsfeeds",
+      "name": "Curated news feeds (RSS)",
+      "tier": 2,
+      "role": "corroboration",
+      "enabled": true,
+      "requiresCredential": false,
+      "homepage": "https://map.igred.org",
+      "staleAfterHours": 12,
+      "options": {
+        "$note": "Feed list lives in config/feeds.json; behaviour in config/stories.json."
       }
     }
   ]

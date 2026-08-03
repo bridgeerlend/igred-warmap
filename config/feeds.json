@@ -1,0 +1,29 @@
+{
+  "$comment": "Feed registry for the news synthesiser. Tiers follow the brief: tier 1 is the live pulse, tier 2 is depth and corroboration, tier 3 is institutional context. Adding a feed is a config change.",
+  "$agencyNote": "The wire agencies no longer publish open feeds — Reuters returns 404, AP requires a licence, AFP has none. Their reporting still reaches us second-hand through GDELT and through the outlets below, but no feed here should be labelled as a wire. The live-pulse tier is therefore carried by international broadcasters.",
+  "$blockedNote": "Probed and rejected as unreachable to an automated client: ISW, IMF, OECD, UNCTAD and Chatham House all return 403 to any user agent; the World Bank newsroom serves HTML rather than a feed. The GDELT article API was also rejected: it rate-limits to one request per five seconds and refused even at seven, which is too unreliable for a scheduled run.",
+  "schemaVersion": 1,
+  "feeds": [
+    { "id": "bbc-world", "name": "BBC News", "tier": 1, "beat": "world", "language": "en", "url": "https://feeds.bbci.co.uk/news/world/rss.xml" },
+    { "id": "aljazeera", "name": "Al Jazeera", "tier": 1, "beat": "world", "language": "en", "url": "https://www.aljazeera.com/xml/rss/all.xml" },
+    { "id": "dw-world", "name": "Deutsche Welle", "tier": 1, "beat": "world", "language": "en", "url": "https://rss.dw.com/rdf/rss-en-world" },
+    { "id": "france24", "name": "France 24", "tier": 1, "beat": "world", "language": "en", "url": "https://www.france24.com/en/rss" },
+    { "id": "euronews", "name": "Euronews", "tier": 1, "beat": "world", "language": "en", "url": "https://www.euronews.com/rss?level=theme&name=news" },
+
+    { "id": "guardian-world", "name": "The Guardian", "tier": 2, "beat": "world", "language": "en", "url": "https://www.theguardian.com/world/rss" },
+    { "id": "guardian-business", "name": "The Guardian", "tier": 2, "beat": "economy", "language": "en", "url": "https://www.theguardian.com/business/rss" },
+    { "id": "nyt-world", "name": "The New York Times", "tier": 2, "beat": "world", "language": "en", "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml" },
+    { "id": "nyt-economy", "name": "The New York Times", "tier": 2, "beat": "economy", "language": "en", "url": "https://rss.nytimes.com/services/xml/rss/nyt/Economy.xml" },
+    { "id": "wapo-world", "name": "The Washington Post", "tier": 2, "beat": "world", "language": "en", "url": "https://feeds.washingtonpost.com/rss/world" },
+    { "id": "ft-world", "name": "Financial Times", "tier": 2, "beat": "world", "language": "en", "url": "https://www.ft.com/world?format=rss" },
+    { "id": "economist-international", "name": "The Economist", "tier": 2, "beat": "world", "language": "en", "url": "https://www.economist.com/international/rss.xml" },
+    { "id": "scmp", "name": "South China Morning Post", "tier": 2, "beat": "world", "language": "en", "url": "https://www.scmp.com/rss/91/feed" },
+
+    { "id": "reliefweb", "name": "ReliefWeb (OCHA)", "tier": 3, "beat": "humanitarian", "language": "en", "url": "https://reliefweb.int/updates/rss.xml" },
+    { "id": "crisisgroup", "name": "International Crisis Group", "tier": 3, "beat": "analysis", "language": "en", "url": "https://www.crisisgroup.org/rss.xml" },
+    { "id": "un-news", "name": "UN News", "tier": 3, "beat": "institutional", "language": "en", "url": "https://news.un.org/feed/subscribe/en/news/all/rss.xml" },
+    { "id": "ecb", "name": "European Central Bank", "tier": 3, "beat": "economy", "language": "en", "url": "https://www.ecb.europa.eu/rss/press.html" },
+    { "id": "wto", "name": "World Trade Organization", "tier": 3, "beat": "economy", "language": "en", "url": "https://www.wto.org/library/rss/latest_news_e.xml" },
+    { "id": "bruegel", "name": "Bruegel", "tier": 3, "beat": "economy", "language": "en", "url": "https://www.bruegel.org/rss.xml" }
+  ]
+}

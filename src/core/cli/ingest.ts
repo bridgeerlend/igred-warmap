@@ -6,6 +6,7 @@ import {
   conflictsArtifact,
   eventsArtifact,
   healthArtifact,
+  storiesArtifact,
   type SourceHealth,
 } from '../schema/artifact.js';
 import { clusterObservations, mergeEventWindow, selectDisplayEvents } from '../cluster/dedupe.js';
@@ -16,6 +17,7 @@ import { overallStatus, runSource, type PreviousHealth } from '../pipeline/runne
 import { readArtifact, writeArtifact } from '../pipeline/store.js';
 import { gdeltCursor, harvestGdelt, type GdeltHarvest } from '../sources/gdelt/index.js';
 import { harvestUcdp, type UcdpHarvest } from '../sources/ucdp/index.js';
+import { synthesise, type SynthesisResult } from '../synthesize/index.js';
 import type { UcdpDataset } from '../sources/ucdp/map.js';
 import { CountryResolver } from '../util/country.js';
 import { dataPaths } from '../util/paths.js';
@@ -93,6 +95,17 @@ export async function ingest(): Promise<void> {
     now,
   );
 
+  const newsDefinition = getSource('newsfeeds');
+  const newsOutcome = await runSource<SynthesisResult>(
+    newsDefinition,
+    previousHealthFor(previousHealth, 'newsfeeds'),
+    async () => {
+      const result = await synthesise(now);
+      return { data: result, recordCount: result.stories.length };
+    },
+    now,
+  );
+
   // Failure of one source must never discard the other's good data.
   const conflicts = ucdpOutcome.data?.conflicts ?? previousConflicts;
 
@@ -142,7 +155,7 @@ export async function ingest(): Promise<void> {
     now,
   );
 
-  const sources = [gdeltOutcome.health, ucdpOutcome.health];
+  const sources = [gdeltOutcome.health, ucdpOutcome.health, newsOutcome.health];
 
   writeArtifact(dataPaths.events, eventsArtifact, {
     artifactVersion: ARTIFACT_VERSION,
@@ -162,6 +175,19 @@ export async function ingest(): Promise<void> {
     generatedAt: now,
     candidates,
   });
+  if (newsOutcome.data) {
+    writeArtifact(dataPaths.stories, storiesArtifact, {
+      artifactVersion: ARTIFACT_VERSION,
+      generatedAt: now,
+      windowDays: config.stories.publish.windowDays,
+      articlesConsidered: newsOutcome.data.articlesConsidered,
+      storiesOutOfField: newsOutcome.data.storiesOutOfField,
+      feedsOk: newsOutcome.data.feeds.filter((feed) => feed.ok).length,
+      feedsTotal: newsOutcome.data.feeds.length,
+      stories: newsOutcome.data.stories,
+    });
+  }
+
   writeArtifact(dataPaths.baseline, baselineArtifact, baseline);
   if (gdeltOutcome.data) writeArtifact(dataPaths.cursor, gdeltCursor, gdeltOutcome.data.cursor);
 
@@ -173,7 +199,7 @@ export async function ingest(): Promise<void> {
     sources,
   });
 
-  report(now, gdeltOutcome.data, ucdpOutcome.data, {
+  report(now, gdeltOutcome.data, ucdpOutcome.data, newsOutcome.data, {
     clustered: clustered?.clusters.length ?? 0,
     displayed: displayEvents.length,
     eventsInWindow: events.length,
@@ -194,6 +220,7 @@ function report(
   now: string,
   gdelt: GdeltHarvest | undefined,
   ucdp: UcdpHarvest | undefined,
+  news: SynthesisResult | undefined,
   summary: RunSummary,
 ): void {
   const { clustered, displayed, eventsInWindow, candidates: candidateCount, sources } = summary;
@@ -212,6 +239,13 @@ function report(
     if (ucdp.unresolvedCountries.length > 0) {
       lines.push(`  ucdp unresolved countries: ${ucdp.unresolvedCountries.slice(0, 15).join(', ')}`);
     }
+  }
+  if (news) {
+    const failed = news.feeds.filter((feed) => !feed.ok).map((feed) => feed.feedId);
+    lines.push(
+      `  news: ${news.stories.length} stories from ${news.articlesConsidered} articles (${news.storiesOutOfField} clusters out of field)`,
+    );
+    if (failed.length > 0) lines.push(`  news feeds down: ${failed.join(', ')}`);
   }
   lines.push(`  window: ${eventsInWindow} events, candidates: ${candidateCount}`);
   for (const entry of sources) {
