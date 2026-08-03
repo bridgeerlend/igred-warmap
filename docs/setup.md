@@ -58,9 +58,9 @@ The key currently on file is valid and the Generative Language API is enabled on
 project, but every Gemini model reports `limit: 0` — the project has no allowance to spend.
 That is a tier or billing setting on the project, not a missing API.
 
-## 5. Publish the map — needed now
+## 5. Publish the map and the Brief to map.igred.org
 
-The map is built. Three steps put it online.
+Both live in `site/` and deploy together as one GitHub Pages site.
 
 **5a. Point the page at the repository.** Open `site/config.js` and replace
 `REPLACE_WITH/igred-warmap` with your actual repository, for example
@@ -69,21 +69,41 @@ time, which is what keeps hourly data commits from rebuilding the site. The depl
 purpose if this is still a placeholder.
 
 **5b. Turn on GitHub Pages.** In the repository: **Settings → Pages → Build and deployment
-→ Source**, choose **GitHub Actions**. Then open the **Actions** tab, pick **Deploy map**
-and click **Run workflow**.
+→ Source**, choose **GitHub Actions**.
 
 **5c. DNS for map.igred.org.** With your domain provider, add a `CNAME` record:
 
 - Host / name: `map`
 - Value / target: `<your-github-username>.github.io`
 
-Then in **Settings → Pages → Custom domain**, enter `map.igred.org` and tick **Enforce
-HTTPS** once the certificate is issued. The repository already contains the matching
-`site/CNAME` file.
+**5d. Deploy.** Open the **Actions** tab, pick **Deploy map**, click **Run workflow**. When
+it finishes, go to **Settings → Pages → Custom domain**, enter `map.igred.org`, and tick
+**Enforce HTTPS** once the certificate is issued. The repository already contains the
+matching `site/CNAME` file.
 
-The existing `igred.org` site on Netlify is not touched.
+The map is at `map.igred.org` and the Brief at `map.igred.org/brief/`.
 
-## 6. Archive service key — optional
+## 6. Publish the institute page to Netlify
+
+`igred.org` already points at Netlify, so the safe sequence is to build the new site
+alongside the old one and move the domain only once you have seen it working.
+
+**6a. Create the site.** In Netlify: **Add new site → Import an existing project → GitHub**,
+choose `igred-warmap`. Netlify reads `netlify.toml`, so leave the build command empty and
+the publish directory as `www`. Click **Deploy**.
+
+**6b. Look at it.** Netlify gives the new site a `something.netlify.app` address. Open it and
+check the page before touching the domain.
+
+**6c. Move the domain.** On the **old** igred.org site: **Site configuration → Domain
+management**, remove `igred.org`. Then on the **new** site: **Domain management → Add a
+domain**, enter `igred.org`, and add `www.igred.org` as a redirect to it. Netlify reissues
+the certificate automatically.
+
+**6d. Nothing else to do.** `netlify.toml` tells Netlify to skip a build when nothing in
+`www/` changed, so the hourly data commits will not rebuild the page.
+
+## 7. Archive service key — optional
 
 Used to store an archive link alongside each source so it stays checkable if the original
 disappears. The Internet Archive's save endpoint works without a key at low volume, so this
@@ -91,9 +111,12 @@ is optional and can be skipped for now.
 
 ## Verifying the setup
 
-After adding `UCDP_ACCESS_TOKEN`, open the **Actions** tab, choose the **Ingest** workflow
-and click **Run workflow**. A successful run commits to `data/` and leaves no open issue
-labelled `pipeline-alert`.
+Open the **Actions** tab, choose the **Ingest** workflow and click **Run workflow**. A
+successful run commits to `data/` and leaves no open issue labelled `pipeline-alert`.
+
+Until `UCDP_ACCESS_TOKEN` is added, that run will report `ucdp: not_configured` and carry on
+— which is the source isolation working, not a failure. The map will say so in a banner and
+show almost nothing, because the register is what decides which incidents are displayed.
 
 ## What you will need to do routinely
 

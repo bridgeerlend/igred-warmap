@@ -1,0 +1,29 @@
+# igred.org — the institute page, served from www/.
+#
+# The map and the Brief are deployed separately to map.igred.org by GitHub Pages; a
+# repository can only have one Pages site, and that one is spoken for.
+
+[build]
+  publish = "www"
+  # Nothing to build: www/ is plain HTML, CSS and ES modules, with the shared Atlas
+  # foundation mirrored into it and committed. A build step would only add a failure mode.
+  command = ""
+
+  # Netlify builds on every push by default, and the pipeline commits data every hour.
+  # Without this the institute page would rebuild twenty-four times a day for changes it
+  # does not contain — and the brief's rule that a data update never triggers a site build
+  # would hold for the map but quietly fail here. Exit 0 means "skip this build".
+  ignore = "git diff --quiet HEAD^ HEAD -- www netlify.toml"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    # Font filenames carry a content hash from Google's CDN, so they can be cached hard.
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"

@@ -40,6 +40,16 @@ describe('1 — a data update never triggers a site build', () => {
     }
   });
 
+  it('Netlify skips a build when only data changed', () => {
+    // Netlify builds on every push by default, and the pipeline commits hourly. Without
+    // this the institute page would rebuild all day for changes it does not contain, and
+    // the rule would hold for the map while quietly failing here.
+    const netlify = read('netlify.toml');
+    expect(netlify).toMatch(/ignore\s*=/);
+    expect(netlify).toMatch(/git diff --quiet HEAD\^ HEAD -- www netlify\.toml/);
+    expect(netlify).toMatch(/publish = "www"/);
+  });
+
   it('the page fetches its data at view time rather than having it baked in', () => {
     expect(read('site/app.js')).toMatch(/fetch\(/);
     expect(read('site/config.js')).toMatch(/raw\.githubusercontent\.com/);
@@ -268,6 +278,20 @@ describe('12 — the design is the chosen direction, and free of the named tells
   it('all three products load the same foundation', () => {
     for (const page of ['site/index.html', 'site/brief/index.html', 'www/index.html']) {
       expect(read(page)).toMatch(/atlas\.css/);
+    }
+  });
+
+  it('the institute page carries the same foundation, byte for byte', () => {
+    // www/ is deployed to a different host, so it holds its own copy. A copy can drift;
+    // this is what catches it.
+    expect(read('www/atlas.css')).toBe(read('site/atlas.css'));
+    const siteFonts = readdirSync(path.join(repoRoot, 'site/fonts')).sort();
+    const wwwFonts = readdirSync(path.join(repoRoot, 'www/fonts')).sort();
+    expect(wwwFonts).toEqual(siteFonts);
+    for (const file of siteFonts) {
+      expect(readFileSync(path.join(repoRoot, 'www/fonts', file)).equals(
+        readFileSync(path.join(repoRoot, 'site/fonts', file)),
+      )).toBe(true);
     }
   });
 
