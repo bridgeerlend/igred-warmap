@@ -7,7 +7,7 @@
  * a relative path, which works when serving the repo locally.
  */
 export const CONFIG = {
-  repoSlug: 'REPLACE_WITH/igred-warmap',
+  repoSlug: 'bridgeerlend/igred-warmap',
   branch: 'main',
   contactEmail: 'map@igred.org',
   briefBaseUrl: 'https://map.igred.org/brief/',

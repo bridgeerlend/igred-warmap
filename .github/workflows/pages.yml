@@ -32,7 +32,9 @@ jobs:
 
       - name: Fail if the data source is still a placeholder
         run: |
-          if grep -q 'REPLACE_WITH' site/config.js; then
+          # Match the value, not the fallback logic that also names the sentinel — the
+          # loose grep would have failed this deploy even after the slug was filled in.
+          if grep -qE "repoSlug: *'REPLACE_WITH" site/config.js; then
             echo "site/config.js still has the placeholder repoSlug."
             echo "The published map would fall back to a relative data path and show nothing."
             echo "Set CONFIG.repoSlug to the public repository, e.g. yourname/igred-warmap."

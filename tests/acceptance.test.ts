@@ -54,6 +54,14 @@ describe('1 — a data update never triggers a site build', () => {
     expect(read('site/app.js')).toMatch(/fetch\(/);
     expect(read('site/config.js')).toMatch(/raw\.githubusercontent\.com/);
   });
+
+  it('the deploy guard checks the value, not the word', () => {
+    // A loose grep for the sentinel also matched the fallback logic that names it, which
+    // would have blocked the deploy even with the slug correctly filled in.
+    const guard = /grep -qE "repoSlug: \*'REPLACE_WITH/;
+    expect(read('.github/workflows/pages.yml')).toMatch(guard);
+    expect(read('site/config.js')).not.toMatch(/repoSlug: *'REPLACE_WITH/);
+  });
 });
 
 describe('2 — the schedule runs, validates, and commits only valid data', () => {
