@@ -37,7 +37,24 @@ const modules = ['projection.js', 'config.js', 'app.js']
 const world = read('world.json');
 const events = read('preview-events.json');
 
+/**
+ * The fonts have to travel inside the file too, or the snapshot falls back to whatever the
+ * viewing device happens to have — which is the exact thing self-hosting them was meant to
+ * stop. Each woff2 becomes a data URI inside the generated @font-face rules.
+ */
+function inlineFonts(): string {
+  return read(path.join('fonts', 'fonts.css')).replace(
+    /url\('([^']+\.woff2)'\)/g,
+    (_match, file: string) => {
+      const bytes = readFileSync(path.join(siteDir, 'fonts', file));
+      return `url('data:font/woff2;base64,${bytes.toString('base64')}')`;
+    },
+  );
+}
+
 const html = read('index.html')
+  .replace(/\s*<link rel="preload"[^>]*>/g, '')
+  .replace('<link rel="stylesheet" href="fonts/fonts.css">', `<style>\n${inlineFonts()}\n</style>`)
   .replace('<link rel="stylesheet" href="styles.css">', `<style>\n${read('styles.css')}\n</style>`)
   .replace(
     '<script type="module" src="app.js"></script>',

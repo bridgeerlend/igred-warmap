@@ -11,8 +11,10 @@
    ============================================================ */
 
 :root {
-  --display: Didot, "Bodoni 72", "Playfair Display", Baskerville, "Times New Roman", serif;
-  --text: "Avenir Next", Avenir, "Segoe UI", "Helvetica Neue", Helvetica, sans-serif;
+  /* Self-hosted (site/fonts). Identical on every device — only the size changes per screen,
+     never the family. The generic fallback only covers the moment before the file lands. */
+  --display: "Fraunces", serif;
+  --text: "Inter", sans-serif;
 
   --bg: #FBFAF7;
   --fg: #0E0E0C;
@@ -119,15 +121,21 @@ body {
 }
 .link-button:hover { color: var(--s3); border-bottom-color: var(--s3); }
 
-/* Scale contrast is the signature: enormous display against very small data. */
+/* Scale contrast is the signature: enormous display against very small data.
+   Fraunces carries a far larger x-height than the placeholder face did, so it reads bigger
+   at the same pixel size — the scale below is retuned for it, not inherited. */
 .title {
   font-family: var(--display);
-  font-weight: 400;
-  font-size: clamp(44px, 13vw, 96px);
-  line-height: 0.87;
-  letter-spacing: -0.022em;
+  font-weight: 300;
+  font-size: clamp(40px, 11.5vw, 84px);
+  line-height: 0.92;
+  letter-spacing: -0.028em;
   margin: 0;
   text-wrap: balance;
+  font-optical-sizing: auto;
+  /* Fraunces' own optical-size axis, pushed high so display sizes get the refined,
+     high-contrast cut rather than the sturdy text one. */
+  font-variation-settings: "opsz" 144;
 }
 .title span { display: block; }
 .title .italic { font-style: italic; }
@@ -156,8 +164,10 @@ body {
 
 .detail-place {
   font-family: var(--display);
-  font-size: clamp(26px, 3.4vw, 44px); line-height: 1.04; letter-spacing: -0.015em;
+  font-weight: 400;
+  font-size: clamp(23px, 2.9vw, 38px); line-height: 1.1; letter-spacing: -0.018em;
   margin: 0 0 10px; text-wrap: balance;
+  font-optical-sizing: auto;
 }
 
 .detail-meta { display: flex; flex-wrap: wrap; gap: 3px 22px; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; }
@@ -259,7 +269,7 @@ body:has(.banner:not([hidden])) .stage { min-height: calc(100svh - 46px); }
 @media (min-width: 760px) {
   body { font-size: 15.5px; }
 
-  .title { font-size: clamp(72px, 9vw, 104px); }
+  .title { font-size: clamp(60px, 7.8vw, 92px); }
 
   /* The title stops being a screen of its own: it shares a line with the standfirst. */
   .rail {
@@ -303,17 +313,20 @@ body:has(.banner:not([hidden])) .stage { min-height: calc(100svh - 46px); }
   .plate { grid-area: plate; }
   .detail { grid-area: detail; }
 
-  /* Back to a single reading column — the two-up split was a tablet compromise. */
+  /* Back to a single reading column — the two-up split was a tablet compromise.
+     align-items must be reset explicitly: the tablet rule sets `end` for grid row
+     alignment, and left in place it aligns these flex children to the right edge. */
   .rail {
     display: flex;
     grid-template-columns: none;
     grid-template-areas: none;
     justify-content: flex-start;
+    align-items: stretch;
   }
 
   .rail, .detail { padding-right: clamp(12px, 1.5vw, 28px); border-right: 1px solid var(--hair-soft); }
 
-  .title { font-size: clamp(76px, 6.6vw, 118px); }
+  .title { font-size: clamp(64px, 5.8vw, 102px); }
   .standfirst { max-width: 38ch; }
 
   .plate { justify-content: center; }
@@ -334,7 +347,7 @@ body:has(.banner:not([hidden])) .stage { min-height: calc(100svh - 46px); }
      it. Centring the block splits that air above and below, which composes. */
   .rail { justify-content: center; }
 
-  .title { font-size: clamp(112px, 7vw, 152px); }
+  .title { font-size: clamp(96px, 6vw, 132px); }
   .standfirst { font-size: 17px; max-width: 40ch; }
   body { font-size: 16px; }
   .index-grid { columns: 240px auto; }
@@ -361,7 +374,7 @@ body:has(.banner:not([hidden])) .stage { min-height: calc(100svh - 46px); }
   .rail { display: flex; grid-area: rail; grid-template-areas: none; grid-template-columns: none; }
   .plate { grid-area: plate; }
   .detail { grid-area: detail; min-height: 0; }
-  .title { font-size: clamp(34px, 5vw, 48px); }
+  .title { font-size: clamp(30px, 4.4vw, 44px); }
   .standfirst { display: none; }
 }
 

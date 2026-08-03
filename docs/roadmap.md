@@ -38,6 +38,10 @@ Point radii are expressed in on-screen pixels and recomputed on zoom and resize,
 cluster separates when you zoom in instead of inflating, and every incident keeps a 26px
 touch target no matter how small the mark is.
 
+Typography is fixed: Fraunces for titles, Inter for body and data, self-hosted and identical
+everywhere. Across all five breakpoints only `font-size` changes — never the family, weight
+or style.
+
 ## Open items carried forward
 
 - **UCDP mapping is unverified.** It could not be exercised without a token, so it is
@@ -45,8 +49,9 @@ touch target no matter how small the mark is.
   as soon as the token exists.
 - **The map is nearly empty until UCDP is connected**, and says so in a banner. The display
   gate is the register; see the README for why the cheaper gates were rejected.
-- **Typefaces are system stacks.** Didot and Avenir Next carry the Atlas direction on Apple
-  devices but fall back elsewhere. A licensed pairing should be embedded as a woff2 data URI
-  before launch.
+- ~~Typefaces are system stacks.~~ **Done.** Fraunces (titles) and Inter (body and data) are
+  self-hosted from `site/fonts`, both SIL Open Font Licence 1.1 with the licences shipped
+  alongside. Every device gets the same typography; only the size changes per screen.
+  Re-fetch with `npm run fonts`.
 - **Detection thresholds are tuned against a 60-day window.** Revisit once a full year of
   history has accumulated and seasonality is visible.
