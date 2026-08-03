@@ -14,7 +14,7 @@ const classify = (articles: { title: string; summary?: string | undefined }[]) =
     themes,
     config.themes,
   );
-  return { themes: result.themes, inScope: isInScope(result, config.themes) };
+  return { themes: result.themes, countries: [], inScope: isInScope(result, config.themes) };
 };
 
 describe('feed parsing', () => {

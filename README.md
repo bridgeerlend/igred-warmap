@@ -3,8 +3,8 @@
 An automated global conflict map. Every figure on it carries a source, a timestamp and a
 link to the original. It runs on free infrastructure and needs no routine maintenance.
 
-Status: **steps 1–4 of 6 complete** — the data core, the chosen design direction (Atlas),
-the map itself, and the Brief. See `docs/roadmap.md`.
+Status: **steps 1–5 of 6 complete** — the data core, the chosen design direction (Atlas),
+the map itself, the Brief, and the remaining data sources. See `docs/roadmap.md`.
 
 ## Principles enforced in code, not just documented
 
@@ -65,8 +65,10 @@ model produces that is absent from the source headlines rejects the paragraph ou
 | UCDP | Verified backbone. Decides which conflicts exist and supplies verified figures | free token |
 
 | Curated feeds (RSS) | The Brief's main food: broadcasters as live pulse, quality papers for depth, institutions for context | none |
-
-Later steps add NASA FIRMS, Bluesky, Telegram and curated video.
+| NASA FIRMS | Satellite thermal detections as a heat layer. Labelled as detections, never as attacks | none — the keyless CSV is used |
+| Bluesky | Curated accounts, including Reuters and AP whose RSS is gone | none |
+| Telegram | Public channel posts. List ships empty: choosing conflict channels is an editorial call | none |
+| YouTube | Curated channels via Atom. Titles and links only; video is embedded, never copied | none |
 
 ## Commands
 

@@ -3,6 +3,10 @@ import { classifyTexts, compileThemes, isInScope } from '../classify/themes.js';
 import { clusterIntoStories } from '../cluster/stories.js';
 import type { Story } from '../schema/article.js';
 import { harvestRss, type FeedOutcome } from '../sources/rss/index.js';
+import { PlaceTagger } from '../classify/places.js';
+import { baselineArtifact } from '../schema/artifact.js';
+import { readArtifact } from '../pipeline/store.js';
+import { dataPaths } from '../util/paths.js';
 
 /**
  * The news synthesiser, running on the same core as the map: the same HTTP client with its
@@ -38,6 +42,14 @@ export async function synthesise(now: string): Promise<SynthesisResult> {
 
   const themes = compileThemes(config.themes);
 
+  // Country names come from the same place the UCDP join uses — the names the feed itself
+  // emits — so the two can never drift apart.
+  const baseline = readArtifact(dataPaths.baseline, baselineArtifact).value;
+  const observedNames = Object.fromEntries(
+    Object.entries(baseline?.countries ?? {}).map(([fips, country]) => [fips, country.countryName]),
+  );
+  const tagger = new PlaceTagger(observedNames);
+
   const clustered = clusterIntoStories(
     harvest.articles,
     (articles) => {
@@ -46,7 +58,11 @@ export async function synthesise(now: string): Promise<SynthesisResult> {
         themes,
         config.themes,
       );
-      return { themes: result.themes, inScope: isInScope(result, config.themes) };
+      return {
+        themes: result.themes,
+        countries: tagger.tag(articles.map((article) => ({ title: article.title, summary: article.summary }))),
+        inScope: isInScope(result, config.themes),
+      };
     },
     settings.clustering,
     now,

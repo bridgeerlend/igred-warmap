@@ -44,6 +44,10 @@ const STRINGS = {
     colophon:
       'Incidents come from the GDELT news stream, clustered by this project without any language model, and are shown only with the outlet that reported them. Cartography is drawn from Natural Earth 1:110m (public domain) in the Natural Earth projection — no third-party tiles. Full history is kept in the repository; older data is available on request at',
     zoomHint: 'Scroll or pinch to zoom · drag to pan',
+    heat: 'Thermal detections',
+    heatOn: 'Hide heat', heatOff: 'Show heat',
+    heatNote: (n, instrument) =>
+      `<b>${n}</b> satellite thermal detections in the last 24 hours (${instrument}). These are heat signatures, not attacks — a fire may be shelling, a burning depot or land clearance, and the instrument cannot tell them apart.`,
   },
   nb: {
     titleLine1: 'Verden,', titleLine2: 'i krig',
@@ -73,6 +77,10 @@ const STRINGS = {
     colophon:
       'Hendelsene kommer fra nyhetsstrømmen GDELT, gruppert av dette prosjektet uten noen språkmodell, og vises bare sammen med kilden som meldte dem. Kartografien er tegnet fra Natural Earth 1:110m (offentlig eiendom) i Natural Earth-projeksjonen — ingen kartfliser fra tredjepart. Full historikk ligger i repoet; eldre data fås ved henvendelse til',
     zoomHint: 'Rull eller knip for å zoome · dra for å flytte',
+    heat: 'Varmedeteksjoner',
+    heatOn: 'Skjul varme', heatOff: 'Vis varme',
+    heatNote: (n, instrument) =>
+      `<b>${n}</b> satellittmålte varmedeteksjoner siste døgn (${instrument}). Dette er varmesignaturer, ikke angrep — en brann kan være beskytning, et brennende lager eller nedbrenning av mark, og instrumentet skiller dem ikke.`,
   },
 };
 
@@ -105,6 +113,8 @@ const state = {
   view: null,
   home: null,
   dragDistance: 0,
+  heat: null,
+  showHeat: true,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -133,10 +143,24 @@ async function load() {
   const world = await fetch('world.json').then((r) => r.json());
   state.world = world;
 
+  // The heat layer is additive and independent of which events are shown, so it is attempted
+  // in preview mode too — it was previously stranded behind the early return below.
+  const loadHeat = () =>
+    loadJson(base, 'heat.json')
+      .then((heat) => {
+        if (heat.artifactVersion !== ARTIFACT_VERSION) return;
+        state.heat = heat;
+        renderHeat();
+        renderScaleKey();
+        renderColophon();
+      })
+      .catch(() => {});
+
   if (preview) {
     const data = await fetch('preview-events.json').then((r) => r.json());
     applyEvents(data);
     showBanner(t().previewTitle, t().previewBody);
+    loadHeat();
     return;
   }
 
@@ -159,6 +183,8 @@ async function load() {
       if (active.length === 0) showBanner(t().registerTitle, t().registerBody);
     })
     .catch(() => {});
+
+  loadHeat();
 
   // Health is advisory: if it cannot be read, the map still works.
   loadJson(base, 'health.json').then(checkHealth).catch(() => {});
@@ -219,6 +245,40 @@ function renderWorld() {
   state.view = { ...state.home };
 }
 
+/**
+ * Thermal detections, drawn beneath the incidents as a diffuse field rather than as marks.
+ * They are a different kind of thing from a sourced incident and must not be mistaken for
+ * one, so they carry no outline, no interaction and a distinctly cooler treatment.
+ */
+function renderHeat() {
+  const svg = $('map');
+  svg.querySelector('.heat')?.remove();
+  if (!state.heat || !state.showHeat) return;
+
+  const layer = make('g', { class: 'heat', 'aria-hidden': 'true' });
+  const busiest = state.heat.cells.reduce((max, cell) => Math.max(max, cell.detections), 1);
+
+  for (const cell of state.heat.cells) {
+    const [x, y] = toView(cell.lon, cell.lat);
+    // Square root keeps a single huge wildfire from swamping everything else.
+    const weight = Math.sqrt(cell.detections / busiest);
+    layer.appendChild(
+      make('circle', {
+        cx: x.toFixed(1),
+        cy: y.toFixed(1),
+        r: (1.2 + weight * 3.4).toFixed(2),
+        fill: 'var(--heat)',
+        'fill-opacity': (0.10 + weight * 0.30).toFixed(3),
+      }),
+    );
+  }
+
+  // Beneath the incidents: heat is context, not the subject.
+  const points = svg.querySelector('.points');
+  if (points) svg.insertBefore(layer, points);
+  else svg.appendChild(layer);
+}
+
 function renderPoints() {
   const svg = $('map');
   svg.querySelector('.points')?.remove();
@@ -255,6 +315,9 @@ function renderPoints() {
 
   svg.appendChild(layer);
   sizePoints();
+  // Points were just appended on top; put the heat field back underneath them.
+  const heat = svg.querySelector('.heat');
+  if (heat) svg.insertBefore(heat, layer);
 }
 
 /**
@@ -528,7 +591,17 @@ function renderScaleKey() {
     `<span class="item">${swatch('var(--s3)', 9)}</span>` +
     `<span class="item">${swatch('var(--s5)', 12)}${escapeHtml(t().keyHigh)}</span>` +
     `<span class="item">${swatch('var(--verified)', 10)}${escapeHtml(t().keyVerified)}</span>` +
+    (state.heat
+      ? `<span class="item"><span class="swatch heat-swatch" style="width:10px;height:10px"></span>${escapeHtml(t().heat)}</span>` +
+        `<button type="button" class="link-button" id="heat-toggle">${escapeHtml(state.showHeat ? t().heatOn : t().heatOff)}</button>`
+      : '') +
     `<span style="margin-left:auto">${escapeHtml(t().zoomHint)}</span>`;
+
+  $('heat-toggle')?.addEventListener('click', () => {
+    state.showHeat = !state.showHeat;
+    renderHeat();
+    renderScaleKey();
+  });
 }
 
 function renderStandfirst() {
@@ -545,6 +618,16 @@ function renderColophon() {
   $('colophon-text').innerHTML =
     `${escapeHtml(t().colophon)} <a href="mailto:${escapeHtml(CONFIG.contactEmail)}">${escapeHtml(CONFIG.contactEmail)}</a>.` +
     (repo ? ` <a href="${escapeHtml(repo)}" target="_blank" rel="noopener">Source</a>.` : '');
+
+  document.querySelector('.heat-note')?.remove();
+  if (state.heat) {
+    const note = document.createElement('p');
+    note.className = 'heat-note';
+    note.innerHTML =
+      t().heatNote(state.heat.cellsPublished, escapeHtml(state.heat.instrument)) +
+      ` <a href="${escapeHtml(state.heat.source.url)}" target="_blank" rel="noopener">${escapeHtml(state.heat.source.sourceName)}</a>.`;
+    $('colophon-text').after(note);
+  }
 
   const updated = state.generatedAt ? new Date(state.generatedAt).toISOString().slice(0, 16).replace('T', ' ') + ' UTC' : '—';
   $('colophon-meta').textContent = `${t().updated}: ${updated} · ${t().window}: ${t().windowDays(state.artifactWindowDays)}`;

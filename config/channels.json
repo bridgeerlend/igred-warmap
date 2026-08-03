@@ -1,0 +1,29 @@
+{
+  "$comment": "Curated source lists. Only accounts named here are ever fetched or shown — the brief calls for a whitelist per conflict, not open search. Adding a source is a config change.",
+  "$telegramNote": "The Telegram list ships empty on purpose. Public channels covering active conflicts are overwhelmingly partisan, and picking them is an editorial judgement that belongs to IGRED, not to whoever wrote the code. The module is built and tested; add channels here when you have decided which ones you are willing to stand behind. Only channels with Telegram's public preview enabled can be read at all.",
+  "$identifierNote": "Bluesky handles and YouTube channel ids were each resolved against the live services rather than guessed. Reuters and AP appear here even though their RSS feeds are gone — their Bluesky accounts are open, which puts the wire agencies back in the mix.",
+  "schemaVersion": 1,
+  "watches": [
+    {
+      "key": "global",
+      "label": "Global",
+      "countriesFips": [],
+      "bluesky": ["reuters.com", "apnews.com", "aljazeera.com", "france24.com", "economist.com", "nytimes.com", "theguardian.com", "washingtonpost.com"],
+      "telegram": [],
+      "youtube": [
+        { "channelId": "UCNye-wNBqNL5ZzHSJj3l8Bg", "name": "Al Jazeera English" },
+        { "channelId": "UC16niRr50-MSBwiO3YDb3RA", "name": "BBC News" },
+        { "channelId": "UCknLrEdhRCp1aegoMqRaCZg", "name": "DW News" },
+        { "channelId": "UC0p5jTq6Xx_DosDFxVXnWaQ", "name": "The Economist" }
+      ]
+    },
+    {
+      "key": "ukraine",
+      "label": "Ukraine",
+      "countriesFips": ["UP", "RS"],
+      "bluesky": ["kyivindependent.com", "bellingcat.com"],
+      "telegram": [],
+      "youtube": []
+    }
+  ]
+}

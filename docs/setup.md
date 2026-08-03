@@ -27,11 +27,14 @@ map. See the display-gate section in the README for why.
 4. Name: `UCDP_ACCESS_TOKEN`. Value: the token
 5. Click **Add secret**
 
-## 3. NASA FIRMS MAP_KEY — needed at step 4
+## 3. NASA FIRMS MAP_KEY — not needed after all
 
-1. Go to https://firms.modaps.eosdis.nasa.gov/api/area/
-2. Request a MAP_KEY (free, arrives by email)
-3. Add it as a repository secret named `FIRMS_MAP_KEY`
+You can skip this. The documented FIRMS API does require a free MAP_KEY, but FIRMS also
+publishes the same global 24-hour detections as plain CSV with no key at all, and that is
+what the heat layer reads. Nothing to request, nothing to store.
+
+The keyed API is only worth having if we later want custom areas or windows longer than a
+day. We do not.
 
 ## 4. Free key for the AI text step — optional, adds prose to the Brief
 

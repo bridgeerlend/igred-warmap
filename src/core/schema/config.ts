@@ -82,6 +82,23 @@ export const themesConfig = z.object({
 });
 export type ThemesConfig = z.infer<typeof themesConfig>;
 
+export const channelsConfig = z.object({
+  schemaVersion: z.literal(1),
+  watches: z
+    .array(
+      z.strictObject({
+        key: z.string().min(1),
+        label: z.string().min(1),
+        countriesFips: z.array(z.string().length(2)),
+        bluesky: z.array(z.string().min(3)),
+        telegram: z.array(z.string().min(2)),
+        youtube: z.array(z.strictObject({ channelId: z.string().min(10), name: z.string().min(1) })),
+      }),
+    )
+    .min(1),
+});
+export type ChannelsConfig = z.infer<typeof channelsConfig>;
+
 export const briefConfig = z.object({
   schemaVersion: z.literal(1),
   leadCount: z.number().int().positive(),

@@ -7,7 +7,8 @@
 3. **The map — done.** Built in the Atlas language on top of the data core, at `site/`.
 4. **The news synthesiser — done.** The Brief: one dated edition each morning at
    `site/brief/`, on the same core as the map.
-5. **Remaining sources**, layer by layer: NASA FIRMS, Bluesky, Telegram, video.
+5. **Remaining sources — done.** FIRMS heat layer, curated Bluesky, Telegram and YouTube,
+   and news tagged by country so each conflict has a stream beside it.
 6. **Self-healing, alert-on-failure, Dependabot, acceptance testing.**
 
 The AI text step and its pull-request approval flow shipped with the Brief, ahead of the
@@ -93,3 +94,39 @@ schedule. All of this is recorded in `config/feeds.json` rather than rediscovere
 anomaly maths already proven for new-conflict detection. It needs weeks of accumulated
 history before it can say anything, so it becomes a section of the Brief later rather than a
 product now.
+
+## The remaining sources
+
+Each is an isolated module behind the same runner, so one going down costs only itself.
+
+| Source | What it gives | Cost |
+| --- | --- | --- |
+| NASA FIRMS | Satellite thermal detections, aggregated onto a 0.25° grid | free, **no key** |
+| Bluesky | Posts from curated accounts, including Reuters and AP | free, no auth |
+| Telegram | Public channel posts | free, preview-enabled channels only |
+| YouTube | Curated channels via their Atom feed | free, no key |
+
+**FIRMS needs no MAP_KEY.** The documented API does, but the same global 24-hour products
+are published as keyless CSV. One fewer thing to set up.
+
+**The heat layer is labelled in the data, not just in the design.** Its artifact carries
+`measures: "satellite_thermal_anomalies"` and the map states in both languages that these
+are heat signatures, not attacks — a fire may be shelling, a burning depot or land
+clearance, and the instrument cannot tell them apart. It draws beneath the incidents, in a
+flatter colour, with its own toggle.
+
+**Bluesky puts the wire agencies back.** Reuters and AP have no open RSS any more, but their
+Bluesky accounts are public and readable without authentication. Search is not used —
+`searchPosts` needs auth, and the brief asks for a curated whitelist rather than open search
+in any case.
+
+**Telegram ships with an empty list on purpose.** There is no open read API; what is public
+is the channel preview page, which only works for channels whose owner enabled it. More
+importantly, public channels covering active conflicts are overwhelmingly partisan, and
+choosing them is an editorial judgement for IGRED, not for whoever wrote the parser. The
+module is built and tested; the list waits for a decision.
+
+**News is tagged by country** so a conflict can show its own stream. Tagging is conservative
+by design: exact, word-boundary, and names that are ordinary English words or common
+personal names — Georgia, Jordan, Chad, Turkey, Niger — are skipped rather than guessed at.
+A wrong tag would put a story on the wrong part of the map.

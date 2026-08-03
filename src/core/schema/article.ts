@@ -41,6 +41,11 @@ export const story = z.strictObject({
   /** Which article the headline was taken from, so the wording is always traceable. */
   headlineFrom: z.strictObject({ publisher: z.string().min(1), url: z.url() }),
   themes: z.array(themeMatch),
+  /**
+   * Countries the coverage is about, matched conservatively by name. Absent rather than
+   * guessed: a wrong tag would put a story on the wrong part of the map.
+   */
+  countries: z.array(z.strictObject({ fips: z.string().length(2), name: z.string().min(1) })),
   firstSeenAt: isoDateTime,
   lastSeenAt: isoDateTime,
   articleCount: z.number().int().min(1),

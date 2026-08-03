@@ -64,6 +64,7 @@ describe('buildSections', () => {
       headline: `Headline ${id}`,
       headlineFrom: { publisher: 'A', url: `https://a.example/${id}` },
       themes: [{ id: themeId, label, field, matchedTerms: ['x'], score: 5 }],
+      countries: [],
       firstSeenAt: '2026-08-03T06:00:00.000Z',
       lastSeenAt: '2026-08-03T06:00:00.000Z',
       articleCount: 1,

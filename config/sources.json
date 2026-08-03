@@ -54,6 +54,40 @@
       "options": {
         "$note": "Feed list lives in config/feeds.json; behaviour in config/stories.json."
       }
+    },
+    {
+      "id": "firms",
+      "name": "NASA FIRMS active fire detections",
+      "tier": 1,
+      "role": "activity",
+      "enabled": true,
+      "requiresCredential": false,
+      "homepage": "https://firms.modaps.eosdis.nasa.gov/",
+      "staleAfterHours": 48,
+      "options": {
+        "product": "modis",
+        "gridDegrees": 0.25,
+        "minConfidence": 50,
+        "minDetectionsPerCell": 2,
+        "maxCells": 4000,
+        "$keyNote": "The documented API needs a free MAP_KEY, but FIRMS publishes the same global 24h products as keyless CSV. No setup required."
+      }
+    },
+    {
+      "id": "media",
+      "name": "Curated social and video channels",
+      "tier": 2,
+      "role": "context",
+      "enabled": true,
+      "requiresCredential": false,
+      "homepage": "https://map.igred.org",
+      "staleAfterHours": 24,
+      "options": {
+        "postsPerAccount": 15,
+        "videosPerChannel": 10,
+        "maxAgeDays": 7,
+        "$note": "Account lists live in config/channels.json."
+      }
     }
   ]
 }

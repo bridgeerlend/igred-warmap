@@ -87,7 +87,7 @@ export interface StoryClusterResult {
 
 export function clusterIntoStories(
   articles: Article[],
-  classify: (articles: Article[]) => { themes: ThemeMatch[]; inScope: boolean },
+  classify: (articles: Article[]) => { themes: ThemeMatch[]; countries: { fips: string; name: string }[]; inScope: boolean },
   options: StoryClusterOptions,
   now: string,
 ): StoryClusterResult {
@@ -195,7 +195,7 @@ export function clusterIntoStories(
       dropped += 1;
       continue;
     }
-    stories.push(buildStory(members, classified.themes, now));
+    stories.push(buildStory(members, classified.themes, classified.countries, now));
   }
 
   stories.sort(
@@ -246,7 +246,12 @@ function prominenceFrom(distinctPublishers: number, tierCount: number): number {
   return Math.min(5, tierCount >= 3 ? base + 1 : base);
 }
 
-function buildStory(members: Vectorised[], themes: ThemeMatch[], now: string): Story {
+function buildStory(
+  members: Vectorised[],
+  themes: ThemeMatch[],
+  countries: { fips: string; name: string }[],
+  now: string,
+): Story {
   const headlineMember = pickHeadlineArticle(members);
   const publishers = new Set(members.map((member) => member.article.publisher));
   const tiers = [...new Set(members.map((member) => member.article.tier))].sort();
@@ -266,6 +271,7 @@ function buildStory(members: Vectorised[], themes: ThemeMatch[], now: string): S
     headline: headlineMember.article.title,
     headlineFrom: { publisher: headlineMember.article.publisher, url: headlineMember.article.url },
     themes,
+    countries,
     firstSeenAt: members[0]?.article.publishedAt ?? now,
     lastSeenAt: members.at(-1)?.article.publishedAt ?? now,
     articleCount: members.length,
