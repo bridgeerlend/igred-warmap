@@ -36,6 +36,8 @@ const modules = ['projection.js', 'config.js', 'app.js']
 
 const world = read('world.json');
 const events = read('preview-events.json');
+// The heat layer is part of the map now, so the offline copy has to carry it too.
+const heat = readFileSync(path.join(repoRoot, 'data', 'heat.json'), 'utf-8');
 
 /**
  * The fonts have to travel inside the file too, or the snapshot falls back to whatever the
@@ -55,17 +57,20 @@ function inlineFonts(): string {
 const html = read('index.html')
   .replace(/\s*<link rel="preload"[^>]*>/g, '')
   .replace('<link rel="stylesheet" href="fonts/fonts.css">', `<style>\n${inlineFonts()}\n</style>`)
+  .replace('<link rel="stylesheet" href="atlas.css">', `<style>\n${read('atlas.css')}\n</style>`)
   .replace('<link rel="stylesheet" href="styles.css">', `<style>\n${read('styles.css')}\n</style>`)
   .replace(
     '<script type="module" src="app.js"></script>',
     [
       '<script id="inline-world" type="application/json">' + world + '</script>',
       '<script id="inline-events" type="application/json">' + events + '</script>',
+      '<script id="inline-heat" type="application/json">' + heat + '</script>',
       '<script type="module">',
       // The snapshot has no server, so fetch is redirected to the inlined blobs.
       'const INLINE = {',
       '  "world.json": document.getElementById("inline-world").textContent,',
       '  "preview-events.json": document.getElementById("inline-events").textContent,',
+      '  "heat.json": document.getElementById("inline-heat").textContent,',
       '};',
       'window.fetch = async (url) => {',
       '  const key = String(url).split("/").pop();',
