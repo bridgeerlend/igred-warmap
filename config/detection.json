@@ -1,0 +1,24 @@
+{
+  "$comment": "Thresholds for flagging a possible new conflict from abnormal news volume. Detection NEVER asserts a conflict — it opens a candidate for human confirmation.",
+  "schemaVersion": 1,
+  "$countedCategoriesComment": "Scoring total conflict-coded volume flagged protest waves (Nepal, Morocco, Romania) as emerging conflicts on 13 of 20 backtested days. A new armed conflict appears as armed clashes, so violent_unrest and violent_repression are tracked for display but excluded from detection.",
+  "countedCategories": ["armed_clash", "armed_assault", "aerial_strike", "mass_violence", "siege_blockade"],
+  "$triggerComment": "A new armed conflict sustains for weeks; a protest wave or a single grim news week does not. Requiring 4 elevated days inside a 7-day window is what separates them. excludeRecentDays must be at least sustainedWindowDays, otherwise the flare-up lands inside its own baseline and hides itself — this is enforced in code.",
+  "baseline": {
+    "windowDays": 60,
+    "minDaysRequired": 21,
+    "excludeRecentDays": 7
+  },
+  "trigger": {
+    "modifiedZThreshold": 4.0,
+    "minEventsInDay": 12,
+    "minDistinctPublishers": 4,
+    "minRatioOverBaseline": 3.0,
+    "sustainedWindowDays": 7,
+    "sustainedDaysRequired": 4
+  },
+  "candidate": {
+    "cooldownDays": 30,
+    "expireAfterDaysWithoutSignal": 14
+  }
+}

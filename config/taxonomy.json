@@ -1,0 +1,61 @@
+{
+  "$comment": "CAMEO event codes we treat as conflict activity, mapped to IGRED categories. Severity is an ordinal display weight (1-5), not a casualty estimate. Codes outside this map are discarded.",
+  "schemaVersion": 1,
+  "categories": {
+    "armed_clash": { "label": "Armed clash", "severity": 4 },
+    "armed_assault": { "label": "Armed assault", "severity": 4 },
+    "aerial_strike": { "label": "Aerial or missile strike", "severity": 5 },
+    "mass_violence": { "label": "Mass violence", "severity": 5 },
+    "violent_repression": { "label": "Violent repression", "severity": 3 },
+    "violent_unrest": { "label": "Violent unrest", "severity": 2 },
+    "siege_blockade": { "label": "Siege or blockade", "severity": 3 }
+  },
+  "eventCodes": {
+    "145": "violent_unrest",
+    "1451": "violent_unrest",
+    "1452": "violent_unrest",
+    "1453": "violent_unrest",
+    "1454": "violent_unrest",
+    "175": "violent_repression",
+    "1721": "siege_blockade",
+    "1722": "siege_blockade",
+    "1723": "siege_blockade",
+    "1724": "siege_blockade",
+    "180": "armed_assault",
+    "181": "armed_assault",
+    "182": "armed_assault",
+    "1821": "armed_assault",
+    "1822": "armed_assault",
+    "1823": "armed_assault",
+    "183": "armed_assault",
+    "1831": "armed_assault",
+    "1832": "armed_assault",
+    "1833": "armed_assault",
+    "184": "armed_assault",
+    "185": "armed_assault",
+    "186": "armed_assault",
+    "190": "armed_clash",
+    "191": "siege_blockade",
+    "192": "armed_clash",
+    "193": "armed_clash",
+    "194": "armed_clash",
+    "195": "aerial_strike",
+    "196": "armed_clash",
+    "200": "mass_violence",
+    "201": "mass_violence",
+    "202": "mass_violence",
+    "203": "mass_violence",
+    "204": "mass_violence"
+  },
+  "rootCodeFallback": {
+    "18": "armed_assault",
+    "19": "armed_clash",
+    "20": "mass_violence"
+  },
+  "$relevanceComment": "A conflict-coded record is not automatically a conflict event — the raw feed is full of ordinary crime. Two gates were tested against live data and rejected: corroboration count (US police shootings clear it easily) and CAMEO actor-type codes (they are assigned by word matching, so an article about a strike yields actor type REB via the word 'rebellion'). What remains is the verified register: an event displays if the conflict register lists its country as actively at war. New conflicts reach the register through detection and human confirmation, not through guessing. Detection itself runs ungated.",
+  "relevance": {
+    "alwaysRelevantCategories": ["aerial_strike", "mass_violence"],
+    "minDistinctPublishersForReported": 3,
+    "minGeoPrecision": "adm1"
+  }
+}

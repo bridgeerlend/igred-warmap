@@ -1,0 +1,42 @@
+{
+  "$comment": "Source registry. Adding a source is a config change, not a code change. ACLED is permanently excluded: its licence forbids third-party dashboard display and LLM processing.",
+  "schemaVersion": 1,
+  "forbidden": {
+    "acled": "ACLED licence forbids display on third-party dashboards and use in AI/LLM systems. Never fetch, display or process ACLED data."
+  },
+  "sources": [
+    {
+      "id": "gdelt",
+      "name": "GDELT 2.0 Event Database",
+      "tier": 1,
+      "role": "pulse",
+      "enabled": true,
+      "requiresCredential": false,
+      "homepage": "https://www.gdeltproject.org/",
+      "staleAfterHours": 6,
+      "options": {
+        "filesPerRun": 8,
+        "maxEventAgeDays": 3,
+        "minNumSources": 1
+      }
+    },
+    {
+      "id": "ucdp",
+      "name": "UCDP — Uppsala Conflict Data Program",
+      "tier": 3,
+      "role": "verified-backbone",
+      "enabled": true,
+      "requiresCredential": true,
+      "credentialEnvVar": "UCDP_ACCESS_TOKEN",
+      "homepage": "https://ucdp.uu.se/",
+      "staleAfterHours": 720,
+      "options": {
+        "apiVersion": "24.1",
+        "pageSize": 1000,
+        "maxPages": 40,
+        "activeSinceYear": 2020,
+        "datasets": ["ucdpprioconflict", "nonstate", "onesided"]
+      }
+    }
+  ]
+}

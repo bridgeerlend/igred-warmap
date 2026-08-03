@@ -1,0 +1,76 @@
+name: Ingest
+
+on:
+  schedule:
+    - cron: '7 * * * *'
+  workflow_dispatch:
+
+# Data updates must never trigger a site rebuild, so this workflow only writes to data/.
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Fetch, validate and write data
+        env:
+          UCDP_ACCESS_TOKEN: ${{ secrets.UCDP_ACCESS_TOKEN }}
+        run: npm run ingest
+
+      - name: Commit data if it changed
+        run: |
+          if [ -z "$(git status --porcelain data)" ]; then
+            echo "No data changes."
+            exit 0
+          fi
+          git config user.name "igred-bot"
+          git config user.email "map@igred.org"
+          git add data
+          git commit -m "data: ingest $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push
+
+      # Runs after the commit so good data is never lost to an alert.
+      - name: Check source health
+        id: health
+        continue-on-error: true
+        run: npm run health-check
+
+      - name: Open or update an alert issue
+        if: steps.health.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BODY="$(npm run --silent health-check 2>&1 || true)"
+          EXISTING="$(gh issue list --state open --label pipeline-alert --json number --jq '.[0].number')"
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$BODY"
+          else
+            gh issue create --title "Pipeline alert: a source has been down too long" \
+              --label pipeline-alert --body "$BODY"
+          fi
+
+      - name: Close the alert issue once healthy again
+        if: steps.health.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          EXISTING="$(gh issue list --state open --label pipeline-alert --json number --jq '.[0].number')"
+          if [ -n "$EXISTING" ]; then
+            gh issue close "$EXISTING" --comment "Sources are healthy again."
+          fi
