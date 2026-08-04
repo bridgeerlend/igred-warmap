@@ -76,7 +76,10 @@
 
 .evt { cursor: pointer; }
 /* The hit target must never intercept a pan gesture's visual feedback, only clicks. */
-.evt .hit { pointer-events: all; }
+/* Selection is resolved by distance in a single handler on the map, not by which invisible
+   circle happens to sit on top, so no mark carries a target of its own any more. */
+.evt .collar { opacity: 0.62; }
+.evt.selected .collar { opacity: 1; }
 .evt circle { transition: opacity 380ms ease; }
 .plate.dimmed .evt:not(.selected) { opacity: 0.1; }
 .evt.selected .halo, .evt:focus-visible .halo { opacity: 0.5 !important; }
@@ -160,7 +163,25 @@ body:has(.banner:not([hidden])) .stage { min-height: calc(100svh - 46px); }
 
   .rail { grid-area: rail; }
   .plate { grid-area: plate; }
-  .detail { grid-area: detail; }
+
+  /*
+   * The record scrolls inside its own column rather than growing the row.
+   *
+   * The plate spans both rows, so an unbounded caption drags the map down with it: a pile of
+   * ten incidents, each with its sources, made the row 1800px tall and pushed the map most of
+   * a screen below the fold. Capping the row keeps the label and the map filling one view,
+   * which is the whole composition.
+   */
+  .detail {
+    grid-area: detail;
+    min-height: 0;
+    max-height: min(46svh, 560px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--hair) transparent;
+    padding-bottom: 6px;
+  }
 
   /* Back to a single reading column — the two-up split was a tablet compromise.
      align-items must be reset explicitly: the tablet rule sets `end` for grid row
@@ -222,7 +243,17 @@ body:has(.banner:not([hidden])) .stage { min-height: calc(100svh - 46px); }
   }
   .rail { display: flex; grid-area: rail; grid-template-areas: none; grid-template-columns: none; }
   .plate { grid-area: plate; }
-  .detail { grid-area: detail; min-height: 0; }
+  /* Same reason as the desktop rule: the plate spans both rows, so the caption must not
+     grow the grid or the map leaves the screen. */
+  .detail {
+    grid-area: detail;
+    min-height: 0;
+    max-height: 42svh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--hair) transparent;
+  }
   .title { font-size: clamp(30px, 4.4vw, 44px); }
   .standfirst { display: none; }
 }
@@ -337,6 +368,72 @@ body:has(.banner:not([hidden])) .stage { min-height: calc(100svh - 46px); }
   line-height: 1.5;
   color: var(--fg-2);
 }
+
+/* ---------- a pile: several incidents on one spot -------------- */
+
+.detail-pile-count {
+  display: block;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  margin-top: 6px;
+}
+.detail-pile { margin: 10px 0 0; font-size: 11.5px; line-height: 1.5; color: var(--fg-2); }
+
+.detail-incidents { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 16px; }
+.detail-incidents > li { padding-top: 12px; border-top: 1px solid var(--hair-soft); }
+.incident-head {
+  margin: 0 0 6px;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--fg-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 12px;
+}
+.incident-head .incident-place { font-weight: 400; letter-spacing: 0.12em; }
+.detail-incidents .detail-sources { margin-top: 8px; }
+
+/* ---------- reporting the Brief already holds ------------------ */
+
+.detail-related {
+  margin: 16px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--hair-soft);
+}
+.detail-related h3 {
+  margin: 0 0 8px;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--fg-2);
+}
+.related-stories { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; }
+.related-headline {
+  display: block;
+  font-family: var(--display);
+  font-optical-sizing: auto;
+  font-size: 15px;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+.related-outlets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 7px;
+  margin-top: 3px;
+  font-size: 11.5px;
+}
+/* Plain names, never logos: a masthead is a trademark, and an institute should not display
+   one without an agreement. */
+.related-outlets a { color: var(--fg-2); text-underline-offset: 3px; }
+.related-outlets a:hover { color: var(--fg); }
+.related-outlets .sep { color: var(--fg-3, var(--fg-2)); opacity: 0.6; }
 
 /* ---------- search over conflicts and places ------------------ */
 

@@ -8,6 +8,7 @@
  * and every incident renders the sources that back it.
  */
 import { toView } from './projection.js';
+import { groupEvents, nearestMark, PICK_RADIUS_PX } from './picking.js';
 import { dataBaseUrl, repoUrl, CONFIG } from './config.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -62,6 +63,16 @@ const STRINGS = {
     heatOn: 'Hide heat', heatOff: 'Show heat',
     heatNote: (n, instrument) =>
       `<b>${n}</b> satellite thermal detections in the last 24 hours (${instrument}). These are heat signatures, not attacks — a fire may be shelling, a burning depot or land clearance, and the instrument cannot tell them apart.`,
+    pileTitle: (n) => `${n} incidents on this spot`,
+    pileTitleArea: (n) => `${n} incidents in this area`,
+    pileNote: 'They sit too close to separate at this zoom. Zoom in and they come apart; every one of them is listed below.',
+    pileNoteSpot: 'The source geolocates these to the same place, so no amount of zoom will separate them. Every one of them is listed below.',
+    incidentNumber: (i, n) => `Incident ${i} of ${n}`,
+    relatedTitle: 'Related reporting',
+    relatedNote:
+      'Stories from The IGRED Brief that name this country. They are matched by country, not to this incident — a news cluster on the map usually rests on a single dispatch, and this is the wider reporting that exists around it.',
+    relatedMore: 'Read the Brief',
+    articlesLabel: (n) => `${n} ${n === 1 ? 'article' : 'articles'}`,
   },
   nb: {
     titleLine1: 'Verden,', titleLine2: 'i krig',
@@ -109,6 +120,16 @@ const STRINGS = {
     heatOn: 'Skjul varme', heatOff: 'Vis varme',
     heatNote: (n, instrument) =>
       `<b>${n}</b> satellittmålte varmedeteksjoner siste døgn (${instrument}). Dette er varmesignaturer, ikke angrep — en brann kan være beskytning, et brennende lager eller nedbrenning av mark, og instrumentet skiller dem ikke.`,
+    pileTitle: (n) => `${n} hendelser på dette punktet`,
+    pileTitleArea: (n) => `${n} hendelser i dette området`,
+    pileNote: 'De ligger for tett til å skilles ved denne zoomen. Zoom inn, så løsner de fra hverandre; alle er uansett listet nedenfor.',
+    pileNoteSpot: 'Kilden stedfester disse til samme sted, så ingen zoom skiller dem. Alle er listet nedenfor.',
+    incidentNumber: (i, n) => `Hendelse ${i} av ${n}`,
+    relatedTitle: 'Beslektet dekning',
+    relatedNote:
+      'Saker fra The IGRED Brief som nevner dette landet. De er koblet på land, ikke til denne hendelsen — en nyhetsklynge på kartet hviler som regel på én enkelt melding, og dette er den bredere dekningen som finnes rundt den.',
+    relatedMore: 'Les Briefen',
+    articlesLabel: (n) => `${n} ${n === 1 ? 'artikkel' : 'artikler'}`,
   },
 };
 
@@ -150,6 +171,10 @@ const state = {
   showHeat: true,
   conflicts: [],
   countryNames: new Map(),
+  stories: [],
+  // Marks are groups of incidents that land on the same spot at the current zoom, so the
+  // zoom level they were built for has to be remembered to know when to rebuild them.
+  groupedAtWidth: null,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -224,12 +249,21 @@ async function load() {
       if (active.length === 0) showBanner(t().registerTitle, t().registerBody);
       // The register arrives after the first paint, so anything already selected is redrawn
       // with the context it was missing.
-      renderDetail(state.selected?.event ?? null);
+      renderDetail(state.selected ?? null);
       renderSearch();
     })
     .catch(() => {});
 
   loadHeat();
+
+  // The Brief's stories, joined by country. A GDELT cluster usually has a single article —
+  // 48 of 57 on the live map — so the reporting a reader actually wants is mostly here.
+  loadJson(base, 'stories.json')
+    .then((payload) => {
+      state.stories = payload.stories ?? [];
+      renderDetail(state.selected ?? null);
+    })
+    .catch(() => {});
 
   // Health is advisory: if it cannot be read, the map still works.
   loadJson(base, 'health.json').then(checkHealth).catch(() => {});
@@ -324,38 +358,54 @@ function renderHeat() {
   else svg.appendChild(layer);
 }
 
+/* ---------- marks: one per spot, not one per incident ------------------ */
+
+function perPixelNow() {
+  const rect = $('map').getBoundingClientRect();
+  return rect.width > 0 ? state.view.w / rect.width : state.view.w / 1000;
+}
+
 function renderPoints() {
   const svg = $('map');
   svg.querySelector('.points')?.remove();
 
   const layer = make('g', { class: 'points' });
-  state.nodes = [];
+  state.groupedAtWidth = state.view.w;
+  state.nodes = groupEvents(visibleEvents(), perPixelNow());
 
-  for (const event of visibleEvents()) {
-    const verified = event.confidence === 'verified';
+  for (const mark of state.nodes) {
+    const event = mark.lead;
+    const piled = mark.events.length > 1;
+    const verified = mark.events.some((entry) => entry.confidence === 'verified');
     const tone = verified ? 'var(--verified)' : `var(--s${event.intensity})`;
-    const group = make('g', { class: 'evt', tabindex: '0', role: 'button' });
+    const group = make('g', { class: `evt${piled ? ' piled' : ''}`, tabindex: '0', role: 'button' });
 
-    const halo = make('circle', { cx: event.x, cy: event.y, class: 'halo', fill: tone });
-    const dot = make('circle', { cx: event.x, cy: event.y, class: 'dot', fill: tone, 'fill-opacity': 0.55 + event.intensity * 0.09 });
-    // An invisible target: at world zoom on a phone a point is under a pixel wide, which
-    // is impossible to tap. The visible mark stays small; the reachable area does not.
-    const hit = make('circle', { cx: event.x, cy: event.y, class: 'hit', fill: 'transparent' });
-    group.append(halo, dot, hit);
+    const halo = make('circle', { cx: mark.x, cy: mark.y, class: 'halo', fill: tone });
+    const dot = make('circle', { cx: mark.x, cy: mark.y, class: 'dot', fill: tone, 'fill-opacity': 0.55 + event.intensity * 0.09 });
+    group.append(halo, dot);
+
+    // A pile wears a hairline collar. It is the quietest mark that still says "more than
+    // one here" without a badge or a number floating over the cartography.
+    const collar = piled
+      ? make('circle', { cx: mark.x, cy: mark.y, class: 'collar', fill: 'none', stroke: tone, 'stroke-width': 0.7, 'vector-effect': 'non-scaling-stroke' })
+      : null;
+    if (collar) group.appendChild(collar);
 
     // Verified incidents carry a ring as well as the accent colour, so the distinction
     // never rests on hue alone.
     const ring = verified
-      ? make('circle', { cx: event.x, cy: event.y, class: 'vring', fill: 'none', stroke: 'var(--verified)', 'stroke-width': 0.8, 'vector-effect': 'non-scaling-stroke' })
+      ? make('circle', { cx: mark.x, cy: mark.y, class: 'vring', fill: 'none', stroke: 'var(--verified)', 'stroke-width': 0.8, 'vector-effect': 'non-scaling-stroke' })
       : null;
     if (ring) group.appendChild(ring);
 
     const title = make('title', {});
-    title.textContent = `${categoryLabel(event.category)} — ${event.location.name}`;
+    title.textContent = piled
+      ? `${event.location.name} — ${pileLabel(mark)}`
+      : `${categoryLabel(event.category)} — ${event.location.name}`;
     group.appendChild(title);
 
     layer.appendChild(group);
-    state.nodes.push({ event, group, halo, dot, ring, hit });
+    Object.assign(mark, { group, halo, dot, ring, collar });
   }
 
   svg.appendChild(layer);
@@ -371,23 +421,49 @@ function renderPoints() {
  */
 function sizePoints() {
   const zoom = state.view.w / state.home.w;
-  const rect = $('map').getBoundingClientRect();
-  // View units per rendered pixel, so sizes can be expressed as real on-screen sizes.
-  const perPixel = rect.width > 0 ? state.view.w / rect.width : 1;
+  const perPixel = perPixelNow();
   // A floor rather than a clamp: clamping to a minimum made every point on a phone the
   // same size and erased the intensity scale. Adding a floor keeps the spread visible.
   const floor = 1.5 * perPixel;
-  const minTarget = 13 * perPixel;
 
-  for (const node of state.nodes) {
-    const base = floor + (1.1 + node.event.intensity * 0.72) * Math.pow(zoom, 0.75);
-    node.dot.setAttribute('r', base.toFixed(2));
-    node.halo.setAttribute('r', (base * 2.5).toFixed(2));
-    node.halo.setAttribute('opacity', (0.05 + node.event.intensity * 0.035).toFixed(3));
-    node.group.style.setProperty('--r0', base.toFixed(2));
-    node.ring?.setAttribute('r', (base + 2.6 * Math.pow(zoom, 0.75)).toFixed(2));
-    node.hit.setAttribute('r', Math.max(base * 1.6, minTarget).toFixed(2));
+  for (const mark of state.nodes) {
+    const base = floor + (1.1 + mark.lead.intensity * 0.72) * Math.pow(zoom, 0.75);
+    mark.dot.setAttribute('r', base.toFixed(2));
+    mark.halo.setAttribute('r', (base * 2.5).toFixed(2));
+    mark.halo.setAttribute('opacity', (0.05 + mark.lead.intensity * 0.035).toFixed(3));
+    mark.group.style.setProperty('--r0', base.toFixed(2));
+    mark.ring?.setAttribute('r', (base + 2.6 * Math.pow(zoom, 0.75)).toFixed(2));
+    // Far enough out to read as a collar rather than a thick edge on the dot, close enough
+    // that it does not become a second mark in its own right.
+    mark.collar?.setAttribute('r', (base + 4.5 * perPixel).toFixed(2));
   }
+}
+
+/* ---------- picking ----------------------------------------------------- */
+
+/** Client pixels to view units, using the same fit the callout uses. */
+function toViewCoords(clientX, clientY) {
+  const box = $('map').getBoundingClientRect();
+  const view = state.view;
+  const scale = Math.min(box.width / view.w, box.height / view.h);
+  if (!(scale > 0)) return null;
+  const drawnLeft = box.left + (box.width - view.w * scale) / 2;
+  const drawnTop = box.top + (box.height - view.h * scale) / 2;
+  return { x: view.x + (clientX - drawnLeft) / scale, y: view.y + (clientY - drawnTop) / scale, scale };
+}
+
+/**
+ * The nearest mark to a click, or null if the click was not near one.
+ *
+ * Nearest wins, rather than whichever invisible circle sits on top. Two marks can no longer
+ * both claim the same pixel, so aiming at a dot now opens that dot.
+ */
+function pickAt(clientX, clientY) {
+  const point = toViewCoords(clientX, clientY);
+  if (!point) return null;
+  const reach = PICK_RADIUS_PX / point.scale;
+
+  return nearestMark(state.nodes, point.x, point.y, reach);
 }
 
 function visibleEvents() {
@@ -402,9 +478,26 @@ const MIN_ZOOM = 0.06;
 function applyView() {
   const { x, y, w, h } = state.view;
   $('map').setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
-  sizePoints();
+
+  /*
+   * Which incidents land on the same spot is a function of the zoom, so the grouping is
+   * rebuilt when the zoom has moved materially. This is what makes zooming the remedy for a
+   * pile: go in, and the mark comes apart into the incidents it was hiding.
+   *
+   * Panning does not change it, and the threshold keeps a pinch from rebuilding every frame.
+   */
+  const rescaled = state.groupedAtWidth === null || Math.abs(Math.log(w / state.groupedAtWidth)) > 0.1;
+  if (rescaled && state.nodes.length > 0) {
+    const keep = state.selected?.lead ?? null;
+    renderPoints();
+    wirePoints();
+    if (keep) selectEvent(keep);
+  } else {
+    sizePoints();
+  }
+
   // Anchored in screen space, so panning or zooming has to move it with the point.
-  if (state.selected) showCallout(state.selected.event);
+  if (state.selected) showCallout(state.selected);
 }
 
 function zoomBy(factor, originX, originY) {
@@ -538,22 +631,60 @@ function categoryLabel(key) {
   return CATEGORY[state.lang][key] ?? key;
 }
 
-function select(node) {
-  if (state.selected === node) return clearSelection();
+/**
+ * What a pile actually is, so it can be described without overstating.
+ *
+ * Incidents the source pinned to the identical coordinate are on one spot and no zoom will
+ * separate them. Incidents merely drawn too close together at this zoom are in an area, and
+ * going in will pull them apart. Calling the second case "this spot" would put Kyiv inside
+ * Kherson.
+ */
+function pileShape(mark) {
+  const coordinates = new Set(mark.events.map((event) => `${event.x},${event.y}`));
+  return coordinates.size === 1 ? 'spot' : 'area';
+}
+
+function pileLabel(mark) {
+  return pileShape(mark) === 'spot' ? t().pileTitle(mark.events.length) : t().pileTitleArea(mark.events.length);
+}
+
+/** The mark currently holding a given incident, which changes as the grouping is rebuilt. */
+function markFor(event) {
+  if (!event) return null;
+  return state.nodes.find((mark) => mark.events.some((entry) => entry.id === event.id)) ?? null;
+}
+
+function applySelection(mark) {
   state.selected?.group.classList.remove('selected');
-  state.selected = node;
+  state.selected = mark ?? null;
+  if (!mark) {
+    $('plate').classList.remove('dimmed');
+    renderDetail(null);
+    hideCallout();
+    return;
+  }
   $('plate').classList.add('dimmed');
-  node.group.classList.add('selected');
-  renderDetail(node.event);
-  showCallout(node.event);
+  mark.group.classList.add('selected');
+  renderDetail(mark);
+  showCallout(mark);
+}
+
+function select(mark) {
+  if (!mark || state.selected === mark) return clearSelection();
+  applySelection(mark);
+}
+
+/**
+ * Selection by incident rather than by mark, for callers that outlive a regrouping — the
+ * index, search, and restoring the selection after a zoom.
+ */
+function selectEvent(event) {
+  const mark = markFor(event);
+  if (mark) applySelection(mark);
 }
 
 function clearSelection() {
-  $('plate').classList.remove('dimmed');
-  state.selected?.group.classList.remove('selected');
-  state.selected = null;
-  renderDetail(null);
-  hideCallout();
+  applySelection(null);
 }
 
 function conflictsInCountry(fips) {
@@ -561,24 +692,57 @@ function conflictsInCountry(fips) {
   return state.conflicts.filter((conflict) => conflict.countries.some((country) => country.fips === fips));
 }
 
-function renderDetail(event) {
-  const detail = $('detail');
-  if (!event) {
-    detail.innerHTML = `<p class="prompt">${escapeHtml(t().prompt)}</p>`;
-    return;
-  }
+/**
+ * Stories from the Brief that name this country.
+ *
+ * A map incident is a GDELT cluster, and those are thin: on the live register 48 of 57 rest
+ * on a single dispatch, and the richest has five. The reporting a reader wants is already
+ * collected by the sibling product, so the map joins to it rather than pretending an
+ * incident has depth it does not have. Matched on country, and labelled as such.
+ */
+function relatedStories(fips) {
+  if (!fips) return [];
+  return state.stories
+    .filter((story) => story.countries.some((country) => country.fips === fips))
+    .sort((a, b) => b.prominence - a.prominence || b.articleCount - a.articleCount)
+    .slice(0, 6);
+}
 
-  const confidence =
-    event.confidence === 'verified' ? `<span class="vmark">${escapeHtml(t().verified)}</span>`
-    : event.confidence === 'reported' ? escapeHtml(t().reported)
-    : escapeHtml(t().unconfirmed);
-
-  // Every visible incident shows the sources behind it — that is the whole contract.
-  const sources = event.provenance.slice(0, 8).map((entry) => {
+function sourceList(provenance) {
+  // Every source behind the incident, not a sample of them. The pipeline already caps
+  // provenance at 25 per incident, so there is nothing further to truncate here.
+  return provenance.map((entry) => {
     const outlet = entry.publisher ?? entry.sourceName;
     const when = (entry.publishedAt ?? entry.retrievedAt ?? '').slice(0, 10);
     return `<li><a href="${escapeHtml(entry.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(outlet)}</a> <span class="outlet">· ${escapeHtml(when)}</span></li>`;
   }).join('');
+}
+
+function incidentMeta(event) {
+  // GDELT dates most incidents to the day, so the precision is stated rather than implied.
+  const dated = event.dateBasis === 'report_date' ? t().reportedOn : t().dayPrecision;
+  const confidence =
+    event.confidence === 'verified' ? `<span class="vmark">${escapeHtml(t().verified)}</span>`
+    : event.confidence === 'reported' ? escapeHtml(t().reported)
+    : escapeHtml(t().unconfirmed);
+  return `<div class="detail-meta">` +
+    `<span>${escapeHtml(categoryLabel(event.category))}</span>` +
+    `<span>${escapeHtml(dated)} ${escapeHtml(event.occurredAt.slice(0, 10))}</span>` +
+    `<span>${escapeHtml(t().intensity)} ${event.intensity} ${escapeHtml(t().of)} 5</span>` +
+    `<span>${escapeHtml(t().reports(event.reportCount))} · ${escapeHtml(t().outlets(event.distinctPublishers))}</span>` +
+    `<span>${confidence}</span>` +
+    `</div>`;
+}
+
+function renderDetail(mark) {
+  const detail = $('detail');
+  if (!mark) {
+    detail.innerHTML = `<p class="prompt">${escapeHtml(t().prompt)}</p>`;
+    return;
+  }
+
+  const lead = mark.lead;
+  const piled = mark.events.length > 1;
 
   /*
    * The register's conflicts for this country, with their verified parties.
@@ -591,17 +755,29 @@ function renderDetail(event) {
    * The association is by country and is described as such. Iran has three conflicts on
    * record; which one a given incident belongs to is not in the data.
    */
-  const here = conflictsInCountry(event.location.countryFips);
-  const countryName =
-    state.countryNames.get(event.location.countryFips) ??
-    event.location.name.split(',').pop()?.trim() ??
-    '';
+  /*
+   * Every country the mark touches, not just the lead's. A pile is drawn at one point but
+   * can hold incidents from either side of a border, and showing only the lead's register
+   * entries would silently drop the other country's conflicts from the record.
+   */
+  const fipsHere = [...new Set(mark.events.map((event) => event.location.countryFips).filter(Boolean))];
+  const seenConflicts = new Set();
+  const here = fipsHere.flatMap((fips) =>
+    conflictsInCountry(fips).filter((conflict) => {
+      if (seenConflicts.has(conflict.id)) return false;
+      seenConflicts.add(conflict.id);
+      return true;
+    }),
+  );
+  const countryName = fipsHere
+    .map((fips) => state.countryNames.get(fips) ?? fips)
+    .join(' · ') || (lead.location.name.split(',').pop()?.trim() ?? '');
 
   const context = here.length > 0
     ? `<section class="detail-context">` +
       `<h3>${escapeHtml(t().conflictsHere(countryName))}</h3>` +
       `<ul class="detail-conflicts">` +
-      here.slice(0, 5).map((conflict) => {
+      here.slice(0, 6).map((conflict) => {
         const parties = conflict.parties.map((party) => party.name).filter(Boolean);
         return `<li>` +
           `<span class="conflict-name">${escapeHtml(conflict.name)}</span>` +
@@ -614,20 +790,54 @@ function renderDetail(event) {
       `</section>`
     : `<section class="detail-context"><p class="detail-caveat">${escapeHtml(t().noConflictHere)}</p></section>`;
 
-  // GDELT dates most incidents to the day, so the precision is stated rather than implied.
-  const dated = event.dateBasis === 'report_date' ? t().reportedOn : t().dayPrecision;
+  // A pile lists every incident on the spot, each with its own date, category and sources.
+  // Nothing is hidden behind the topmost one the way it used to be.
+  const body = piled
+    ? `<p class="detail-pile">${escapeHtml(pileShape(mark) === 'spot' ? t().pileNoteSpot : t().pileNote)}</p>` +
+      `<ol class="detail-incidents">` +
+      mark.events.map((event, index) =>
+        `<li>` +
+        `<h3 class="incident-head">${escapeHtml(t().incidentNumber(index + 1, mark.events.length))}` +
+        `<span class="incident-place">${escapeHtml(event.location.name)}</span></h3>` +
+        incidentMeta(event) +
+        `<ul class="detail-sources">${sourceList(event.provenance)}</ul>` +
+        `</li>`).join('') +
+      `</ol>`
+    : incidentMeta(lead) + `<ul class="detail-sources">${sourceList(lead.provenance)}</ul>`;
+
+  const seenStories = new Set();
+  const stories = fipsHere
+    .flatMap((fips) => relatedStories(fips))
+    .filter((story) => {
+      if (seenStories.has(story.id)) return false;
+      seenStories.add(story.id);
+      return true;
+    })
+    .slice(0, 6);
+  const related = stories.length > 0
+    ? `<section class="detail-related">` +
+      `<h3>${escapeHtml(t().relatedTitle)}</h3>` +
+      `<ul class="related-stories">` +
+      stories.map((story) =>
+        `<li>` +
+        `<span class="related-headline">${escapeHtml(story.headline)}</span>` +
+        `<span class="related-outlets">` +
+        story.articles.map((article) =>
+          `<a href="${escapeHtml(article.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(article.publisher)}</a>`,
+        ).join('<span class="sep">·</span>') +
+        `</span></li>`).join('') +
+      `</ul>` +
+      `<p class="detail-caveat">${escapeHtml(t().relatedNote)} <a href="brief/">${escapeHtml(t().relatedMore)}</a>.</p>` +
+      `</section>`
+    : '';
 
   detail.innerHTML =
-    `<h2 class="detail-place">${escapeHtml(event.location.name)}</h2>` +
-    `<div class="detail-meta">` +
-      `<span>${escapeHtml(categoryLabel(event.category))}</span>` +
-      `<span>${escapeHtml(dated)} ${escapeHtml(event.occurredAt.slice(0, 10))}</span>` +
-      `<span>${escapeHtml(t().intensity)} ${event.intensity} ${escapeHtml(t().of)} 5</span>` +
-      `<span>${escapeHtml(t().reports(event.reportCount))} · ${escapeHtml(t().outlets(event.distinctPublishers))}</span>` +
-      `<span>${confidence}</span>` +
-    `</div>` +
+    `<h2 class="detail-place">${escapeHtml(lead.location.name)}` +
+    (piled ? `<span class="detail-pile-count">${escapeHtml(pileLabel(mark))}</span>` : '') +
+    `</h2>` +
     context +
-    `<ul class="detail-sources">${sources}</ul>`;
+    body +
+    related;
 
   // One quiet pulse of the label's own rule, so a click 900px away is visibly answered.
   detail.classList.remove('just-updated');
@@ -641,7 +851,8 @@ function hideCallout() {
   $('callout').hidden = true;
 }
 
-function showCallout(event) {
+function showCallout(mark) {
+  const event = mark.lead;
   const callout = $('callout');
   const svg = $('map');
   const plate = $('plate');
@@ -653,14 +864,16 @@ function showCallout(event) {
   const drawnLeft = svgBox.left + (svgBox.width - view.w * scale) / 2;
   const drawnTop = svgBox.top + (svgBox.height - view.h * scale) / 2;
 
-  const x = drawnLeft + (event.x - view.x) * scale - plateBox.left;
-  const y = drawnTop + (event.y - view.y) * scale - plateBox.top;
+  const x = drawnLeft + (mark.x - view.x) * scale - plateBox.left;
+  const y = drawnTop + (mark.y - view.y) * scale - plateBox.top;
 
   const here = conflictsInCountry(event.location.countryFips);
   callout.innerHTML =
     `<p class="callout-place">${escapeHtml(event.location.name)}</p>` +
-    `<p class="callout-meta">${escapeHtml(categoryLabel(event.category))} · ` +
-    `${escapeHtml(t().outlets(event.distinctPublishers))}` +
+    `<p class="callout-meta">` +
+    (mark.events.length > 1
+      ? `${escapeHtml(pileLabel(mark))}`
+      : `${escapeHtml(categoryLabel(event.category))} · ${escapeHtml(t().outlets(event.distinctPublishers))}`) +
     // A count, not a name. Israel has five conflicts on record; naming the first would
     // assert exactly what the panel below says the data does not establish.
     (here.length ? ` · ${escapeHtml(t().conflictCount(here.length))}` : '') +
@@ -695,36 +908,40 @@ function renderIndex() {
   const grid = $('index-grid');
   grid.innerHTML = '';
 
+  // Keyed on the incident rather than the mark, because marks are rebuilt on every zoom and
+  // a button holding a stale one would select a group that no longer exists.
   const byPlace = new Map();
-  for (const node of state.nodes) {
-    const key = node.event.location.name.split(',')[0].trim();
-    const existing = byPlace.get(key);
-    if (!existing) {
-      byPlace.set(key, { node, count: 1 });
-    } else {
-      existing.count += 1;
-      const better =
-        node.event.intensity > existing.node.event.intensity ||
-        (node.event.intensity === existing.node.event.intensity && node.event.reportCount > existing.node.event.reportCount);
-      if (better) existing.node = node;
+  for (const mark of state.nodes) {
+    for (const event of mark.events) {
+      const key = event.location.name.split(',')[0].trim();
+      const existing = byPlace.get(key);
+      if (!existing) {
+        byPlace.set(key, { event, count: 1 });
+      } else {
+        existing.count += 1;
+        const better =
+          event.intensity > existing.event.intensity ||
+          (event.intensity === existing.event.intensity && event.reportCount > existing.event.reportCount);
+        if (better) existing.event = event;
+      }
     }
   }
 
   [...byPlace.entries()]
     .sort((a, b) =>
-      b[1].node.event.intensity - a[1].node.event.intensity ||
+      b[1].event.intensity - a[1].event.intensity ||
       b[1].count - a[1].count ||
       a[0].localeCompare(b[0]))
     .slice(0, 60)
     .forEach(([place, info]) => {
       const button = document.createElement('button');
       button.type = 'button';
-      const verified = info.node.event.confidence === 'verified';
+      const verified = info.event.confidence === 'verified';
       button.innerHTML =
         `<span${verified ? ' class="is-verified"' : ''}>${escapeHtml(place)}</span>` +
         `<span class="count">${info.count}</span>`;
       button.addEventListener('click', () => {
-        select(info.node);
+        selectEvent(info.event);
         document.querySelector('.stage').scrollIntoView({ block: 'start', behavior: 'smooth' });
       });
       grid.appendChild(button);
@@ -765,12 +982,14 @@ function searchResults(query) {
   }
 
   const seenPlaces = new Set();
-  for (const node of state.nodes) {
-    const place = node.event.location.name;
-    if (seenPlaces.has(place)) continue;
-    if (!matches(`${place} ${categoryLabel(node.event.category)}`.toLowerCase())) continue;
-    seenPlaces.add(place);
-    results.push({ kind: 'place', label: place, detail: categoryLabel(node.event.category), node });
+  for (const mark of state.nodes) {
+    for (const event of mark.events) {
+      const place = event.location.name;
+      if (seenPlaces.has(place)) continue;
+      if (!matches(`${place} ${categoryLabel(event.category)}`.toLowerCase())) continue;
+      seenPlaces.add(place);
+      results.push({ kind: 'place', label: place, detail: categoryLabel(event.category), event });
+    }
   }
 
   // Conflicts first: a search for "Ukraine" should offer the conflict before one incident.
@@ -823,10 +1042,11 @@ function centreOn(x, y, zoomTo) {
 function goTo(result) {
   if (!result) return;
 
-  if (result.kind === 'place' && result.node) {
-    // Close enough to read the place, but not so close the surroundings vanish.
-    centreOn(result.node.event.x, result.node.event.y, Math.min(state.view.w, state.home.w * 0.22));
-    select(result.node);
+  if (result.kind === 'place' && result.event) {
+    // Close enough to read the place, but not so close the surroundings vanish. Centring
+    // rescales, which regroups the marks, so the incident is selected after the move.
+    centreOn(result.event.x, result.event.y, Math.min(state.view.w, state.home.w * 0.22));
+    selectEvent(result.event);
     return;
   }
 
@@ -908,27 +1128,37 @@ function refresh() {
   renderStandfirst();
   renderScaleKey();
   renderIndex();
-  renderDetail(state.selected?.event ?? null);
+  renderDetail(state.selected ?? null);
   renderSearch();
   wirePoints();
 }
 
+/**
+ * Only the keyboard is wired per mark. Pointer selection is delegated to the plate and
+ * resolved by distance, so no mark can shadow another.
+ */
 function wirePoints() {
-  for (const node of state.nodes) {
-    node.group.addEventListener('click', (ev) => {
-      ev.stopPropagation();
-      // A pan that happens to finish over a point should not select it.
-      if (state.dragDistance > 3) return;
-      select(node);
-    });
-    node.group.addEventListener('keydown', (ev) => {
-      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); select(node); }
+  for (const mark of state.nodes) {
+    mark.group.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); select(mark); }
     });
   }
 }
 
 function wireChrome() {
-  $('map').addEventListener('click', (ev) => { if (ev.target === $('map')) clearSelection(); });
+  /*
+   * One handler for the whole map, resolved by distance to the nearest mark.
+   *
+   * The old build put an invisible target on every incident and let the document decide
+   * which one a click belonged to. Where points overlap — 55 of 57 did — the winner was the
+   * last one rendered, not the one under the cursor, so clicking a dot opened a different
+   * incident. Nearest-mark picking removes stacking from the question entirely.
+   */
+  $('map').addEventListener('click', (ev) => {
+    // A pan that happens to finish over a point should not select it.
+    if (state.dragDistance > 3) return;
+    select(pickAt(ev.clientX, ev.clientY));
+  });
 
   const search = $('search');
   search.addEventListener('input', renderSearch);

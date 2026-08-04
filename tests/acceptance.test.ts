@@ -384,6 +384,39 @@ describe('13 — everything runs free', () => {
   });
 });
 
+describe('a click on the map opens what was clicked', () => {
+  /**
+   * Pinned because the failure was invisible in review and survived every other test: points
+   * carried per-incident hit targets, and overlapping targets were resolved by document
+   * order. The behavioural guarantee is covered by tests/picking.test.ts against the live
+   * register; these two checks stop the old mechanism from creeping back into the page.
+   */
+  it('resolves selection by distance, not by which circle is on top', () => {
+    const app = read('site/app.js');
+    expect(app).toMatch(/nearestMark\(state\.nodes/);
+    // One handler on the map, rather than a listener per point.
+    expect(app).toMatch(/\$\('map'\)\.addEventListener\('click'/);
+  });
+
+  it('gives no incident an invisible target of its own', () => {
+    expect(read('site/app.js')).not.toMatch(/class: 'hit'/);
+    expect(read('site/styles.css')).not.toMatch(/\.hit\s*\{/);
+  });
+
+  it('lists every incident a mark holds, and every source behind each of them', () => {
+    const app = read('site/app.js');
+    // No slice on the provenance: an incident shows all of its sources.
+    expect(app).toMatch(/function sourceList\(provenance\) \{[\s\S]*?return provenance\.map/);
+    expect(app).not.toMatch(/provenance\.slice/);
+    // And a pile renders one entry per incident rather than only its lead.
+    expect(app).toMatch(/mark\.events\.map\(\(event, index\)/);
+  });
+
+  it('does not claim incidents are on one spot when they are merely close', () => {
+    expect(read('site/app.js')).toMatch(/function pileShape\(mark\)/);
+  });
+});
+
 describe('sources are named, never shown as logos', () => {
   /**
    * A masthead logo is a trademark, and reproducing one implies a relationship the institute
@@ -392,12 +425,17 @@ describe('sources are named, never shown as logos', () => {
    */
   it('no product references an image of any kind', () => {
     for (const page of [
-      'site/index.html', 'site/app.js', 'site/styles.css',
+      'site/index.html', 'site/app.js', 'site/picking.js', 'site/styles.css',
       'site/brief/index.html', 'site/brief/brief.js', 'site/brief/brief.css',
       'www/index.html', 'www/home.js', 'www/home.css',
       'site/atlas.css',
     ]) {
-      const text = read(page);
+      // Comments are stripped first: this guard is about what the page loads, and it should
+      // not fire on a note explaining why the code avoids mastheads in the first place.
+      const text = read(page)
+        .replace(/\/\*[\s\S]*?\*\//g, ' ')
+        .replace(/^\s*\/\/.*$/gm, ' ')
+        .replace(/<!--[\s\S]*?-->/g, ' ');
       expect(text).not.toMatch(/<img\b|<picture\b/i);
       expect(text).not.toMatch(/\.(png|jpe?g|gif|webp|avif|ico)\b/i);
       // The one SVG in the products is the map's own cartography, drawn from coordinates.
