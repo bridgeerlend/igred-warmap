@@ -16,6 +16,7 @@ import type { ThemesConfig } from '../schema/config.js';
 export interface CompiledTheme {
   id: string;
   label: string;
+  labelNb: string;
   field: 'geopolitical_risk' | 'economic_development';
   terms: { term: string; pattern: RegExp; strong: boolean }[];
 }
@@ -37,6 +38,7 @@ export function compileThemes(config: ThemesConfig): CompiledTheme[] {
     return {
       id: theme.id,
       label: theme.label,
+      labelNb: theme.labelNb,
       field: theme.field,
       terms: all.map((term) => ({ term, pattern: compileTerm(term), strong: strong.has(term) })),
     };
@@ -85,6 +87,7 @@ export function classifyTexts(
       matches.push({
         id: theme.id,
         label: theme.label,
+        labelNb: theme.labelNb,
         field: theme.field,
         matchedTerms: [...matchedTerms].sort(),
         score,

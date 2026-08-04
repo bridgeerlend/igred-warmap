@@ -174,18 +174,130 @@
   #edition-date { font-size: clamp(46px, 5vw, 76px); }
   .standfirst { max-width: 34ch; }
 
-  /* Body text wants a measure, not the full width of a large screen. */
-  #sections { max-width: 72ch; }
+
 }
 
 @media (min-width: 1700px) {
   .edition { grid-template-columns: minmax(300px, 24%) minmax(0, 1fr); }
   #edition-date { font-size: clamp(76px, 5.4vw, 104px); }
-  #sections { max-width: 78ch; }
 }
 
 @media (min-width: 2300px) {
   .brief-masthead, .edition, .archive, .colophon, .banner {
     max-width: 2200px; margin-inline: auto;
   }
+}
+
+/* ============================================================
+   Browsing an edition: search, order, theme filter.
+
+   All of it is text with a rule under the active choice — the same
+   device the map uses for its time window. Pill-shaped buttons are
+   one of the tells the brief rules out, so there are none here.
+   ============================================================ */
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+.browse {
+  display: grid;
+  gap: clamp(12px, 1.6vw, 18px);
+  padding-bottom: clamp(16px, 2vw, 24px);
+  margin-bottom: clamp(20px, 3vw, 30px);
+  border-bottom: 1px solid var(--hair);
+}
+
+.browse-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px clamp(16px, 2.5vw, 30px);
+}
+
+.search { flex: 1 1 14rem; min-width: 0; }
+
+.search input {
+  width: 100%;
+  font: inherit;
+  font-size: clamp(15px, 1.2vw, 17px);
+  color: var(--fg);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--hair);
+  padding: 6px 0;
+  border-radius: 0; /* iOS rounds search inputs by default */
+  -webkit-appearance: none;
+  appearance: none;
+}
+.search input::placeholder { color: var(--fg-2); }
+.search input:focus { outline: none; border-bottom-color: var(--fg); }
+.search input:focus-visible { outline: 2px solid var(--fg); outline-offset: 4px; }
+
+.sort { display: flex; gap: clamp(12px, 1.6vw, 20px); flex: none; }
+
+.opt {
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  background: none;
+  border: 0;
+  padding: 3px 0;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+}
+.opt:hover { color: var(--fg); }
+.opt.is-on { color: var(--fg); border-bottom-color: var(--fg); }
+
+.themes { display: flex; flex-wrap: wrap; gap: 6px clamp(14px, 2vw, 22px); }
+.themes .count { font-variant-numeric: tabular-nums; opacity: 0.6; margin-left: 4px; }
+
+.browse-status {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+  min-height: 1em;
+}
+.browse-status button {
+  font: inherit; letter-spacing: inherit; text-transform: inherit;
+  color: var(--fg); background: none; border: 0; padding: 0; cursor: pointer;
+  border-bottom: 1px solid var(--fg); margin-left: 10px;
+}
+
+/* ---------- stepping through the archive ---------------------- */
+
+.edition-nav {
+  display: flex;
+  gap: clamp(14px, 2vw, 22px);
+  margin-top: clamp(14px, 2vw, 20px);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.edition-nav a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--hair); padding-bottom: 2px; }
+.edition-nav a:hover { border-bottom-color: var(--fg); }
+.edition-nav .spent { color: var(--fg-2); border-bottom-color: transparent; cursor: default; }
+
+.empty {
+  margin: 0;
+  padding: clamp(24px, 4vw, 40px) 0;
+  font-family: var(--display);
+  font-optical-sizing: auto;
+  font-size: clamp(18px, 2vw, 24px);
+  color: var(--fg-2);
+}
+
+@media (min-width: 900px) {
+  /* The browsing controls belong with the stories they act on, not with the dateline. */
+  #sections { max-width: none; }
+  .column { max-width: 72ch; min-width: 0; }
+}
+
+@media (min-width: 1700px) {
+  .column { max-width: 78ch; }
 }

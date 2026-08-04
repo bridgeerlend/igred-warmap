@@ -72,6 +72,8 @@ export const themesConfig = z.object({
       z.strictObject({
         id: z.string().min(1),
         label: z.string().min(1),
+        /** Shown in the interface, so it lives in config — adding a theme stays a config change. */
+        labelNb: z.string().min(1),
         field: z.enum(['geopolitical_risk', 'economic_development']),
         terms: z.array(z.string().min(2)).min(1),
         /** Decisive on their own when they appear in a headline. */

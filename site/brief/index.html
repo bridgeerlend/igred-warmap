@@ -19,7 +19,7 @@
 <div class="banner" id="banner" hidden></div>
 
 <header class="masthead brief-masthead">
-  <p class="wordmark">IGRED <span>The Brief</span></p>
+  <a class="wordmark wordmark-link" href="https://igred.org/"><strong>IGRED</strong> <span>The Brief</span></a>
   <div class="controls">
     <a class="link-button" href="../">Map</a>
     <button type="button" class="link-button" id="lang" aria-label="Bytt til norsk">NO</button>
@@ -31,9 +31,28 @@
   <div class="dateline">
     <h1 class="title" id="edition-date"></h1>
     <p class="standfirst" id="standfirst"></p>
+    <nav class="edition-nav" id="edition-nav" aria-label="Editions"></nav>
   </div>
 
-  <div id="sections"></div>
+  <div class="column">
+    <div class="browse">
+      <div class="browse-row">
+        <label class="search">
+          <span class="sr-only" data-i18n="searchLabel">Search the edition</span>
+          <input type="search" id="search" autocomplete="off" spellcheck="false">
+        </label>
+        <div class="sort" role="group" aria-label="Order">
+          <button type="button" class="opt is-on" data-sort="coverage" data-i18n="sortCoverage"></button>
+          <button type="button" class="opt" data-sort="newest" data-i18n="sortNewest"></button>
+        </div>
+      </div>
+
+      <nav class="themes" id="themes" aria-label="Themes"></nav>
+      <p class="browse-status" id="browse-status"></p>
+    </div>
+
+    <div id="sections"></div>
+  </div>
 </main>
 
 <aside class="archive" aria-labelledby="archive-heading">

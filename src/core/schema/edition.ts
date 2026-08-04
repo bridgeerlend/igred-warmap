@@ -18,6 +18,7 @@ export const editionSection = z.strictObject({
       z.strictObject({
         id: z.string().min(1),
         label: z.string().min(1),
+        labelNb: z.string().min(1),
         storyIds: z.array(z.string().min(1)).min(1),
       }),
     )

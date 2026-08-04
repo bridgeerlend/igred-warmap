@@ -31,13 +31,13 @@ export const indexPath = () => path.join(editionsDir, 'index.json');
  * rather than a flat list.
  */
 export function buildSections(stories: Story[]): Edition['sections'] {
-  const byField = new Map<string, Map<string, { label: string; storyIds: string[] }>>();
+  const byField = new Map<string, Map<string, { label: string; labelNb: string; storyIds: string[] }>>();
 
   for (const story of stories) {
     const top = story.themes[0];
     if (!top) continue;
     const themes = byField.get(top.field) ?? new Map();
-    const entry = themes.get(top.id) ?? { label: top.label, storyIds: [] };
+    const entry = themes.get(top.id) ?? { label: top.label, labelNb: top.labelNb, storyIds: [] };
     entry.storyIds.push(story.id);
     themes.set(top.id, entry);
     byField.set(top.field, themes);
@@ -53,7 +53,7 @@ export function buildSections(stories: Story[]): Edition['sections'] {
       field,
       fieldLabel: FIELD_LABEL[field],
       themes: [...themes.entries()]
-        .map(([id, entry]) => ({ id, label: entry.label, storyIds: entry.storyIds }))
+        .map(([id, entry]) => ({ id, label: entry.label, labelNb: entry.labelNb, storyIds: entry.storyIds }))
         .sort((a, b) => b.storyIds.length - a.storyIds.length || a.label.localeCompare(b.label)),
     });
   }

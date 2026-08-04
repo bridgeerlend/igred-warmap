@@ -350,3 +350,80 @@ describe('13 — everything runs free', () => {
     expect(read('config/brief.json')).toMatch(/never cost money/);
   });
 });
+
+describe('sources are named, never shown as logos', () => {
+  /**
+   * A masthead logo is a trademark, and reproducing one implies a relationship the institute
+   * does not have. Naming the outlet in text is both safer and more editorially honest — so
+   * this is pinned rather than left to whoever edits the page next.
+   */
+  it('no product references an image of any kind', () => {
+    for (const page of [
+      'site/index.html', 'site/app.js', 'site/styles.css',
+      'site/brief/index.html', 'site/brief/brief.js', 'site/brief/brief.css',
+      'www/index.html', 'www/home.js', 'www/home.css',
+      'site/atlas.css',
+    ]) {
+      const text = read(page);
+      expect(text).not.toMatch(/<img\b|<picture\b/i);
+      expect(text).not.toMatch(/\.(png|jpe?g|gif|webp|avif|ico)\b/i);
+      // The one SVG in the products is the map's own cartography, drawn from coordinates.
+      expect(text).not.toMatch(/logo/i);
+    }
+  });
+
+  it('the Brief prints the outlet name as the link text', () => {
+    expect(read('site/brief/brief.js')).toMatch(/escapeHtml\(article\.publisher\)/);
+  });
+
+  it('every outlet in the published data is a readable name', () => {
+    for (const story of readJson('data/stories.json').stories) {
+      for (const source of story.provenance) {
+        expect(source.sourceName).toMatch(/[A-Za-z]/);
+        expect(source.sourceName).not.toMatch(/^https?:/);
+      }
+    }
+  });
+});
+
+describe('the wordmark links home', () => {
+  it('from the map and the Brief, but not from the home page to itself', () => {
+    for (const page of ['site/index.html', 'site/brief/index.html']) {
+      expect(read(page)).toMatch(/<a class="wordmark wordmark-link" href="https:\/\/igred\.org\/">/);
+    }
+    expect(read('www/index.html')).not.toMatch(/wordmark-link/);
+  });
+
+  it('and is reachable by keyboard', () => {
+    expect(read('site/atlas.css')).toMatch(/a\.wordmark-link:focus-visible/);
+  });
+});
+
+describe('an edition can be browsed', () => {
+  it('search, order and theme filter are all present', () => {
+    const html = read('site/brief/index.html');
+    expect(html).toMatch(/id="search"/);
+    expect(html).toMatch(/data-sort="coverage"/);
+    expect(html).toMatch(/id="themes"/);
+  });
+
+  it('the archive can be stepped through, with the date in the URL', () => {
+    expect(read('site/brief/brief.js')).toMatch(/\?edition=\$\{date\}/);
+    expect(read('site/brief/index.html')).toMatch(/id="edition-nav"/);
+  });
+
+  it('theme names are translated in config, so adding a theme stays a config change', () => {
+    for (const theme of config.themes.themes) {
+      expect(theme.labelNb.length).toBeGreaterThan(0);
+      expect(theme.labelNb).not.toBe(theme.label);
+    }
+    expect(read('site/brief/brief.js')).toMatch(/theme\.labelNb/);
+  });
+
+  it('the controls use no pill-shaped buttons, which the brief rules out', () => {
+    const css = read('site/brief/brief.css');
+    const optRule = /\.opt \{[^}]*\}/.exec(css)?.[0] ?? '';
+    expect(optRule).not.toMatch(/border-radius/);
+    expect(optRule).toMatch(/border-bottom/);
+  });
+});

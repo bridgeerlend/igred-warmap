@@ -24,6 +24,7 @@ export type Article = z.infer<typeof article>;
 export const themeMatch = z.strictObject({
   id: z.string().min(1),
   label: z.string().min(1),
+  labelNb: z.string().min(1),
   field: z.enum(['geopolitical_risk', 'economic_development']),
   /** The terms that actually matched, so a classification can be checked rather than trusted. */
   matchedTerms: z.array(z.string().min(1)).min(1),
