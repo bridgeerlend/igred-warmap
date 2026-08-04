@@ -77,7 +77,7 @@ const geojson = JSON.parse(readFileSync(path.join(buildDir, 'ne110m.geojson'), '
   features: Feature[];
 };
 
-const countries: { fips: string; name: string; path: string }[] = [];
+const countries: { fips: string; name: string; path: string; centre?: [number, number] }[] = [];
 let dropped = 0;
 
 for (const feature of geojson.features) {
@@ -94,7 +94,36 @@ for (const feature of geojson.features) {
     .filter((entry) => entry.length > 0);
 
   if (paths.length === 0) continue;
-  countries.push({ fips, name, path: paths.join('') });
+
+  // A view-space centroid per country, so search can centre the map on a conflict that has
+  // no incidents of its own yet. Area-weighted, so a country's mainland outweighs its
+  // islands — an unweighted mean of vertices would put France in the Pacific.
+  let weightSum = 0;
+  let cx = 0;
+  let cy = 0;
+  for (const ring of ringsOf(feature)) {
+    const area = ringArea(ring);
+    if (area < MIN_RING_AREA) continue;
+    let sx = 0;
+    let sy = 0;
+    for (const [lon, lat] of ring) {
+      const [x, y] = toView(lon, lat);
+      sx += x;
+      sy += y;
+    }
+    cx += (sx / ring.length) * area;
+    cy += (sy / ring.length) * area;
+    weightSum += area;
+  }
+
+  countries.push({
+    fips,
+    name,
+    path: paths.join(''),
+    ...(weightSum > 0
+      ? { centre: [Number(round(cx / weightSum)), Number(round(cy / weightSum))] as [number, number] }
+      : {}),
+  });
 }
 
 // A graticule reads as considered cartography rather than a default basemap, and one

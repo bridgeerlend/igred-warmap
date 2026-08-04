@@ -44,6 +44,20 @@ const STRINGS = {
     colophon:
       'Incidents come from the GDELT news stream, clustered by this project without any language model, and are shown only with the outlet that reported them. Cartography is drawn from Natural Earth 1:110m (public domain) in the Natural Earth projection — no third-party tiles. Full history is kept in the repository; older data is available on request at',
     zoomHint: 'Scroll or pinch to zoom · drag to pan',
+    searchLabel: 'Search conflicts and places',
+    searchPlaceholder: 'Search a conflict or a place…',
+    noResults: 'Nothing matches that.',
+    resultConflict: 'Conflict on record', resultPlace: 'Incident location',
+    conflictsHere: (country) => `Conflicts on record in ${country}`,
+    conflictCount: (n) => `${n} ${n === 1 ? 'conflict' : 'conflicts'} on record here`,
+    partiesLabel: 'Parties',
+    countryLabel: 'Country',
+    calloutHint: 'Full record in the panel',
+    dayPrecision: 'Dated to the day',
+    reportedOn: 'Reported',
+    conflictCaveat:
+      'These are the conflicts the verified register records in this country. Which of them, if any, this incident belongs to is not something the source data establishes.',
+    noConflictHere: 'No conflict is recorded in this country by the register.',
     heat: 'Thermal detections',
     heatOn: 'Hide heat', heatOff: 'Show heat',
     heatNote: (n, instrument) =>
@@ -77,11 +91,30 @@ const STRINGS = {
     colophon:
       'Hendelsene kommer fra nyhetsstrømmen GDELT, gruppert av dette prosjektet uten noen språkmodell, og vises bare sammen med kilden som meldte dem. Kartografien er tegnet fra Natural Earth 1:110m (offentlig eiendom) i Natural Earth-projeksjonen — ingen kartfliser fra tredjepart. Full historikk ligger i repoet; eldre data fås ved henvendelse til',
     zoomHint: 'Rull eller knip for å zoome · dra for å flytte',
+    searchLabel: 'Søk i konflikter og steder',
+    searchPlaceholder: 'Søk en konflikt eller et sted …',
+    noResults: 'Ingen treff.',
+    resultConflict: 'Registrert konflikt', resultPlace: 'Hendelsessted',
+    conflictsHere: (country) => `Konflikter registrert i ${country}`,
+    conflictCount: (n) => `${n} ${n === 1 ? 'konflikt' : 'konflikter'} registrert her`,
+    partiesLabel: 'Parter',
+    countryLabel: 'Land',
+    calloutHint: 'Hele oppføringen står i panelet',
+    dayPrecision: 'Datert til dagen',
+    reportedOn: 'Meldt',
+    conflictCaveat:
+      'Dette er konfliktene det verifiserte registeret fører i dette landet. Hvilken av dem denne hendelsen eventuelt hører til, er ikke noe kildedataene fastslår.',
+    noConflictHere: 'Registeret fører ingen konflikt i dette landet.',
     heat: 'Varmedeteksjoner',
     heatOn: 'Skjul varme', heatOff: 'Vis varme',
     heatNote: (n, instrument) =>
       `<b>${n}</b> satellittmålte varmedeteksjoner siste døgn (${instrument}). Dette er varmesignaturer, ikke angrep — en brann kan være beskytning, et brennende lager eller nedbrenning av mark, og instrumentet skiller dem ikke.`,
   },
+};
+
+const CONFLICT_TYPE = {
+  en: { state_based: 'State-based', non_state: 'Non-state', one_sided: 'One-sided violence' },
+  nb: { state_based: 'Statlig', non_state: 'Ikke-statlig', one_sided: 'Ensidig vold' },
 };
 
 const CATEGORY = {
@@ -115,6 +148,8 @@ const state = {
   dragDistance: 0,
   heat: null,
   showHeat: true,
+  conflicts: [],
+  countryNames: new Map(),
 };
 
 const $ = (id) => document.getElementById(id);
@@ -178,9 +213,19 @@ async function load() {
    * complete when it is not.
    */
   loadJson(base, 'conflicts.json')
-    .then((conflicts) => {
-      const active = (conflicts.conflicts ?? []).filter((entry) => entry.status === 'active');
+    .then((payload) => {
+      const active = (payload.conflicts ?? []).filter((entry) => entry.status === 'active');
+      state.conflicts = active;
+      for (const conflict of active) {
+        for (const country of conflict.countries) {
+          if (country.fips) state.countryNames.set(country.fips, country.name);
+        }
+      }
       if (active.length === 0) showBanner(t().registerTitle, t().registerBody);
+      // The register arrives after the first paint, so anything already selected is redrawn
+      // with the context it was missing.
+      renderDetail(state.selected?.event ?? null);
+      renderSearch();
     })
     .catch(() => {});
 
@@ -358,6 +403,8 @@ function applyView() {
   const { x, y, w, h } = state.view;
   $('map').setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
   sizePoints();
+  // Anchored in screen space, so panning or zooming has to move it with the point.
+  if (state.selected) showCallout(state.selected.event);
 }
 
 function zoomBy(factor, originX, originY) {
@@ -498,6 +545,7 @@ function select(node) {
   $('plate').classList.add('dimmed');
   node.group.classList.add('selected');
   renderDetail(node.event);
+  showCallout(node.event);
 }
 
 function clearSelection() {
@@ -505,6 +553,12 @@ function clearSelection() {
   state.selected?.group.classList.remove('selected');
   state.selected = null;
   renderDetail(null);
+  hideCallout();
+}
+
+function conflictsInCountry(fips) {
+  if (!fips) return [];
+  return state.conflicts.filter((conflict) => conflict.countries.some((country) => country.fips === fips));
 }
 
 function renderDetail(event) {
@@ -520,22 +574,119 @@ function renderDetail(event) {
     : escapeHtml(t().unconfirmed);
 
   // Every visible incident shows the sources behind it — that is the whole contract.
-  const sources = event.provenance.slice(0, 6).map((entry) => {
+  const sources = event.provenance.slice(0, 8).map((entry) => {
     const outlet = entry.publisher ?? entry.sourceName;
     const when = (entry.publishedAt ?? entry.retrievedAt ?? '').slice(0, 10);
     return `<li><a href="${escapeHtml(entry.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(outlet)}</a> <span class="outlet">· ${escapeHtml(when)}</span></li>`;
   }).join('');
 
+  /*
+   * The register's conflicts for this country, with their verified parties.
+   *
+   * The incident's own CAMEO actors are deliberately not shown. They are assigned by word
+   * matching and are routinely wrong in a way that reads as fact: the live feed has "SCHOOL"
+   * as the initiator of an armed clash in Gaza and "JORDAN" as the initiator of one in
+   * Tehran. The register's parties are verified, so those are shown instead.
+   *
+   * The association is by country and is described as such. Iran has three conflicts on
+   * record; which one a given incident belongs to is not in the data.
+   */
+  const here = conflictsInCountry(event.location.countryFips);
+  const countryName =
+    state.countryNames.get(event.location.countryFips) ??
+    event.location.name.split(',').pop()?.trim() ??
+    '';
+
+  const context = here.length > 0
+    ? `<section class="detail-context">` +
+      `<h3>${escapeHtml(t().conflictsHere(countryName))}</h3>` +
+      `<ul class="detail-conflicts">` +
+      here.slice(0, 5).map((conflict) => {
+        const parties = conflict.parties.map((party) => party.name).filter(Boolean);
+        return `<li>` +
+          `<span class="conflict-name">${escapeHtml(conflict.name)}</span>` +
+          `<span class="conflict-kind">${escapeHtml(CONFLICT_TYPE[state.lang][conflict.type] ?? conflict.type)}` +
+          (parties.length ? ` · ${escapeHtml(t().partiesLabel)}: ${escapeHtml(parties.join(' · '))}` : '') +
+          `</span></li>`;
+      }).join('') +
+      `</ul>` +
+      `<p class="detail-caveat">${escapeHtml(t().conflictCaveat)}</p>` +
+      `</section>`
+    : `<section class="detail-context"><p class="detail-caveat">${escapeHtml(t().noConflictHere)}</p></section>`;
+
+  // GDELT dates most incidents to the day, so the precision is stated rather than implied.
+  const dated = event.dateBasis === 'report_date' ? t().reportedOn : t().dayPrecision;
+
   detail.innerHTML =
     `<h2 class="detail-place">${escapeHtml(event.location.name)}</h2>` +
     `<div class="detail-meta">` +
       `<span>${escapeHtml(categoryLabel(event.category))}</span>` +
-      `<span>${escapeHtml(event.occurredAt.slice(0, 10))}</span>` +
+      `<span>${escapeHtml(dated)} ${escapeHtml(event.occurredAt.slice(0, 10))}</span>` +
       `<span>${escapeHtml(t().intensity)} ${event.intensity} ${escapeHtml(t().of)} 5</span>` +
       `<span>${escapeHtml(t().reports(event.reportCount))} · ${escapeHtml(t().outlets(event.distinctPublishers))}</span>` +
       `<span>${confidence}</span>` +
     `</div>` +
+    context +
     `<ul class="detail-sources">${sources}</ul>`;
+
+  // One quiet pulse of the label's own rule, so a click 900px away is visibly answered.
+  detail.classList.remove('just-updated');
+  void detail.offsetWidth;
+  detail.classList.add('just-updated');
+}
+
+/* ---------- the callout, anchored where you clicked -------------------- */
+
+function hideCallout() {
+  $('callout').hidden = true;
+}
+
+function showCallout(event) {
+  const callout = $('callout');
+  const svg = $('map');
+  const plate = $('plate');
+
+  const svgBox = svg.getBoundingClientRect();
+  const plateBox = plate.getBoundingClientRect();
+  const view = state.view;
+  const scale = Math.min(svgBox.width / view.w, svgBox.height / view.h);
+  const drawnLeft = svgBox.left + (svgBox.width - view.w * scale) / 2;
+  const drawnTop = svgBox.top + (svgBox.height - view.h * scale) / 2;
+
+  const x = drawnLeft + (event.x - view.x) * scale - plateBox.left;
+  const y = drawnTop + (event.y - view.y) * scale - plateBox.top;
+
+  const here = conflictsInCountry(event.location.countryFips);
+  callout.innerHTML =
+    `<p class="callout-place">${escapeHtml(event.location.name)}</p>` +
+    `<p class="callout-meta">${escapeHtml(categoryLabel(event.category))} · ` +
+    `${escapeHtml(t().outlets(event.distinctPublishers))}` +
+    // A count, not a name. Israel has five conflicts on record; naming the first would
+    // assert exactly what the panel below says the data does not establish.
+    (here.length ? ` · ${escapeHtml(t().conflictCount(here.length))}` : '') +
+    `</p>` +
+    `<p class="callout-hint">${escapeHtml(t().calloutHint)}</p>`;
+
+  callout.hidden = false;
+  callout.classList.remove('flip-below');
+  callout.style.left = '0px';
+  callout.style.top = `${y}px`;
+
+  /*
+   * Clamped numerically rather than flipped by class. A flip moves the box by a fixed
+   * offset, which is not enough when the box is wider than the space beside the point — on a
+   * narrow plate it still hung over the edge. The leader then has to be told where the point
+   * actually is, since the box is no longer centred on it.
+   */
+  const width = callout.offsetWidth;
+  const height = callout.offsetHeight;
+  const pad = 8;
+  const left = Math.min(Math.max(x - width / 2, pad), Math.max(pad, plateBox.width - width - pad));
+  callout.style.left = `${left}px`;
+  callout.style.setProperty('--leader-x', `${Math.min(Math.max(x - left, 10), width - 10)}px`);
+
+  // Above the point unless there is no room, in which case below it.
+  if (y - height - 14 < 0) callout.classList.add('flip-below');
 }
 
 /* ---------- index ------------------------------------------------------ */
@@ -578,6 +729,112 @@ function renderIndex() {
       });
       grid.appendChild(button);
     });
+}
+
+/* ---------- search over conflicts and places ---------------------------- */
+
+/**
+ * Two kinds of result, because the map holds two kinds of thing.
+ *
+ * A place is an incident: selecting it opens the record. A conflict may have no incident in
+ * the window at all — most do not — so it centres its country instead, using the centroid
+ * carried in the geometry. Saying "nothing to show" for a conflict that plainly exists would
+ * be worse than putting the map where it is.
+ */
+function searchResults(query) {
+  const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return [];
+  const matches = (haystack) => words.every((word) => haystack.includes(word));
+
+  const results = [];
+
+  for (const conflict of state.conflicts) {
+    const haystack = [
+      conflict.name,
+      ...conflict.parties.map((party) => party.name),
+      ...conflict.countries.map((country) => country.name),
+    ].join(' ').toLowerCase();
+    if (!matches(haystack)) continue;
+    const fips = conflict.countries.find((country) => country.fips)?.fips;
+    results.push({
+      kind: 'conflict',
+      label: conflict.name,
+      detail: conflict.countries.map((country) => country.name).join(', '),
+      fips,
+    });
+  }
+
+  const seenPlaces = new Set();
+  for (const node of state.nodes) {
+    const place = node.event.location.name;
+    if (seenPlaces.has(place)) continue;
+    if (!matches(`${place} ${categoryLabel(node.event.category)}`.toLowerCase())) continue;
+    seenPlaces.add(place);
+    results.push({ kind: 'place', label: place, detail: categoryLabel(node.event.category), node });
+  }
+
+  // Conflicts first: a search for "Ukraine" should offer the conflict before one incident.
+  return results.slice(0, 24);
+}
+
+function renderSearch() {
+  const box = $('results');
+  const query = $('search').value.trim();
+
+  if (query.length < 2) {
+    box.hidden = true;
+    box.innerHTML = '';
+    return;
+  }
+
+  const results = searchResults(query);
+  box.hidden = false;
+
+  if (results.length === 0) {
+    box.innerHTML = `<p class="none">${escapeHtml(t().noResults)}</p>`;
+    return;
+  }
+
+  box.innerHTML = results
+    .map(
+      (result, index) =>
+        `<button type="button" data-index="${index}">` +
+        `<span class="result-name">${escapeHtml(result.label)}</span>` +
+        `<span class="result-kind">${escapeHtml(result.kind === 'conflict' ? t().resultConflict : t().resultPlace)}` +
+        (result.detail ? ` · ${escapeHtml(result.detail)}` : '') +
+        `</span></button>`,
+    )
+    .join('');
+
+  for (const button of box.querySelectorAll('button')) {
+    button.addEventListener('click', () => goTo(results[Number(button.dataset.index)]));
+  }
+}
+
+/** Centres the view on a point without changing the zoom the reader chose. */
+function centreOn(x, y, zoomTo) {
+  const width = zoomTo ?? state.view.w;
+  const height = (width * state.home.h) / state.home.w;
+  state.view = { x: x - width / 2, y: y - height / 2, w: width, h: height };
+  clampView();
+  applyView();
+}
+
+function goTo(result) {
+  if (!result) return;
+
+  if (result.kind === 'place' && result.node) {
+    // Close enough to read the place, but not so close the surroundings vanish.
+    centreOn(result.node.event.x, result.node.event.y, Math.min(state.view.w, state.home.w * 0.22));
+    select(result.node);
+    return;
+  }
+
+  const country = state.world?.countries.find((entry) => entry.fips === result.fips);
+  if (country?.centre) {
+    clearSelection();
+    centreOn(country.centre[0], country.centre[1], Math.min(state.view.w, state.home.w * 0.35));
+  }
 }
 
 /* ---------- chrome ------------------------------------------------------ */
@@ -638,6 +895,8 @@ function applyStaticStrings() {
     const value = t()[node.dataset.i18n];
     if (typeof value === 'string') node.textContent = value;
   }
+  $('search').placeholder = t().searchPlaceholder;
+
   document.documentElement.lang = state.lang;
   $('lang').textContent = state.lang === 'en' ? 'NO' : 'EN';
   $('lang').setAttribute('aria-label', state.lang === 'en' ? 'Bytt til norsk' : 'Switch to English');
@@ -650,6 +909,7 @@ function refresh() {
   renderScaleKey();
   renderIndex();
   renderDetail(state.selected?.event ?? null);
+  renderSearch();
   wirePoints();
 }
 
@@ -669,6 +929,20 @@ function wirePoints() {
 
 function wireChrome() {
   $('map').addEventListener('click', (ev) => { if (ev.target === $('map')) clearSelection(); });
+
+  const search = $('search');
+  search.addEventListener('input', renderSearch);
+  search.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      search.value = '';
+      renderSearch();
+    }
+    // Enter takes the first result, which is what a reader expects from a search field.
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      goTo(searchResults(search.value.trim())[0]);
+    }
+  });
 
   for (const button of document.querySelectorAll('.window-option')) {
     button.addEventListener('click', () => {

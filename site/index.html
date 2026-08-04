@@ -38,6 +38,12 @@
 
     <p class="standfirst" id="standfirst"></p>
 
+    <label class="map-search">
+      <span class="sr-only" data-i18n="searchLabel">Search conflicts and places</span>
+      <input type="search" id="search" autocomplete="off" spellcheck="false">
+    </label>
+    <div class="results" id="results" role="listbox" aria-label="Search results" hidden></div>
+
     <nav class="window" aria-label="Time window">
       <button type="button" class="window-option" data-days="1" data-i18n="win1">24 hours</button>
       <button type="button" class="window-option" data-days="7" data-i18n="win7">7 days</button>
@@ -47,6 +53,10 @@
 
   <div class="plate" id="plate">
     <svg id="map" role="img" aria-describedby="standfirst"></svg>
+
+    <!-- Anchored at the point you clicked. The full record is in the label at the side, but
+         a click 900px away from its own response is a click most people never notice. -->
+    <div class="callout" id="callout" hidden></div>
 
     <div class="plate-tools">
       <button type="button" class="link-button" id="zoom-out" aria-label="Zoom out">&minus;</button>

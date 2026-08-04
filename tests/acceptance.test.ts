@@ -460,3 +460,94 @@ describe('an edition can be browsed', () => {
     expect(optRule).toMatch(/border-bottom/);
   });
 });
+
+describe('a click on the map is visibly answered', () => {
+  it('a callout is anchored at the point, not only in the distant panel', () => {
+    // On a wide screen the label sits ~900px from the mark you clicked. Without something
+    // at the point, the click reads as having done nothing.
+    expect(read('site/index.html')).toMatch(/id="callout"/);
+    expect(read('site/app.js')).toMatch(/function showCallout/);
+    // It is positioned in screen space, so panning and zooming must carry it along.
+    expect(read('site/app.js')).toMatch(/if \(state\.selected\) showCallout/);
+  });
+
+  it('the callout is clamped inside the plate, with the leader still on the point', () => {
+    // Flipping by a fixed offset was not enough when the box is wider than the space beside
+    // the point; on a narrow plate it still hung over the edge.
+    const app = read('site/app.js');
+    expect(app).toMatch(/Math\.min\(Math\.max\(x - width \/ 2, pad\)/);
+    expect(app).toMatch(/--leader-x/);
+    expect(read('site/styles.css')).toMatch(/left: var\(--leader-x/);
+  });
+
+  it('the panel acknowledges the update, and honours reduced motion', () => {
+    expect(read('site/styles.css')).toMatch(/\.detail\.just-updated/);
+    // The blanket reduced-motion rule in atlas.css disables it.
+    expect(read('site/atlas.css')).toMatch(/prefers-reduced-motion/);
+  });
+});
+
+describe('an incident carries the context the data supports', () => {
+  it('shows the register’s conflicts for the country, with their verified parties', () => {
+    const app = read('site/app.js');
+    expect(app).toMatch(/function conflictsInCountry/);
+    expect(app).toMatch(/conflict\.parties\.map/);
+  });
+
+  it('never presents GDELT’s own actor codes as the actors involved', () => {
+    /*
+     * They are assigned by word matching and are routinely wrong in a way that reads as
+     * fact: the live feed has "SCHOOL" as the initiator of an armed clash in Gaza and
+     * "JORDAN" as the initiator of one in Tehran.
+     */
+    const app = read('site/app.js');
+    expect(app).not.toMatch(/event\.actors/);
+
+    // The data still carries them — this is a display decision, not a data loss.
+    const events = readJson('data/events.json').events;
+    expect(events.some((event: { actors: unknown[] }) => event.actors.length > 0)).toBe(true);
+  });
+
+  it('describes the link as by country, because that is all the data establishes', () => {
+    const app = read('site/app.js');
+    expect(app).toMatch(/conflictsHere: \(country\)/);
+    expect(app).toMatch(/is not something the source data establishes/);
+    // The callout counts conflicts rather than naming one of several.
+    expect(app).toMatch(/conflictCount: \(n\)/);
+  });
+
+  it('states the date precision instead of implying an hour', () => {
+    expect(read('site/app.js')).toMatch(/event\.dateBasis === 'report_date'/);
+  });
+});
+
+describe('search reaches a conflict or a place', () => {
+  it('searches both, and says which kind each result is', () => {
+    const app = read('site/app.js');
+    expect(app).toMatch(/kind: 'conflict'/);
+    expect(app).toMatch(/kind: 'place'/);
+  });
+
+  it('can centre a conflict that has no incident in the window', () => {
+    // Most registered conflicts have none, so the geometry carries a centroid per country.
+    const world = readJson('site/world.json');
+    const withCentre = world.countries.filter((country: { centre?: number[] }) => country.centre);
+    expect(withCentre.length).toBe(world.countries.length);
+    expect(read('site/app.js')).toMatch(/country\?\.centre/);
+  });
+
+  it('every registered active conflict can be reached', () => {
+    const world = readJson('site/world.json');
+    const known = new Set(
+      world.countries.filter((c: { centre?: number[] }) => c.centre).map((c: { fips: string }) => c.fips),
+    );
+    const active = readJson('data/conflicts.json').conflicts.filter(
+      (conflict: { status: string }) => conflict.status === 'active',
+    );
+    const unreachable = active.filter(
+      (conflict: { countries: { fips?: string }[] }) =>
+        !conflict.countries.some((country) => country.fips && known.has(country.fips)),
+    );
+    expect(unreachable).toEqual([]);
+  });
+});
