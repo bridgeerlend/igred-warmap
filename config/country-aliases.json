@@ -1,5 +1,13 @@
 {
   "$comment": "Country names are matched against the names GDELT itself emits, after a deterministic normalisation (lowercase, parentheticals and punctuation removed). This file holds only the leftovers that normalisation cannot reconcile. Names the resolver fails to match are reported in data/health.json rather than guessed, so entries here are added from observed mismatches — never invented up front.",
   "schemaVersion": 1,
-  "aliases": {}
+  "aliases": {
+    "DR Congo (Zaire)": "CG",
+    "Togo": "TO",
+    "Ivory Coast": "IV",
+    "United States of America": "US",
+    "North Macedonia": "MK",
+    "Kingdom of eSwatini (Swaziland)": "WZ"
+  },
+  "$ucdpNote": "UCDP spells some countries its own way — \"DR Congo (Zaire)\", \"Kingdom of eSwatini (Swaziland)\" — so its strings are mapped here rather than in code. Historical entities it also carries (South Vietnam, South Yemen, Hyderabad) have no modern FIPS and stay unresolved, which is correct: the conflict is recorded, but there is no present-day country to place it in."
 }

@@ -12,6 +12,8 @@ export function normaliseCountryName(name: string): string {
     .trim();
 }
 
+const FIPS_CODE = /^[A-Z]{2}$/;
+
 export class CountryResolver {
   private readonly byNormalised = new Map<string, string>();
 
@@ -28,8 +30,15 @@ export class CountryResolver {
    * Exact match after normalisation only. Fuzzy matching is deliberately absent: prefix
    * matching would happily resolve "Niger" to "Nigeria", and a wrong country is worse
    * than an unresolved one.
+   *
+   * An alias may give a FIPS code directly rather than another name. That matters more than
+   * it looks: the observed-name table only contains countries the news feed has actually
+   * mentioned, so a register country the feed has never covered — Togo, say — has no name to
+   * be aliased to and could never be resolved by name alone.
    */
   resolve(name: string): string | undefined {
-    return this.byNormalised.get(normaliseCountryName(this.aliases[name] ?? name));
+    const alias = this.aliases[name];
+    if (alias !== undefined && FIPS_CODE.test(alias)) return alias;
+    return this.byNormalised.get(normaliseCountryName(alias ?? name));
   }
 }

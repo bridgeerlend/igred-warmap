@@ -39,7 +39,9 @@
           "ucdpprioconflict",
           "nonstate",
           "onesided"
-        ]
+        ],
+        "refreshEveryHours": 24,
+        "$quotaNote": "UCDP is updated monthly, so fetching it hourly would spend roughly 170 of the 5000 daily requests on data that cannot have changed. Once a day is refetched; in between the register is served from the last good copy, which is what source isolation already does for an outage."
       }
     },
     {

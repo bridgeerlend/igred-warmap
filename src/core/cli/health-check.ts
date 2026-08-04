@@ -7,6 +7,9 @@ import { loadConfig } from '../config.js';
 import { healthArtifact } from '../schema/artifact.js';
 import { readArtifact } from '../pipeline/store.js';
 import { dataPaths } from '../util/paths.js';
+import { loadLocalEnv } from '../util/env.js';
+
+loadLocalEnv();
 
 const config = loadConfig();
 const health = readArtifact(dataPaths.health, healthArtifact).value;

@@ -93,12 +93,13 @@ describe('3 — a failing source keeps its last good data and the rest continues
     expect(read('src/core/pipeline/runner.ts')).toMatch(/not_configured/);
   });
 
-  it('the live run proves it: UCDP has no token yet and the others still produced data', () => {
+  it('every source reports its own health, and a bad one cannot fail the run', () => {
     const health = readJson('data/health.json');
-    const ucdp = health.sources.find((source: { sourceId: string }) => source.sourceId === 'ucdp');
-    expect(ucdp.status).toBe('not_configured');
-    const working = health.sources.filter((source: { status: string }) => source.status === 'ok');
-    expect(working.length).toBeGreaterThanOrEqual(3);
+    const ids = health.sources.map((source: { sourceId: string }) => source.sourceId).sort();
+    expect(ids).toEqual(['firms', 'gdelt', 'media', 'newsfeeds', 'ucdp']);
+    // Whatever any single source is doing, the others still produced records this run.
+    const producing = health.sources.filter((s: { recordsLastRun: number }) => s.recordsLastRun > 0);
+    expect(producing.length).toBeGreaterThanOrEqual(3);
   });
 });
 
@@ -252,6 +253,38 @@ describe('8 — the new-conflict flow opens a pull request that can be merged fr
 
   it('the retained window is re-gated, so dismissing removes incidents rather than leaving them', () => {
     expect(read('src/core/cli/ingest.ts')).toMatch(/selectDisplayEvents\(previousEvents/);
+  });
+});
+
+describe('the display gate admits only registered conflicts', () => {
+  it('has no always-relevant escape hatch', () => {
+    /*
+     * This existed because the map was otherwise blank before UCDP was connected. On the
+     * first run with a real register it passed six events and not one was an aerial strike:
+     * a firefighting helicopter crash in Greece geolocated to Oregon, a tourist plane crash
+     * in Peru, a wildfire update in Colorado. CAMEO does not distinguish an aircraft
+     * accident from an aerial attack.
+     */
+    expect(config.taxonomy.relevance.alwaysRelevantCategories).toEqual([]);
+  });
+
+  it('and the live window contains nothing outside the register', () => {
+    const registered = new Set(
+      readJson('data/conflicts.json')
+        .conflicts.filter((conflict: { status: string }) => conflict.status === 'active')
+        .flatMap((conflict: { countries: { fips?: string }[] }) =>
+          conflict.countries.map((country) => country.fips),
+        )
+        .filter(Boolean),
+    );
+    for (const event of readJson('data/events.json').events) {
+      expect(registered.has(event.location.countryFips)).toBe(true);
+    }
+  });
+
+  it('discovery does not depend on the gate, so a new flare-up is still found', () => {
+    // Detection runs on ungated clusters; closing the hatch cannot hide a new conflict.
+    expect(read('src/core/cli/ingest.ts')).toMatch(/baseline sees every clustered event, gated or not/);
   });
 });
 

@@ -79,11 +79,21 @@ or style.
 
 ## Open items carried forward
 
-- **UCDP mapping is unverified.** It could not be exercised without a token, so it is
-  written defensively and fails loudly on shape mismatch. Confirm it against the live API
-  as soon as the token exists.
-- **The map is nearly empty until UCDP is connected**, and says so in a banner. The display
-  gate is the register; see the README for why the cheaper gates were rejected.
+- ~~UCDP mapping is unverified.~~ **Done, and it was wrong.** First contact with the live API
+  found the non-state dataset names its parties `side_a_name` / `side_b_name` rather than
+  `side_a` / `side_b`, so every non-state row failed validation and was silently discarded —
+  75 of the 223 active conflicts, exactly the militia and cartel violence the brief asks for.
+  `tests/ucdp.test.ts` now pins all three dataset shapes against rows copied from the live
+  service.
+- ~~The map is nearly empty until UCDP is connected.~~ **Connected.** 1,578 conflicts, 223
+  active across 48 countries.
+- **The always-relevant escape hatch is closed.** It let inherently military event types onto
+  the map wherever they occurred, because before the register the map was otherwise blank.
+  With a real register it only admitted noise: on the first connected run it passed six
+  events and not one was an aerial strike — a firefighting helicopter crash in Greece
+  geolocated to Oregon, a tourist plane crash in Peru, a wildfire update in Colorado. CAMEO
+  does not distinguish an aircraft accident from an aerial attack. Discovery is unaffected:
+  detection runs ungated.
 - **AI prose is off.** The key's project has no Gemini allowance, so the Brief publishes
   sourced records without prose — a valid edition. `npm run gemini:check` names a working
   model once the project has quota; then set `ai.enabled` back to true.

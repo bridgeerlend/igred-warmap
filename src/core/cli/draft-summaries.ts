@@ -15,11 +15,9 @@ import { editionPath, summariesPath } from '../edition/build.js';
 import { edition as editionSchema, editionSummaries } from '../schema/edition.js';
 import { readArtifact, writeArtifact } from '../pipeline/store.js';
 import { repoRoot } from '../util/paths.js';
+import { loadLocalEnv } from '../util/env.js';
 
-// Locally the key lives in a gitignored .env; in Actions it arrives as a real environment
-// variable and this file simply does not exist.
-const envFile = path.join(repoRoot, '.env');
-if (existsSync(envFile)) process.loadEnvFile(envFile);
+loadLocalEnv();
 
 const args = process.argv.slice(2);
 const flag = (name: string): string | undefined => {

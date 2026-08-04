@@ -12,9 +12,9 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { loadConfig } from '../config.js';
 import { repoRoot } from '../util/paths.js';
+import { loadLocalEnv } from '../util/env.js';
 
-const envFile = path.join(repoRoot, '.env');
-if (existsSync(envFile)) process.loadEnvFile(envFile);
+loadLocalEnv();
 
 const config = loadConfig().brief;
 const apiKey = process.env[config.ai.credentialEnvVar]?.trim();

@@ -8,6 +8,9 @@
  */
 import { buildEdition, EditionAlreadyPublished } from '../edition/build.js';
 import { loadConfig } from '../config.js';
+import { loadLocalEnv } from '../util/env.js';
+
+loadLocalEnv();
 
 const args = process.argv.slice(2);
 const flag = (name: string): string | undefined => {

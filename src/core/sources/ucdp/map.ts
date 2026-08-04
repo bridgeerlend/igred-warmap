@@ -25,16 +25,26 @@ const stateBasedRow = z.object({
   region: textual.optional(),
 });
 
+/**
+ * The non-state dataset names its parties differently from the state-based one:
+ * side_a_name / side_b_name rather than side_a / side_b. Expecting the state-based names
+ * here silently discarded every non-state row — militia and cartel violence, which the
+ * brief explicitly wants on the map — because the schema simply never matched.
+ */
 const nonStateRow = z.object({
   conflict_id: textual,
   location: textual,
-  side_a: textual,
-  side_b: textual,
+  side_a_name: textual,
+  side_b_name: textual,
   year: numeric,
   best_fatality_estimate: numeric.optional(),
+  start_date: textual.optional(),
+  ep_end: numeric.optional(),
+  ep_end_date: textual.optional(),
   region: textual.optional(),
 });
 
+/** One-sided violence has a single actor and no episode end; status is year-based. */
 const oneSidedRow = z.object({
   conflict_id: textual,
   location: textual,
@@ -118,21 +128,9 @@ export function mapUcdpRows(
         return fips ? { name, fips } : { name };
       });
 
-    const parties =
-      'side_a' in row && 'side_b' in row
-        ? [
-            { name: row.side_a, side: 'a' as const, isState: type === 'state_based', provenance: [provenance] },
-            { name: row.side_b, side: 'b' as const, isState: false, provenance: [provenance] },
-          ]
-        : [
-            {
-              name: (row as z.infer<typeof oneSidedRow>).actor_name,
-              side: 'a' as const,
-              isState: (row as z.infer<typeof oneSidedRow>).is_government_actor === 1,
-              provenance: [provenance],
-            },
-            { name: 'Civilians', side: 'civilians' as const, isState: false, provenance: [provenance] },
-          ];
+    // Each dataset names its parties differently, so they are read explicitly rather than
+    // by guessing from which fields happen to be present.
+    const sides = partiesFor(dataset, row, type, provenance);
 
     const id = stableId('conf', dataset, row.conflict_id);
     const existing = byConflict.get(id);
@@ -159,8 +157,8 @@ export function mapUcdpRows(
 
     const name =
       type === 'one_sided'
-        ? `${(row as z.infer<typeof oneSidedRow>).actor_name} — violence against civilians (${row.location})`
-        : `${(row as z.infer<typeof stateBasedRow>).side_a} — ${(row as z.infer<typeof stateBasedRow>).side_b}`;
+        ? `${sides[0]?.name ?? 'Unknown actor'} — violence against civilians (${row.location})`
+        : `${sides[0]?.name ?? '?'} — ${sides[1]?.name ?? '?'}`;
 
     const region = (row as { region?: string }).region;
     const startDate = (row as { start_date?: string }).start_date;
@@ -179,7 +177,7 @@ export function mapUcdpRows(
         ...(region ? { region } : {}),
         ...(isIsoDate(startDate) ? { startDate } : {}),
         ...(episodeEnded && isIsoDate(endDate) ? { endDate } : {}),
-        parties,
+        parties: sides,
         figures,
         lastUpdated: retrievedAt,
         provenance: [provenance],
@@ -192,6 +190,34 @@ export function mapUcdpRows(
     skippedRows,
     unresolvedCountries: [...unresolved].sort(),
   };
+}
+
+type AnyRow = z.infer<typeof stateBasedRow> | z.infer<typeof nonStateRow> | z.infer<typeof oneSidedRow>;
+
+function partiesFor(
+  dataset: UcdpDataset,
+  row: AnyRow,
+  type: ConflictType,
+  provenance: Provenance,
+): Conflict['parties'] {
+  if (dataset === 'onesided') {
+    const one = row as z.infer<typeof oneSidedRow>;
+    return [
+      { name: one.actor_name, side: 'a', isState: one.is_government_actor === 1, provenance: [provenance] },
+      { name: 'Civilians', side: 'civilians', isState: false, provenance: [provenance] },
+    ];
+  }
+
+  const [a, b] =
+    dataset === 'nonstate'
+      ? [(row as z.infer<typeof nonStateRow>).side_a_name, (row as z.infer<typeof nonStateRow>).side_b_name]
+      : [(row as z.infer<typeof stateBasedRow>).side_a, (row as z.infer<typeof stateBasedRow>).side_b];
+
+  return [
+    // Only the state-based dataset has a government on side A by definition.
+    { name: a, side: 'a', isState: type === 'state_based', provenance: [provenance] },
+    { name: b, side: 'b', isState: false, provenance: [provenance] },
+  ];
 }
 
 function isIsoDate(value: string | undefined): value is string {

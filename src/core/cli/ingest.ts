@@ -28,6 +28,9 @@ import type { UcdpDataset } from '../sources/ucdp/map.js';
 import { CountryResolver } from '../util/country.js';
 import { dataPaths } from '../util/paths.js';
 import { stableId } from '../util/misc.js';
+import { loadLocalEnv } from '../util/env.js';
+
+loadLocalEnv();
 
 /** Long enough to cover a weekend before a candidate is reviewed. */
 const PENDING_RETAIN_DAYS = 4;
@@ -83,9 +86,24 @@ export async function ingest(): Promise<void> {
   const resolver = new CountryResolver(observedNames, config.countryAliases);
 
   const ucdpDefinition = getSource('ucdp');
-  const ucdpOutcome = await runSource<UcdpHarvest>(
+
+  /*
+   * UCDP publishes monthly. Refetching it every hour would spend a few hundred of the 5000
+   * daily requests re-downloading a dataset that cannot have changed, so it is only fetched
+   * when due. In between, the register is served from the last good copy — the same path an
+   * outage takes, so nothing new can break.
+   */
+  const ucdpHealth = previousHealthFor(previousHealth, 'ucdp');
+  const refreshEveryHours = Number(ucdpDefinition.options.refreshEveryHours ?? 24);
+  const sinceLastUcdp = ucdpHealth.lastSuccessAt
+    ? (Date.parse(now) - Date.parse(ucdpHealth.lastSuccessAt)) / 3_600_000
+    : Number.POSITIVE_INFINITY;
+  const ucdpDue = sinceLastUcdp >= refreshEveryHours;
+
+  const ucdpOutcome = ucdpDue
+    ? await runSource<UcdpHarvest>(
     ucdpDefinition,
-    previousHealthFor(previousHealth, 'ucdp'),
+    ucdpHealth,
     async () => {
       const harvest = await harvestUcdp(
         {
@@ -102,7 +120,22 @@ export async function ingest(): Promise<void> {
       return { data: harvest, recordCount: harvest.conflicts.length };
     },
     now,
-  );
+      )
+    : {
+        // Not due, which is neither an outage nor a failure. The previous register stands,
+        // and health keeps the real last-success time rather than pretending this was one.
+        data: undefined,
+        health: {
+          sourceId: 'ucdp',
+          status: 'ok' as const,
+          lastAttemptAt: now,
+          ...(ucdpHealth.lastSuccessAt ? { lastSuccessAt: ucdpHealth.lastSuccessAt } : {}),
+          consecutiveFailures: ucdpHealth.consecutiveFailures,
+          recordsLastRun: previousConflicts.filter((entry) => entry.origin === 'ucdp').length,
+          servedFromLastGood: true,
+          message: `Not refetched: UCDP publishes monthly and is next due in ${Math.max(0, Math.ceil(refreshEveryHours - sinceLastUcdp))}h.`,
+        },
+      };
 
   const newsDefinition = getSource('newsfeeds');
   const newsOutcome = await runSource<SynthesisResult>(

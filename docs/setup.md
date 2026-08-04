@@ -16,7 +16,7 @@ stops being free.
 5. Click **Create repository**
 6. Copy the repository URL it shows you
 
-## 2. UCDP API token — needed now
+## 2. UCDP API token — done
 
 This one is load-bearing: without it the register is empty and almost nothing shows on the
 map. See the display-gate section in the README for why.
@@ -114,9 +114,9 @@ is optional and can be skipped for now.
 Open the **Actions** tab, choose the **Ingest** workflow and click **Run workflow**. A
 successful run commits to `data/` and leaves no open issue labelled `pipeline-alert`.
 
-Until `UCDP_ACCESS_TOKEN` is added, that run will report `ucdp: not_configured` and carry on
-— which is the source isolation working, not a failure. The map will say so in a banner and
-show almost nothing, because the register is what decides which incidents are displayed.
+All five sources now report `ok`. UCDP is refetched once a day rather than hourly: it
+publishes monthly, so refetching it every run would spend a few hundred of the 5000 daily
+requests re-downloading a dataset that cannot have changed.
 
 ## What you will need to do routinely
 

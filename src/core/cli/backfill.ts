@@ -9,6 +9,9 @@ import { toObservation, type Observation } from '../sources/gdelt/map.js';
 import { gdeltCursor } from '../sources/gdelt/index.js';
 import { addDays } from '../util/misc.js';
 import { dataPaths } from '../util/paths.js';
+import { loadLocalEnv } from '../util/env.js';
+
+loadLocalEnv();
 
 /**
  * Builds detection history from the same GDELT 2.0 15-minute stream the hourly run uses.

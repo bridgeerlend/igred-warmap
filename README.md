@@ -116,5 +116,11 @@ data and dropped:
 Neither separates war from crime. Detection deliberately runs *ungated*, because a new
 conflict by definition appears in a country the register does not know about yet.
 
-**This makes the UCDP token load-bearing.** Without it the register is empty and almost
-nothing displays.
+**This makes the UCDP token load-bearing**, and it is now connected: 1,578 conflicts, 223 of
+them active across 48 countries.
+
+The gate has no exceptions. An earlier version let inherently military event types through
+wherever they occurred, since the map was otherwise blank. The first run with a real register
+showed what that admitted: six events, none of them aerial strikes — a firefighting
+helicopter crash in Greece geolocated to Oregon, a tourist plane crash in Peru, a wildfire
+update in Colorado. CAMEO does not distinguish an aircraft accident from an aerial attack.

@@ -16,6 +16,9 @@ import { candidatesArtifact } from '../schema/artifact.js';
 import { verifiedConflictsConfig } from '../schema/config.js';
 import { readArtifact, writeArtifact } from '../pipeline/store.js';
 import { configDir, dataPaths } from '../util/paths.js';
+import { loadLocalEnv } from '../util/env.js';
+
+loadLocalEnv();
 
 const args = process.argv.slice(2);
 const flag = (name: string): string | undefined => {
