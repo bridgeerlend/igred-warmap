@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Wire — IGRED</title>
+<meta name="description" content="Everything the monitor and the Brief have fetched, newest first. Every line carries its outlet, its date and a link to the original.">
+<meta name="color-scheme" content="light dark">
+<link rel="preload" href="../fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<link rel="stylesheet" href="../atlas.css">
+<link rel="stylesheet" href="stream.css">
+</head>
+<body>
+
+<a class="skip" href="#wire">Skip to the wire</a>
+
+<div class="banner" id="banner" hidden></div>
+
+<header class="masthead wire-masthead">
+  <a class="wordmark wordmark-link" href="https://igred.org/"><strong>IGRED</strong> <span data-i18n="wordmark">The Wire</span></a>
+  <div class="controls">
+    <a class="link-button" href="../">Map</a>
+    <a class="link-button" href="../brief/">Brief</a>
+    <button type="button" class="link-button" id="lang" aria-label="Bytt til norsk">NO</button>
+    <button type="button" class="link-button" id="theme">Dark</button>
+  </div>
+</header>
+
+<main class="wire" id="wire">
+  <div class="dateline">
+    <h1 class="title">
+      <span data-i18n="titleLine1">The</span>
+      <span class="italic" data-i18n="titleLine2">Wire</span>
+    </h1>
+    <p class="standfirst" id="standfirst"></p>
+  </div>
+
+  <div class="column">
+    <label class="search">
+      <span class="sr-only" data-i18n="searchLabel">Search the wire</span>
+      <input type="search" id="search" autocomplete="off" spellcheck="false">
+    </label>
+
+    <nav class="wire-filters" id="filters" aria-label="Filter"></nav>
+
+    <ol class="feed" id="feed"></ol>
+
+    <p class="feed-end" id="feed-end" hidden></p>
+    <button type="button" class="link-button more" id="more" hidden></button>
+  </div>
+</main>
+
+<footer class="colophon">
+  <p id="colophon-text"></p>
+  <p class="colophon-meta" id="colophon-meta"></p>
+</footer>
+
+<script type="module" src="stream.js"></script>
+</body>
+</html>

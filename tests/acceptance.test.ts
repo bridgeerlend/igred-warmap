@@ -447,6 +447,71 @@ describe('a click on the map opens what was clicked', () => {
   });
 });
 
+describe('the reader can move in time and narrow to one theatre', () => {
+  it('takes the timeline range from the data, not from a nominal month', () => {
+    const app = read('site/app.js');
+    // The artifact keeps thirty days but has only been running for some of them. A slider
+    // offering a month of empty history would be a lie told by a widget.
+    expect(app).toMatch(/function timelineDays\(\)/);
+    expect(app).toMatch(/state\.events\.map\(\(event\) => event\.occurredAt\.slice\(0, 10\)\)/);
+    expect(app).toMatch(/historyNote/);
+  });
+
+  it('moves the whole window back, rather than only its start', () => {
+    const app = read('site/app.js');
+    expect(app).toMatch(/const end = state\.asOf \?\? Date\.now\(\);\s*\n\s*const start = end - state\.windowDays/);
+  });
+
+  it('says a theatre is a country, because that is what the data supports', () => {
+    // The register lists 27 conflicts in Nigeria and every one of them would draw the same
+    // map, so the menu is by country and the caveat is on the page rather than implied.
+    const app = read('site/app.js');
+    expect(app).toMatch(/theatreNote/);
+    expect(app).toMatch(/event\.location\.countryFips !== state\.theatre/);
+  });
+});
+
+describe('the wire is a stream of sourced dispatches and nothing else', () => {
+  it('ships as a sibling page on the shared foundation', () => {
+    for (const file of ['site/stream/index.html', 'site/stream/stream.js', 'site/stream/stream.css']) {
+      expect(exists(file)).toBe(true);
+    }
+    expect(read('site/stream/index.html')).toMatch(/href="\.\.\/atlas\.css"/);
+    // Reachable from both products, and both reachable from it.
+    expect(read('site/index.html')).toMatch(/href="stream\/"/);
+    expect(read('site/brief/index.html')).toMatch(/href="\.\.\/stream\/"/);
+  });
+
+  it('adds no new artifact: it reads what the map and the Brief already publish', () => {
+    const js = read('site/stream/stream.js');
+    expect(js).toMatch(/loadJson\(base, 'events\.json'\)/);
+    expect(js).toMatch(/loadJson\(base, 'stories\.json'\)/);
+    // Nothing else may be fetched — a new file would mean a new thing to keep alive.
+    expect([...js.matchAll(/loadJson\(base, '([^']+)'\)/g)].map((match) => match[1]).sort())
+      .toEqual(['events.json', 'stories.json']);
+  });
+
+  it('shows no picture of any kind', () => {
+    for (const file of ['site/stream/index.html', 'site/stream/stream.js', 'site/stream/stream.css']) {
+      const text = read(file)
+        .replace(/\/\*[\s\S]*?\*\//g, ' ')
+        .replace(/^\s*\/\/.*$/gm, ' ')
+        .replace(/<!--[\s\S]*?-->/g, ' ');
+      expect(text).not.toMatch(/<img\b|<picture\b|background-image/i);
+      expect(text).not.toMatch(/\.(png|jpe?g|gif|webp|avif)\b/i);
+      expect(text).not.toMatch(/logos?\.(svg|png|jpe?g|webp|gif)|(class|id)=["'][^"']*logo|url\([^)]*logo/i);
+    }
+  });
+
+  it('never calls an aggregator log time a publication time', () => {
+    // GDELT's stamp is dateAdded — the quarter-hour it first logged the story. Every one of
+    // the live rows falls into one of twenty such buckets, so a clock in the margin would
+    // put the whole day's news at the same minute.
+    expect(read('site/stream/stream.js')).toMatch(/entry\.sourceId === 'gdelt' \? 'seen' : 'published'/);
+    expect(read('site/stream/stream.js')).toMatch(/firstSeen/);
+  });
+});
+
 describe('sources are named, never shown as logos', () => {
   /**
    * A masthead logo is a trademark, and reproducing one implies a relationship the institute
@@ -457,6 +522,7 @@ describe('sources are named, never shown as logos', () => {
     for (const page of [
       'site/index.html', 'site/app.js', 'site/picking.js', 'site/styles.css',
       'site/brief/index.html', 'site/brief/brief.js', 'site/brief/brief.css',
+      'site/stream/index.html', 'site/stream/stream.js', 'site/stream/stream.css',
       'www/index.html', 'www/home.js', 'www/home.css',
       'site/atlas.css',
     ]) {
@@ -468,8 +534,16 @@ describe('sources are named, never shown as logos', () => {
         .replace(/<!--[\s\S]*?-->/g, ' ');
       expect(text).not.toMatch(/<img\b|<picture\b/i);
       expect(text).not.toMatch(/\.(png|jpe?g|gif|webp|avif|ico)\b/i);
-      // The one SVG in the products is the map's own cartography, drawn from coordinates.
-      expect(text).not.toMatch(/logo/i);
+      /*
+       * A logo as an asset, not the word. The pages explain in prose that they name outlets
+       * rather than showing mastheads, and "avislogo" in that sentence is the point being
+       * made, not a violation of it. What must never appear is a logo referenced as a file,
+       * a class, an id or a background.
+       */
+      expect(text).not.toMatch(/logos?\.(svg|png|jpe?g|webp|gif)/i);
+      expect(text).not.toMatch(/(class|id)=["'][^"']*logo/i);
+      expect(text).not.toMatch(/\.[a-z-]*logo[a-z-]*\s*[{,]/i);
+      expect(text).not.toMatch(/url\([^)]*logo/i);
     }
   });
 

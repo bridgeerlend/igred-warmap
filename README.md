@@ -30,6 +30,7 @@ src/core/   the shared data core, feeding both the map and the Brief
 data/       published JSON artifacts, committed hourly with full git history
 site/       the map — plain HTML, CSS and ES modules, deployed to map.igred.org
 site/brief/ the Brief — one dated edition each morning, same Atlas language
+site/stream/ the Wire — every sourced dispatch behind both, newest first
 site/atlas.css  the design foundation both products share
 design/     the three design explorations that preceded the map
 ```
@@ -41,7 +42,7 @@ once and fetches its data from the repository at view time, so the hourly data c
 never trigger a deploy — that separation is what keeps the whole thing free.
 
 ```bash
-npm run serve          # map at /site/, Brief at /site/brief/
+npm run serve          # map at /site/, Brief at /site/brief/, Wire at /site/stream/
 npm run site:snapshot  # one self-contained file for offline review
 npm run edition        # publish today's Brief
 npm run draft          # draft its lead paragraphs (needs GEMINI_API_KEY)

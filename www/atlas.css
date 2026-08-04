@@ -64,6 +64,13 @@
 
 * { box-sizing: border-box; }
 
+/* A label the screen reader needs and the page does not. Lives here rather than in each
+   page's stylesheet: a third page shipped without it and printed its own labels. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
 html { -webkit-text-size-adjust: 100%; }
 
 body {

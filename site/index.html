@@ -26,6 +26,7 @@
       <a class="wordmark wordmark-link" href="https://igred.org/"><strong>IGRED</strong></a>
       <div class="controls">
         <a class="link-button" href="brief/">Brief</a>
+        <a class="link-button" href="stream/">Wire</a>
         <button type="button" class="link-button" id="lang" aria-label="Bytt til norsk">NO</button>
         <button type="button" class="link-button" id="theme">Dark</button>
       </div>
@@ -49,6 +50,22 @@
       <button type="button" class="window-option" data-days="7" data-i18n="win7">7 days</button>
       <button type="button" class="window-option is-on" data-days="30" data-i18n="win30">30 days</button>
     </nav>
+
+    <!-- Drag back to a date and the map shows the window ending there. The range comes from
+         the data, not from a nominal month: the register only holds what has been ingested. -->
+    <div class="timeline" id="timeline" hidden>
+      <div class="timeline-head">
+        <span class="timeline-label" data-i18n="asOfLabel">As of</span>
+        <output class="timeline-date" id="asof-date" for="asof"></output>
+        <button type="button" class="link-button" id="asof-now" data-i18n="toNow">Now</button>
+      </div>
+      <input type="range" id="asof" min="0" max="0" step="1" value="0">
+      <p class="timeline-note" id="timeline-note"></p>
+    </div>
+
+    <!-- A theatre is a country on the register, which is the unit the data actually
+         supports. Which of a country's conflicts an incident belongs to is not in it. -->
+    <nav class="theatres" id="theatres" aria-label="Conflict theatre" hidden></nav>
   </div>
 
   <div class="plate" id="plate">

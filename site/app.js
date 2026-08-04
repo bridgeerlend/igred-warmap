@@ -32,6 +32,13 @@ const STRINGS = {
     sources: 'Sources',
     incidentLabel: 'The incident',
     close: 'Close',
+    asOfLabel: 'As of', toNow: 'Now', today: 'now',
+    asOfNote: (date) => `The window shown ends on ${date}; anything reported since is held back.`,
+    historyNote: (n) =>
+      `The published register holds ${n} ${n === 1 ? 'day' : 'days'} of history. It deepens by the hour; nothing before that has been kept in the artifact.`,
+    theatreLabel: 'Theatre', allTheatres: 'Everywhere', moreTheatres: (n) => `${n} more`,
+    theatreNote: (country, n) =>
+      `Showing ${country} only. A theatre is a country on the register — which of its conflicts a given incident belongs to is not something the source data establishes.`,
     closeLabel: 'Close this record',
     keyLow: 'Isolated', keyHigh: 'Heavy', keyVerified: 'IGRED-verified',
     loading: 'Loading…',
@@ -89,6 +96,13 @@ const STRINGS = {
     sources: 'Kilder',
     incidentLabel: 'Hendelsen',
     close: 'Lukk',
+    asOfLabel: 'Per', toNow: 'Nå', today: 'nå',
+    asOfNote: (date) => `Vinduet som vises slutter ${date}; alt som er meldt senere holdes tilbake.`,
+    historyNote: (n) =>
+      `Det publiserte registeret har ${n} ${n === 1 ? 'dag' : 'dager'} historikk. Det bygges ut time for time; ingenting eldre er tatt vare på i artefakten.`,
+    theatreLabel: 'Teater', allTheatres: 'Overalt', moreTheatres: (n) => `${n} til`,
+    theatreNote: (country, n) =>
+      `Viser bare ${country}. Et teater er et land i registeret — hvilken av landets konflikter en gitt hendelse hører til, er ikke noe kildedataene fastslår.`,
     closeLabel: 'Lukk denne oppføringen',
     keyLow: 'Enkeltstående', keyHigh: 'Tung', keyVerified: 'IGRED-verifisert',
     loading: 'Laster…',
@@ -170,6 +184,12 @@ const state = {
   countryNames: new Map(),
   stories: [],
   candidate: null,
+  /** End of the window the reader is looking at, or null for "now". */
+  asOf: null,
+  /** A country FIPS code, or null for the whole map. */
+  theatre: null,
+  theatresExpanded: false,
+  days: [],
   // Marks are groups of incidents that land on the same spot at the current zoom, so the
   // zoom level they were built for has to be remembered to know when to rebuild them.
   groupedAtWidth: null,
@@ -234,6 +254,8 @@ async function load() {
       // The register arrives after the first paint, so anything already selected is redrawn
       // with the context it was missing.
       renderDetail(state.selected ?? null);
+      // Theatre names come from the register, so the menu is redrawn once it arrives.
+      renderTheatres();
       renderSearch();
     })
     .catch(() => {});
@@ -410,9 +432,144 @@ function pickAt(clientX, clientY) {
   return nearestMark(state.nodes, point.x, point.y, reach);
 }
 
+/**
+ * What the map is showing: the chosen window, ending at the chosen date, in the chosen
+ * theatre. Dragging the timeline back moves the whole window rather than only its start,
+ * so the reader sees the situation as it stood then and not a stub of it.
+ */
 function visibleEvents() {
-  const cutoff = Date.now() - state.windowDays * 86_400_000;
-  return state.events.filter((event) => Date.parse(event.occurredAt) >= cutoff);
+  const end = state.asOf ?? Date.now();
+  const start = end - state.windowDays * 86_400_000;
+  return state.events.filter((event) => {
+    const at = Date.parse(event.occurredAt);
+    if (at > end || at < start) return false;
+    if (state.theatre && event.location.countryFips !== state.theatre) return false;
+    return true;
+  });
+}
+
+/** Every incident in the window, ignoring the theatre — what the theatre menu counts. */
+function eventsInWindow() {
+  const end = state.asOf ?? Date.now();
+  const start = end - state.windowDays * 86_400_000;
+  return state.events.filter((event) => {
+    const at = Date.parse(event.occurredAt);
+    return at <= end && at >= start;
+  });
+}
+
+const DAY = 86_400_000;
+
+/** Midnight UTC of a day, and the last instant of it. */
+const dayStart = (iso) => Date.parse(`${iso}T00:00:00Z`);
+const dayEnd = (iso) => dayStart(iso) + DAY - 1;
+
+/**
+ * The days the timeline can reach.
+ *
+ * Taken from the data rather than from the artifact's nominal window: the register keeps
+ * thirty days but has only been running for some of them, and a slider offering a month of
+ * empty history would be a lie told by a widget.
+ */
+function timelineDays() {
+  const dates = state.events.map((event) => event.occurredAt.slice(0, 10)).sort();
+  const first = dates[0];
+  if (!first) return [];
+  const last = new Date().toISOString().slice(0, 10);
+  const days = [];
+  for (let at = dayStart(first); at <= dayStart(last); at += DAY) {
+    days.push(new Date(at).toISOString().slice(0, 10));
+  }
+  return days;
+}
+
+function renderTimeline() {
+  const box = $('timeline');
+  state.days = timelineDays();
+  if (state.days.length < 2) {
+    // One day of history is not a timeline; the window buttons already say all there is.
+    box.hidden = true;
+    return;
+  }
+  box.hidden = false;
+  const slider = $('asof');
+  slider.max = String(state.days.length - 1);
+  const index = state.asOf === null
+    ? state.days.length - 1
+    : Math.max(0, state.days.findIndex((day) => dayEnd(day) === state.asOf));
+  slider.value = String(index);
+  $('asof-date').textContent = state.asOf === null ? t().today : state.days[index];
+  $('asof-now').hidden = state.asOf === null;
+  $('timeline-note').textContent = t().historyNote(state.days.length);
+}
+
+function setAsOf(value) {
+  state.asOf = value;
+  const keep = state.selected?.lead ?? null;
+  refresh();
+  if (keep) selectEvent(keep);
+  else clearSelection();
+}
+
+/* ---------- theatres --------------------------------------------------- */
+
+function renderTheatres() {
+  const nav = $('theatres');
+  const counts = new Map();
+  for (const event of eventsInWindow()) {
+    const fips = event.location.countryFips;
+    if (!fips) continue;
+    counts.set(fips, (counts.get(fips) ?? 0) + 1);
+  }
+  const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+
+  if (ranked.length < 2) {
+    nav.hidden = true;
+    return;
+  }
+  nav.hidden = false;
+
+  const name = (fips) => state.countryNames.get(fips) ?? countryNameFromWorld(fips) ?? fips;
+  // The long tail is one incident apiece and would take four lines of the rail to say so.
+  // It stays one click away rather than crowding out the map.
+  const SHOWN = 10;
+  const expanded = state.theatresExpanded || ranked.slice(SHOWN).some(([fips]) => fips === state.theatre);
+  const visible = expanded ? ranked : ranked.slice(0, SHOWN);
+  const hidden = ranked.length - visible.length;
+
+  nav.innerHTML =
+    `<span class="theatres-label">${escapeHtml(t().theatreLabel)}</span>` +
+    `<button type="button" class="theatre-option${state.theatre === null ? ' is-on' : ''}" data-fips="">` +
+      `${escapeHtml(t().allTheatres)}</button>` +
+    visible.map(([fips, count]) =>
+      `<button type="button" class="theatre-option${state.theatre === fips ? ' is-on' : ''}" data-fips="${escapeHtml(fips)}">` +
+      `${escapeHtml(name(fips))}<span class="count">${count}</span></button>`).join('') +
+    (hidden > 0
+      ? `<button type="button" class="theatre-more" id="theatres-more">${escapeHtml(t().moreTheatres(hidden))}</button>`
+      : '');
+
+  for (const button of nav.querySelectorAll('.theatre-option')) {
+    button.addEventListener('click', () => setTheatre(button.dataset.fips || null));
+  }
+  $('theatres-more')?.addEventListener('click', () => {
+    state.theatresExpanded = true;
+    renderTheatres();
+  });
+}
+
+function countryNameFromWorld(fips) {
+  return state.world?.countries.find((entry) => entry.fips === fips)?.name;
+}
+
+function setTheatre(fips) {
+  state.theatre = fips;
+  clearSelection();
+  refresh();
+  // Going in frames the country; coming out returns to the world rather than leaving the
+  // reader zoomed into a place they are no longer looking at.
+  const country = fips ? state.world?.countries.find((entry) => entry.fips === fips) : null;
+  if (country?.centre) centreOn(country.centre[0], country.centre[1], state.home.w * 0.3);
+  else resetView();
 }
 
 /* ---------- zoom and pan ---------------------------------------------- */
@@ -564,10 +721,12 @@ function wireZoom() {
 
   $('zoom-in').addEventListener('click', () => zoomBy(0.7));
   $('zoom-out').addEventListener('click', () => zoomBy(1 / 0.7));
-  $('zoom-reset').addEventListener('click', () => {
-    state.view = { ...state.home };
-    applyView();
-  });
+  $('zoom-reset').addEventListener('click', resetView);
+}
+
+function resetView() {
+  state.view = { ...state.home };
+  applyView();
 }
 
 /* ---------- selection -------------------------------------------------- */
@@ -1042,9 +1201,16 @@ function renderStandfirst() {
   const events = visibleEvents();
   const countries = new Set(events.map((event) => event.location.countryFips).filter(Boolean));
   const label = state.windowDays === 1 ? t().win1.toLowerCase() : t().windowDays(state.windowDays);
-  $('standfirst').innerHTML = events.length === 0
-    ? `<span class="quiet">${escapeHtml(t().standfirstEmpty)}</span>`
-    : t().standfirst(events.length, countries.size, label);
+  const theatreName = state.theatre
+    ? (state.countryNames.get(state.theatre) ?? countryNameFromWorld(state.theatre) ?? state.theatre)
+    : null;
+  const asOfDay = state.asOf === null ? null : new Date(state.asOf).toISOString().slice(0, 10);
+  $('standfirst').innerHTML =
+    (events.length === 0
+      ? `<span class="quiet">${escapeHtml(t().standfirstEmpty)}</span>`
+      : t().standfirst(events.length, countries.size, label)) +
+    (asOfDay ? `<span class="standfirst-note">${escapeHtml(t().asOfNote(asOfDay))}</span>` : '') +
+    (theatreName ? `<span class="standfirst-note">${escapeHtml(t().theatreNote(theatreName, events.length))}</span>` : '');
 }
 
 function renderColophon() {
@@ -1074,6 +1240,8 @@ function refresh() {
   renderPoints();
   renderStandfirst();
   renderScaleKey();
+  renderTimeline();
+  renderTheatres();
   renderIndex();
   renderDetail(state.selected ?? null);
   renderSearch();
@@ -1164,6 +1332,15 @@ function wireChrome() {
       refresh();
     });
   }
+
+  // The slider reads while dragging so the map answers under the thumb, not after it.
+  $('asof').addEventListener('input', () => {
+    const day = state.days[Number($('asof').value)];
+    if (!day) return;
+    const last = state.days.length - 1;
+    setAsOf(Number($('asof').value) === last ? null : dayEnd(day));
+  });
+  $('asof-now').addEventListener('click', () => setAsOf(null));
 
   const root = document.documentElement;
   const stored = localStorage.getItem('igred-theme');

@@ -241,7 +241,10 @@ body:has(.banner:not([hidden])) .stage { min-height: calc(100svh - 46px); }
    * record scroll inside a bounded column instead.
    */
   .stage.reading { grid-template-rows: auto minmax(0, 1fr); height: 100svh; }
-  .stage.reading .standfirst { display: none; }
+  /* Overview controls step aside while a record is open; Close brings them back. */
+  .stage.reading .standfirst,
+  .stage.reading .timeline,
+  .stage.reading .theatres { display: none; }
   .stage.reading .title { font-size: clamp(30px, 2.5vw, 42px); }
   /* The row is now bounded, so the record can simply fill it and scroll. */
   .stage.reading .detail { max-height: none; }
@@ -479,6 +482,75 @@ body:has(.banner:not([hidden])) .stage { min-height: calc(100svh - 46px); }
 .related-outlets a:hover { color: var(--fg); }
 .related-outlets .sep { color: var(--fg-3, var(--fg-2)); opacity: 0.6; }
 
+/* ---------- the timeline -------------------------------------- */
+
+.timeline { margin-top: 14px; display: grid; gap: 6px; }
+.timeline-head {
+  display: flex; align-items: baseline; gap: 10px;
+  font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-2);
+}
+.timeline-date {
+  font-family: var(--display);
+  font-optical-sizing: auto;
+  font-size: 17px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--fg);
+}
+.timeline-head .link-button { margin-left: auto; }
+
+/* A rule with a mark on it, rather than a form control. */
+.timeline input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 18px;
+  background: transparent;
+  cursor: ew-resize;
+}
+.timeline input[type="range"]::-webkit-slider-runnable-track {
+  height: 1px; background: var(--hair);
+}
+.timeline input[type="range"]::-moz-range-track { height: 1px; background: var(--hair); }
+.timeline input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 11px; height: 11px; margin-top: -5px;
+  border-radius: 50%; background: var(--fg); border: none;
+}
+.timeline input[type="range"]::-moz-range-thumb {
+  width: 11px; height: 11px; border-radius: 50%; background: var(--fg); border: none;
+}
+.timeline input[type="range"]:focus-visible { outline: 1px solid var(--fg); outline-offset: 4px; }
+.timeline-note { margin: 0; font-size: 11px; line-height: 1.5; color: var(--fg-2); }
+
+/* ---------- theatres ------------------------------------------- */
+
+.theatres {
+  margin-top: 14px;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px;
+}
+.theatres-label {
+  font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-2);
+  width: 100%;
+}
+.theatre-option {
+  appearance: none; background: none; border: 0; padding: 2px 0; margin: 0;
+  font: inherit; font-size: 12px; color: var(--fg-2); cursor: pointer;
+  border-bottom: 1px solid transparent;
+}
+.theatre-option:hover { color: var(--fg); }
+.theatre-option.is-on { color: var(--fg); border-bottom-color: var(--fg); }
+.theatre-option .count {
+  margin-left: 5px; font-size: 10px; color: var(--fg-2); font-variant-numeric: tabular-nums;
+}
+.theatre-more {
+  appearance: none; background: none; border: 0; padding: 2px 0; margin: 0;
+  font: inherit; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--fg-2); cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+}
+.theatre-more:hover { color: var(--fg); }
+.standfirst-note { display: block; margin-top: 8px; font-size: 11.5px; color: var(--fg-2); }
+
 /* ---------- search over conflicts and places ------------------ */
 
 .map-search input {
@@ -517,7 +589,3 @@ body:has(.banner:not([hidden])) .stage { min-height: calc(100svh - 46px); }
 .result-kind { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-2); }
 .results .none { padding: 8px 0; font-size: 12px; color: var(--fg-2); }
 
-.sr-only {
-  position: absolute; width: 1px; height: 1px; overflow: hidden;
-  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
-}

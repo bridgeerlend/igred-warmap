@@ -10,6 +10,9 @@
 5. **Remaining sources — done.** Curated Bluesky, Telegram and YouTube, and news tagged by
    country so each conflict has a stream beside it.
 6. **Self-healing, alert-on-failure, Dependabot, acceptance testing — done.**
+7. **The Wire — done.** A third page at `site/stream/`: every dispatch behind the map and the
+   Brief, newest first, one line each. It adds no artifact and no ingest step — it reads the
+   two files the other products already publish.
 
 The AI text step and its pull-request approval flow shipped with the Brief, ahead of the
 original order, because that is where the first prose actually appears.

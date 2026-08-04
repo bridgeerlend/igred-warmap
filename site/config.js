@@ -15,9 +15,18 @@ export const CONFIG = {
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]', '']);
 
-/** Pages sit at different depths (/site/ and /site/brief/), so the relative fallback differs. */
+/**
+ * Pages sit at different depths (/site/, /site/brief/, /site/stream/), so the relative
+ * fallback has to climb the right number of levels. Derived from the path rather than
+ * listed by name: the list was one page out of date the moment a third page was added.
+ */
 function localDataPath() {
-  return location.pathname.includes('/brief/') ? '../../data/' : '../data/';
+  const parts = location.pathname.split('/').filter(Boolean);
+  const site = parts.lastIndexOf('site');
+  // Directories below /site/, ignoring a trailing file name.
+  const last = parts[parts.length - 1] ?? '';
+  const depth = site === -1 ? 0 : parts.length - site - 1 - (last.includes('.') ? 1 : 0);
+  return `${'../'.repeat(depth + 1)}data/`;
 }
 
 export function dataBaseUrl() {
