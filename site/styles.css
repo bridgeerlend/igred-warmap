@@ -31,6 +31,27 @@
 
 .detail .prompt { margin: 0; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-2); }
 
+.detail-top { display: flex; align-items: flex-start; gap: 16px; }
+.detail-top .detail-place { flex: 1 1 auto; }
+.detail-close { flex: 0 0 auto; margin-top: 6px; }
+
+.detail-sourceblock, .detail-context, .detail-related { }
+
+.detail-sourceblock {
+  margin: 14px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--hair-soft);
+}
+.detail-sourceblock h3, .sources-head {
+  margin: 0 0 6px;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--fg-2);
+}
+.sources-head { margin-top: 10px; }
+
 .detail-place {
   font-family: var(--display);
   font-weight: 400;
@@ -67,9 +88,6 @@
 .scale-key .swatch { display: inline-block; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
 .scale-key .item { display: inline-flex; align-items: center; color: var(--fg); }
 
-.heat circle { pointer-events: none; }
-.scale-key .heat-swatch { background: var(--heat); opacity: 0.75; }
-.heat-note { margin: 0; max-width: 78ch; }
 
 .land-fill { fill: url(#stipple); }
 .land-line { fill: none; stroke: var(--coast); stroke-width: 0.45; }
@@ -80,6 +98,14 @@
    circle happens to sit on top, so no mark carries a target of its own any more. */
 .evt .collar { opacity: 0.62; }
 .evt.selected .collar { opacity: 1; }
+
+/* The mark a click would take, shown before the click. Nearest-mark picking is only as
+   clear as the reader's ability to predict it. */
+.evt.candidate .halo { opacity: 0.34 !important; }
+.evt.candidate .dot { fill-opacity: 1; }
+.evt.candidate .collar { opacity: 1; }
+#map.over-mark { cursor: pointer; }
+#map.over-mark.is-panning { cursor: grabbing; }
 .evt circle { transition: opacity 380ms ease; }
 .plate.dimmed .evt:not(.selected) { opacity: 0.1; }
 .evt.selected .halo, .evt:focus-visible .halo { opacity: 0.5 !important; }
@@ -201,6 +227,24 @@ body:has(.banner:not([hidden])) .stage { min-height: calc(100svh - 46px); }
 
   .plate { justify-content: center; }
   .plate svg { height: auto; max-height: calc(100svh - 190px); }
+
+  /*
+   * Reading a record. The rail takes only the height it needs and the record gets the rest,
+   * starting near the top of the column instead of below a full screen of masthead, title
+   * and standfirst. The title stands down rather than disappearing, so the page still says
+   * what it is; the standfirst is context the reader already has by the time they click.
+   */
+  /*
+   * minmax(0, 1fr), not 1fr. A plain fr track takes its automatic minimum from its content,
+   * so a record of sixteen incidents simply grew the row — and with it the plate, which
+   * spans both rows — until the map sat two screens down. The zero minimum is what lets the
+   * record scroll inside a bounded column instead.
+   */
+  .stage.reading { grid-template-rows: auto minmax(0, 1fr); height: 100svh; }
+  .stage.reading .standfirst { display: none; }
+  .stage.reading .title { font-size: clamp(30px, 2.5vw, 42px); }
+  /* The row is now bounded, so the record can simply fill it and scroll. */
+  .stage.reading .detail { max-height: none; }
 }
 
 /* ============================================================

@@ -17,17 +17,39 @@
  */
 
 /**
- * How close two incidents must be, on screen, before a reader cannot aim between them.
+ * How far apart marks must end up on screen, in pixels.
  *
- * Ten, measured against the live register: it leaves marks at least twelve pixels apart —
- * comfortably separable once nearest-mark picking decides the winner — while merging little
- * enough that no pile currently spans two countries. Fifteen was clean to click but lumped
- * Novorossiysk in with Kherson, and a mark should not quietly cross a border.
+ * The reassignment pass below makes this an exact guarantee rather than a target: no two
+ * marks are ever closer than this. Ten was enough for a mouse in principle — every mark was
+ * reachable — but a reader still met a field of dots that looked impossible to aim at, and
+ * on a touchscreen ten pixels is not a target at all.
+ *
+ * A coarse pointer is a fingertip, so it gets a wider berth. The cost of both numbers is
+ * that more incidents share a mark, which is why a mark lists everything it holds and says
+ * which countries it spans.
  */
-export const GROUP_RADIUS_PX = 10;
+export const GROUP_RADIUS_FINE_PX = 14;
+export const GROUP_RADIUS_COARSE_PX = 20;
+
+/** Kept for callers that do not care which pointer is in use. */
+export const GROUP_RADIUS_PX = GROUP_RADIUS_FINE_PX;
 
 /** How far a click may miss a mark and still count as hitting it. */
 export const PICK_RADIUS_PX = 18;
+
+/**
+ * The separation to use for the pointer actually in use, so a fingertip is not asked to do
+ * a mouse's job. Falls back to the fine value where the query is unavailable.
+ */
+export function groupRadiusForPointer() {
+  // Guarded rather than assumed: this module is also loaded by the tests, where there is no
+  // window to ask.
+  const query = /** @type {{ matchMedia?: (q: string) => { matches: boolean } }} */ (
+    globalThis
+  ).matchMedia;
+  const coarse = typeof query === 'function' && query('(pointer: coarse)').matches;
+  return coarse ? GROUP_RADIUS_COARSE_PX : GROUP_RADIUS_FINE_PX;
+}
 
 /**
  * Groups incidents that fall on the same spot at the current scale.
@@ -39,10 +61,11 @@ export const PICK_RADIUS_PX = 18;
  *
  * @param {readonly Placed[]} events
  * @param {number} perPixel view units per rendered pixel
+ * @param {number} [radiusPx] required separation in pixels; defaults to the fine-pointer value
  * @returns {Mark[]}
  */
-export function groupEvents(events, perPixel) {
-  const radius = GROUP_RADIUS_PX * perPixel;
+export function groupEvents(events, perPixel, radiusPx = GROUP_RADIUS_PX) {
+  const radius = radiusPx * perPixel;
   if (!(radius > 0)) return events.map((event) => ({ x: event.x, y: event.y, lead: event, events: [event] }));
 
   /** @type {Map<string, Mark[]>} */

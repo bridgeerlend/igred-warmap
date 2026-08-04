@@ -22,7 +22,7 @@
     },
     {
       "id": "ucdp",
-      "name": "UCDP \u2014 Uppsala Conflict Data Program",
+      "name": "UCDP — Uppsala Conflict Data Program",
       "tier": 3,
       "role": "verified-backbone",
       "enabled": true,
@@ -55,24 +55,6 @@
       "staleAfterHours": 12,
       "options": {
         "$note": "Feed list lives in config/feeds.json; behaviour in config/stories.json."
-      }
-    },
-    {
-      "id": "firms",
-      "name": "NASA FIRMS active fire detections",
-      "tier": 1,
-      "role": "activity",
-      "enabled": true,
-      "requiresCredential": false,
-      "homepage": "https://firms.modaps.eosdis.nasa.gov/",
-      "staleAfterHours": 48,
-      "options": {
-        "product": "modis",
-        "gridDegrees": 0.25,
-        "minConfidence": 50,
-        "minDetectionsPerCell": 2,
-        "maxCells": 4000,
-        "$keyNote": "The documented API needs a free MAP_KEY, but FIRMS publishes the same global 24h products as keyless CSV. No setup required."
       }
     },
     {

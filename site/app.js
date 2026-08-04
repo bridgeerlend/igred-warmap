@@ -8,7 +8,7 @@
  * and every incident renders the sources that back it.
  */
 import { toView } from './projection.js';
-import { groupEvents, nearestMark, PICK_RADIUS_PX } from './picking.js';
+import { groupEvents, groupRadiusForPointer, nearestMark, PICK_RADIUS_PX } from './picking.js';
 import { dataBaseUrl, repoUrl, CONFIG } from './config.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -18,7 +18,7 @@ const ARTIFACT_VERSION = 1;
 
 const STRINGS = {
   en: {
-    titleLine1: 'The world,', titleLine2: 'at war',
+    titleLine1: 'Global Conflict', titleLine2: 'Monitor',
     win1: '24 hours', win7: '7 days', win30: '30 days',
     reset: 'Reset', whereToday: 'Where, today',
     prompt: 'Select any point on the map',
@@ -30,6 +30,9 @@ const STRINGS = {
     outlets: (n) => `${n} ${n === 1 ? 'outlet' : 'outlets'}`,
     verified: 'IGRED-verified', reported: 'Reported', unconfirmed: 'Unconfirmed',
     sources: 'Sources',
+    incidentLabel: 'The incident',
+    close: 'Close',
+    closeLabel: 'Close this record',
     keyLow: 'Isolated', keyHigh: 'Heavy', keyVerified: 'IGRED-verified',
     loading: 'Loading…',
     errorTitle: 'The data could not be loaded.',
@@ -59,10 +62,6 @@ const STRINGS = {
     conflictCaveat:
       'These are the conflicts the verified register records in this country. Which of them, if any, this incident belongs to is not something the source data establishes.',
     noConflictHere: 'No conflict is recorded in this country by the register.',
-    heat: 'Thermal detections',
-    heatOn: 'Hide heat', heatOff: 'Show heat',
-    heatNote: (n, instrument) =>
-      `<b>${n}</b> satellite thermal detections in the last 24 hours (${instrument}). These are heat signatures, not attacks — a fire may be shelling, a burning depot or land clearance, and the instrument cannot tell them apart.`,
     pileTitle: (n) => `${n} incidents on this spot`,
     pileTitleArea: (n) => `${n} incidents in this area`,
     pileNote: 'They sit too close to separate at this zoom. Zoom in and they come apart; every one of them is listed below.',
@@ -75,7 +74,8 @@ const STRINGS = {
     articlesLabel: (n) => `${n} ${n === 1 ? 'article' : 'articles'}`,
   },
   nb: {
-    titleLine1: 'Verden,', titleLine2: 'i krig',
+    // The product name is a proper noun and stays in English, as "The IGRED Brief" does.
+    titleLine1: 'Global Conflict', titleLine2: 'Monitor',
     win1: '24 timer', win7: '7 dager', win30: '30 dager',
     reset: 'Nullstill', whereToday: 'Hvor, i dag',
     prompt: 'Velg et punkt på kartet',
@@ -87,6 +87,9 @@ const STRINGS = {
     outlets: (n) => `${n} ${n === 1 ? 'kilde' : 'kilder'}`,
     verified: 'IGRED-verifisert', reported: 'Omtalt', unconfirmed: 'Ubekreftet',
     sources: 'Kilder',
+    incidentLabel: 'Hendelsen',
+    close: 'Lukk',
+    closeLabel: 'Lukk denne oppføringen',
     keyLow: 'Enkeltstående', keyHigh: 'Tung', keyVerified: 'IGRED-verifisert',
     loading: 'Laster…',
     errorTitle: 'Dataene kunne ikke lastes.',
@@ -116,10 +119,6 @@ const STRINGS = {
     conflictCaveat:
       'Dette er konfliktene det verifiserte registeret fører i dette landet. Hvilken av dem denne hendelsen eventuelt hører til, er ikke noe kildedataene fastslår.',
     noConflictHere: 'Registeret fører ingen konflikt i dette landet.',
-    heat: 'Varmedeteksjoner',
-    heatOn: 'Skjul varme', heatOff: 'Vis varme',
-    heatNote: (n, instrument) =>
-      `<b>${n}</b> satellittmålte varmedeteksjoner siste døgn (${instrument}). Dette er varmesignaturer, ikke angrep — en brann kan være beskytning, et brennende lager eller nedbrenning av mark, og instrumentet skiller dem ikke.`,
     pileTitle: (n) => `${n} hendelser på dette punktet`,
     pileTitleArea: (n) => `${n} hendelser i dette området`,
     pileNote: 'De ligger for tett til å skilles ved denne zoomen. Zoom inn, så løsner de fra hverandre; alle er uansett listet nedenfor.',
@@ -167,11 +166,10 @@ const state = {
   view: null,
   home: null,
   dragDistance: 0,
-  heat: null,
-  showHeat: true,
   conflicts: [],
   countryNames: new Map(),
   stories: [],
+  candidate: null,
   // Marks are groups of incidents that land on the same spot at the current zoom, so the
   // zoom level they were built for has to be remembered to know when to rebuild them.
   groupedAtWidth: null,
@@ -203,24 +201,10 @@ async function load() {
   const world = await fetch('world.json').then((r) => r.json());
   state.world = world;
 
-  // The heat layer is additive and independent of which events are shown, so it is attempted
-  // in preview mode too — it was previously stranded behind the early return below.
-  const loadHeat = () =>
-    loadJson(base, 'heat.json')
-      .then((heat) => {
-        if (heat.artifactVersion !== ARTIFACT_VERSION) return;
-        state.heat = heat;
-        renderHeat();
-        renderScaleKey();
-        renderColophon();
-      })
-      .catch(() => {});
-
   if (preview) {
     const data = await fetch('preview-events.json').then((r) => r.json());
     applyEvents(data);
     showBanner(t().previewTitle, t().previewBody);
-    loadHeat();
     return;
   }
 
@@ -253,8 +237,6 @@ async function load() {
       renderSearch();
     })
     .catch(() => {});
-
-  loadHeat();
 
   // The Brief's stories, joined by country. A GDELT cluster usually has a single article —
   // 48 of 57 on the live map — so the reporting a reader actually wants is mostly here.
@@ -324,42 +306,7 @@ function renderWorld() {
   state.view = { ...state.home };
 }
 
-/**
- * Thermal detections, drawn beneath the incidents as a diffuse field rather than as marks.
- * They are a different kind of thing from a sourced incident and must not be mistaken for
- * one, so they carry no outline, no interaction and a distinctly cooler treatment.
- */
-function renderHeat() {
-  const svg = $('map');
-  svg.querySelector('.heat')?.remove();
-  if (!state.heat || !state.showHeat) return;
-
-  const layer = make('g', { class: 'heat', 'aria-hidden': 'true' });
-  const busiest = state.heat.cells.reduce((max, cell) => Math.max(max, cell.detections), 1);
-
-  for (const cell of state.heat.cells) {
-    const [x, y] = toView(cell.lon, cell.lat);
-    // Square root keeps a single huge wildfire from swamping everything else.
-    const weight = Math.sqrt(cell.detections / busiest);
-    layer.appendChild(
-      make('circle', {
-        cx: x.toFixed(1),
-        cy: y.toFixed(1),
-        r: (1.2 + weight * 3.4).toFixed(2),
-        fill: 'var(--heat)',
-        'fill-opacity': (0.10 + weight * 0.30).toFixed(3),
-      }),
-    );
-  }
-
-  // Beneath the incidents: heat is context, not the subject.
-  const points = svg.querySelector('.points');
-  if (points) svg.insertBefore(layer, points);
-  else svg.appendChild(layer);
-}
-
-/* ---------- marks: one per spot, not one per incident ------------------ */
-
+/** View units per rendered pixel, so sizes and distances can be stated in real pixels. */
 function perPixelNow() {
   const rect = $('map').getBoundingClientRect();
   return rect.width > 0 ? state.view.w / rect.width : state.view.w / 1000;
@@ -371,7 +318,7 @@ function renderPoints() {
 
   const layer = make('g', { class: 'points' });
   state.groupedAtWidth = state.view.w;
-  state.nodes = groupEvents(visibleEvents(), perPixelNow());
+  state.nodes = groupEvents(visibleEvents(), perPixelNow(), groupRadiusForPointer());
 
   for (const mark of state.nodes) {
     const event = mark.lead;
@@ -410,9 +357,6 @@ function renderPoints() {
 
   svg.appendChild(layer);
   sizePoints();
-  // Points were just appended on top; put the heat field back underneath them.
-  const heat = svg.querySelector('.heat');
-  if (heat) svg.insertBefore(heat, layer);
 }
 
 /**
@@ -489,6 +433,7 @@ function applyView() {
   const rescaled = state.groupedAtWidth === null || Math.abs(Math.log(w / state.groupedAtWidth)) > 0.1;
   if (rescaled && state.nodes.length > 0) {
     const keep = state.selected?.lead ?? null;
+    state.candidate = null;
     renderPoints();
     wirePoints();
     if (keep) selectEvent(keep);
@@ -657,6 +602,12 @@ function markFor(event) {
 function applySelection(mark) {
   state.selected?.group.classList.remove('selected');
   state.selected = mark ?? null;
+  /*
+   * Two states, not one layout that has to serve both. Reading a record, the standfirst is
+   * context the reader already has and the title can stand down, which lifts the record
+   * most of the way up the column instead of leaving it below the fold.
+   */
+  document.querySelector('.stage').classList.toggle('reading', Boolean(mark));
   if (!mark) {
     $('plate').classList.remove('dimmed');
     renderDetail(null);
@@ -800,10 +751,15 @@ function renderDetail(mark) {
         `<h3 class="incident-head">${escapeHtml(t().incidentNumber(index + 1, mark.events.length))}` +
         `<span class="incident-place">${escapeHtml(event.location.name)}</span></h3>` +
         incidentMeta(event) +
+        `<h4 class="sources-head">${escapeHtml(t().sources)}</h4>` +
         `<ul class="detail-sources">${sourceList(event.provenance)}</ul>` +
         `</li>`).join('') +
       `</ol>`
-    : incidentMeta(lead) + `<ul class="detail-sources">${sourceList(lead.provenance)}</ul>`;
+    : incidentMeta(lead) +
+      `<section class="detail-sourceblock">` +
+      `<h3>${escapeHtml(t().sources)}</h3>` +
+      `<ul class="detail-sources">${sourceList(lead.provenance)}</ul>` +
+      `</section>`;
 
   const seenStories = new Set();
   const stories = fipsHere
@@ -831,13 +787,24 @@ function renderDetail(mark) {
       `</section>`
     : '';
 
+  /*
+   * Ordered the way the question is actually asked: what happened and where, then which
+   * conflict the register puts in that country, then what was published. The conflict block
+   * used to come first, which meant the reader met a list of wars before the incident they
+   * had just clicked.
+   */
   detail.innerHTML =
-    `<h2 class="detail-place">${escapeHtml(lead.location.name)}` +
-    (piled ? `<span class="detail-pile-count">${escapeHtml(pileLabel(mark))}</span>` : '') +
-    `</h2>` +
-    context +
+    `<div class="detail-top">` +
+      `<h2 class="detail-place">${escapeHtml(lead.location.name)}` +
+      (piled ? `<span class="detail-pile-count">${escapeHtml(pileLabel(mark))}</span>` : '') +
+      `</h2>` +
+      `<button type="button" class="link-button detail-close" id="detail-close" aria-label="${escapeHtml(t().closeLabel)}">${escapeHtml(t().close)}</button>` +
+    `</div>` +
     body +
+    context +
     related;
+
+  $('detail-close')?.addEventListener('click', clearSelection);
 
   // One quiet pulse of the label's own rule, so a click 900px away is visibly answered.
   detail.classList.remove('just-updated');
@@ -1068,17 +1035,7 @@ function renderScaleKey() {
     `<span class="item">${swatch('var(--s3)', 9)}</span>` +
     `<span class="item">${swatch('var(--s5)', 12)}${escapeHtml(t().keyHigh)}</span>` +
     `<span class="item">${swatch('var(--verified)', 10)}${escapeHtml(t().keyVerified)}</span>` +
-    (state.heat
-      ? `<span class="item"><span class="swatch heat-swatch" style="width:10px;height:10px"></span>${escapeHtml(t().heat)}</span>` +
-        `<button type="button" class="link-button" id="heat-toggle">${escapeHtml(state.showHeat ? t().heatOn : t().heatOff)}</button>`
-      : '') +
     `<span style="margin-left:auto">${escapeHtml(t().zoomHint)}</span>`;
-
-  $('heat-toggle')?.addEventListener('click', () => {
-    state.showHeat = !state.showHeat;
-    renderHeat();
-    renderScaleKey();
-  });
 }
 
 function renderStandfirst() {
@@ -1095,16 +1052,6 @@ function renderColophon() {
   $('colophon-text').innerHTML =
     `${escapeHtml(t().colophon)} <a href="mailto:${escapeHtml(CONFIG.contactEmail)}">${escapeHtml(CONFIG.contactEmail)}</a>.` +
     (repo ? ` <a href="${escapeHtml(repo)}" target="_blank" rel="noopener">Source</a>.` : '');
-
-  document.querySelector('.heat-note')?.remove();
-  if (state.heat) {
-    const note = document.createElement('p');
-    note.className = 'heat-note';
-    note.innerHTML =
-      t().heatNote(state.heat.cellsPublished, escapeHtml(state.heat.instrument)) +
-      ` <a href="${escapeHtml(state.heat.source.url)}" target="_blank" rel="noopener">${escapeHtml(state.heat.source.sourceName)}</a>.`;
-    $('colophon-text').after(note);
-  }
 
   const updated = state.generatedAt ? new Date(state.generatedAt).toISOString().slice(0, 16).replace('T', ' ') + ' UTC' : '—';
   $('colophon-meta').textContent = `${t().updated}: ${updated} · ${t().window}: ${t().windowDays(state.artifactWindowDays)}`;
@@ -1134,6 +1081,29 @@ function refresh() {
 }
 
 /**
+ * Which mark the pointer is currently claiming.
+ *
+ * Nearest-mark picking is only as clear as the reader's ability to predict it, so the map
+ * says out loud what a click would take: the candidate lifts as the pointer moves, and the
+ * cursor becomes a pointer only when there is something to take. Without this the dots read
+ * as decoration on a background, which is exactly how they were being read.
+ */
+function trackCandidate(clientX, clientY) {
+  const mark = pickAt(clientX, clientY);
+  if (mark === state.candidate) return;
+  state.candidate?.group.classList.remove('candidate');
+  state.candidate = mark;
+  mark?.group.classList.add('candidate');
+  $('map').classList.toggle('over-mark', Boolean(mark));
+}
+
+function clearCandidate() {
+  state.candidate?.group.classList.remove('candidate');
+  state.candidate = null;
+  $('map').classList.remove('over-mark');
+}
+
+/**
  * Only the keyboard is wired per mark. Pointer selection is delegated to the plate and
  * resolved by distance, so no mark can shadow another.
  */
@@ -1159,6 +1129,18 @@ function wireChrome() {
     if (state.dragDistance > 3) return;
     select(pickAt(ev.clientX, ev.clientY));
   });
+
+  /*
+   * Run straight off the event rather than through requestAnimationFrame. Picking is a walk
+   * over a few dozen marks, so deferring buys nothing, and a throttled frame callback leaves
+   * the highlight lagging or stuck — which defeats the point of showing it at all.
+   */
+  $('map').addEventListener('pointermove', (ev) => {
+    // A finger has no hover, and pointing at a mark under it would be meaningless.
+    if (ev.pointerType === 'touch') return;
+    trackCandidate(ev.clientX, ev.clientY);
+  });
+  $('map').addEventListener('pointerleave', clearCandidate);
 
   const search = $('search');
   search.addEventListener('input', renderSearch);
@@ -1236,15 +1218,27 @@ async function boot() {
     if (!state.world) return;
   }
 
-  renderWorld();
-  wireZoom();
-  refresh();
-
-  // Point sizes are expressed in on-screen pixels, so they must be recomputed whenever the
-  // map's rendered size changes — a rotation, a resize, or the layout crossing a breakpoint.
-  new ResizeObserver(() => sizePoints()).observe($('map'));
-  renderColophon();
-  startPulse();
+  /*
+   * Drawing is guarded as well as fetching.
+   *
+   * A crash in here used to leave the page showing cartography, no incidents and no
+   * explanation, with the rejection going unhandled: it looked like a quiet day rather than
+   * a broken map. Whatever fails, the reader is told.
+   */
+  try {
+    renderWorld();
+    wireZoom();
+    refresh();
+    new ResizeObserver(() => sizePoints()).observe($('map'));
+    renderColophon();
+    startPulse();
+  } catch (error) {
+    $('standfirst').innerHTML = `<span class="quiet">${escapeHtml(t().errorTitle)}</span>`;
+    showBanner(t().errorTitle, t().errorBody(escapeHtml(dataBaseUrl())));
+    console.error(error);
+  }
 }
 
+// Point sizes are expressed in on-screen pixels, so they are recomputed whenever the map's
+// rendered size changes — a rotation, a resize, or the layout crossing a breakpoint.
 boot();

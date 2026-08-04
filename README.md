@@ -65,7 +65,6 @@ model produces that is absent from the source headlines rejects the paragraph ou
 | UCDP | Verified backbone. Decides which conflicts exist and supplies verified figures | free token |
 
 | Curated feeds (RSS) | The Brief's main food: broadcasters as live pulse, quality papers for depth, institutions for context | none |
-| NASA FIRMS | Satellite thermal detections as a heat layer. Labelled as detections, never as attacks | none — the keyless CSV is used |
 | Bluesky | Curated accounts, including Reuters and AP whose RSS is gone | none |
 | Telegram | Public channel posts. List ships empty: choosing conflict channels is an editorial call | none |
 | YouTube | Curated channels via Atom. Titles and links only; video is embedded, never copied | none |

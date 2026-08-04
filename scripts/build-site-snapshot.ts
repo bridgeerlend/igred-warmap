@@ -36,8 +36,6 @@ const modules = ['projection.js', 'config.js', 'app.js']
 
 const world = read('world.json');
 const events = read('preview-events.json');
-// The heat layer is part of the map now, so the offline copy has to carry it too.
-const heat = readFileSync(path.join(repoRoot, 'data', 'heat.json'), 'utf-8');
 
 /**
  * The fonts have to travel inside the file too, or the snapshot falls back to whatever the
@@ -64,13 +62,11 @@ const html = read('index.html')
     [
       '<script id="inline-world" type="application/json">' + world + '</script>',
       '<script id="inline-events" type="application/json">' + events + '</script>',
-      '<script id="inline-heat" type="application/json">' + heat + '</script>',
       '<script type="module">',
       // The snapshot has no server, so fetch is redirected to the inlined blobs.
       'const INLINE = {',
       '  "world.json": document.getElementById("inline-world").textContent,',
       '  "preview-events.json": document.getElementById("inline-events").textContent,',
-      '  "heat.json": document.getElementById("inline-heat").textContent,',
       '};',
       'window.fetch = async (url) => {',
       '  const key = String(url).split("/").pop();',

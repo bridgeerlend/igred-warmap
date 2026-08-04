@@ -21,8 +21,6 @@ import { gdeltCursor, harvestGdelt, type GdeltHarvest } from '../sources/gdelt/i
 import { harvestUcdp, type UcdpHarvest } from '../sources/ucdp/index.js';
 import { synthesise, type SynthesisResult } from '../synthesize/index.js';
 import { harvestMedia, type MediaResult } from '../synthesize/media.js';
-import { harvestFirms, type FirmsHarvest, type FirmsProduct } from '../sources/firms/index.js';
-import { heatArtifact } from '../schema/heat.js';
 import { mediaArtifact } from '../schema/media.js';
 import type { UcdpDataset } from '../sources/ucdp/map.js';
 import { CountryResolver } from '../util/country.js';
@@ -148,26 +146,6 @@ export async function ingest(): Promise<void> {
     now,
   );
 
-  const firmsDefinition = getSource('firms');
-  const firmsOutcome = await runSource<FirmsHarvest>(
-    firmsDefinition,
-    previousHealthFor(previousHealth, 'firms'),
-    async () => {
-      const harvest = await harvestFirms(
-        {
-          product: (firmsDefinition.options.product as FirmsProduct | undefined) ?? 'modis',
-          gridDegrees: Number(firmsDefinition.options.gridDegrees ?? 0.25),
-          minConfidence: Number(firmsDefinition.options.minConfidence ?? 50),
-          minDetectionsPerCell: Number(firmsDefinition.options.minDetectionsPerCell ?? 2),
-          maxCells: Number(firmsDefinition.options.maxCells ?? 4000),
-        },
-        now,
-      );
-      return { data: harvest, recordCount: harvest.cells.length };
-    },
-    now,
-  );
-
   const mediaDefinition = getSource('media');
   const mediaOutcome = await runSource<MediaResult>(
     mediaDefinition,
@@ -284,7 +262,6 @@ export async function ingest(): Promise<void> {
     gdeltOutcome.health,
     ucdpOutcome.health,
     newsOutcome.health,
-    firmsOutcome.health,
     mediaOutcome.health,
   ];
 
@@ -319,22 +296,6 @@ export async function ingest(): Promise<void> {
     });
   }
 
-  if (firmsOutcome.data) {
-    writeArtifact(dataPaths.heat, heatArtifact, {
-      artifactVersion: ARTIFACT_VERSION,
-      generatedAt: now,
-      // Stated in the data so the map cannot quietly relabel heat as something it is not.
-      measures: 'satellite_thermal_anomalies',
-      instrument: firmsOutcome.data.instrument,
-      windowHours: 24,
-      gridDegrees: Number(firmsDefinition.options.gridDegrees ?? 0.25),
-      detectionsConsidered: firmsOutcome.data.detectionsConsidered,
-      cellsPublished: firmsOutcome.data.cells.length,
-      source: firmsOutcome.data.source,
-      cells: firmsOutcome.data.cells,
-    });
-  }
-
   if (mediaOutcome.data) {
     writeArtifact(dataPaths.media, mediaArtifact, {
       artifactVersion: ARTIFACT_VERSION,
@@ -365,7 +326,7 @@ export async function ingest(): Promise<void> {
     sources,
   });
 
-  report(now, gdeltOutcome.data, ucdpOutcome.data, newsOutcome.data, firmsOutcome.data, mediaOutcome.data, {
+  report(now, gdeltOutcome.data, ucdpOutcome.data, newsOutcome.data, mediaOutcome.data, {
     clustered: clustered?.clusters.length ?? 0,
     displayed: displayEvents.length,
     eventsInWindow: events.length,
@@ -387,7 +348,6 @@ function report(
   gdelt: GdeltHarvest | undefined,
   ucdp: UcdpHarvest | undefined,
   news: SynthesisResult | undefined,
-  firms: FirmsHarvest | undefined,
   media: MediaResult | undefined,
   summary: RunSummary,
 ): void {
@@ -414,11 +374,6 @@ function report(
       `  news: ${news.stories.length} stories from ${news.articlesConsidered} articles (${news.storiesOutOfField} clusters out of field)`,
     );
     if (failed.length > 0) lines.push(`  news feeds down: ${failed.join(', ')}`);
-  }
-  if (firms) {
-    lines.push(
-      `  heat: ${firms.cells.length} cells from ${firms.detectionsConsidered} thermal detections (${firms.instrument})`,
-    );
   }
   if (media) {
     lines.push(

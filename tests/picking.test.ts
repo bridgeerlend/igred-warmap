@@ -15,7 +15,15 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { repoRoot } from '../src/core/util/paths.js';
 import { toView } from '../scripts/lib/projection.js';
-import { GROUP_RADIUS_PX, PICK_RADIUS_PX, groupEvents, nearestMark } from '../site/picking.js';
+import {
+  GROUP_RADIUS_COARSE_PX,
+  GROUP_RADIUS_FINE_PX,
+  GROUP_RADIUS_PX,
+  PICK_RADIUS_PX,
+  groupEvents,
+  groupRadiusForPointer,
+  nearestMark,
+} from '../site/picking.js';
 
 interface StoredEvent {
   id: string;
@@ -141,6 +149,36 @@ describe('a mark sits on a real place', () => {
     for (const mark of groupEvents(placed, worldPerPixel)) {
       const heaviest = Math.max(...mark.events.map((event) => event.intensity));
       expect(mark.lead.intensity).toBe(heaviest);
+    }
+  });
+});
+
+describe("a fingertip is not asked to do a mouse's job", () => {
+  it('separates marks further for a coarse pointer', () => {
+    expect(GROUP_RADIUS_COARSE_PX).toBeGreaterThan(GROUP_RADIUS_FINE_PX);
+    // With no window to ask, the fine value is the safe default.
+    expect(groupRadiusForPointer()).toBe(GROUP_RADIUS_FINE_PX);
+  });
+
+  it('honours the separation it is given, exactly', () => {
+    for (const radiusPx of [GROUP_RADIUS_FINE_PX, GROUP_RADIUS_COARSE_PX]) {
+      const marks = groupEvents(placed, worldPerPixel, radiusPx);
+      let closest = Infinity;
+      for (let i = 0; i < marks.length; i += 1) {
+        for (let j = i + 1; j < marks.length; j += 1) {
+          closest = Math.min(closest, Math.hypot(marks[i]!.x - marks[j]!.x, marks[i]!.y - marks[j]!.y));
+        }
+      }
+      expect(closest / worldPerPixel).toBeGreaterThanOrEqual(radiusPx - 0.001);
+    }
+  });
+
+  it('leaves fewer marks the wider the separation, and loses none of them', () => {
+    const fine = groupEvents(placed, worldPerPixel, GROUP_RADIUS_FINE_PX);
+    const coarse = groupEvents(placed, worldPerPixel, GROUP_RADIUS_COARSE_PX);
+    expect(coarse.length).toBeLessThanOrEqual(fine.length);
+    for (const marks of [fine, coarse]) {
+      expect(marks.reduce((sum, mark) => sum + mark.events.length, 0)).toBe(placed.length);
     }
   });
 });

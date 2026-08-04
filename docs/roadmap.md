@@ -7,8 +7,8 @@
 3. **The map — done.** Built in the Atlas language on top of the data core, at `site/`.
 4. **The news synthesiser — done.** The Brief: one dated edition each morning at
    `site/brief/`, on the same core as the map.
-5. **Remaining sources — done.** FIRMS heat layer, curated Bluesky, Telegram and YouTube,
-   and news tagged by country so each conflict has a stream beside it.
+5. **Remaining sources — done.** Curated Bluesky, Telegram and YouTube, and news tagged by
+   country so each conflict has a stream beside it.
 6. **Self-healing, alert-on-failure, Dependabot, acceptance testing — done.**
 
 The AI text step and its pull-request approval flow shipped with the Brief, ahead of the
@@ -144,19 +144,15 @@ Each is an isolated module behind the same runner, so one going down costs only 
 
 | Source | What it gives | Cost |
 | --- | --- | --- |
-| NASA FIRMS | Satellite thermal detections, aggregated onto a 0.25° grid | free, **no key** |
 | Bluesky | Posts from curated accounts, including Reuters and AP | free, no auth |
 | Telegram | Public channel posts | free, preview-enabled channels only |
 | YouTube | Curated channels via their Atom feed | free, no key |
 
-**FIRMS needs no MAP_KEY.** The documented API does, but the same global 24-hour products
-are published as keyless CSV. One fewer thing to set up.
-
-**The heat layer is labelled in the data, not just in the design.** Its artifact carries
-`measures: "satellite_thermal_anomalies"` and the map states in both languages that these
-are heat signatures, not attacks — a fire may be shelling, a burning depot or land
-clearance, and the instrument cannot tell them apart. It draws beneath the incidents, in a
-flatter colour, with its own toggle.
+**Satellite thermal detections were built and then removed.** NASA FIRMS worked, needed no
+key, and was carefully labelled as detections rather than attacks. It came out anyway: a
+fire is not a conflict event, it sits outside the institute's mandate, and on the map it
+read as noise competing with the sourced incidents. The source module, its schema and its
+layer are gone rather than switched off, so there is nothing left to drift back in.
 
 **Bluesky puts the wire agencies back.** Reuters and AP have no open RSS any more, but their
 Bluesky accounts are public and readable without authentication. Search is not used —

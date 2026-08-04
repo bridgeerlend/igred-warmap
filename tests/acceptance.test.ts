@@ -96,7 +96,7 @@ describe('3 — a failing source keeps its last good data and the rest continues
   it('every source reports its own health, and a bad one cannot fail the run', () => {
     const health = readJson('data/health.json');
     const ids = health.sources.map((source: { sourceId: string }) => source.sourceId).sort();
-    expect(ids).toEqual(['firms', 'gdelt', 'media', 'newsfeeds', 'ucdp']);
+    expect(ids).toEqual(['gdelt', 'media', 'newsfeeds', 'ucdp']);
     // Whatever any single source is doing, the others still produced records this run.
     const producing = health.sources.filter((s: { recordsLastRun: number }) => s.recordsLastRun > 0);
     expect(producing.length).toBeGreaterThanOrEqual(3);
@@ -126,13 +126,6 @@ describe('4 — every visible datum carries source, timestamp and link', () => {
     });
   }
 
-  it('the heat layer names its instrument and its file', () => {
-    const heat = readJson('data/heat.json');
-    expect(heat.source.url).toMatch(/^https?:\/\//);
-    expect(heat.source.retrievedAt).toBeTruthy();
-    // Stated in the data so the map cannot relabel detections as attacks.
-    expect(heat.measures).toBe('satellite_thermal_anomalies');
-  });
 
   it('every social post and video links back to the account that published it', () => {
     const media = readJson('data/media.json');
@@ -381,6 +374,43 @@ describe('13 — everything runs free', () => {
   it('the AI step cannot cost money: it is off, and would fall back to no text anyway', () => {
     expect(config.brief.ai.enabled).toBe(false);
     expect(read('config/brief.json')).toMatch(/never cost money/);
+  });
+});
+
+describe('satellite thermal detections are gone, not merely switched off', () => {
+  /**
+   * A fire is not a conflict event. The layer was built, labelled carefully as detections
+   * rather than attacks, and taken out anyway: it fell outside the institute's mandate and
+   * competed with the sourced incidents for attention. Pinned so it cannot drift back in as
+   * a hidden flag or a stray token.
+   */
+  it('leaves no source, schema, artifact or layer behind', () => {
+    for (const file of [
+      'src/core/cli/ingest.ts', 'src/core/util/paths.ts', 'config/sources.json',
+      'site/app.js', 'site/styles.css', 'site/atlas.css', 'site/index.html',
+      'scripts/build-site-snapshot.ts',
+    ]) {
+      // Word-bounded: "confirms" is not a satellite, and the guard should not say it is.
+      expect(read(file)).not.toMatch(/\b(firms|thermal|heat)\b/i);
+    }
+    expect(existsSync(path.join(repoRoot, 'src/core/sources/firms'))).toBe(false);
+    expect(existsSync(path.join(repoRoot, 'src/core/schema/heat.ts'))).toBe(false);
+    expect(existsSync(path.join(repoRoot, 'data/heat.json'))).toBe(false);
+  });
+});
+
+describe('the reader can tell an incident from the background', () => {
+  it('marks the incident a click would take, before the click', () => {
+    const app = read('site/app.js');
+    expect(app).toMatch(/function trackCandidate\(/);
+    expect(app).toMatch(/addEventListener\('pointermove'/);
+    expect(read('site/styles.css')).toMatch(/\.evt\.candidate/);
+    // The cursor only promises something where there is something to take.
+    expect(read('site/styles.css')).toMatch(/#map\.over-mark \{ cursor: pointer/);
+  });
+
+  it('never transitions font-size, which stalls and freezes the value', () => {
+    expect(read('site/styles.css')).not.toMatch(/transition:[^;]*font-size/);
   });
 });
 
