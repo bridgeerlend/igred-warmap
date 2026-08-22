@@ -1,6 +1,6 @@
 {
   "artifactVersion": 1,
-  "generatedAt": "2026-08-22T06:52:53.610Z",
+  "generatedAt": "2026-08-22T07:38:29.537Z",
   "windowDays": 30,
   "earliestEvent": "2026-08-03T00:00:00.000Z",
   "latestEvent": "2026-08-22T00:00:00.000Z",
@@ -9,10 +9,10 @@
       "id": "evt_3c3d6e1e1901ff01",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T06:00:00.000Z",
+      "ingestedAt": "2026-08-22T07:45:00.000Z",
       "category": "armed_assault",
-      "label": "Armed assault — Kyiv, Kyyiv, Misto, Ukraine",
-      "cameoCode": "185",
+      "label": "Armed assault — Kiev, Ukraine (general), Ukraine",
+      "cameoCode": "180",
       "location": {
         "lat": 50.4333,
         "lon": 30.5167,
@@ -23,9 +23,24 @@
       },
       "actors": [
         {
-          "name": "POLAND",
+          "name": "UKRAINE",
           "role": "initiator",
-          "code": "POL"
+          "code": "UKR"
+        },
+        {
+          "name": "RUSSIA",
+          "role": "target",
+          "code": "RUS"
+        },
+        {
+          "name": "RUSSIAN",
+          "role": "initiator",
+          "code": "RUS"
+        },
+        {
+          "name": "AUTHORITIES",
+          "role": "target",
+          "code": "GOV"
         },
         {
           "name": "UKRAINE",
@@ -83,6 +98,24 @@
           "publisher": "politicaldog101.com",
           "publishedAt": "2026-08-22T06:00:00.000Z",
           "retrievedAt": "2026-08-22T06:52:53.610Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.yahoo.com/news/world/articles/german-foreign-minister-visits-kiev-061829781.html",
+          "publisher": "yahoo.com",
+          "publishedAt": "2026-08-22T07:15:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.cbsnews.com/news/ukraine-russia-war-mall/",
+          "publisher": "cbsnews.com",
+          "publishedAt": "2026-08-22T07:45:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
         }
       ]
     },
@@ -225,28 +258,48 @@
       "id": "evt_4d9a76da8f9c6ba0",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T01:00:00.000Z",
+      "ingestedAt": "2026-08-22T07:30:00.000Z",
       "category": "aerial_strike",
-      "label": "Aerial or missile strike — Myaung, Sagain, Myanmar",
+      "label": "Aerial or missile strike — Nabet, Sagain, Myanmar",
       "cameoCode": "195",
       "location": {
-        "lat": 21.8333,
-        "lon": 95.4167,
-        "name": "Myaung, Sagain, Myanmar",
+        "lat": 21.7667,
+        "lon": 95.35,
+        "name": "Nabet, Sagain, Myanmar",
         "countryFips": "BM",
         "adm1": "BM10",
         "precision": "city"
       },
       "actors": [
         {
+          "name": "REGIME",
+          "role": "initiator",
+          "code": "GOVMIL"
+        },
+        {
+          "name": "VILLAGE",
+          "role": "target",
+          "code": "CVL"
+        },
+        {
           "name": "FIGHTER JET",
           "role": "initiator",
           "code": "MIL"
         },
         {
-          "name": "VILLAGE",
+          "name": "MANDALAY",
           "role": "target",
-          "code": "CVLREL"
+          "code": "MMR"
+        },
+        {
+          "name": "MYANMAR",
+          "role": "initiator",
+          "code": "MMRMIL"
+        },
+        {
+          "name": "SAGAING",
+          "role": "target",
+          "code": "MMRREL"
         }
       ],
       "confidence": "reported",
@@ -263,6 +316,15 @@
           "publisher": "Al Jazeera",
           "publishedAt": "2026-08-22T01:00:00.000Z",
           "retrievedAt": "2026-08-22T01:42:31.038Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.bnionline.net/en/news/myanmar-military-airstrike-monastery-kills-least-12-during-buddhist-sabbath",
+          "publisher": "bnionline.net",
+          "publishedAt": "2026-08-22T07:30:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
         }
       ]
     },
@@ -270,7 +332,7 @@
       "id": "evt_53934639f54ac06e",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T04:30:00.000Z",
+      "ingestedAt": "2026-08-22T07:15:00.000Z",
       "category": "armed_assault",
       "label": "Armed assault — Moscow, Moskva, Russia",
       "cameoCode": "180",
@@ -284,19 +346,14 @@
       },
       "actors": [
         {
-          "name": "RUSSIAN",
-          "role": "initiator",
-          "code": "RUS"
-        },
-        {
-          "name": "AUTHORITIES",
-          "role": "target",
-          "code": "GOV"
-        },
-        {
           "name": "UKRAINE",
-          "role": "target",
+          "role": "initiator",
           "code": "UKR"
+        },
+        {
+          "name": "RUSSIA",
+          "role": "target",
+          "code": "RUS"
         }
       ],
       "confidence": "unconfirmed",
@@ -322,6 +379,15 @@
           "publisher": "rte.ie",
           "publishedAt": "2026-08-22T04:30:00.000Z",
           "retrievedAt": "2026-08-22T04:41:08.280Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.yahoo.com/news/world/articles/german-foreign-minister-visits-kiev-061829781.html",
+          "publisher": "yahoo.com",
+          "publishedAt": "2026-08-22T07:15:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
         }
       ]
     },
@@ -396,10 +462,10 @@
       "id": "evt_6983db6bf2dac479",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T06:45:00.000Z",
+      "ingestedAt": "2026-08-22T07:45:00.000Z",
       "category": "armed_clash",
-      "label": "Armed clash — Kyiv, Kyyiv, Misto, Ukraine",
-      "cameoCode": "190",
+      "label": "Armed clash — Kiev, Ukraine (general), Ukraine",
+      "cameoCode": "194",
       "location": {
         "lat": 50.4333,
         "lon": 30.5167,
@@ -410,34 +476,34 @@
       },
       "actors": [
         {
+          "name": "GERMAN",
+          "role": "initiator",
+          "code": "DEU"
+        },
+        {
+          "name": "RUSSIA",
+          "role": "target",
+          "code": "RUS"
+        },
+        {
+          "name": "RUSSIA",
+          "role": "initiator",
+          "code": "RUS"
+        },
+        {
           "name": "KYIV",
           "role": "initiator",
           "code": "UKR"
         },
         {
-          "name": "UKRAINE",
-          "role": "initiator",
-          "code": "UKRGOV"
-        },
-        {
-          "name": "UKRAINE",
+          "name": "COMPANY",
           "role": "target",
-          "code": "UKRGOV"
+          "code": "BUSLAB"
         },
         {
-          "name": "MOSCOW",
-          "role": "initiator",
-          "code": "RUS"
-        },
-        {
-          "name": "RUSSIA",
+          "name": "MILITARY",
           "role": "target",
-          "code": "RUS"
-        },
-        {
-          "name": "RUSSIA",
-          "role": "initiator",
-          "code": "RUS"
+          "code": "MILGOV"
         }
       ],
       "confidence": "reported",
@@ -598,6 +664,42 @@
           "publisher": "slguardian.org",
           "publishedAt": "2026-08-22T06:45:00.000Z",
           "retrievedAt": "2026-08-22T06:52:53.610Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.yahoo.com/news/world/articles/german-foreign-minister-visits-kiev-061829781.html",
+          "publisher": "yahoo.com",
+          "publishedAt": "2026-08-22T07:15:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "http://www.sitkasentinel.com/stories/russian-attacks-on-ukraine-kill-2-people-a-day-after-deadly-shopping-mall-drone-strike,165584",
+          "publisher": "sitkasentinel.com",
+          "publishedAt": "2026-08-22T07:45:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.cbsnews.com/news/ukraine-russia-war-mall/",
+          "publisher": "cbsnews.com",
+          "publishedAt": "2026-08-22T07:45:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://pajhwok.com/2026/08/22/16-killed-over-130-wounded-in-russian-drone-strikes-in-ukraine/",
+          "publisher": "pajhwok.com",
+          "publishedAt": "2026-08-22T07:45:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
         }
       ]
     },
@@ -605,7 +707,7 @@
       "id": "evt_d16d5cce2d78998f",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T07:00:00.000Z",
+      "ingestedAt": "2026-08-22T07:45:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Moscow, Moskva, Russia",
       "cameoCode": "190",
@@ -619,34 +721,34 @@
       },
       "actors": [
         {
-          "name": "UKRAINE",
+          "name": "VILLAGE",
           "role": "initiator",
-          "code": "UKR"
+          "code": "CVL"
         },
         {
-          "name": "RUSSIA",
+          "name": "RUSSIAN",
           "role": "target",
           "code": "RUS"
         },
         {
-          "name": "UKRAINIAN",
-          "role": "initiator",
-          "code": "UKRGOV"
-        },
-        {
-          "name": "REGIONAL GOVERNOR",
-          "role": "target",
-          "code": "GOV"
-        },
-        {
           "name": "UKRAINE",
           "role": "target",
           "code": "UKR"
         },
         {
-          "name": "REUTERS",
+          "name": "RUSSIAN",
           "role": "initiator",
-          "code": "USAMED"
+          "code": "RUS"
+        },
+        {
+          "name": "VILLAGE",
+          "role": "target",
+          "code": "CVL"
+        },
+        {
+          "name": "RUSSIA",
+          "role": "initiator",
+          "code": "RUS"
         }
       ],
       "confidence": "reported",
@@ -753,6 +855,42 @@
           "publisher": "athens-times.com",
           "publishedAt": "2026-08-22T07:00:00.000Z",
           "retrievedAt": "2026-08-22T06:52:53.610Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.yahoo.com/news/world/articles/deadly-russian-daytime-attack-shopping-174644986.html",
+          "publisher": "yahoo.com",
+          "publishedAt": "2026-08-22T07:15:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.yahoo.com/news/world/articles/german-foreign-minister-visits-kiev-061829781.html",
+          "publisher": "yahoo.com",
+          "publishedAt": "2026-08-22T07:15:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "http://www.sitkasentinel.com/stories/russian-attacks-on-ukraine-kill-2-people-a-day-after-deadly-shopping-mall-drone-strike,165584",
+          "publisher": "sitkasentinel.com",
+          "publishedAt": "2026-08-22T07:45:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://pajhwok.com/2026/08/22/16-killed-over-130-wounded-in-russian-drone-strikes-in-ukraine/",
+          "publisher": "pajhwok.com",
+          "publishedAt": "2026-08-22T07:45:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
         }
       ]
     },
@@ -760,7 +898,7 @@
       "id": "evt_c8c0712228fc385a",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T06:15:00.000Z",
+      "ingestedAt": "2026-08-22T07:45:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Paris, France (general), France",
       "cameoCode": "190",
@@ -774,34 +912,9 @@
       },
       "actors": [
         {
-          "name": "BELGIUM",
+          "name": "GERMANY",
           "role": "initiator",
-          "code": "BEL"
-        },
-        {
-          "name": "FRANCE",
-          "role": "target",
-          "code": "FRAPTY"
-        },
-        {
-          "name": "POLITICIAN",
-          "role": "target",
-          "code": "PTY"
-        },
-        {
-          "name": "SWITZERLAND",
-          "role": "initiator",
-          "code": "CHE"
-        },
-        {
-          "name": "POLICEMAN",
-          "role": "target",
-          "code": "COP"
-        },
-        {
-          "name": "CRIMINAL",
-          "role": "initiator",
-          "code": "CRM"
+          "code": "DEU"
         }
       ],
       "confidence": "reported",
@@ -827,6 +940,15 @@
           "publisher": "El País",
           "publishedAt": "2026-08-22T06:15:00.000Z",
           "retrievedAt": "2026-08-22T06:52:53.610Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "http://www.sitkasentinel.com/stories/european-wildfires-reveal-a-hidden-danger-buried-bombs-and-mines-from-wwi-and-wwii,165586",
+          "publisher": "sitkasentinel.com",
+          "publishedAt": "2026-08-22T07:45:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
         }
       ]
     },
@@ -1108,7 +1230,7 @@
       "id": "evt_757aa5315497d102",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T05:15:00.000Z",
+      "ingestedAt": "2026-08-22T07:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Kharkiv, Kharkivs'ka Oblast', Ukraine",
       "cameoCode": "190",
@@ -1122,14 +1244,19 @@
       },
       "actors": [
         {
-          "name": "RUSSIA",
+          "name": "RUSSIAN",
           "role": "initiator",
           "code": "RUS"
         },
         {
           "name": "UKRAINE",
-          "role": "target",
+          "role": "initiator",
           "code": "UKR"
+        },
+        {
+          "name": "VILLAGE",
+          "role": "target",
+          "code": "CVL"
         }
       ],
       "confidence": "reported",
@@ -1182,6 +1309,15 @@
           "publisher": "mirror.co.uk",
           "publishedAt": "2026-08-22T05:15:00.000Z",
           "retrievedAt": "2026-08-22T05:34:19.162Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.yahoo.com/news/world/articles/deadly-russian-daytime-attack-shopping-174644986.html",
+          "publisher": "yahoo.com",
+          "publishedAt": "2026-08-22T07:15:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
         }
       ]
     },
@@ -1256,10 +1392,10 @@
       "id": "evt_78bcd9bb5aaabff5",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T01:15:00.000Z",
+      "ingestedAt": "2026-08-22T07:45:00.000Z",
       "category": "armed_assault",
       "label": "Armed assault — Delhi, Delhi, India",
-      "cameoCode": "182",
+      "cameoCode": "180",
       "location": {
         "lat": 28.6667,
         "lon": 77.2167,
@@ -1270,27 +1406,7 @@
       },
       "actors": [
         {
-          "name": "ENGINEER",
-          "role": "initiator",
-          "code": "CVL"
-        },
-        {
           "name": "DELHI",
-          "role": "target",
-          "code": "IND"
-        },
-        {
-          "name": "POLICE",
-          "role": "initiator",
-          "code": "COP"
-        },
-        {
-          "name": "STUDENT",
-          "role": "target",
-          "code": "EDU"
-        },
-        {
-          "name": "NEW DELHI",
           "role": "initiator",
           "code": "IND"
         }
@@ -1336,6 +1452,15 @@
           "publisher": "bignewsnetwork.com",
           "publishedAt": "2026-08-22T01:15:00.000Z",
           "retrievedAt": "2026-08-22T01:42:31.038Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.hindustantimes.com/india-news/delhi-software-engineer-dies-after-assault-by-wife-s-family-4-detained-police-101787381999945.html",
+          "publisher": "hindustantimes.com",
+          "publishedAt": "2026-08-22T07:45:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
         }
       ]
     },
@@ -1586,7 +1711,7 @@
       "id": "evt_5e0342bdae1bc690",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T06:30:00.000Z",
+      "ingestedAt": "2026-08-22T07:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Islamabad, Islamabad, Pakistan",
       "cameoCode": "190",
@@ -1600,24 +1725,9 @@
       },
       "actors": [
         {
-          "name": "MILITARY",
-          "role": "initiator",
-          "code": "MIL"
-        },
-        {
-          "name": "PAKISTAN",
-          "role": "target",
-          "code": "PAK"
-        },
-        {
           "name": "PAKISTAN",
           "role": "initiator",
           "code": "PAK"
-        },
-        {
-          "name": "MILITARY",
-          "role": "target",
-          "code": "MIL"
         }
       ],
       "confidence": "reported",
@@ -1661,6 +1771,15 @@
           "publisher": "theweek.com",
           "publishedAt": "2026-08-22T06:30:00.000Z",
           "retrievedAt": "2026-08-22T06:52:53.610Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://tribune.com.pk/story/2625206/jaffer-denied-relief-in-noor-murder-case",
+          "publisher": "The Express Tribune",
+          "publishedAt": "2026-08-22T07:15:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
         }
       ]
     },
@@ -2028,10 +2147,10 @@
       "id": "evt_8f8c6d0adcf1e8d5",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T04:30:00.000Z",
+      "ingestedAt": "2026-08-22T07:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Tehran, Tehran, Iran",
-      "cameoCode": "194",
+      "cameoCode": "190",
       "location": {
         "lat": 35.75,
         "lon": 51.5148,
@@ -2042,29 +2161,24 @@
       },
       "actors": [
         {
-          "name": "IRANIAN",
-          "role": "initiator",
+          "name": "IRAN",
+          "role": "target",
           "code": "IRN"
         },
         {
-          "name": "MEXICO",
-          "role": "target",
-          "code": "MEX"
-        },
-        {
-          "name": "CIVILIAN",
-          "role": "initiator",
-          "code": "CVL"
-        },
-        {
-          "name": "ISRAELI",
+          "name": "ISRAEL",
           "role": "initiator",
           "code": "ISR"
         },
         {
-          "name": "ISLAMIC",
+          "name": "CIVILIAN",
           "role": "target",
-          "code": "MOS"
+          "code": "CVL"
+        },
+        {
+          "name": "THE US",
+          "role": "initiator",
+          "code": "USA"
         }
       ],
       "confidence": "reported",
@@ -2126,6 +2240,15 @@
           "publisher": "dailymail.com",
           "publishedAt": "2026-08-22T04:30:00.000Z",
           "retrievedAt": "2026-08-22T04:41:08.280Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://tribune.com.pk/story/2625233/trump-says-iran-not-ready-to-make-the-right-deal",
+          "publisher": "The Express Tribune",
+          "publishedAt": "2026-08-22T07:15:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
         }
       ]
     },
@@ -2733,7 +2856,7 @@
       "id": "evt_773436c37c754aa4",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T01:30:00.000Z",
+      "ingestedAt": "2026-08-22T07:30:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Myaung, Sagain, Myanmar",
       "cameoCode": "190",
@@ -2747,34 +2870,14 @@
       },
       "actors": [
         {
-          "name": "VILLAGER",
+          "name": "MILITARY",
           "role": "target",
-          "code": "CVL"
-        },
-        {
-          "name": "GOVERNMENT",
-          "role": "target",
-          "code": "GOV"
-        },
-        {
-          "name": "JET FIGHTER",
-          "role": "initiator",
           "code": "MIL"
         },
         {
-          "name": "VILLAGE",
-          "role": "target",
-          "code": "CVLREL"
-        },
-        {
-          "name": "MONASTERY",
+          "name": "MILITARY",
           "role": "initiator",
-          "code": "REL"
-        },
-        {
-          "name": "MYANMAR",
-          "role": "target",
-          "code": "MMRCVL"
+          "code": "MIL"
         }
       ],
       "confidence": "reported",
@@ -2800,6 +2903,15 @@
           "publisher": "sbs.com.au",
           "publishedAt": "2026-08-22T01:30:00.000Z",
           "retrievedAt": "2026-08-22T01:42:31.038Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.bnionline.net/en/news/myanmar-military-airstrike-monastery-kills-least-12-during-buddhist-sabbath",
+          "publisher": "bnionline.net",
+          "publishedAt": "2026-08-22T07:30:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
         }
       ]
     },
@@ -8842,6 +8954,631 @@
           "publisher": "lankanewspapers.com",
           "publishedAt": "2026-08-22T07:00:00.000Z",
           "retrievedAt": "2026-08-22T06:52:53.610Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_0297eba0d0df0fc4",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T07:15:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Chapayevsk, Samarskaya Oblast', Russia",
+      "cameoCode": "190",
+      "location": {
+        "lat": 52.9771,
+        "lon": 49.7086,
+        "name": "Chapayevsk, Samarskaya Oblast', Russia",
+        "countryFips": "RS",
+        "adm1": "RS65",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "COMPANY",
+          "role": "initiator",
+          "code": "BUS"
+        },
+        {
+          "name": "RUSSIA",
+          "role": "target",
+          "code": "RUS"
+        },
+        {
+          "name": "CIVILIAN",
+          "role": "initiator",
+          "code": "CVL"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://eaworldview.com/2026/08/ukraine-war-kryvyi-rih-mykolaiv-russia-murders-20/",
+          "publisher": "eaworldview.com",
+          "publishedAt": "2026-08-22T07:15:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_dc2d79b9c3d17f6f",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T07:15:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Komyshuvakha, Zaporiz'ka Oblast', Ukraine",
+      "cameoCode": "190",
+      "location": {
+        "lat": 47.7176,
+        "lon": 35.5288,
+        "name": "Komyshuvakha, Zaporiz'ka Oblast', Ukraine",
+        "countryFips": "UP",
+        "adm1": "UP26",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "VILLAGE",
+          "role": "initiator",
+          "code": "CVL"
+        },
+        {
+          "name": "UKRAINE",
+          "role": "target",
+          "code": "UKR"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.yahoo.com/news/world/articles/deadly-russian-daytime-attack-shopping-174644986.html",
+          "publisher": "yahoo.com",
+          "publishedAt": "2026-08-22T07:15:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_22cb6f010067bd2f",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T07:15:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Jadavpur, West Bengal, India",
+      "cameoCode": "180",
+      "location": {
+        "lat": 22.4833,
+        "lon": 88.3833,
+        "name": "Jadavpur, West Bengal, India",
+        "countryFips": "IN",
+        "adm1": "IN28",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "UNIVERSITY",
+          "role": "initiator",
+          "code": "EDU"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.thehindu.com/news/national/west-bengal/why-is-jadavpur-university-in-kolkata-on-the-boil-explained/article71376802.ece",
+          "publisher": "The Hindu",
+          "publishedAt": "2026-08-22T07:15:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_1df26d4551f172be",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T07:15:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Islamabad, Islamabad, Pakistan",
+      "cameoCode": "180",
+      "location": {
+        "lat": 33.7,
+        "lon": 73.1667,
+        "name": "Islamabad, Islamabad, Pakistan",
+        "countryFips": "PK",
+        "adm1": "PK08",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "PAKISTAN",
+          "role": "initiator",
+          "code": "PAK"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://tribune.com.pk/story/2625206/jaffer-denied-relief-in-noor-murder-case",
+          "publisher": "The Express Tribune",
+          "publishedAt": "2026-08-22T07:15:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_c71711a8ebb82d92",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T07:15:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Damascus, Dimashq, Syria",
+      "cameoCode": "186",
+      "location": {
+        "lat": 33.5,
+        "lon": 36.3,
+        "name": "Damascus, Dimashq, Syria",
+        "countryFips": "SY",
+        "adm1": "SY13",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "PAKISTAN",
+          "role": "initiator",
+          "code": "PAK"
+        },
+        {
+          "name": "BUSINESS",
+          "role": "target",
+          "code": "BUS"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.newsweekpakistan.com/the-beatific-bhutto/",
+          "publisher": "newsweekpakistan.com",
+          "publishedAt": "2026-08-22T07:15:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_0349b6668d785c5b",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T07:15:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Karachi, Sindh, Pakistan",
+      "cameoCode": "186",
+      "location": {
+        "lat": 24.8667,
+        "lon": 67.05,
+        "name": "Karachi, Sindh, Pakistan",
+        "countryFips": "PK",
+        "adm1": "PK05",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "KARACHI",
+          "role": "initiator",
+          "code": "PAK"
+        },
+        {
+          "name": "BUSINESS",
+          "role": "target",
+          "code": "BUS"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.newsweekpakistan.com/the-beatific-bhutto/",
+          "publisher": "newsweekpakistan.com",
+          "publishedAt": "2026-08-22T07:15:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_10fcc3e6ed813877",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T07:15:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Chapayevsk, Samarskaya Oblast', Russia",
+      "cameoCode": "182",
+      "location": {
+        "lat": 52.9771,
+        "lon": 49.7086,
+        "name": "Chapayevsk, Samarskaya Oblast', Russia",
+        "countryFips": "RS",
+        "adm1": "RS65",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "RUSSIA",
+          "role": "initiator",
+          "code": "RUS"
+        },
+        {
+          "name": "CIVILIAN",
+          "role": "target",
+          "code": "CVL"
+        },
+        {
+          "name": "UKRAINE",
+          "role": "initiator",
+          "code": "UKR"
+        },
+        {
+          "name": "RUSSIA",
+          "role": "target",
+          "code": "RUS"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://eaworldview.com/2026/08/ukraine-war-kryvyi-rih-mykolaiv-russia-murders-20/",
+          "publisher": "eaworldview.com",
+          "publishedAt": "2026-08-22T07:15:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_746f5ab80d03268d",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T07:30:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Mandalay, Mandalay, Myanmar",
+      "cameoCode": "190",
+      "location": {
+        "lat": 22,
+        "lon": 96.0833,
+        "name": "Mandalay, Mandalay, Myanmar",
+        "countryFips": "BM",
+        "adm1": "BM08",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "ABBOT",
+          "role": "target",
+          "code": "REL"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.bnionline.net/en/news/myanmar-military-airstrike-monastery-kills-least-12-during-buddhist-sabbath",
+          "publisher": "bnionline.net",
+          "publishedAt": "2026-08-22T07:30:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_4f791e9a9216eef4",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T07:30:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Wadala, Maharashtra, India",
+      "cameoCode": "193",
+      "location": {
+        "lat": 20.3833,
+        "lon": 73.9833,
+        "name": "Wadala, Maharashtra, India",
+        "countryFips": "IN",
+        "adm1": "IN16",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "ACTOR",
+          "role": "initiator",
+          "code": "ELI"
+        },
+        {
+          "name": "UNITED STATES",
+          "role": "target",
+          "code": "USA"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://ianslive.in/ronit-bose-roy-recalls-working-with-brendan-fraser-shares-picture-of-hollywood-star-with-wife-kids--20260822122205",
+          "publisher": "ianslive.in",
+          "publishedAt": "2026-08-22T07:30:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_ed1e316285e5326d",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T07:30:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Quintana Roo, YucatáMX, Mexico",
+      "cameoCode": "190",
+      "location": {
+        "lat": 20.8667,
+        "lon": -88.6333,
+        "name": "Quintana Roo, YucatáMX, Mexico",
+        "countryFips": "MX",
+        "adm1": "MX31",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "JAMAICA",
+          "role": "initiator",
+          "code": "JAM"
+        },
+        {
+          "name": "MEXICO",
+          "role": "target",
+          "code": "MEX"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.dailystar.co.uk/news/latest-news/tourist-dies-after-falling-150ft-37580766",
+          "publisher": "dailystar.co.uk",
+          "publishedAt": "2026-08-22T07:30:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_041fc7386db5a764",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T07:30:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Iligan, Iligan, Philippines",
+      "cameoCode": "190",
+      "location": {
+        "lat": 8.23083,
+        "lon": 124.236,
+        "name": "Iligan, Iligan, Philippines",
+        "countryFips": "RP",
+        "adm1": "RPC8",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "PHILIPPINE",
+          "role": "initiator",
+          "code": "PHL"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://mindanews.com/top-stories/2026/08/illegal-mining-site-in-iligan-city-raided/",
+          "publisher": "mindanews.com",
+          "publishedAt": "2026-08-22T07:30:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_9bb1ee148ed8a4ad",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T07:45:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — West Kalimantan, Kalimantan Barat, Indonesia",
+      "cameoCode": "190",
+      "location": {
+        "lat": 0,
+        "lon": 110.5,
+        "name": "West Kalimantan, Kalimantan Barat, Indonesia",
+        "countryFips": "ID",
+        "adm1": "ID11",
+        "precision": "adm1"
+      },
+      "actors": [
+        {
+          "name": "CABINET",
+          "role": "initiator",
+          "code": "GOV"
+        },
+        {
+          "name": "INDONESIA",
+          "role": "target",
+          "code": "IDN"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://en.tempo.co/read/2118069/prabowo-heads-to-kalimantan-to-lead-fire-operations",
+          "publisher": "en.tempo.co",
+          "publishedAt": "2026-08-22T07:45:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_fa6a50e477deac30",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T07:45:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — East Kalimantan, Kalimantan Timur, Indonesia",
+      "cameoCode": "190",
+      "location": {
+        "lat": 1.5,
+        "lon": 116.5,
+        "name": "East Kalimantan, Kalimantan Timur, Indonesia",
+        "countryFips": "ID",
+        "adm1": "ID14",
+        "precision": "adm1"
+      },
+      "actors": [
+        {
+          "name": "CABINET",
+          "role": "initiator",
+          "code": "GOV"
+        },
+        {
+          "name": "INDONESIA",
+          "role": "target",
+          "code": "IDN"
+        },
+        {
+          "name": "LIEUTENANT COLONEL",
+          "role": "target",
+          "code": "MIL"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://en.tempo.co/read/2118069/prabowo-heads-to-kalimantan-to-lead-fire-operations",
+          "publisher": "en.tempo.co",
+          "publishedAt": "2026-08-22T07:45:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_6bfbec2899d134ce",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T07:45:00.000Z",
+      "category": "siege_blockade",
+      "label": "Siege or blockade — Jakarta, Jakarta Raya, Indonesia",
+      "cameoCode": "191",
+      "location": {
+        "lat": -6.17444,
+        "lon": 106.829,
+        "name": "Jakarta, Jakarta Raya, Indonesia",
+        "countryFips": "ID",
+        "adm1": "ID04",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "INDONESIA",
+          "role": "initiator",
+          "code": "IDN"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 3,
+      "intensity": 1,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://en.tempo.co/read/2118068/how-bps-ranks-household-deciles-method-explained",
+          "publisher": "en.tempo.co",
+          "publishedAt": "2026-08-22T07:45:00.000Z",
+          "retrievedAt": "2026-08-22T07:38:29.537Z"
         }
       ]
     },
