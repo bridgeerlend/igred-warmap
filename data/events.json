@@ -1,6 +1,6 @@
 {
   "artifactVersion": 1,
-  "generatedAt": "2026-08-22T22:30:21.997Z",
+  "generatedAt": "2026-08-22T23:27:56.724Z",
   "windowDays": 30,
   "earliestEvent": "2026-08-03T00:00:00.000Z",
   "latestEvent": "2026-08-22T22:15:00.000Z",
@@ -658,7 +658,7 @@
       "id": "evt_8a666570da3d7b85",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T14:00:00.000Z",
+      "ingestedAt": "2026-08-22T23:15:00.000Z",
       "category": "aerial_strike",
       "label": "Aerial or missile strike — Moscow, Moskva, Russia",
       "cameoCode": "195",
@@ -672,26 +672,36 @@
       },
       "actors": [
         {
-          "name": "DEFENSE MINIST",
+          "name": "RUSSIAN",
           "role": "initiator",
-          "code": "GOVMIL"
+          "code": "RUS"
+        },
+        {
+          "name": "CIVILIAN",
+          "role": "target",
+          "code": "CVL"
         },
         {
           "name": "UKRAINE",
-          "role": "target",
+          "role": "initiator",
           "code": "UKR"
         },
         {
-          "name": "MOLDOVAN",
+          "name": "UKRAINIAN",
           "role": "initiator",
-          "code": "MDA"
+          "code": "UKR"
+        },
+        {
+          "name": "MOSCOW",
+          "role": "target",
+          "code": "RUS"
         }
       ],
       "confidence": "reported",
       "severity": 5,
-      "intensity": 2,
-      "reportCount": 1,
-      "distinctPublishers": 1,
+      "intensity": 3,
+      "reportCount": 2,
+      "distinctPublishers": 2,
       "provenance": [
         {
           "sourceId": "gdelt",
@@ -710,6 +720,24 @@
           "publisher": "Kyiv Post",
           "publishedAt": "2026-08-22T14:00:00.000Z",
           "retrievedAt": "2026-08-22T14:29:15.207Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://nypost.com/2026/08/22/world-news/zelensky-vows-revenge-for-devastating-russian-bombing-that-killed-16-in-shopping-center/",
+          "publisher": "nypost.com",
+          "publishedAt": "2026-08-22T22:45:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.dailymail.com/news/article-16072611/Zelenskys-drone-blitzkrieg-Russian-Amazon-turning-shellshocked-Putins-war.html",
+          "publisher": "dailymail.com",
+          "publishedAt": "2026-08-22T23:15:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -1075,43 +1103,33 @@
       "id": "evt_d16d5cce2d78998f",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T22:30:00.000Z",
+      "ingestedAt": "2026-08-22T23:30:00.000Z",
       "category": "armed_clash",
-      "label": "Armed clash — Kremlin, Moskva, Russia",
+      "label": "Armed clash — Moscow, Moskva, Russia",
       "cameoCode": "190",
       "location": {
         "lat": 55.7522,
         "lon": 37.6156,
-        "name": "Kremlin, Moskva, Russia",
+        "name": "Moscow, Moskva, Russia",
         "countryFips": "RS",
         "adm1": "RS48",
         "precision": "city"
       },
       "actors": [
         {
-          "name": "BELARUS",
-          "role": "target",
-          "code": "BLR"
-        },
-        {
-          "name": "GERMAN",
-          "role": "initiator",
-          "code": "DEU"
-        },
-        {
-          "name": "GERMANY",
-          "role": "initiator",
-          "code": "DEU"
-        },
-        {
           "name": "RUSSIAN",
-          "role": "target",
+          "role": "initiator",
           "code": "RUS"
         },
         {
-          "name": "EUROPEAN",
+          "name": "CIVILIAN",
+          "role": "target",
+          "code": "CVL"
+        },
+        {
+          "name": "RUSSIA",
           "role": "initiator",
-          "code": "EUR"
+          "code": "RUSCVL"
         },
         {
           "name": "RUSSIA",
@@ -1885,9 +1903,9 @@
       "id": "evt_fe960290a5e867f0",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T22:30:00.000Z",
+      "ingestedAt": "2026-08-22T22:45:00.000Z",
       "category": "armed_clash",
-      "label": "Armed clash — Beit Fajjar, West Bank (general), West Bank",
+      "label": "Armed clash — Hebron, Israel (general), Israel",
       "cameoCode": "190",
       "location": {
         "lat": 31.5333,
@@ -1899,27 +1917,22 @@
       },
       "actors": [
         {
-          "name": "ISRAELI",
-          "role": "initiator",
-          "code": "ISR"
-        },
-        {
-          "name": "WEST BANK",
-          "role": "target",
-          "code": "PSE"
-        },
-        {
-          "name": "PALESTINIAN",
+          "name": "PALESTINE",
           "role": "initiator",
           "code": "PSE"
         },
         {
-          "name": "ISRAELI",
+          "name": "ISRAEL",
           "role": "target",
           "code": "ISRMIL"
         },
         {
-          "name": "ISRAEL",
+          "name": "WEST BANK",
+          "role": "initiator",
+          "code": "PSE"
+        },
+        {
+          "name": "ISRAELI",
           "role": "target",
           "code": "ISRMIL"
         }
@@ -2019,6 +2032,15 @@
           "publisher": "aa.com.tr",
           "publishedAt": "2026-08-22T22:30:00.000Z",
           "retrievedAt": "2026-08-22T22:30:21.997Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.aljazeera.com/news/2026/8/22/israeli-army-and-settlers-injure-several-palestinians-across-west-bank",
+          "publisher": "Al Jazeera",
+          "publishedAt": "2026-08-22T22:45:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -2372,23 +2394,38 @@
       "id": "evt_5e0342bdae1bc690",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T21:30:00.000Z",
+      "ingestedAt": "2026-08-22T23:30:00.000Z",
       "category": "armed_clash",
-      "label": "Armed clash — Rawalpindi, Punjab, Pakistan",
+      "label": "Armed clash — Islamabad, Islamabad, Pakistan",
       "cameoCode": "190",
       "location": {
-        "lat": 33.6,
-        "lon": 73.0667,
-        "name": "Rawalpindi, Punjab, Pakistan",
+        "lat": 33.7,
+        "lon": 73.1667,
+        "name": "Islamabad, Islamabad, Pakistan",
         "countryFips": "PK",
-        "adm1": "PK04",
+        "adm1": "PK08",
         "precision": "city"
       },
       "actors": [
         {
-          "name": "MEDIA",
+          "name": "INDONESIA",
+          "role": "initiator",
+          "code": "IDN"
+        },
+        {
+          "name": "SUNNI",
           "role": "target",
-          "code": "MED"
+          "code": "MOSSUN"
+        },
+        {
+          "name": "SUNNI",
+          "role": "initiator",
+          "code": "MOSSUN"
+        },
+        {
+          "name": "INDONESIA",
+          "role": "target",
+          "code": "IDN"
         }
       ],
       "confidence": "reported",
@@ -2522,6 +2559,15 @@
           "publisher": "pakobserver.net",
           "publishedAt": "2026-08-22T21:30:00.000Z",
           "retrievedAt": "2026-08-22T21:29:21.512Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.pakistantoday.com.pk/2026/08/23/threatening-centcom-calculations",
+          "publisher": "pakistantoday.com.pk",
+          "publishedAt": "2026-08-22T23:30:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -2633,10 +2679,10 @@
       "id": "evt_41a23b08558a4b2c",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T20:15:00.000Z",
+      "ingestedAt": "2026-08-22T23:30:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Gaza, Israel (general), Israel",
-      "cameoCode": "193",
+      "cameoCode": "190",
       "location": {
         "lat": 31.4167,
         "lon": 34.3333,
@@ -2647,24 +2693,34 @@
       },
       "actors": [
         {
-          "name": "SETTLER",
+          "name": "ISRAEL",
           "role": "initiator",
-          "code": "SET"
-        },
-        {
-          "name": "PALESTINIAN",
-          "role": "target",
-          "code": "PSE"
-        },
-        {
-          "name": "GAZA",
-          "role": "initiator",
-          "code": "PSE"
+          "code": "ISR"
         },
         {
           "name": "ISRAEL",
           "role": "target",
+          "code": "ISRREF"
+        },
+        {
+          "name": "ISRAELI",
+          "role": "initiator",
           "code": "ISR"
+        },
+        {
+          "name": "GAZA",
+          "role": "target",
+          "code": "PSE"
+        },
+        {
+          "name": "REFUGEE",
+          "role": "target",
+          "code": "REF"
+        },
+        {
+          "name": "SYRIA",
+          "role": "target",
+          "code": "SYR"
         }
       ],
       "confidence": "reported",
@@ -3065,10 +3121,10 @@
       "id": "evt_8f8c6d0adcf1e8d5",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T19:00:00.000Z",
+      "ingestedAt": "2026-08-22T23:30:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Tehran, Tehran, Iran",
-      "cameoCode": "190",
+      "cameoCode": "193",
       "location": {
         "lat": 35.75,
         "lon": 51.5148,
@@ -3081,17 +3137,17 @@
         {
           "name": "IRAN",
           "role": "initiator",
+          "code": "IRNLEG"
+        },
+        {
+          "name": "IRAN",
+          "role": "target",
           "code": "IRN"
         },
         {
-          "name": "SUPREME COURT",
-          "role": "target",
-          "code": "JUD"
-        },
-        {
-          "name": "SUPREME COURT",
+          "name": "GAZA",
           "role": "initiator",
-          "code": "JUD"
+          "code": "PSE"
         }
       ],
       "confidence": "reported",
@@ -3261,6 +3317,24 @@
           "publisher": "yahoo.com",
           "publishedAt": "2026-08-22T19:00:00.000Z",
           "retrievedAt": "2026-08-22T19:28:20.342Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://nypost.com/2026/08/22/world-news/slain-ayatollah-wanted-peace-talks-with-us-iranian-president-says/",
+          "publisher": "nypost.com",
+          "publishedAt": "2026-08-22T22:45:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.pakistantoday.com.pk/2026/08/23/threatening-centcom-calculations",
+          "publisher": "pakistantoday.com.pk",
+          "publishedAt": "2026-08-22T23:30:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -3268,10 +3342,10 @@
       "id": "evt_be5048bf75394d76",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T20:45:00.000Z",
+      "ingestedAt": "2026-08-22T22:45:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Jerusalem, Israel (general), Israel",
-      "cameoCode": "193",
+      "cameoCode": "190",
       "location": {
         "lat": 31.7667,
         "lon": 35.2333,
@@ -3282,12 +3356,12 @@
       },
       "actors": [
         {
-          "name": "PALESTINIAN",
+          "name": "ISRAEL",
           "role": "initiator",
-          "code": "PSE"
+          "code": "ISRMIL"
         },
         {
-          "name": "ISRAELI",
+          "name": "ISRAEL",
           "role": "target",
           "code": "ISR"
         }
@@ -3459,6 +3533,15 @@
           "publisher": "thepeninsulaqatar.com",
           "publishedAt": "2026-08-22T20:45:00.000Z",
           "retrievedAt": "2026-08-22T21:29:21.512Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.aljazeera.com/news/2026/8/22/israeli-army-and-settlers-injure-several-palestinians-across-west-bank",
+          "publisher": "Al Jazeera",
+          "publishedAt": "2026-08-22T22:45:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -4457,7 +4540,7 @@
       "id": "evt_d25d65ef51dc83bb",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T20:00:00.000Z",
+      "ingestedAt": "2026-08-22T23:00:00.000Z",
       "category": "armed_assault",
       "label": "Armed assault — Gaza, Israel (general), Israel",
       "cameoCode": "180",
@@ -4471,9 +4554,34 @@
       },
       "actors": [
         {
-          "name": "PALESTINIAN",
+          "name": "ISRAELI",
           "role": "initiator",
+          "code": "ISR"
+        },
+        {
+          "name": "BUSINESS",
+          "role": "target",
+          "code": "BUS"
+        },
+        {
+          "name": "COMPANY",
+          "role": "initiator",
+          "code": "BUS"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "target",
+          "code": "ISR"
+        },
+        {
+          "name": "GAZA",
+          "role": "target",
           "code": "PSE"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "initiator",
+          "code": "ISR"
         }
       ],
       "confidence": "reported",
@@ -4598,6 +4706,33 @@
           "publisher": "Arab News",
           "publishedAt": "2026-08-22T20:00:00.000Z",
           "retrievedAt": "2026-08-22T20:31:56.604Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://dominicanrepublicpost.com/israeli-strikes-kill-two-and-injure-others-as-gaza-attacks-continue/",
+          "publisher": "dominicanrepublicpost.com",
+          "publishedAt": "2026-08-22T22:45:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.dailymail.com/tvshowbiz/article-16072705/Mark-Ruffalo-Paramount-antisemitic-genocide-apartheid.html",
+          "publisher": "dailymail.com",
+          "publishedAt": "2026-08-22T23:00:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.yourdemocracy.net.au/drupal/node/60884",
+          "publisher": "yourdemocracy.net.au",
+          "publishedAt": "2026-08-22T23:00:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -5158,26 +5293,21 @@
       "id": "evt_f20d2ec66934b62b",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T01:45:00.000Z",
+      "ingestedAt": "2026-08-22T23:15:00.000Z",
       "category": "armed_clash",
-      "label": "Armed clash — Donbass, Ukraine (general), Ukraine",
-      "cameoCode": "190",
+      "label": "Armed clash — Donbas, Ukraine (general), Ukraine",
+      "cameoCode": "192",
       "location": {
         "lat": 48.5,
         "lon": 38.5,
-        "name": "Donbass, Ukraine (general), Ukraine",
+        "name": "Donbas, Ukraine (general), Ukraine",
         "countryFips": "UP",
         "adm1": "UP00",
         "precision": "city"
       },
       "actors": [
         {
-          "name": "NAVAL",
-          "role": "initiator",
-          "code": "MIL"
-        },
-        {
-          "name": "UKRAINE",
+          "name": "UKRAINIAN",
           "role": "target",
           "code": "UKR"
         }
@@ -5196,6 +5326,15 @@
           "publisher": "globalsecurity.org",
           "publishedAt": "2026-08-22T01:45:00.000Z",
           "retrievedAt": "2026-08-22T01:42:31.038Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.dailymail.com/news/article-16072611/Zelenskys-drone-blitzkrieg-Russian-Amazon-turning-shellshocked-Putins-war.html",
+          "publisher": "dailymail.com",
+          "publishedAt": "2026-08-22T23:15:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -6705,48 +6844,43 @@
       "id": "evt_11cc3fd2086e601c",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T20:00:00.000Z",
+      "ingestedAt": "2026-08-22T23:15:00.000Z",
       "category": "armed_clash",
-      "label": "Armed clash — Manila, Manila, Philippines",
+      "label": "Armed clash — Manila Harbor, Philippines (general), Philippines",
       "cameoCode": "190",
       "location": {
-        "lat": 14.6042,
-        "lon": 120.982,
-        "name": "Manila, Manila, Philippines",
+        "lat": 14.5833,
+        "lon": 120.95,
+        "name": "Manila Harbor, Philippines (general), Philippines",
         "countryFips": "RP",
-        "adm1": "RPD9",
+        "adm1": "RP00",
         "precision": "city"
       },
       "actors": [
         {
-          "name": "FILIPINO",
+          "name": "BRUNEI",
+          "role": "initiator",
+          "code": "BRN"
+        },
+        {
+          "name": "JAPAN",
           "role": "target",
-          "code": "PHLCVL"
+          "code": "JPN"
         },
         {
-          "name": "OMAN",
+          "name": "CHINA",
           "role": "initiator",
-          "code": "OMN"
+          "code": "CHN"
         },
         {
-          "name": "FILIPINO",
-          "role": "initiator",
-          "code": "PHL"
-        },
-        {
-          "name": "PHILIPPINE",
+          "name": "BRUNEI",
           "role": "target",
-          "code": "PHLCVL"
+          "code": "BRN"
         },
         {
-          "name": "STUDENT",
-          "role": "initiator",
-          "code": "EDU"
-        },
-        {
-          "name": "PHILIPPINE",
-          "role": "initiator",
-          "code": "PHLEDU"
+          "name": "JAPANESE",
+          "role": "target",
+          "code": "JPN"
         }
       ],
       "confidence": "unconfirmed",
@@ -6799,6 +6933,15 @@
           "publisher": "mb.com.ph",
           "publishedAt": "2026-08-22T20:00:00.000Z",
           "retrievedAt": "2026-08-22T20:31:56.604Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://vintageaviationnews.com/warbird-articles/squadron-histories/attack-squadron-135.html",
+          "publisher": "vintageaviationnews.com",
+          "publishedAt": "2026-08-22T23:15:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -7098,10 +7241,10 @@
       "id": "evt_55e5cd97694e0745",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T11:45:00.000Z",
+      "ingestedAt": "2026-08-22T22:45:00.000Z",
       "category": "armed_assault",
       "label": "Armed assault — Abuja, Abuja Federal Capital Territory, Nigeria",
-      "cameoCode": "181",
+      "cameoCode": "180",
       "location": {
         "lat": 9.08333,
         "lon": 7.53333,
@@ -7112,14 +7255,14 @@
       },
       "actors": [
         {
-          "name": "NATIONAL ASSEMBLY",
+          "name": "POLICE",
           "role": "initiator",
-          "code": "LEG"
+          "code": "COP"
         },
         {
-          "name": "INSURGENT",
+          "name": "ABUJA",
           "role": "target",
-          "code": "REB"
+          "code": "NGAMED"
         }
       ],
       "confidence": "reported",
@@ -7172,6 +7315,15 @@
           "publisher": "thisdaylive.com",
           "publishedAt": "2026-08-22T11:45:00.000Z",
           "retrievedAt": "2026-08-22T12:53:45.403Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.premiumtimesng.com/news/top-news/904733-cwppf-demands-independent-probe-into-police-assault-on-abuja-journalist.html",
+          "publisher": "Premium Times",
+          "publishedAt": "2026-08-22T22:45:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -9004,7 +9156,7 @@
       "id": "evt_1b6f0f0b3e569826",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T19:00:00.000Z",
+      "ingestedAt": "2026-08-22T22:45:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Jordan Valley, Israel (general), Israel",
       "cameoCode": "190",
@@ -9020,25 +9172,10 @@
         {
           "name": "ISRAELI",
           "role": "initiator",
-          "code": "ISR"
-        },
-        {
-          "name": "PALESTINIAN",
-          "role": "target",
-          "code": "PSE"
-        },
-        {
-          "name": "ISRAELI",
-          "role": "target",
-          "code": "ISR"
-        },
-        {
-          "name": "SETTLER",
-          "role": "initiator",
-          "code": "SET"
+          "code": "ISRMIL"
         }
       ],
-      "confidence": "unconfirmed",
+      "confidence": "reported",
       "severity": 4,
       "intensity": 2,
       "reportCount": 1,
@@ -9061,6 +9198,15 @@
           "publisher": "truthout.org",
           "publishedAt": "2026-08-22T19:00:00.000Z",
           "retrievedAt": "2026-08-22T19:28:20.342Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.aljazeera.com/news/2026/8/22/israeli-army-and-settlers-injure-several-palestinians-across-west-bank",
+          "publisher": "Al Jazeera",
+          "publishedAt": "2026-08-22T22:45:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -9497,10 +9643,10 @@
       "id": "evt_5a1798e73ad0d748",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T22:15:00.000Z",
+      "ingestedAt": "2026-08-22T23:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Kursk, Kurskaya Oblast', Russia",
-      "cameoCode": "190",
+      "cameoCode": "192",
       "location": {
         "lat": 51.7373,
         "lon": 36.1873,
@@ -9511,24 +9657,9 @@
       },
       "actors": [
         {
-          "name": "MILITARY",
-          "role": "initiator",
-          "code": "MIL"
-        },
-        {
-          "name": "UKRAINE",
+          "name": "UKRAINIAN",
           "role": "target",
           "code": "UKR"
-        },
-        {
-          "name": "UKRAINE",
-          "role": "initiator",
-          "code": "UKR"
-        },
-        {
-          "name": "RUSSIA",
-          "role": "target",
-          "code": "RUS"
         }
       ],
       "confidence": "unconfirmed",
@@ -9563,6 +9694,15 @@
           "publisher": "thedailyblog.co.nz",
           "publishedAt": "2026-08-22T22:15:00.000Z",
           "retrievedAt": "2026-08-22T22:30:21.997Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.dailymail.com/news/article-16072611/Zelenskys-drone-blitzkrieg-Russian-Amazon-turning-shellshocked-Putins-war.html",
+          "publisher": "dailymail.com",
+          "publishedAt": "2026-08-22T23:15:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -10554,10 +10694,10 @@
       "id": "evt_ee39dbc95e30172b",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T22:00:00.000Z",
+      "ingestedAt": "2026-08-22T23:30:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Osun, Nigeria (general), Nigeria",
-      "cameoCode": "190",
+      "cameoCode": "192",
       "location": {
         "lat": 7.53333,
         "lon": 4.05,
@@ -10571,11 +10711,6 @@
           "name": "NIGERIA",
           "role": "initiator",
           "code": "NGA"
-        },
-        {
-          "name": "CANADA",
-          "role": "target",
-          "code": "CAN"
         }
       ],
       "confidence": "unconfirmed",
@@ -10610,6 +10745,15 @@
           "publisher": "dailypost.ng",
           "publishedAt": "2026-08-22T22:00:00.000Z",
           "retrievedAt": "2026-08-22T22:30:21.997Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://thesun.ng/osun-2026-battles-apc-lost-before-ballot/",
+          "publisher": "thesun.ng",
+          "publishedAt": "2026-08-22T23:30:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -16807,7 +16951,7 @@
       "id": "evt_b46eb72bd7ac5b8a",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T11:00:00.000Z",
+      "ingestedAt": "2026-08-22T23:15:00.000Z",
       "category": "aerial_strike",
       "label": "Aerial or missile strike — Kyiv, Kyyiv, Misto, Ukraine",
       "cameoCode": "195",
@@ -16826,9 +16970,9 @@
           "code": "UKR"
         },
         {
-          "name": "UKRAINE",
+          "name": "MOSCOW",
           "role": "target",
-          "code": "UKRMIL"
+          "code": "RUS"
         }
       ],
       "confidence": "unconfirmed",
@@ -16845,6 +16989,15 @@
           "publisher": "en.interfax.com.ua",
           "publishedAt": "2026-08-22T11:00:00.000Z",
           "retrievedAt": "2026-08-22T11:27:49.842Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.dailymail.com/news/article-16072611/Zelenskys-drone-blitzkrieg-Russian-Amazon-turning-shellshocked-Putins-war.html",
+          "publisher": "dailymail.com",
+          "publishedAt": "2026-08-22T23:15:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -18779,7 +18932,7 @@
       "id": "evt_cbb651b33772ab68",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T12:00:00.000Z",
+      "ingestedAt": "2026-08-22T23:30:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Osun State, Osun, Nigeria",
       "cameoCode": "190",
@@ -18793,9 +18946,19 @@
       },
       "actors": [
         {
-          "name": "VILLAGE",
+          "name": "GOVERNOR",
           "role": "initiator",
-          "code": "CVL"
+          "code": "GOV"
+        },
+        {
+          "name": "SENATOR",
+          "role": "target",
+          "code": "LEG"
+        },
+        {
+          "name": "NIGERIA",
+          "role": "target",
+          "code": "NGALEG"
         }
       ],
       "confidence": "unconfirmed",
@@ -18812,6 +18975,15 @@
           "publisher": "nigerianeye.com",
           "publishedAt": "2026-08-22T12:00:00.000Z",
           "retrievedAt": "2026-08-22T12:53:45.403Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://thesun.ng/lessons-from-osun-guber-election/",
+          "publisher": "thesun.ng",
+          "publishedAt": "2026-08-22T23:30:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -19460,10 +19632,10 @@
       "id": "evt_703b175cc2e02ddb",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T12:30:00.000Z",
+      "ingestedAt": "2026-08-22T22:45:00.000Z",
       "category": "armed_assault",
       "label": "Armed assault — Kabul, Kabol, Afghanistan",
-      "cameoCode": "181",
+      "cameoCode": "182",
       "location": {
         "lat": 34.5167,
         "lon": 69.1833,
@@ -19474,14 +19646,19 @@
       },
       "actors": [
         {
-          "name": "TALIBAN",
+          "name": "AFGHANISTAN",
           "role": "initiator",
-          "code": "AFGINSTAL"
+          "code": "AFG"
         },
         {
-          "name": "THE US",
+          "name": "UNITED ARAB EMIRATES",
           "role": "target",
-          "code": "USA"
+          "code": "ARE"
+        },
+        {
+          "name": "KABUL",
+          "role": "initiator",
+          "code": "AFG"
         }
       ],
       "confidence": "unconfirmed",
@@ -19498,6 +19675,15 @@
           "publisher": "independent.co.uk",
           "publishedAt": "2026-08-22T12:30:00.000Z",
           "retrievedAt": "2026-08-22T12:53:45.403Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.ariananews.af/qatar-and-uae-condemn-kabul-school-bombing-that-injured-dozens/",
+          "publisher": "ariananews.af",
+          "publishedAt": "2026-08-22T22:45:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -21389,7 +21575,7 @@
       "id": "evt_7d65c6425debc7e6",
       "occurredAt": "2026-08-22T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-22T16:15:00.000Z",
+      "ingestedAt": "2026-08-22T22:45:00.000Z",
       "category": "aerial_strike",
       "label": "Aerial or missile strike — Gaza, Israel (general), Israel",
       "cameoCode": "195",
@@ -21403,19 +21589,24 @@
       },
       "actors": [
         {
-          "name": "ISRAEL",
+          "name": "ISRAELI",
           "role": "initiator",
-          "code": "ISRGOVHLH"
+          "code": "ISR"
         },
         {
-          "name": "PALESTINIAN",
+          "name": "GAZA",
           "role": "target",
           "code": "PSE"
         },
         {
-          "name": "GAZA",
+          "name": "ISRAEL",
           "role": "initiator",
-          "code": "PSEGOVHLH"
+          "code": "ISR"
+        },
+        {
+          "name": "AL JAZEERA",
+          "role": "target",
+          "code": "QATMED"
         }
       ],
       "confidence": "unconfirmed",
@@ -21432,6 +21623,15 @@
           "publisher": "goskagit.com",
           "publishedAt": "2026-08-22T16:15:00.000Z",
           "retrievedAt": "2026-08-22T16:33:11.934Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://dominicanrepublicpost.com/israeli-strikes-kill-two-and-injure-others-as-gaza-attacks-continue/",
+          "publisher": "dominicanrepublicpost.com",
+          "publishedAt": "2026-08-22T22:45:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
@@ -26627,6 +26827,271 @@
           "publisher": "aa.com.tr",
           "publishedAt": "2026-08-22T22:30:00.000Z",
           "retrievedAt": "2026-08-22T22:30:21.997Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_3fdb461dca47d0c1",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T23:30:00.000Z",
+      "category": "aerial_strike",
+      "label": "Aerial or missile strike — Pahalgam, Jammu and Kashmir, India",
+      "cameoCode": "195",
+      "location": {
+        "lat": 34.0333,
+        "lon": 75.3333,
+        "name": "Pahalgam, Jammu and Kashmir, India",
+        "countryFips": "IN",
+        "adm1": "IN12",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "INTELLIGENCE",
+          "role": "initiator",
+          "code": "SPY"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 5,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.pakistantoday.com.pk/2026/08/23/from-battlefield-setback-to-cinematic-face-saving",
+          "publisher": "pakistantoday.com.pk",
+          "publishedAt": "2026-08-22T23:30:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_d440d003f6924fe9",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T22:45:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Ogwu, Akwa Ibom, Nigeria",
+      "cameoCode": "180",
+      "location": {
+        "lat": 5.44075,
+        "lon": 7.72144,
+        "name": "Ogwu, Akwa Ibom, Nigeria",
+        "countryFips": "NI",
+        "adm1": "NI21",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "POLICE",
+          "role": "initiator",
+          "code": "COP"
+        },
+        {
+          "name": "JOURNALIST",
+          "role": "target",
+          "code": "MED"
+        },
+        {
+          "name": "NIGERIA",
+          "role": "initiator",
+          "code": "NGA"
+        },
+        {
+          "name": "POLICE",
+          "role": "target",
+          "code": "COP"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.premiumtimesng.com/news/top-news/904733-cwppf-demands-independent-probe-into-police-assault-on-abuja-journalist.html",
+          "publisher": "Premium Times",
+          "publishedAt": "2026-08-22T22:45:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_083be91ae7c00fd6",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T22:45:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Bureij, Yerushalayim, Israel",
+      "cameoCode": "194",
+      "location": {
+        "lat": 31.7333,
+        "lon": 34.9333,
+        "name": "Bureij, Yerushalayim, Israel",
+        "countryFips": "IS",
+        "adm1": "IS06",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "ISRAELI",
+          "role": "initiator",
+          "code": "ISR"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "target",
+          "code": "ISRREF"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://dominicanrepublicpost.com/israeli-strikes-kill-two-and-injure-others-as-gaza-attacks-continue/",
+          "publisher": "dominicanrepublicpost.com",
+          "publishedAt": "2026-08-22T22:45:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_898d45f6e2c4eb7a",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T22:45:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Calabar, Cross River, Nigeria",
+      "cameoCode": "192",
+      "location": {
+        "lat": 4.9517,
+        "lon": 8.322,
+        "name": "Calabar, Cross River, Nigeria",
+        "countryFips": "NI",
+        "adm1": "NI22",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "SECURITY PERSONNEL",
+          "role": "initiator",
+          "code": "MIL"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.premiumtimesng.com/news/more-news/904740-calabar-mall-fire-five-arrested-with-stolen-items-police.html",
+          "publisher": "Premium Times",
+          "publishedAt": "2026-08-22T22:45:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_6ef7483533f88802",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T23:00:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Valencia, Carabobo, Venezuela",
+      "cameoCode": "190",
+      "location": {
+        "lat": 10.1806,
+        "lon": -68.0039,
+        "name": "Valencia, Carabobo, Venezuela",
+        "countryFips": "VE",
+        "adm1": "VE07",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "VALENCIA",
+          "role": "initiator",
+          "code": "ESP"
+        },
+        {
+          "name": "UNITED STATES",
+          "role": "target",
+          "code": "USA"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.kvoa.com/news/crime/breaking-news-arrest-made-in-shooting-death-of-tucson-police-recruit/article_6eeb87b5-a081-49df-8cd1-1a36c52db352.html",
+          "publisher": "kvoa.com",
+          "publishedAt": "2026-08-22T23:00:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_ecae5a18b4b7307b",
+      "occurredAt": "2026-08-22T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-22T23:30:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Chiang Rai, Chiang Rai, Thailand",
+      "cameoCode": "192",
+      "location": {
+        "lat": 19.9086,
+        "lon": 99.8325,
+        "name": "Chiang Rai, Chiang Rai, Thailand",
+        "countryFips": "TH",
+        "adm1": "TH03",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "THAI",
+          "role": "initiator",
+          "code": "THA"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.chiangraitimes.com/environment/thailand-flood-defense/",
+          "publisher": "chiangraitimes.com",
+          "publishedAt": "2026-08-22T23:30:00.000Z",
+          "retrievedAt": "2026-08-22T23:27:56.724Z"
         }
       ]
     },
