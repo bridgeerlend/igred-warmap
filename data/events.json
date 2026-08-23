@@ -1,6 +1,6 @@
 {
   "artifactVersion": 1,
-  "generatedAt": "2026-08-23T21:28:24.218Z",
+  "generatedAt": "2026-08-23T22:30:07.973Z",
   "windowDays": 30,
   "earliestEvent": "2026-08-03T00:00:00.000Z",
   "latestEvent": "2026-08-23T21:00:00.000Z",
@@ -936,7 +936,7 @@
       "id": "evt_2af8080de2f54d46",
       "occurredAt": "2026-08-23T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-23T21:15:00.000Z",
+      "ingestedAt": "2026-08-23T22:30:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Gaza, Israel (general), Israel",
       "cameoCode": "190",
@@ -950,34 +950,34 @@
       },
       "actors": [
         {
-          "name": "CRIMINAL",
-          "role": "initiator",
-          "code": "CRM"
-        },
-        {
-          "name": "ACTIVIST",
-          "role": "target",
-          "code": "OPP"
-        },
-        {
           "name": "ISRAEL",
           "role": "initiator",
-          "code": "ISR"
+          "code": "ISRMIL"
         },
         {
-          "name": "PALESTINIAN",
+          "name": "BATTALION",
+          "role": "target",
+          "code": "MIL"
+        },
+        {
+          "name": "HAMAS",
+          "role": "initiator",
+          "code": "PSEREB"
+        },
+        {
+          "name": "GAZA",
           "role": "target",
           "code": "PSE"
         },
         {
-          "name": "ISRAELI",
+          "name": "REFUGEE",
           "role": "initiator",
-          "code": "ISR"
+          "code": "REF"
         },
         {
-          "name": "HAMAS",
+          "name": "WEST BANK",
           "role": "target",
-          "code": "PSEREB"
+          "code": "PSE"
         }
       ],
       "confidence": "reported",
@@ -1217,10 +1217,10 @@
       "id": "evt_839ef280cc41a77d",
       "occurredAt": "2026-08-23T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-23T21:00:00.000Z",
+      "ingestedAt": "2026-08-23T21:45:00.000Z",
       "category": "armed_assault",
       "label": "Armed assault — Gaza, Israel (general), Israel",
-      "cameoCode": "182",
+      "cameoCode": "186",
       "location": {
         "lat": 31.4167,
         "lon": 34.3333,
@@ -1231,19 +1231,14 @@
       },
       "actors": [
         {
-          "name": "ISRAELI",
+          "name": "YEMEN",
           "role": "initiator",
+          "code": "YEM"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "target",
           "code": "ISR"
-        },
-        {
-          "name": "HOSPITAL",
-          "role": "target",
-          "code": "HLH"
-        },
-        {
-          "name": "TURKEY",
-          "role": "target",
-          "code": "TUR"
         }
       ],
       "confidence": "reported",
@@ -1926,10 +1921,10 @@
       "id": "evt_fe0c981cd9d2e5c3",
       "occurredAt": "2026-08-23T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-23T19:30:00.000Z",
+      "ingestedAt": "2026-08-23T22:00:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Tehran, Tehran, Iran",
-      "cameoCode": "194",
+      "cameoCode": "193",
       "location": {
         "lat": 35.75,
         "lon": 51.5148,
@@ -1940,28 +1935,8 @@
       },
       "actors": [
         {
-          "name": "REGIME",
+          "name": "IRANIAN",
           "role": "initiator",
-          "code": "GOV"
-        },
-        {
-          "name": "PROTESTER",
-          "role": "target",
-          "code": "OPP"
-        },
-        {
-          "name": "MILITARY",
-          "role": "initiator",
-          "code": "MIL"
-        },
-        {
-          "name": "WASHINGTON",
-          "role": "initiator",
-          "code": "USA"
-        },
-        {
-          "name": "IRAN",
-          "role": "target",
           "code": "IRN"
         }
       ],
@@ -6094,10 +6069,10 @@
       "id": "evt_74f7da50cc04b764",
       "occurredAt": "2026-08-23T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-23T19:30:00.000Z",
+      "ingestedAt": "2026-08-23T21:45:00.000Z",
       "category": "armed_assault",
       "label": "Armed assault — Tehran, Tehran, Iran",
-      "cameoCode": "1832",
+      "cameoCode": "186",
       "location": {
         "lat": 35.75,
         "lon": 51.5148,
@@ -6108,19 +6083,14 @@
       },
       "actors": [
         {
-          "name": "REGIME",
+          "name": "TEHRAN",
           "role": "initiator",
-          "code": "GOV"
-        },
-        {
-          "name": "RUSSIA",
-          "role": "initiator",
-          "code": "RUS"
+          "code": "IRN"
         },
         {
           "name": "IRAN",
           "role": "target",
-          "code": "IRN"
+          "code": "IRNMED"
         }
       ],
       "confidence": "reported",
@@ -6200,6 +6170,15 @@
           "publisher": "The Jerusalem Post",
           "publishedAt": "2026-08-23T19:30:00.000Z",
           "retrievedAt": "2026-08-23T19:27:39.694Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.inquirer.com/news/nation-world/iran-us-war-memorandum-understanding-pezeshkian-bessent-economic-anctions-west-bank-gaza-20260823.html",
+          "publisher": "inquirer.com",
+          "publishedAt": "2026-08-23T21:45:00.000Z",
+          "retrievedAt": "2026-08-23T22:30:07.973Z"
         }
       ]
     },
@@ -11277,10 +11256,10 @@
       "id": "evt_71972ce2d08e5921",
       "occurredAt": "2026-08-23T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-23T17:15:00.000Z",
+      "ingestedAt": "2026-08-23T21:45:00.000Z",
       "category": "armed_assault",
       "label": "Armed assault — Auja, HaDarom, Israel",
-      "cameoCode": "182",
+      "cameoCode": "186",
       "location": {
         "lat": 30.8854,
         "lon": 34.4228,
@@ -11291,24 +11270,14 @@
       },
       "actors": [
         {
-          "name": "VILLAGE",
-          "role": "initiator",
-          "code": "CVL"
-        },
-        {
           "name": "ISRAEL",
-          "role": "target",
+          "role": "initiator",
           "code": "ISR"
         },
         {
-          "name": "PALESTINIAN",
+          "name": "TERRORIST",
           "role": "target",
-          "code": "PSE"
-        },
-        {
-          "name": "ISRAEL",
-          "role": "initiator",
-          "code": "ISRCVL"
+          "code": "UAF"
         }
       ],
       "confidence": "unconfirmed",
@@ -11352,6 +11321,15 @@
           "publisher": "athens-times.com",
           "publishedAt": "2026-08-23T17:15:00.000Z",
           "retrievedAt": "2026-08-23T17:27:17.872Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://aninews.in/news/world/middle-east/idf-arrests-al-auja-stabbing-incident-suspect-following-manhunt20260823231524/",
+          "publisher": "aninews.in",
+          "publishedAt": "2026-08-23T21:45:00.000Z",
+          "retrievedAt": "2026-08-23T22:30:07.973Z"
         }
       ]
     },
@@ -11359,10 +11337,10 @@
       "id": "evt_9d455bcf53d73ff6",
       "occurredAt": "2026-08-23T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-23T20:30:00.000Z",
+      "ingestedAt": "2026-08-23T21:45:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Auja, HaDarom, Israel",
-      "cameoCode": "193",
+      "cameoCode": "190",
       "location": {
         "lat": 30.8854,
         "lon": 34.4228,
@@ -11373,14 +11351,19 @@
       },
       "actors": [
         {
-          "name": "WEST BANK",
+          "name": "ISRAELI",
           "role": "initiator",
-          "code": "PSE"
+          "code": "ISR"
         },
         {
-          "name": "REFUGEE",
+          "name": "ISRAEL",
+          "role": "initiator",
+          "code": "ISR"
+        },
+        {
+          "name": "WEST BANK",
           "role": "target",
-          "code": "REF"
+          "code": "PSECVL"
         }
       ],
       "confidence": "reported",
@@ -11469,6 +11452,15 @@
           "publisher": "goskagit.com",
           "publishedAt": "2026-08-23T20:30:00.000Z",
           "retrievedAt": "2026-08-23T20:31:46.064Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://aninews.in/news/world/middle-east/idf-arrests-al-auja-stabbing-incident-suspect-following-manhunt20260823231524/",
+          "publisher": "aninews.in",
+          "publishedAt": "2026-08-23T21:45:00.000Z",
+          "retrievedAt": "2026-08-23T22:30:07.973Z"
         }
       ]
     },
@@ -15928,7 +15920,7 @@
       "id": "evt_af1c3621cee2ca13",
       "occurredAt": "2026-08-23T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-23T19:30:00.000Z",
+      "ingestedAt": "2026-08-23T21:45:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Orenburg, Orenburgskaya Oblast', Russia",
       "cameoCode": "190",
@@ -16011,6 +16003,15 @@
           "publisher": "isp.netscape.com",
           "publishedAt": "2026-08-23T19:30:00.000Z",
           "retrievedAt": "2026-08-23T19:27:39.694Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.inquirer.com/news/nation-world/ukraine-russia-war-zelensky-federov-trump-musk-starlink-patriots-20260823.html",
+          "publisher": "inquirer.com",
+          "publishedAt": "2026-08-23T21:45:00.000Z",
+          "retrievedAt": "2026-08-23T22:30:07.973Z"
         }
       ]
     },
@@ -18605,10 +18606,10 @@
       "id": "evt_2efc81342bfc3be2",
       "occurredAt": "2026-08-23T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-23T13:30:00.000Z",
+      "ingestedAt": "2026-08-23T21:45:00.000Z",
       "category": "siege_blockade",
       "label": "Siege or blockade — Kyiv, Kyyiv, Misto, Ukraine",
-      "cameoCode": "191",
+      "cameoCode": "1722",
       "location": {
         "lat": 50.4333,
         "lon": 30.5167,
@@ -18619,8 +18620,13 @@
       },
       "actors": [
         {
-          "name": "UKRAINE",
+          "name": "RUSSIA",
           "role": "initiator",
+          "code": "RUSJUD"
+        },
+        {
+          "name": "UKRAINE",
+          "role": "target",
           "code": "UKR"
         }
       ],
@@ -18638,6 +18644,15 @@
           "publisher": "Kyiv Post",
           "publishedAt": "2026-08-23T13:30:00.000Z",
           "retrievedAt": "2026-08-23T13:38:17.354Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://us.cnn.com/2026/08/23/europe/putin-russia-black-august-analysis-intl",
+          "publisher": "us.cnn.com",
+          "publishedAt": "2026-08-23T21:45:00.000Z",
+          "retrievedAt": "2026-08-23T22:30:07.973Z"
         }
       ]
     },
@@ -23906,7 +23921,7 @@
       "id": "evt_7afc7d425a9b7ba6",
       "occurredAt": "2026-08-23T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-23T19:15:00.000Z",
+      "ingestedAt": "2026-08-23T21:45:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Ilaro, Ogun, Nigeria",
       "cameoCode": "190",
@@ -23920,9 +23935,19 @@
       },
       "actors": [
         {
-          "name": "MEDIA",
+          "name": "LIMA",
           "role": "target",
-          "code": "MED"
+          "code": "PER"
+        },
+        {
+          "name": "ACTOR",
+          "role": "initiator",
+          "code": "ELI"
+        },
+        {
+          "name": "HASSAN",
+          "role": "target",
+          "code": "JORELI"
         },
         {
           "name": "NIGERIA",
@@ -23935,22 +23960,12 @@
           "code": "JORELI"
         },
         {
-          "name": "MEDIA",
-          "role": "initiator",
-          "code": "MED"
-        },
-        {
-          "name": "NIGERIA",
-          "role": "initiator",
-          "code": "NGA"
-        },
-        {
-          "name": "HASSAN",
+          "name": "ACTOR",
           "role": "target",
-          "code": "JORELI"
+          "code": "ELI"
         }
       ],
-      "confidence": "unconfirmed",
+      "confidence": "reported",
       "severity": 4,
       "intensity": 2,
       "reportCount": 1,
@@ -23964,6 +23979,15 @@
           "publisher": "tribuneonlineng.com",
           "publishedAt": "2026-08-23T19:15:00.000Z",
           "retrievedAt": "2026-08-23T19:27:39.694Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://punchng.com/throwback-ogogos-i-would-vomit-blood-account-resurfaces-after-death/",
+          "publisher": "The Punch",
+          "publishedAt": "2026-08-23T21:45:00.000Z",
+          "retrievedAt": "2026-08-23T22:30:07.973Z"
         }
       ]
     },
@@ -24421,7 +24445,7 @@
       "id": "evt_c03f7901a75c5882",
       "occurredAt": "2026-08-23T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-08-23T20:00:00.000Z",
+      "ingestedAt": "2026-08-23T22:30:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Kwara, Tahoua, Niger",
       "cameoCode": "190",
@@ -24435,9 +24459,19 @@
       },
       "actors": [
         {
+          "name": "FIRE SERVICE",
+          "role": "target",
+          "code": "GOV"
+        },
+        {
           "name": "NIGER",
           "role": "target",
-          "code": "NER"
+          "code": "NERGOV"
+        },
+        {
+          "name": "FIRE SERVICE",
+          "role": "initiator",
+          "code": "GOV"
         },
         {
           "name": "NIGER",
@@ -24459,6 +24493,15 @@
           "publisher": "dailypost.ng",
           "publishedAt": "2026-08-23T20:00:00.000Z",
           "retrievedAt": "2026-08-23T20:31:46.064Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://blueprint.ng/breaking-fire-wreaks-havoc-as-shops-burn-to-ashes-in-ilorin/",
+          "publisher": "blueprint.ng",
+          "publishedAt": "2026-08-23T22:30:00.000Z",
+          "retrievedAt": "2026-08-23T22:30:07.973Z"
         }
       ]
     },
@@ -25944,6 +25987,91 @@
           "publisher": "radiotamazuj.org",
           "publishedAt": "2026-08-23T21:30:00.000Z",
           "retrievedAt": "2026-08-23T21:28:24.218Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_e7311705adab6207",
+      "occurredAt": "2026-08-23T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-23T21:45:00.000Z",
+      "category": "siege_blockade",
+      "label": "Siege or blockade — Moscow, Moskva, Russia",
+      "cameoCode": "1722",
+      "location": {
+        "lat": 55.7522,
+        "lon": 37.6156,
+        "name": "Moscow, Moskva, Russia",
+        "countryFips": "RS",
+        "adm1": "RS48",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "RUSSIA",
+          "role": "initiator",
+          "code": "RUSJUD"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 3,
+      "intensity": 1,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://us.cnn.com/2026/08/23/europe/putin-russia-black-august-analysis-intl",
+          "publisher": "us.cnn.com",
+          "publishedAt": "2026-08-23T21:45:00.000Z",
+          "retrievedAt": "2026-08-23T22:30:07.973Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_1107ad9ed90b23fc",
+      "occurredAt": "2026-08-23T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-08-23T22:00:00.000Z",
+      "category": "violent_unrest",
+      "label": "Violent unrest — Ludhiana, Punjab, India",
+      "cameoCode": "145",
+      "location": {
+        "lat": 30.9,
+        "lon": 75.85,
+        "name": "Ludhiana, Punjab, India",
+        "countryFips": "IN",
+        "adm1": "IN23",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "MISCREANT",
+          "role": "initiator",
+          "code": "CRM"
+        },
+        {
+          "name": "HONDA",
+          "role": "target",
+          "code": "MNCJPN"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 2,
+      "intensity": 1,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.tribuneindia.com/news/ludhiana/three-booked-for-robbing-man-of-bike-valuables/",
+          "publisher": "tribuneindia.com",
+          "publishedAt": "2026-08-23T22:00:00.000Z",
+          "retrievedAt": "2026-08-23T22:30:07.973Z"
         }
       ]
     },
