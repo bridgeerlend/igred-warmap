@@ -1,10 +1,55 @@
 {
   "artifactVersion": 1,
-  "generatedAt": "2026-09-27T13:49:00.171Z",
+  "generatedAt": "2026-09-27T18:15:12.401Z",
   "windowDays": 30,
   "earliestEvent": "2026-08-29T00:00:00.000Z",
-  "latestEvent": "2026-09-27T13:00:00.000Z",
+  "latestEvent": "2026-09-27T18:00:00.000Z",
   "events": [
+    {
+      "id": "evt_780cea881847c92f",
+      "occurredAt": "2026-09-27T18:00:00.000Z",
+      "dateBasis": "report_date",
+      "ingestedAt": "2026-09-27T18:00:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Eldoret, Rift Valley, Kenya",
+      "cameoCode": "190",
+      "location": {
+        "lat": 0.520356,
+        "lon": 35.2699,
+        "name": "Eldoret, Rift Valley, Kenya",
+        "countryFips": "KE",
+        "adm1": "KE08",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "OIL TANKER",
+          "role": "initiator",
+          "code": "BUS"
+        },
+        {
+          "name": "KENYA",
+          "role": "target",
+          "code": "KEN"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.the-star.co.ke/news/2026-09-27-residents-rush-to-siphon-fuel-after-tanker-overturns",
+          "publisher": "the-star.co.ke",
+          "publishedAt": "2026-09-27T18:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
     {
       "id": "evt_d042b70b5d5d8490",
       "occurredAt": "2026-09-27T13:00:00.000Z",
@@ -99,7 +144,7 @@
       "id": "evt_52cf76a31cf137c8",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T07:45:00.000Z",
+      "ingestedAt": "2026-09-27T16:30:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — New Delhi, Delhi, India",
       "cameoCode": "190",
@@ -113,19 +158,14 @@
       },
       "actors": [
         {
-          "name": "TERRORIST",
+          "name": "ARMY",
           "role": "initiator",
-          "code": "UAF"
+          "code": "MIL"
         },
         {
-          "name": "TOYOTA",
-          "role": "initiator",
-          "code": "MNCJPN"
-        },
-        {
-          "name": "POLE",
+          "name": "POLICE",
           "role": "target",
-          "code": "POL"
+          "code": "COP"
         }
       ],
       "confidence": "reported",
@@ -160,6 +200,15 @@
           "publisher": "aninews.in",
           "publishedAt": "2026-09-27T06:30:00.000Z",
           "retrievedAt": "2026-09-27T07:59:26.009Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.radio.gov.pk/27-09-2026/aphc-urges-people-to-raise-united-voice-against-indian-state-terrorism",
+          "publisher": "radio.gov.pk",
+          "publishedAt": "2026-09-27T16:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -257,7 +306,7 @@
       "id": "evt_bbf4aa4ee61997f5",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T13:00:00.000Z",
+      "ingestedAt": "2026-09-27T18:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Gaza, Israel (general), Israel",
       "cameoCode": "190",
@@ -271,22 +320,12 @@
       },
       "actors": [
         {
+          "name": "NEIGHBORHOOD",
+          "role": "initiator",
+          "code": "CVL"
+        },
+        {
           "name": "ISRAELI",
-          "role": "initiator",
-          "code": "ISR"
-        },
-        {
-          "name": "TAMIL",
-          "role": "target",
-          "code": "tam"
-        },
-        {
-          "name": "WEST BANK",
-          "role": "initiator",
-          "code": "PSE"
-        },
-        {
-          "name": "ISRAEL",
           "role": "target",
           "code": "ISR"
         },
@@ -296,16 +335,26 @@
           "code": "ISR"
         },
         {
-          "name": "TERRORIST",
+          "name": "CIVILIAN",
           "role": "target",
-          "code": "UAF"
+          "code": "CVL"
+        },
+        {
+          "name": "HAMAS",
+          "role": "initiator",
+          "code": "PSEREB"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "target",
+          "code": "ISR"
         }
       ],
       "confidence": "reported",
       "severity": 4,
-      "intensity": 3,
-      "reportCount": 5,
-      "distinctPublishers": 5,
+      "intensity": 4,
+      "reportCount": 8,
+      "distinctPublishers": 7,
       "provenance": [
         {
           "sourceId": "gdelt",
@@ -414,6 +463,78 @@
           "publisher": "sundayexpress.co.ls",
           "publishedAt": "2026-09-27T13:00:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.jpost.com/middle-east/article-909876",
+          "publisher": "The Jerusalem Post",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.thenationalnews.com/news/mena/2026/09/27/israels-smotrich-calls-for-war-in-west-bank-and-dismantling-of-palestinian-authority/",
+          "publisher": "The National",
+          "publishedAt": "2026-09-27T17:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://english.wafa.ps/Pages/Details/175211",
+          "publisher": "english.wafa.ps",
+          "publishedAt": "2026-09-27T16:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://variety.com/2026/tv/news/adam-brody-calls-for-free-palestine-political-question-1236876872/",
+          "publisher": "variety.com",
+          "publishedAt": "2026-09-27T17:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.ynetnews.com/article/bjl8dhlqge",
+          "publisher": "ynetnews.com",
+          "publishedAt": "2026-09-27T18:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.ynetnews.com/article/skqpbju5ze",
+          "publisher": "ynetnews.com",
+          "publishedAt": "2026-09-27T18:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.euronews.com/2026/09/27/netanyahu-battles-october-7-warnings-revelations-with-defiant-un-speech",
+          "publisher": "euronews.com",
+          "publishedAt": "2026-09-27T18:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.siasat.com/no-peace-in-west-asia-without-palestine-justice-pezeshkian-3549192/",
+          "publisher": "siasat.com",
+          "publishedAt": "2026-09-27T18:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -530,7 +651,7 @@
       "id": "evt_1f947f6f3a7430d4",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T13:30:00.000Z",
+      "ingestedAt": "2026-09-27T18:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Kyiv, Kyyiv, Misto, Ukraine",
       "cameoCode": "190",
@@ -544,22 +665,32 @@
       },
       "actors": [
         {
-          "name": "EUROPEAN",
-          "role": "initiator",
-          "code": "EUR"
-        },
-        {
           "name": "RUSSIA",
-          "role": "target",
+          "role": "initiator",
           "code": "RUS"
         },
         {
-          "name": "MOSCOW",
+          "name": "UKRAINIAN",
+          "role": "target",
+          "code": "UKR"
+        },
+        {
+          "name": "PRESIDENT",
           "role": "initiator",
-          "code": "RUS"
+          "code": "GOV"
+        },
+        {
+          "name": "UKRAINE",
+          "role": "target",
+          "code": "UKR"
         },
         {
           "name": "KYIV",
+          "role": "target",
+          "code": "UKR"
+        },
+        {
+          "name": "UKRAINIAN",
           "role": "initiator",
           "code": "UKR"
         }
@@ -568,7 +699,7 @@
       "severity": 4,
       "intensity": 3,
       "reportCount": 5,
-      "distinctPublishers": 4,
+      "distinctPublishers": 5,
       "provenance": [
         {
           "sourceId": "gdelt",
@@ -668,6 +799,51 @@
           "publisher": "aa.com.tr",
           "publishedAt": "2026-09-27T13:30:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.kyivpost.com/post/84761",
+          "publisher": "Kyiv Post",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "http://www.goskagit.com/news/world/strikes-kill-6-in-ukraine-1-in-russia-after-moscow-rejects-german-calls-to-de/article_2e62a2ed-3b62-5b14-b0df-2dcc4eca72c6.html",
+          "publisher": "goskagit.com",
+          "publishedAt": "2026-09-27T16:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.theglobeandmail.com/world/article-kyiv-russia-ukraine-war-drone-winter/",
+          "publisher": "theglobeandmail.com",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "http://www.bignewsnetwork.com/news/279335802/russia-strikes-data-centers-logistics-sites-in-ukraine-mod",
+          "publisher": "bignewsnetwork.com",
+          "publishedAt": "2026-09-27T18:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://whbl.com/2026/09/27/russian-attacks-kills-three-in-ukrainian-cities-strikes-hit-kyiv-districts-officials-say/",
+          "publisher": "whbl.com",
+          "publishedAt": "2026-09-27T18:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -790,48 +966,28 @@
       "id": "evt_04a1a6c6d8fd0414",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T13:00:00.000Z",
+      "ingestedAt": "2026-09-27T18:00:00.000Z",
       "category": "armed_clash",
-      "label": "Armed clash — Kremlin, Moskva, Russia",
+      "label": "Armed clash — Moscow, Moskva, Russia",
       "cameoCode": "190",
       "location": {
         "lat": 55.7522,
         "lon": 37.6156,
-        "name": "Kremlin, Moskva, Russia",
+        "name": "Moscow, Moskva, Russia",
         "countryFips": "RS",
         "adm1": "RS48",
         "precision": "city"
       },
       "actors": [
         {
-          "name": "RUSSIAN",
+          "name": "MINISTRY",
           "role": "initiator",
-          "code": "RUS"
+          "code": "GOV"
         },
         {
           "name": "UKRAINE",
           "role": "target",
           "code": "UKR"
-        },
-        {
-          "name": "NATO",
-          "role": "initiator",
-          "code": "IGOWSTNAT"
-        },
-        {
-          "name": "RUSSIAN",
-          "role": "target",
-          "code": "RUS"
-        },
-        {
-          "name": "RUSSIA",
-          "role": "initiator",
-          "code": "RUS"
-        },
-        {
-          "name": "DENMARK",
-          "role": "initiator",
-          "code": "DNK"
         }
       ],
       "confidence": "reported",
@@ -938,6 +1094,15 @@
           "publisher": "dailysabah.com",
           "publishedAt": "2026-09-27T13:00:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "http://www.bignewsnetwork.com/news/279335802/russia-strikes-data-centers-logistics-sites-in-ukraine-mod",
+          "publisher": "bignewsnetwork.com",
+          "publishedAt": "2026-09-27T18:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -945,10 +1110,10 @@
       "id": "evt_396ce6839f8bcc7c",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T13:30:00.000Z",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Kharkiv, Kharkivs'ka Oblast', Ukraine",
-      "cameoCode": "192",
+      "cameoCode": "190",
       "location": {
         "lat": 49.9808,
         "lon": 36.2527,
@@ -959,14 +1124,14 @@
       },
       "actors": [
         {
-          "name": "RUSSIA",
+          "name": "UKRAINE",
           "role": "initiator",
-          "code": "RUS"
+          "code": "UKR"
         },
         {
-          "name": "SETTLEMENT",
+          "name": "RUSSIA",
           "role": "target",
-          "code": "CVL"
+          "code": "RUS"
         }
       ],
       "confidence": "unconfirmed",
@@ -992,6 +1157,15 @@
           "publisher": "aa.com.tr",
           "publishedAt": "2026-09-27T13:30:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.theglobeandmail.com/world/article-kyiv-russia-ukraine-war-drone-winter/",
+          "publisher": "theglobeandmail.com",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -2280,7 +2454,7 @@
       "id": "evt_8f7c7997ba6e9dbc",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T12:45:00.000Z",
+      "ingestedAt": "2026-09-27T18:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Tehran, Tehran, Iran",
       "cameoCode": "190",
@@ -2294,19 +2468,19 @@
       },
       "actors": [
         {
+          "name": "YEMEN",
+          "role": "target",
+          "code": "YEM"
+        },
+        {
           "name": "ISRAEL",
           "role": "initiator",
           "code": "ISR"
         },
         {
-          "name": "HEALTH MINIST",
-          "role": "initiator",
-          "code": "GOVHLH"
-        },
-        {
-          "name": "YEMEN",
+          "name": "IRAN",
           "role": "target",
-          "code": "YEM"
+          "code": "IRN"
         },
         {
           "name": "YEMEN",
@@ -2314,9 +2488,14 @@
           "code": "YEM"
         },
         {
-          "name": "HEALTH MINIST",
-          "role": "target",
-          "code": "GOVHLH"
+          "name": "PRESIDENT",
+          "role": "initiator",
+          "code": "GOV"
+        },
+        {
+          "name": "UNITED KINGDOM",
+          "role": "initiator",
+          "code": "GBR"
         }
       ],
       "confidence": "reported",
@@ -2396,6 +2575,51 @@
           "publisher": "cyprus-mail.com",
           "publishedAt": "2026-09-27T12:45:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.kristv.com/us-news/iran-war/iran-says-it-is-awaiting-definitive-us-response-despite-trump-rejecting-latest-proposal",
+          "publisher": "kristv.com",
+          "publishedAt": "2026-09-27T17:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "http://www.idahostatejournal.com/news/national/palestinian-death-toll-in-gaza-war-passes-74-000-and-other-mideast-news/article_52c9b6a0-d2ad-5acb-9fda-7f699666b089.html",
+          "publisher": "idahostatejournal.com",
+          "publishedAt": "2026-09-27T17:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://attackofthefanboy.com/news/the-pentagon-quietly-added-37-wounded-troops-to-its-iran-war-tally-but-it-still-hasnt-explained-how-they-were-hurt/",
+          "publisher": "attackofthefanboy.com",
+          "publishedAt": "2026-09-27T17:45:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.aol.co.uk/articles/terror-cops-issue-huge-iran-171000000.html",
+          "publisher": "aol.co.uk",
+          "publishedAt": "2026-09-27T18:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://aa.com.tr/en/americas/trump-says-he-expects-more-talks-with-iran-this-week-warns-tehran-overplayed-hand/4070927",
+          "publisher": "aa.com.tr",
+          "publishedAt": "2026-09-27T18:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -2498,7 +2722,7 @@
       "id": "evt_44e37159cc626136",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T12:15:00.000Z",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Balochistan, Balochistan, Pakistan",
       "cameoCode": "190",
@@ -2513,26 +2737,11 @@
       "actors": [
         {
           "name": "PAKISTAN",
-          "role": "target",
-          "code": "PAK"
-        },
-        {
-          "name": "PAKISTAN",
           "role": "initiator",
-          "code": "PAK"
+          "code": "PAKMIL"
         },
         {
-          "name": "MILITARY",
-          "role": "initiator",
-          "code": "MIL"
-        },
-        {
-          "name": "HINDUSTAN",
-          "role": "target",
-          "code": "IND"
-        },
-        {
-          "name": "TERRORIST",
+          "name": "MILITANT",
           "role": "target",
           "code": "UAF"
         }
@@ -2569,6 +2778,15 @@
           "publisher": "thefrontierpost.com",
           "publishedAt": "2026-09-27T12:15:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.aol.com/articles/afghanistan-says-28-fighters-killed-123704000.html",
+          "publisher": "aol.com",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -2644,7 +2862,7 @@
       "id": "evt_822d4d4569b5328d",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T07:15:00.000Z",
+      "ingestedAt": "2026-09-27T17:30:00.000Z",
       "category": "armed_assault",
       "label": "Armed assault — Gaza, Israel (general), Israel",
       "cameoCode": "182",
@@ -2663,17 +2881,32 @@
           "code": "ISR"
         },
         {
-          "name": "ISRAELI",
+          "name": "HOSPITAL",
+          "role": "target",
+          "code": "HLH"
+        },
+        {
+          "name": "GAZA",
           "role": "initiator",
-          "code": "ISR"
+          "code": "PSE"
+        },
+        {
+          "name": "CIVILIAN",
+          "role": "target",
+          "code": "CVL"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "target",
+          "code": "ISRMIL"
         },
         {
           "name": "PALESTINIAN",
-          "role": "target",
+          "role": "initiator",
           "code": "PSE"
         }
       ],
-      "confidence": "unconfirmed",
+      "confidence": "reported",
       "severity": 4,
       "intensity": 3,
       "reportCount": 3,
@@ -2705,6 +2938,24 @@
           "publisher": "english.wafa.ps",
           "publishedAt": "2026-09-27T07:15:00.000Z",
           "retrievedAt": "2026-09-27T07:59:26.009Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.middleeasteye.net/live-blog/live-blog-update/israeli-drone-strike-kills-palestinian-gaza-city",
+          "publisher": "Middle East Eye",
+          "publishedAt": "2026-09-27T17:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://english.wafa.ps/Pages/Details/175211",
+          "publisher": "english.wafa.ps",
+          "publishedAt": "2026-09-27T16:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -2837,10 +3088,10 @@
       "id": "evt_802be769ac091e39",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T06:30:00.000Z",
+      "ingestedAt": "2026-09-27T17:30:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Abuja, Abuja Federal Capital Territory, Nigeria",
-      "cameoCode": "192",
+      "cameoCode": "190",
       "location": {
         "lat": 9.08333,
         "lon": 7.53333,
@@ -2851,17 +3102,22 @@
       },
       "actors": [
         {
-          "name": "NIGERIA",
+          "name": "MEDIA",
           "role": "initiator",
-          "code": "NGA"
+          "code": "MED"
         },
         {
-          "name": "POLITICAL PARTY",
+          "name": "TRADER",
           "role": "target",
-          "code": "PTY"
+          "code": "BUS"
+        },
+        {
+          "name": "RESIDENTS",
+          "role": "target",
+          "code": "CVL"
         }
       ],
-      "confidence": "unconfirmed",
+      "confidence": "reported",
       "severity": 4,
       "intensity": 2,
       "reportCount": 1,
@@ -2875,6 +3131,15 @@
           "publisher": "thisdaylive.com",
           "publishedAt": "2026-09-27T06:30:00.000Z",
           "retrievedAt": "2026-09-27T07:59:26.009Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.premiumtimesng.com/news/more-news/912750-explosion-as-vehicle-crashes-into-gas-shop-in-abuja.html",
+          "publisher": "Premium Times",
+          "publishedAt": "2026-09-27T17:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -2882,7 +3147,7 @@
       "id": "evt_9dd407d5f8f4b0fe",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T13:45:00.000Z",
+      "ingestedAt": "2026-09-27T17:30:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Kabul, Kabol, Afghanistan",
       "cameoCode": "190",
@@ -2896,27 +3161,17 @@
       },
       "actors": [
         {
-          "name": "CIVILIAN",
-          "role": "target",
-          "code": "CVL"
-        },
-        {
           "name": "AFGHANISTAN",
           "role": "initiator",
-          "code": "AFG"
+          "code": "AFGGOVMIL"
         },
         {
           "name": "FIGHTER",
           "role": "target",
           "code": "UAF"
-        },
-        {
-          "name": "AFGHAN",
-          "role": "initiator",
-          "code": "AFG"
         }
       ],
-      "confidence": "unconfirmed",
+      "confidence": "reported",
       "severity": 4,
       "intensity": 2,
       "reportCount": 2,
@@ -2948,6 +3203,24 @@
           "publisher": "internazionale.it",
           "publishedAt": "2026-09-27T13:45:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.aljazeera.com/news/2026/9/27/afghanistan-says-28-fighters-killed-as-islamabad-kabul-trade-accusations",
+          "publisher": "Al Jazeera",
+          "publishedAt": "2026-09-27T17:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://dominicanrepublicpost.com/afghanistan-says-28-fighters-killed-as-islamabad-kabul-trade-accusations/",
+          "publisher": "dominicanrepublicpost.com",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -3005,10 +3278,10 @@
       "id": "evt_4d658a6a5f128e19",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T13:30:00.000Z",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Islamabad, Islamabad, Pakistan",
-      "cameoCode": "190",
+      "cameoCode": "194",
       "location": {
         "lat": 33.7,
         "lon": 73.1667,
@@ -3019,34 +3292,34 @@
       },
       "actors": [
         {
-          "name": "PAKISTAN",
+          "name": "AFGHANISTAN",
           "role": "initiator",
-          "code": "PAK"
+          "code": "AFGGOVMIL"
         },
         {
-          "name": "MILITANT",
+          "name": "AFGHANISTAN",
           "role": "target",
-          "code": "UAF"
+          "code": "AFG"
         },
         {
-          "name": "ISLAMABAD",
-          "role": "initiator",
-          "code": "PAK"
-        },
-        {
-          "name": "TERRORIST",
+          "name": "TALIBAN",
           "role": "target",
-          "code": "UAF"
+          "code": "AFGINSTALGOVMIL"
         },
         {
-          "name": "SECURITY FORCE",
-          "role": "initiator",
-          "code": "COP"
+          "name": "MILITARY",
+          "role": "target",
+          "code": "MIL"
         },
         {
-          "name": "AFGHAN",
+          "name": "KABUL",
           "role": "initiator",
           "code": "AFG"
+        },
+        {
+          "name": "TALIBAN",
+          "role": "initiator",
+          "code": "AFGINSTALGOVMIL"
         }
       ],
       "confidence": "reported",
@@ -3117,6 +3390,33 @@
           "publisher": "moneycontrol.com",
           "publishedAt": "2026-09-27T13:30:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://pragativadi.com/afghanistan-pakistan-border-clash-violence-escalates/",
+          "publisher": "pragativadi.com",
+          "publishedAt": "2026-09-27T17:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://dominicanrepublicpost.com/afghanistan-says-28-fighters-killed-as-islamabad-kabul-trade-accusations/",
+          "publisher": "dominicanrepublicpost.com",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.khaama.com/afghanistan-pakistan-border-erupts-in-overnight-heavy-fighting-across-multiple-frontier-areas/",
+          "publisher": "khaama.com",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -3224,10 +3524,10 @@
       "id": "evt_6e4bcf9e7affee8c",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T12:15:00.000Z",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
       "category": "armed_assault",
       "label": "Armed assault — Pune, Maharashtra, India",
-      "cameoCode": "186",
+      "cameoCode": "180",
       "location": {
         "lat": 18.5333,
         "lon": 73.8667,
@@ -3238,19 +3538,24 @@
       },
       "actors": [
         {
-          "name": "POLICE",
+          "name": "RETIRED",
           "role": "initiator",
-          "code": "COP"
+          "code": "ELIHLH"
         },
         {
-          "name": "MUMBAI",
+          "name": "MARATHI",
           "role": "target",
-          "code": "IND"
+          "code": "marBUS"
         },
         {
-          "name": "PUNE",
+          "name": "MARATHI",
+          "role": "initiator",
+          "code": "marBUS"
+        },
+        {
+          "name": "RETIRED",
           "role": "target",
-          "code": "IND"
+          "code": "ELIHLH"
         }
       ],
       "confidence": "unconfirmed",
@@ -3276,6 +3581,15 @@
           "publisher": "freepressjournal.in",
           "publishedAt": "2026-09-27T12:15:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.moneycontrol.com/entertainment/bigg-boss-marathi-fame-divya-shinde-arrested-in-pune-accused-of-assaulting-retired-doctor-demanding-rs-5-lakh-article-14039405.html",
+          "publisher": "moneycontrol.com",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -3938,7 +4252,7 @@
       "id": "evt_b45c7099fddb3ce5",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T07:15:00.000Z",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Phagwara, Punjab, India",
       "cameoCode": "190",
@@ -3952,12 +4266,17 @@
       },
       "actors": [
         {
-          "name": "UNIVERSITY",
+          "name": "PROTESTER",
           "role": "initiator",
+          "code": "OPP"
+        },
+        {
+          "name": "UNIVERSITY",
+          "role": "target",
           "code": "EDU"
         }
       ],
-      "confidence": "unconfirmed",
+      "confidence": "reported",
       "severity": 4,
       "intensity": 2,
       "reportCount": 1,
@@ -3971,6 +4290,15 @@
           "publisher": "oneindia.com",
           "publishedAt": "2026-09-27T07:15:00.000Z",
           "retrievedAt": "2026-09-27T07:59:26.009Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.thehindu.com/newsletter/the-evening-wrap/unions-to-go-on-3-day-nationwide-bank-strike-from-september-28-services-to-be-impacted/article71516775.ece",
+          "publisher": "The Hindu",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -3978,10 +4306,10 @@
       "id": "evt_b15473f51414835e",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T13:30:00.000Z",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
       "category": "armed_assault",
       "label": "Armed assault — Phagwara, Punjab, India",
-      "cameoCode": "1821",
+      "cameoCode": "180",
       "location": {
         "lat": 31.2178,
         "lon": 75.7694,
@@ -3991,6 +4319,16 @@
         "precision": "city"
       },
       "actors": [
+        {
+          "name": "PROTESTER",
+          "role": "initiator",
+          "code": "OPP"
+        },
+        {
+          "name": "POLICE",
+          "role": "target",
+          "code": "COP"
+        },
         {
           "name": "UNIVERSITY",
           "role": "target",
@@ -4029,6 +4367,15 @@
           "publisher": "The Hindu",
           "publishedAt": "2026-09-27T13:30:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.thehindu.com/newsletter/the-evening-wrap/unions-to-go-on-3-day-nationwide-bank-strike-from-september-28-services-to-be-impacted/article71516775.ece",
+          "publisher": "The Hindu",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -4546,7 +4893,7 @@
       "id": "evt_c9ca7bff8c2fb271",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T07:15:00.000Z",
+      "ingestedAt": "2026-09-27T18:00:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Kursk, Kurskaya Oblast', Russia",
       "cameoCode": "190",
@@ -4560,14 +4907,9 @@
       },
       "actors": [
         {
-          "name": "UKRAINIAN",
+          "name": "TAIWAN",
           "role": "initiator",
-          "code": "UKR"
-        },
-        {
-          "name": "SETTLEMENT",
-          "role": "target",
-          "code": "CVL"
+          "code": "TWN"
         }
       ],
       "confidence": "unconfirmed",
@@ -4584,6 +4926,15 @@
           "publisher": "rightspeak.net",
           "publishedAt": "2026-09-27T07:15:00.000Z",
           "retrievedAt": "2026-09-27T07:59:26.009Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.taipeitimes.com/News/feat/archives/2026/09/28/2003864996",
+          "publisher": "taipeitimes.com",
+          "publishedAt": "2026-09-27T18:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -5305,7 +5656,7 @@
       "id": "evt_13959ca1c91b8d09",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T12:45:00.000Z",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
       "category": "armed_assault",
       "label": "Armed assault — Lahore, Punjab, Pakistan",
       "cameoCode": "1821",
@@ -5319,28 +5670,18 @@
       },
       "actors": [
         {
-          "name": "LAHORE",
-          "role": "initiator",
-          "code": "PAK"
-        },
-        {
-          "name": "POLICE",
-          "role": "target",
-          "code": "COP"
-        },
-        {
-          "name": "GANG",
-          "role": "target",
-          "code": "CRM"
-        },
-        {
           "name": "POLICE",
           "role": "initiator",
           "code": "COP"
         },
         {
-          "name": "LAHORE",
+          "name": "AZERBAIJANI",
           "role": "target",
+          "code": "AZE"
+        },
+        {
+          "name": "LAHORE",
+          "role": "initiator",
           "code": "PAK"
         }
       ],
@@ -5376,6 +5717,15 @@
           "publisher": "samaa.tv",
           "publishedAt": "2026-09-27T12:45:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://arynews.tv/police-detain-15-people-as-investigation-into-alleged-gang-rape-of-azerbaijani-woman-continues",
+          "publisher": "arynews.tv",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -6434,7 +6784,7 @@
       "id": "evt_31a4b97f9fb305f4",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T13:30:00.000Z",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Nuristan, Nurestan, Afghanistan",
       "cameoCode": "190",
@@ -6448,14 +6798,9 @@
       },
       "actors": [
         {
-          "name": "AFGHAN",
-          "role": "initiator",
-          "code": "AFG"
-        },
-        {
-          "name": "CIVILIAN",
+          "name": "INTELLIGENCE",
           "role": "target",
-          "code": "CVL"
+          "code": "SPY"
         },
         {
           "name": "AFGHANISTAN",
@@ -6468,9 +6813,9 @@
           "code": "UAF"
         },
         {
-          "name": "MINISTRY",
+          "name": "INTELLIGENCE",
           "role": "initiator",
-          "code": "GOV"
+          "code": "SPY"
         },
         {
           "name": "AFGHANISTAN",
@@ -6510,6 +6855,15 @@
           "publisher": "winnipegfreepress.com",
           "publishedAt": "2026-09-27T13:30:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://dominicanrepublicpost.com/afghanistan-says-28-fighters-killed-as-islamabad-kabul-trade-accusations/",
+          "publisher": "dominicanrepublicpost.com",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -6658,7 +7012,7 @@
       "id": "evt_e8478a94a13ed617",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T12:00:00.000Z",
+      "ingestedAt": "2026-09-27T17:00:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Badagry, Lagos, Nigeria",
       "cameoCode": "192",
@@ -6672,8 +7026,13 @@
       },
       "actors": [
         {
-          "name": "NIGERIA",
+          "name": "GHANAIAN",
           "role": "initiator",
+          "code": "GHA"
+        },
+        {
+          "name": "NIGERIA",
+          "role": "target",
           "code": "NGA"
         }
       ],
@@ -6691,6 +7050,15 @@
           "publisher": "Vanguard",
           "publishedAt": "2026-09-27T12:00:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://pmnewsnigeria.com/2026/09/27/europe-bound-bridegroom-excretes-72-cocaine-wraps-as-ndlea-seizes-n3bn-drugs/",
+          "publisher": "pmnewsnigeria.com",
+          "publishedAt": "2026-09-27T17:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -6698,7 +7066,7 @@
       "id": "evt_2069fa5ecb89796f",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T12:00:00.000Z",
+      "ingestedAt": "2026-09-27T17:00:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Oyo State, Oyo, Nigeria",
       "cameoCode": "192",
@@ -6712,8 +7080,13 @@
       },
       "actors": [
         {
-          "name": "NIGERIA",
+          "name": "GHANAIAN",
           "role": "initiator",
+          "code": "GHA"
+        },
+        {
+          "name": "NIGERIA",
+          "role": "target",
           "code": "NGA"
         }
       ],
@@ -6731,6 +7104,15 @@
           "publisher": "Vanguard",
           "publishedAt": "2026-09-27T12:00:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://pmnewsnigeria.com/2026/09/27/europe-bound-bridegroom-excretes-72-cocaine-wraps-as-ndlea-seizes-n3bn-drugs/",
+          "publisher": "pmnewsnigeria.com",
+          "publishedAt": "2026-09-27T17:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -7530,7 +7912,7 @@
       "id": "evt_def771402a39dc84",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T12:45:00.000Z",
+      "ingestedAt": "2026-09-27T16:45:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Mawiya, Taizz, Yemen",
       "cameoCode": "190",
@@ -7547,29 +7929,9 @@
           "name": "HEALTH MINIST",
           "role": "initiator",
           "code": "GOVHLH"
-        },
-        {
-          "name": "YEMEN",
-          "role": "target",
-          "code": "YEM"
-        },
-        {
-          "name": "SAUDI",
-          "role": "initiator",
-          "code": "SAU"
-        },
-        {
-          "name": "YEMEN",
-          "role": "initiator",
-          "code": "YEM"
-        },
-        {
-          "name": "HEALTH MINIST",
-          "role": "target",
-          "code": "GOVHLH"
         }
       ],
-      "confidence": "unconfirmed",
+      "confidence": "reported",
       "severity": 4,
       "intensity": 2,
       "reportCount": 2,
@@ -7592,6 +7954,15 @@
           "publisher": "moneycontrol.com",
           "publishedAt": "2026-09-27T12:45:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.jpost.com/middle-east/article-909875",
+          "publisher": "The Jerusalem Post",
+          "publishedAt": "2026-09-27T16:45:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -7704,7 +8075,7 @@
       "id": "evt_59a04947aee8778f",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T12:45:00.000Z",
+      "ingestedAt": "2026-09-27T17:30:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Belgorod, Belgorodskaya Oblast', Russia",
       "cameoCode": "190",
@@ -7718,41 +8089,21 @@
       },
       "actors": [
         {
-          "name": "MILITARY",
-          "role": "initiator",
-          "code": "MIL"
-        },
-        {
-          "name": "CIVILIAN",
-          "role": "target",
-          "code": "CVL"
-        },
-        {
           "name": "RUSSIA",
           "role": "initiator",
           "code": "RUS"
         },
         {
-          "name": "MILITARY",
-          "role": "target",
-          "code": "MIL"
-        },
-        {
-          "name": "UKRAINE",
-          "role": "initiator",
-          "code": "UKR"
-        },
-        {
           "name": "UKRAINIAN",
-          "role": "initiator",
+          "role": "target",
           "code": "UKR"
         }
       ],
       "confidence": "unconfirmed",
       "severity": 4,
       "intensity": 2,
-      "reportCount": 1,
-      "distinctPublishers": 1,
+      "reportCount": 2,
+      "distinctPublishers": 2,
       "provenance": [
         {
           "sourceId": "gdelt",
@@ -7762,6 +8113,24 @@
           "publisher": "naturalnews.com",
           "publishedAt": "2026-09-27T12:45:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "http://www.goskagit.com/news/world/strikes-kill-6-in-ukraine-1-in-russia-after-moscow-rejects-german-calls-to-de/article_2e62a2ed-3b62-5b14-b0df-2dcc4eca72c6.html",
+          "publisher": "goskagit.com",
+          "publishedAt": "2026-09-27T16:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.sandiegouniontribune.com/2026/09/27/strikes-kill-8-in-ukraine-1-in-russia-after-moscow-rejects-german-calls-to-de-escalate/",
+          "publisher": "sandiegouniontribune.com",
+          "publishedAt": "2026-09-27T17:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -8039,7 +8408,7 @@
       "id": "evt_c40b719af6398a99",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T13:00:00.000Z",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Paktika, Paktika, Afghanistan",
       "cameoCode": "190",
@@ -8053,24 +8422,9 @@
       },
       "actors": [
         {
-          "name": "AFGHAN",
-          "role": "initiator",
-          "code": "AFG"
-        },
-        {
-          "name": "GOVERNMENT",
+          "name": "CIVILIAN",
           "role": "target",
-          "code": "GOV"
-        },
-        {
-          "name": "GOVERNMENT",
-          "role": "initiator",
-          "code": "GOV"
-        },
-        {
-          "name": "AFGHAN",
-          "role": "target",
-          "code": "AFG"
+          "code": "CVL"
         }
       ],
       "confidence": "reported",
@@ -8087,6 +8441,15 @@
           "publisher": "The Express Tribune",
           "publishedAt": "2026-09-27T13:00:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.khaama.com/afghanistan-pakistan-border-erupts-in-overnight-heavy-fighting-across-multiple-frontier-areas/",
+          "publisher": "khaama.com",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -8224,7 +8587,7 @@
       "id": "evt_bcd65dcdaa77cda2",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T13:15:00.000Z",
+      "ingestedAt": "2026-09-27T16:45:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Quetta, Balochistan, Pakistan",
       "cameoCode": "190",
@@ -8238,22 +8601,12 @@
       },
       "actors": [
         {
-          "name": "PAKISTAN",
+          "name": "PAKISTANI",
           "role": "initiator",
-          "code": "PAK"
+          "code": "PAKCOP"
         },
         {
-          "name": "HINDUSTAN",
-          "role": "target",
-          "code": "INDUAF"
-        },
-        {
-          "name": "MILITARY",
-          "role": "initiator",
-          "code": "MIL"
-        },
-        {
-          "name": "MILITANT",
+          "name": "TERRORIST",
           "role": "target",
           "code": "UAF"
         }
@@ -8281,6 +8634,15 @@
           "publisher": "english.news.cn",
           "publishedAt": "2026-09-27T13:15:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.newindianexpress.com/world/2026/Sep/27/pakistan-army-says-73-terrorists-killed-in-96-hour-balochistan-crackdown",
+          "publisher": "newindianexpress.com",
+          "publishedAt": "2026-09-27T16:45:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -8378,9 +8740,9 @@
       "id": "evt_1d9682eb40087aff",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T13:45:00.000Z",
+      "ingestedAt": "2026-09-27T18:15:00.000Z",
       "category": "armed_clash",
-      "label": "Armed clash — Sanaa, Sana', Yemen",
+      "label": "Armed clash — Ministry Of Health, Amanat al `Asimah, Yemen",
       "cameoCode": "190",
       "location": {
         "lat": 15.3547,
@@ -8397,24 +8759,29 @@
           "code": "YEM"
         },
         {
-          "name": "MEDIA",
-          "role": "initiator",
-          "code": "MED"
-        },
-        {
-          "name": "SANAA",
-          "role": "target",
-          "code": "YEM"
-        },
-        {
           "name": "YEMEN",
           "role": "initiator",
           "code": "YEM"
         },
         {
-          "name": "SAUDI",
+          "name": "FIGHTER",
+          "role": "initiator",
+          "code": "UAF"
+        },
+        {
+          "name": "YEMENI",
           "role": "target",
-          "code": "SAU"
+          "code": "YEMMIL"
+        },
+        {
+          "name": "DJIBOUTI",
+          "role": "target",
+          "code": "DJI"
+        },
+        {
+          "name": "YEMENI",
+          "role": "initiator",
+          "code": "YEM"
         }
       ],
       "confidence": "reported",
@@ -8440,6 +8807,24 @@
           "publisher": "english.news.cn",
           "publishedAt": "2026-09-27T13:15:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.dw.com/en/yemen-houthis-report-deadly-saudi-strikes-on-taiz-market/a-79450102",
+          "publisher": "Deutsche Welle",
+          "publishedAt": "2026-09-27T18:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.kristv.com/us-news/iran-war/iran-says-it-is-awaiting-definitive-us-response-despite-trump-rejecting-latest-proposal",
+          "publisher": "kristv.com",
+          "publishedAt": "2026-09-27T17:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -8749,7 +9134,7 @@
       "id": "evt_7f76cbcf4dce284a",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T13:30:00.000Z",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Amhara, Amara, Ethiopia",
       "cameoCode": "190",
@@ -8763,14 +9148,19 @@
       },
       "actors": [
         {
-          "name": "AFAR",
-          "role": "target",
-          "code": "aar"
+          "name": "GOVERNMENT",
+          "role": "initiator",
+          "code": "GOV"
         },
         {
-          "name": "AFAR",
-          "role": "initiator",
-          "code": "aar"
+          "name": "ETHIOPIA",
+          "role": "target",
+          "code": "ETH"
+        },
+        {
+          "name": "LIBERATION FRONT",
+          "role": "target",
+          "code": "SEP"
         }
       ],
       "confidence": "unconfirmed",
@@ -8787,6 +9177,15 @@
           "publisher": "euronews.com",
           "publishedAt": "2026-09-27T13:30:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://allafrica.com/stories/202609270104.html",
+          "publisher": "allafrica.com",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -9024,10 +9423,10 @@
       "id": "evt_7dbb33485eb516da",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T13:45:00.000Z",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Puntland, Somalia (general), Somalia",
-      "cameoCode": "190",
+      "cameoCode": "192",
       "location": {
         "lat": 9,
         "lon": 49,
@@ -9038,14 +9437,9 @@
       },
       "actors": [
         {
-          "name": "SOMALIA",
-          "role": "target",
-          "code": "SOM"
-        },
-        {
-          "name": "SOMALIA",
+          "name": "POLICE",
           "role": "initiator",
-          "code": "SOM"
+          "code": "COP"
         }
       ],
       "confidence": "unconfirmed",
@@ -9062,6 +9456,15 @@
           "publisher": "horseedmedia.net",
           "publishedAt": "2026-09-27T13:45:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.newvision.co.ug/category/world/somali-pirates-escape-with-suspected-police-h-NV_241395_092026",
+          "publisher": "newvision.co.ug",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -9114,7 +9517,7 @@
       "id": "evt_f6d585870f07721b",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T13:45:00.000Z",
+      "ingestedAt": "2026-09-27T17:30:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Kolkata, West Bengal, India",
       "cameoCode": "190",
@@ -9128,12 +9531,32 @@
       },
       "actors": [
         {
-          "name": "NAGA",
+          "name": "STUDENT",
           "role": "target",
-          "code": "nag"
+          "code": "EDU"
+        },
+        {
+          "name": "STUDENT",
+          "role": "initiator",
+          "code": "EDU"
+        },
+        {
+          "name": "TELEVISION",
+          "role": "target",
+          "code": "MED"
+        },
+        {
+          "name": "KOLKATA",
+          "role": "initiator",
+          "code": "IND"
+        },
+        {
+          "name": "TELEVISION",
+          "role": "initiator",
+          "code": "MED"
         }
       ],
-      "confidence": "unconfirmed",
+      "confidence": "reported",
       "severity": 4,
       "intensity": 2,
       "reportCount": 1,
@@ -9147,6 +9570,15 @@
           "publisher": "morungexpress.com",
           "publishedAt": "2026-09-27T13:45:00.000Z",
           "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.thehindu.com/news/cities/kolkata/students-right-wing-consumer-group-members-clash-on-srfti-campus-in-kolkata/article71516913.ece",
+          "publisher": "The Hindu",
+          "publishedAt": "2026-09-27T17:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
@@ -9539,9 +9971,9 @@
       "id": "evt_c75239e0e4946de1",
       "occurredAt": "2026-09-27T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-09-27T13:30:00.000Z",
+      "ingestedAt": "2026-09-27T18:15:00.000Z",
       "category": "siege_blockade",
-      "label": "Siege or blockade — Ramallah, West Bank (general), West Bank",
+      "label": "Siege or blockade — Jerusalem, Israel (general), Israel",
       "cameoCode": "1721",
       "location": {
         "lat": 31.7667,
@@ -9553,14 +9985,1633 @@
       },
       "actors": [
         {
-          "name": "ISRAELI",
+          "name": "SHOP OWNER",
           "role": "initiator",
-          "code": "ISR"
+          "code": "BUS"
+        },
+        {
+          "name": "JEWISH",
+          "role": "initiator",
+          "code": "JEW"
+        },
+        {
+          "name": "PALESTINIAN",
+          "role": "target",
+          "code": "PSE"
+        },
+        {
+          "name": "WEST BANK",
+          "role": "initiator",
+          "code": "PSE"
         },
         {
           "name": "JEWISH",
           "role": "target",
           "code": "JEW"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 3,
+      "intensity": 2,
+      "reportCount": 3,
+      "distinctPublishers": 2,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.middleeasteye.net/news/do-there-what-we-did-gaza-smotrich-calls-full-scale-israeli-war-occupied-west-bank",
+          "publisher": "Middle East Eye",
+          "publishedAt": "2026-09-27T13:30:00.000Z",
+          "retrievedAt": "2026-09-27T13:49:00.171Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.jpost.com/israel-news/article-909890",
+          "publisher": "The Jerusalem Post",
+          "publishedAt": "2026-09-27T16:45:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "http://www.jpost.com/israel-news/article-909890",
+          "publisher": "The Jerusalem Post",
+          "publishedAt": "2026-09-27T18:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://english.wafa.ps/Pages/Details/175200",
+          "publisher": "english.wafa.ps",
+          "publishedAt": "2026-09-27T16:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_d23780ae2f2434f9",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T16:45:00.000Z",
+      "category": "aerial_strike",
+      "label": "Aerial or missile strike — Mawiya, Taizz, Yemen",
+      "cameoCode": "195",
+      "location": {
+        "lat": 13.5829,
+        "lon": 44.3477,
+        "name": "Mawiya, Taizz, Yemen",
+        "countryFips": "YM",
+        "adm1": "YM25",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "SAUDI ARABIA",
+          "role": "target",
+          "code": "SAU"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 5,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.jpost.com/middle-east/article-909875",
+          "publisher": "The Jerusalem Post",
+          "publishedAt": "2026-09-27T16:45:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_35fc3322b5679e7d",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T16:45:00.000Z",
+      "category": "mass_violence",
+      "label": "Mass violence — Ashdod, HaDarom, Israel",
+      "cameoCode": "203",
+      "location": {
+        "lat": 31.7444,
+        "lon": 34.6809,
+        "name": "Ashdod, HaDarom, Israel",
+        "countryFips": "IS",
+        "adm1": "IS01",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "THE UN",
+          "role": "initiator",
+          "code": "IGOUNOLEG"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "initiator",
+          "code": "ISR"
+        },
+        {
+          "name": "WEST BANK",
+          "role": "target",
+          "code": "PSE"
+        },
+        {
+          "name": "PALESTINIAN",
+          "role": "initiator",
+          "code": "PSE"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "target",
+          "code": "ISR"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 5,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.jpost.com/opinion/article-909469",
+          "publisher": "The Jerusalem Post",
+          "publishedAt": "2026-09-27T16:45:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_5c4be00bc57d10a5",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T16:30:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Erbil, Liwa' Irbil, Iraq",
+      "cameoCode": "192",
+      "location": {
+        "lat": 36.1926,
+        "lon": 44.0106,
+        "name": "Erbil, Liwa' Irbil, Iraq",
+        "countryFips": "IZ",
+        "adm1": "IZ11",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "CHRISTIAN",
+          "role": "initiator",
+          "code": "CHR"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.myspiritfm.com/News?view=post&blogid=Catholic%2DNews&articleid=304248",
+          "publisher": "myspiritfm.com",
+          "publishedAt": "2026-09-27T16:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_aa7bac15572032d9",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T16:45:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Manila, Manila, Philippines",
+      "cameoCode": "182",
+      "location": {
+        "lat": 14.6042,
+        "lon": 120.982,
+        "name": "Manila, Manila, Philippines",
+        "countryFips": "RP",
+        "adm1": "RPD9",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "FILIPINO",
+          "role": "initiator",
+          "code": "PHL"
+        },
+        {
+          "name": "WORKER",
+          "role": "target",
+          "code": "LAB"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.philstar.com/headlines/2026/09/28/2559384/stronger-maritime-security-eyed",
+          "publisher": "philstar.com",
+          "publishedAt": "2026-09-27T16:45:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_f1e9f8ccc97f7835",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "report_date",
+      "ingestedAt": "2026-09-27T17:45:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Shifa, Ha?afon, Israel",
+      "cameoCode": "190",
+      "location": {
+        "lat": 32.45,
+        "lon": 35.5333,
+        "name": "Shifa, Ha?afon, Israel",
+        "countryFips": "IS",
+        "adm1": "IS03",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "YEMEN",
+          "role": "initiator",
+          "code": "YEM"
+        },
+        {
+          "name": "WORLD HEALTH ORGANIZATION",
+          "role": "target",
+          "code": "IGOUNOHLHWHO"
+        },
+        {
+          "name": "WEST BANK",
+          "role": "initiator",
+          "code": "PSE"
+        },
+        {
+          "name": "RESERVIST",
+          "role": "target",
+          "code": "MILMIL"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "initiator",
+          "code": "ISR"
+        },
+        {
+          "name": "IRAN",
+          "role": "target",
+          "code": "IRN"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 2,
+      "distinctPublishers": 2,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "http://www.idahostatejournal.com/news/national/palestinian-death-toll-in-gaza-war-passes-74-000-and-other-mideast-news/article_52c9b6a0-d2ad-5acb-9fda-7f699666b089.html",
+          "publisher": "idahostatejournal.com",
+          "publishedAt": "2026-09-27T17:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.dailybulletin.com/2026/09/27/palestinian-death-toll-in-gaza-war-passes-74000-and-other-mideast-news/",
+          "publisher": "dailybulletin.com",
+          "publishedAt": "2026-09-27T17:45:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_8a32ef1731f14605",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:30:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Jadavpur, West Bengal, India",
+      "cameoCode": "190",
+      "location": {
+        "lat": 22.4833,
+        "lon": 88.3833,
+        "name": "Jadavpur, West Bengal, India",
+        "countryFips": "IN",
+        "adm1": "IN28",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "STUDENT",
+          "role": "target",
+          "code": "EDU"
+        },
+        {
+          "name": "STUDENT",
+          "role": "initiator",
+          "code": "EDU"
+        },
+        {
+          "name": "KOLKATA",
+          "role": "target",
+          "code": "INDEDU"
+        },
+        {
+          "name": "KOLKATA",
+          "role": "initiator",
+          "code": "INDEDU"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 2,
+      "distinctPublishers": 2,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.thehindu.com/news/cities/kolkata/students-right-wing-consumer-group-members-clash-on-srfti-campus-in-kolkata/article71516913.ece",
+          "publisher": "The Hindu",
+          "publishedAt": "2026-09-27T17:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.hindustantimes.com/india-news/called-us-cockroaches-anti-national-kolkata-film-srfti-students-right-wing-consumer-group-clash-during-event-101790521825330.html",
+          "publisher": "hindustantimes.com",
+          "publishedAt": "2026-09-27T17:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_3840632dcd2dc3e3",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:00:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Kytlym, Sverdlovskaya Oblast', Russia",
+      "cameoCode": "190",
+      "location": {
+        "lat": 59.4996,
+        "lon": 59.202,
+        "name": "Kytlym, Sverdlovskaya Oblast', Russia",
+        "countryFips": "RS",
+        "adm1": "RS71",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "RETIRED",
+          "role": "initiator",
+          "code": "ELIMIL"
+        },
+        {
+          "name": "COLONEL",
+          "role": "initiator",
+          "code": "MIL"
+        },
+        {
+          "name": "PUBLICATION",
+          "role": "target",
+          "code": "MED"
+        },
+        {
+          "name": "RUSSIA",
+          "role": "initiator",
+          "code": "RUSMIL"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.dailymail.com/news/article-16163981/Russia-doomsday-nuclear-bunker-strikes-West.html",
+          "publisher": "dailymail.com",
+          "publishedAt": "2026-09-27T17:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_34a4f46ac966573e",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:00:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Novorossiya, Primorskiy Kray, Russia",
+      "cameoCode": "190",
+      "location": {
+        "lat": 43.3427,
+        "lon": 132.556,
+        "name": "Novorossiya, Primorskiy Kray, Russia",
+        "countryFips": "RS",
+        "adm1": "RS59",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "RUSSIA",
+          "role": "initiator",
+          "code": "RUS"
+        },
+        {
+          "name": "UKRAINE",
+          "role": "target",
+          "code": "UKR"
+        },
+        {
+          "name": "UKRAINE",
+          "role": "initiator",
+          "code": "UKR"
+        },
+        {
+          "name": "RUSSIA",
+          "role": "target",
+          "code": "RUS"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://thefrontierpost.com/excerpts-from-the-statement-by-russian-foreign-minister-sergey-lavrov-at-the-general-debate-of-the-81st-session-of-the-un-general-assembly/",
+          "publisher": "thefrontierpost.com",
+          "publishedAt": "2026-09-27T17:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_61a78f4cdaf114c6",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Tigray, Tigray, Ethiopia",
+      "cameoCode": "190",
+      "location": {
+        "lat": 13.5,
+        "lon": 39.5,
+        "name": "Tigray, Tigray, Ethiopia",
+        "countryFips": "ET",
+        "adm1": "ET53",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "ETHIOPIA",
+          "role": "target",
+          "code": "ETH"
+        },
+        {
+          "name": "ETHIOPIA",
+          "role": "initiator",
+          "code": "ETH"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://allafrica.com/stories/202609270104.html",
+          "publisher": "allafrica.com",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_a0c8258db29d5313",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Lahore, Punjab, Pakistan",
+      "cameoCode": "190",
+      "location": {
+        "lat": 31.5497,
+        "lon": 74.3436,
+        "name": "Lahore, Punjab, Pakistan",
+        "countryFips": "PK",
+        "adm1": "PK04",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "POLICE",
+          "role": "initiator",
+          "code": "COP"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://arynews.tv/police-detain-15-people-as-investigation-into-alleged-gang-rape-of-azerbaijani-woman-continues",
+          "publisher": "arynews.tv",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_3821025a22704327",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Orissa, Orissa, India",
+      "cameoCode": "1821",
+      "location": {
+        "lat": 20.5,
+        "lon": 84.4167,
+        "name": "Orissa, Orissa, India",
+        "countryFips": "IN",
+        "adm1": "IN21",
+        "precision": "adm1"
+      },
+      "actors": [
+        {
+          "name": "STUDENT",
+          "role": "initiator",
+          "code": "EDU"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.orissapost.com/lpu-students-rampage-over-alleged-campus-rape/",
+          "publisher": "orissapost.com",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_7b0682fcd66b53c0",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Wollo, Amara, Ethiopia",
+      "cameoCode": "190",
+      "location": {
+        "lat": 11.5,
+        "lon": 40,
+        "name": "Wollo, Amara, Ethiopia",
+        "countryFips": "ET",
+        "adm1": "ET46",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "ETHIOPIA",
+          "role": "initiator",
+          "code": "ETH"
+        },
+        {
+          "name": "AFAR",
+          "role": "target",
+          "code": "aar"
+        },
+        {
+          "name": "AFAR",
+          "role": "initiator",
+          "code": "aar"
+        },
+        {
+          "name": "ETHIOPIA",
+          "role": "target",
+          "code": "ETH"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://allafrica.com/stories/202609270104.html",
+          "publisher": "allafrica.com",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_51c69879f343b88a",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Kharg Island, Bushehr, Iran",
+      "cameoCode": "190",
+      "location": {
+        "lat": 29.2458,
+        "lon": 50.3158,
+        "name": "Kharg Island, Bushehr, Iran",
+        "countryFips": "IR",
+        "adm1": "IR22",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "IRANIAN",
+          "role": "initiator",
+          "code": "IRN"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.zerohedge.com/energy/hormuz-oil-flows-rebound-two-thirds-prewar-level-irans-grip-erodes-attacks-19-ships",
+          "publisher": "zerohedge.com",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_2ac1fcb5f744ffe0",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:15:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Blue Nile, An Nil al Azraq, Sudan",
+      "cameoCode": "193",
+      "location": {
+        "lat": 11.15,
+        "lon": 34.1,
+        "name": "Blue Nile, An Nil al Azraq, Sudan",
+        "countryFips": "SU",
+        "adm1": "SU42",
+        "precision": "adm1"
+      },
+      "actors": [
+        {
+          "name": "SUDANESE",
+          "role": "initiator",
+          "code": "SDN"
+        },
+        {
+          "name": "SUDAN",
+          "role": "target",
+          "code": "SDNMIL"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://allafrica.com/stories/202609270109.html",
+          "publisher": "allafrica.com",
+          "publishedAt": "2026-09-27T17:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_366914bede161b3b",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:30:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Okhla, Delhi, India",
+      "cameoCode": "190",
+      "location": {
+        "lat": 28.5667,
+        "lon": 77.2833,
+        "name": "Okhla, Delhi, India",
+        "countryFips": "IN",
+        "adm1": "IN07",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "TRIBUNAL",
+          "role": "target",
+          "code": "JUD"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.legallyindia.com/the-bar-and-bench/odd-even-beyond-india-s-courts-carve-out-environmental-jurisprudence-20160112-7088/",
+          "publisher": "legallyindia.com",
+          "publishedAt": "2026-09-27T17:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_9c4cc7d457a167bd",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:30:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Dera Ismail Khan, North-West Frontier, Pakistan",
+      "cameoCode": "182",
+      "location": {
+        "lat": 31.8327,
+        "lon": 70.9024,
+        "name": "Dera Ismail Khan, North-West Frontier, Pakistan",
+        "countryFips": "PK",
+        "adm1": "PK03",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "ISMAIL KHAN",
+          "role": "initiator",
+          "code": "AFGGOVBUS"
+        },
+        {
+          "name": "HOSPITAL",
+          "role": "target",
+          "code": "HLH"
+        },
+        {
+          "name": "PAKISTAN",
+          "role": "initiator",
+          "code": "PAK"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.samaa.tv/2087357512-afridi-gandapur-meeting-remains-fruitless-amid-political-differences",
+          "publisher": "samaa.tv",
+          "publishedAt": "2026-09-27T17:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_aeeec20bb6f550cc",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:30:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Calabar, Cross River, Nigeria",
+      "cameoCode": "182",
+      "location": {
+        "lat": 4.9517,
+        "lon": 8.322,
+        "name": "Calabar, Cross River, Nigeria",
+        "countryFips": "NI",
+        "adm1": "NI22",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "POLICE",
+          "role": "initiator",
+          "code": "COP"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.premiumtimesng.com/regional/south-south-regional/912748-police-arrest-man-accused-of-stabbing-42-year-old-to-death-over-n500-gift.html",
+          "publisher": "Premium Times",
+          "publishedAt": "2026-09-27T17:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_16315bd196eab0d0",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:30:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Enugu, Enugu, Nigeria",
+      "cameoCode": "193",
+      "location": {
+        "lat": 6.4402,
+        "lon": 7.4943,
+        "name": "Enugu, Enugu, Nigeria",
+        "countryFips": "NI",
+        "adm1": "NI47",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "POLICE",
+          "role": "initiator",
+          "code": "COP"
+        },
+        {
+          "name": "NIGERIA",
+          "role": "target",
+          "code": "NGA"
+        },
+        {
+          "name": "GUNMEN",
+          "role": "initiator",
+          "code": "UAF"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://saharareporters.com/2026/09/27/breaking-police-arrest-enugu-traditional-ruler-ex-lawmaker-8-others-over-attack-ndc",
+          "publisher": "saharareporters.com",
+          "publishedAt": "2026-09-27T17:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_1369880e71daaa48",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:30:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Abuja, Abuja Federal Capital Territory, Nigeria",
+      "cameoCode": "1831",
+      "location": {
+        "lat": 9.08333,
+        "lon": 7.53333,
+        "name": "Abuja, Abuja Federal Capital Territory, Nigeria",
+        "countryFips": "NI",
+        "adm1": "NI11",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "SUICIDE BOMBER",
+          "role": "initiator",
+          "code": "REB"
+        },
+        {
+          "name": "ABUJA",
+          "role": "target",
+          "code": "NGA"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.premiumtimesng.com/news/more-news/912750-explosion-as-vehicle-crashes-into-gas-shop-in-abuja.html",
+          "publisher": "Premium Times",
+          "publishedAt": "2026-09-27T17:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_5b18f514b853a8cc",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:45:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Jaba, H_efa, Israel",
+      "cameoCode": "193",
+      "location": {
+        "lat": 32.66,
+        "lon": 34.9487,
+        "name": "Jaba, H_efa, Israel",
+        "countryFips": "IS",
+        "adm1": "IS04",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "JERUSALEM",
+          "role": "initiator",
+          "code": "ISR"
+        },
+        {
+          "name": "PALESTINIAN",
+          "role": "target",
+          "code": "PSE"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.silwanic.net/article/news/80066/occupation-forces-open-fire-on-a-palestinian-woman-at-qalandia-checkpoint-north-of-jerusalem",
+          "publisher": "silwanic.net",
+          "publishedAt": "2026-09-27T17:45:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_458be91058a11fe3",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T18:00:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Hebron, Israel (general), Israel",
+      "cameoCode": "190",
+      "location": {
+        "lat": 31.5333,
+        "lon": 35.1,
+        "name": "Hebron, Israel (general), Israel",
+        "countryFips": "IS",
+        "adm1": "IS00",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "ISRAEL",
+          "role": "initiator",
+          "code": "ISRUAF"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "target",
+          "code": "ISR"
+        },
+        {
+          "name": "WEST BANK",
+          "role": "initiator",
+          "code": "PSE"
+        },
+        {
+          "name": "ISRAELI",
+          "role": "target",
+          "code": "ISR"
+        },
+        {
+          "name": "PALESTINIAN",
+          "role": "initiator",
+          "code": "PSEUAF"
+        },
+        {
+          "name": "TERRORIST",
+          "role": "initiator",
+          "code": "UAF"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 2,
+      "distinctPublishers": 2,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://pjmedia.com/catherinesalgado/2026/09/27/israels-us-ambassadors-son-might-recover-from-palestinian-terror-attack-n4957688",
+          "publisher": "pjmedia.com",
+          "publishedAt": "2026-09-27T17:45:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://english.pnn.ps/news/48318",
+          "publisher": "english.pnn.ps",
+          "publishedAt": "2026-09-27T18:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_4508c6faab80d42e",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:45:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Dharapuram, Tamil Nadu, India",
+      "cameoCode": "190",
+      "location": {
+        "lat": 10.7333,
+        "lon": 77.5167,
+        "name": "Dharapuram, Tamil Nadu, India",
+        "countryFips": "IN",
+        "adm1": "IN25",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "TURNCOAT",
+          "role": "initiator",
+          "code": "OPP"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://news.webindia123.com/news/Articles/India/20260927/4504169.html",
+          "publisher": "news.webindia123.com",
+          "publishedAt": "2026-09-27T17:45:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_5fb7d3a928de56e9",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:45:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Jaffal, Khuzestan, Iran",
+      "cameoCode": "190",
+      "location": {
+        "lat": 30.75,
+        "lon": 48.693,
+        "name": "Jaffal, Khuzestan, Iran",
+        "countryFips": "IR",
+        "adm1": "IR15",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "DAMASCUS",
+          "role": "initiator",
+          "code": "SYR"
+        },
+        {
+          "name": "IRANIAN",
+          "role": "target",
+          "code": "IRN"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://sana.sy/en/politics/2346388/",
+          "publisher": "sana.sy",
+          "publishedAt": "2026-09-27T17:45:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_80a1bdc24636813b",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:45:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Jerusalem, Israel (general), Israel",
+      "cameoCode": "180",
+      "location": {
+        "lat": 31.7667,
+        "lon": 35.2333,
+        "name": "Jerusalem, Israel (general), Israel",
+        "countryFips": "IS",
+        "adm1": "IS00",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "TERRORIST",
+          "role": "initiator",
+          "code": "UAF"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "target",
+          "code": "ISR"
+        },
+        {
+          "name": "PALESTINIAN",
+          "role": "target",
+          "code": "PSE"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://pjmedia.com/catherinesalgado/2026/09/27/israels-us-ambassadors-son-might-recover-from-palestinian-terror-attack-n4957688",
+          "publisher": "pjmedia.com",
+          "publishedAt": "2026-09-27T17:45:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_0786e8aefc028cbf",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T18:00:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Manila, Manila, Philippines",
+      "cameoCode": "193",
+      "location": {
+        "lat": 14.6042,
+        "lon": 120.982,
+        "name": "Manila, Manila, Philippines",
+        "countryFips": "RP",
+        "adm1": "RPD9",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "SCHOOL",
+          "role": "initiator",
+          "code": "EDU"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.philstar.com/nation/2026/09/28/2559341/students-urged-remember-alice",
+          "publisher": "philstar.com",
+          "publishedAt": "2026-09-27T18:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_49e2b9e19724935b",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T18:00:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Kilpauk, Tamil Nadu, India",
+      "cameoCode": "180",
+      "location": {
+        "lat": 13.08,
+        "lon": 80.2408,
+        "name": "Kilpauk, Tamil Nadu, India",
+        "countryFips": "IN",
+        "adm1": "IN25",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "CHENNAI",
+          "role": "initiator",
+          "code": "IND"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://timesofindia.indiatimes.com/city/chennai/woman-dies-a-week-after-set-ablaze/articleshow/134523941.cms",
+          "publisher": "The Times of India",
+          "publishedAt": "2026-09-27T18:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_c8629d83b8c23d25",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T18:00:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Nalgonda, Andhra Pradesh, India",
+      "cameoCode": "190",
+      "location": {
+        "lat": 17.05,
+        "lon": 79.2667,
+        "name": "Nalgonda, Andhra Pradesh, India",
+        "countryFips": "IN",
+        "adm1": "IN02",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "TAMIL NADU",
+          "role": "initiator",
+          "code": "IND"
+        },
+        {
+          "name": "WORKER",
+          "role": "target",
+          "code": "LAB"
+        },
+        {
+          "name": "WORKER",
+          "role": "initiator",
+          "code": "LAB"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://timesofindia.indiatimes.com/city/hyderabad/tamil-nadu-worker-found-murdered-in-nalgonda/articleshow/134523869.cms",
+          "publisher": "The Times of India",
+          "publishedAt": "2026-09-27T18:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_057622bd1a59f28f",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T18:00:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Lahj, La?ij, Yemen",
+      "cameoCode": "190",
+      "location": {
+        "lat": 13.0567,
+        "lon": 44.8819,
+        "name": "Lahj, La?ij, Yemen",
+        "countryFips": "YM",
+        "adm1": "YM24",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "ABDULLAH",
+          "role": "initiator",
+          "code": "SAUGOV"
+        },
+        {
+          "name": "YEMENI",
+          "role": "target",
+          "code": "YEM"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.arabnews.com/middle-east/4-iranian-drone-experts-killed-101-operations-against-houthi-military-positions-over-72-hours-yemen-army-3003424",
+          "publisher": "Arab News",
+          "publishedAt": "2026-09-27T18:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_6dab913ec35d9ad3",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T18:00:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Kashmir, Jammu and Kashmir, India",
+      "cameoCode": "193",
+      "location": {
+        "lat": 33.9167,
+        "lon": 76.6667,
+        "name": "Kashmir, Jammu and Kashmir, India",
+        "countryFips": "IN",
+        "adm1": "IN12",
+        "precision": "adm1"
+      },
+      "actors": [
+        {
+          "name": "GUNMEN",
+          "role": "initiator",
+          "code": "UAF"
+        },
+        {
+          "name": "TOURIST",
+          "role": "target",
+          "code": "CVL"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://dailycaller.com/2026/09/27/world-war-iii-experts-warn-world-de-escalate/",
+          "publisher": "dailycaller.com",
+          "publishedAt": "2026-09-27T18:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_112f84cecdc8e01a",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T18:00:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Kargil, Jammu and Kashmir, India",
+      "cameoCode": "193",
+      "location": {
+        "lat": 34.5667,
+        "lon": 76.1,
+        "name": "Kargil, Jammu and Kashmir, India",
+        "countryFips": "IN",
+        "adm1": "IN12",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "GUNMEN",
+          "role": "initiator",
+          "code": "UAF"
+        },
+        {
+          "name": "TOURIST",
+          "role": "target",
+          "code": "CVL"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://dailycaller.com/2026/09/27/world-war-iii-experts-warn-world-de-escalate/",
+          "publisher": "dailycaller.com",
+          "publishedAt": "2026-09-27T18:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_90cf0afa0214e8b0",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T18:15:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Wedela, Oromiya, Ethiopia",
+      "cameoCode": "190",
+      "location": {
+        "lat": 9.43333,
+        "lon": 37.15,
+        "name": "Wedela, Oromiya, Ethiopia",
+        "countryFips": "ET",
+        "adm1": "ET51",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "AFRICA",
+          "role": "initiator",
+          "code": "AFR"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.timeslive.co.za/news/2026-09-27-illegal-mining-feud-business-rivalry-in-focus-after-27-are-shot-dead/",
+          "publisher": "timeslive.co.za",
+          "publishedAt": "2026-09-27T18:15:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_babfd6ab208ec7c7",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:00:00.000Z",
+      "category": "violent_repression",
+      "label": "Violent repression — Dagestan, Dagestan, Russia",
+      "cameoCode": "175",
+      "location": {
+        "lat": 43,
+        "lon": 47,
+        "name": "Dagestan, Dagestan, Russia",
+        "countryFips": "RS",
+        "adm1": "RS17",
+        "precision": "adm1"
+      },
+      "actors": [
+        {
+          "name": "KRASNODAR",
+          "role": "initiator",
+          "code": "RUS"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 3,
+      "intensity": 1,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.eng.kavkaz-uzel.eu/articles/78922",
+          "publisher": "eng.kavkaz-uzel.eu",
+          "publishedAt": "2026-09-27T17:00:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_843078a690177e57",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:30:00.000Z",
+      "category": "violent_repression",
+      "label": "Violent repression — Delhi, Delhi, India",
+      "cameoCode": "175",
+      "location": {
+        "lat": 28.6667,
+        "lon": 77.2167,
+        "name": "Delhi, Delhi, India",
+        "countryFips": "IN",
+        "adm1": "IN07",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "POLICE",
+          "role": "target",
+          "code": "COP"
+        },
+        {
+          "name": "DELHI",
+          "role": "target",
+          "code": "IND"
+        },
+        {
+          "name": "POLICE",
+          "role": "initiator",
+          "code": "COP"
+        },
+        {
+          "name": "DELHI",
+          "role": "initiator",
+          "code": "IND"
         }
       ],
       "confidence": "reported",
@@ -9573,10 +11624,95 @@
           "sourceId": "gdelt",
           "sourceName": "GDELT 2.0 Event Database",
           "sourceTier": 1,
-          "url": "https://www.middleeasteye.net/news/do-there-what-we-did-gaza-smotrich-calls-full-scale-israeli-war-occupied-west-bank",
-          "publisher": "Middle East Eye",
-          "publishedAt": "2026-09-27T13:30:00.000Z",
-          "retrievedAt": "2026-09-27T13:49:00.171Z"
+          "url": "https://timesofindia.indiatimes.com/city/delhi/aaps-saurabh-bharadwaj-detained-during-tilak-nagar-protest-against-parvesh-verma/articleshow/134523611.cms",
+          "publisher": "The Times of India",
+          "publishedAt": "2026-09-27T17:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_ad1f7c2ade99db95",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:30:00.000Z",
+      "category": "violent_repression",
+      "label": "Violent repression — Tilak Nagar, Maharashtra, India",
+      "cameoCode": "175",
+      "location": {
+        "lat": 19.0667,
+        "lon": 72.9,
+        "name": "Tilak Nagar, Maharashtra, India",
+        "countryFips": "IN",
+        "adm1": "IN16",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "POLICE",
+          "role": "initiator",
+          "code": "COP"
+        },
+        {
+          "name": "DELHI",
+          "role": "target",
+          "code": "IND"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 3,
+      "intensity": 1,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://timesofindia.indiatimes.com/city/delhi/aaps-saurabh-bharadwaj-detained-during-tilak-nagar-protest-against-parvesh-verma/articleshow/134523611.cms",
+          "publisher": "The Times of India",
+          "publishedAt": "2026-09-27T17:30:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_f8b0241db95aeb16",
+      "occurredAt": "2026-09-27T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-09-27T17:45:00.000Z",
+      "category": "violent_repression",
+      "label": "Violent repression — Jaba, H_efa, Israel",
+      "cameoCode": "175",
+      "location": {
+        "lat": 32.66,
+        "lon": 34.9487,
+        "name": "Jaba, H_efa, Israel",
+        "countryFips": "IS",
+        "adm1": "IS04",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "ISRAEL",
+          "role": "initiator",
+          "code": "ISR"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 3,
+      "intensity": 1,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.silwanic.net/article/news/80066/occupation-forces-open-fire-on-a-palestinian-woman-at-qalandia-checkpoint-north-of-jerusalem",
+          "publisher": "silwanic.net",
+          "publishedAt": "2026-09-27T17:45:00.000Z",
+          "retrievedAt": "2026-09-27T18:15:12.401Z"
         }
       ]
     },
