@@ -191,7 +191,9 @@ export function safeSet(key, value) { try { localStorage.setItem(key, value); } 
 
 /**
  * Language and theme. Dark is the default whatever the system says; light is kept only once
- * the reader has chosen it in the footer.
+ * the reader has chosen it in the footer. The key is new with the dark default: the old map
+ * saved "light" for anyone who had ever pressed its switch, which would otherwise hide the
+ * new default from exactly the returning readers.
  */
 export function setupPrefs({ langButton, themeButton, onChange }) {
   const root = document.documentElement;
@@ -199,7 +201,7 @@ export function setupPrefs({ langButton, themeButton, onChange }) {
   prefs.lang = storedLang === 'nb' || storedLang === 'en'
     ? storedLang
     : (navigator.language || '').toLowerCase().match(/^(nb|nn|no)/) ? 'nb' : 'en';
-  root.dataset.theme = safeGet('igred-theme') === 'light' ? 'light' : 'dark';
+  root.dataset.theme = safeGet('igred-theme-v2') === 'light' ? 'light' : 'dark';
 
   const paint = () => {
     root.lang = prefs.lang;
@@ -217,7 +219,7 @@ export function setupPrefs({ langButton, themeButton, onChange }) {
   });
   themeButton?.addEventListener('click', () => {
     root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
-    safeSet('igred-theme', root.dataset.theme);
+    safeSet('igred-theme-v2', root.dataset.theme);
     paint();
     onChange?.('theme');
   });

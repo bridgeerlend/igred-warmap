@@ -85,24 +85,23 @@ async function loadJson(base, file) {
  * a title — so the incident's own place stands in, labelled as such rather than dressed up
  * as a headline nobody wrote.
  */
-function itemsFromEvents(payload) {
-  return (payload.events ?? []).flatMap((event) =>
-    event.provenance.map((entry) => ({
-      url: entry.url,
-      outlet: entry.publisher ?? entry.sourceName,
-      at: entry.publishedAt ?? entry.retrievedAt ?? event.occurredAt,
-      /*
-       * GDELT's timestamp is `dateAdded` — the quarter-hour in which the aggregator first
-       * logged the story, not the minute the outlet published it. Close, but not the same
-       * claim, so it does not get a publication clock in the margin; it is named for what
-       * it is instead. Every one of the 204 live rows is one of twenty such buckets.
-       */
-      dated: entry.sourceId === 'gdelt' ? 'seen' : 'published',
-      kind: 'map',
-      place: event.location.name,
-      headline: null,
-    })),
-  );
+function itemsFromWire(payload) {
+  const rows = payload.items ?? [];
+  return rows.map((row) => ({
+    url: row[1],
+    outlet: payload.publishers[row[2]],
+    at: new Date(row[0] * 60_000).toISOString(),
+    /*
+     * GDELT's timestamp is `dateAdded` — the quarter-hour in which the aggregator first
+     * logged the story, not the minute the outlet published it. Close, but not the same
+     * claim, so it does not get a publication clock in the margin; it is named for what
+     * it is instead. The pipeline marks those rows (entry.sourceId === 'gdelt' ? 'seen' : 'published').
+     */
+    dated: row[4] === 1 ? 'seen' : 'published',
+    kind: 'map',
+    place: payload.places[row[3]],
+    headline: null,
+  }));
 }
 
 function itemsFromStories(payload) {
@@ -264,14 +263,16 @@ async function load() {
   const base = dataBaseUrl();
   // Either file alone still makes a wire, so they are settled independently rather than
   // letting one outage take the page down with it.
+  // wire.json is the incident stream's sources alone, written by the same pipeline step as
+  // the map's compact file; the full events.json is 14 MB and far too heavy for a phone.
   const [events, stories] = await Promise.all([
-    loadJson(base, 'events.json').catch(() => null),
+    loadJson(base, 'wire.json').catch(() => null),
     loadJson(base, 'stories.json').catch(() => null),
   ]);
-  if (!events && !stories) throw new Error('neither events.json nor stories.json could be read');
+  if (!events && !stories) throw new Error('neither wire.json nor stories.json could be read');
 
   state.items = merge([
-    events ? itemsFromEvents(events) : [],
+    events ? itemsFromWire(events) : [],
     stories ? itemsFromStories(stories) : [],
   ]);
   state.generatedAt = events?.generatedAt ?? stories?.generatedAt ?? null;
@@ -302,14 +303,14 @@ function wire() {
   });
 
   const root = document.documentElement;
-  const theme = localStorage.getItem('igred-theme');
+  const theme = localStorage.getItem('igred-theme-v2');
   // Dark by default across every IGRED page; light only once the reader has chosen it.
   root.dataset.theme = theme === 'light' ? 'light' : 'dark';
   const syncTheme = () => { $('theme').textContent = root.dataset.theme === 'dark' ? (state.lang === 'nb' ? 'Lys' : 'Light') : (state.lang === 'nb' ? 'Mørk' : 'Dark'); };
   syncTheme();
   $('theme').addEventListener('click', () => {
     root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('igred-theme', root.dataset.theme);
+    localStorage.setItem('igred-theme-v2', root.dataset.theme);
     syncTheme();
   });
 }

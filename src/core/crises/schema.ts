@@ -273,3 +273,16 @@ export const homeSnapshot = z.object({
     headlines: z.array(z.object({ headline: z.string(), publisher: z.string(), url: z.url() })),
   }).nullable(),
 });
+
+/**
+ * The Wire's own copy of every source behind every incident: the same links as events.json,
+ * without the rest of the record. events.json is 14 MB; this is what a phone fetches.
+ */
+export const wireFile = z.object({
+  artifactVersion: z.literal(1),
+  generatedAt: iso,
+  publishers: z.array(z.string()),
+  places: z.array(z.string()),
+  /** [minutesSinceEpoch, url, publisher, place, gdelt(1: an aggregator's log time, not a publication time)] */
+  items: z.array(z.tuple([z.number().int(), z.url(), z.number().int(), z.number().int(), z.number().int()])),
+});

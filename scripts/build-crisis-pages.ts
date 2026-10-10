@@ -53,7 +53,7 @@ function page(c: Crisis | null, depth: number): string {
 <meta property="og:title" content="${esc(c ? c.name : 'Crisis')}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${url}">
-${image ? `<meta property="og:image" content="${esc(image)}">\n<meta name="twitter:card" content="summary_large_image">\n` : '<meta name="twitter:card" content="summary">\n'}<script>try{if(localStorage.getItem('igred-theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}</script>
+${image ? `<meta property="og:image" content="${esc(image)}">\n<meta name="twitter:card" content="summary_large_image">\n` : '<meta name="twitter:card" content="summary">\n'}<script>try{if(localStorage.getItem('igred-theme-v2')==='light')document.documentElement.dataset.theme='light'}catch(e){}</script>
 <link rel="preload" href="${up}fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${up}fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${up}fonts/fonts.css">

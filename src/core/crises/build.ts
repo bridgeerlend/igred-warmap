@@ -7,7 +7,7 @@ import {
   WORLD_BANK_INDICATORS, type WikiSummary, type WorldBankData,
 } from './fetchers.js';
 import {
-  countriesIndex, crisisDetail, homeSnapshot, crisisIndex, mapEvents, MAP_EVENT_FIELDS,
+  countriesIndex, crisisDetail, homeSnapshot, wireFile, crisisIndex, mapEvents, MAP_EVENT_FIELDS,
   type CrisisArticle, type CrisisDetail, type CrisisImage, type CrisisIndexEntry, type CrisisIndicator,
 } from './schema.js';
 import { currentSummary, runSummaries, type SummaryInput, type SummarySettings, type SummaryState } from './summary.js';
@@ -706,6 +706,27 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
   const mapFile = path.join(dataDir, 'map-events.json');
   writeFileSync(`${mapFile}.tmp`, JSON.stringify(mapPayload));
   renameSync(`${mapFile}.tmp`, mapFile);
+
+  /* the Wire: every source behind every incident, compact */
+  const wirePublishers = intern();
+  const wirePlaces = intern();
+  const wireItems = events
+    .flatMap((e) => e.provenance.map((p) => {
+      const ext = p as Provenance & { sourceId?: string; publishedAt?: string; retrievedAt?: string; sourceName?: string };
+      return [
+        Math.round(Date.parse(ext.publishedAt ?? ext.retrievedAt ?? e.occurredAt) / 60_000),
+        p.url,
+        wirePublishers.id(outletName(p.publisher ?? ext.sourceName, p.url)),
+        wirePlaces.id(e.location.name),
+        ext.sourceId === 'gdelt' ? 1 : 0,
+      ] as [number, string, number, number, number];
+    }))
+    .filter((row) => /^https?:\/\//.test(row[1]))
+    .sort((a, b) => b[0] - a[0]);
+  const wirePayload = wireFile.parse({ artifactVersion: 1, generatedAt, publishers: wirePublishers.list, places: wirePlaces.list, items: wireItems });
+  const wirePath = path.join(dataDir, 'wire.json');
+  writeFileSync(`${wirePath}.tmp`, JSON.stringify(wirePayload));
+  renameSync(`${wirePath}.tmp`, wirePath);
 
   /* every country the map can open: its active conflicts on the register */
   const countriesOut: Record<string, { name: string; nameNb: string; crisis: string | null; conflicts: { name: string; type: string; startYear?: string; fatalities?: number; fatalitiesAsOf?: string }[] }> = {};

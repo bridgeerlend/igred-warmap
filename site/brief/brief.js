@@ -466,14 +466,14 @@ function wireBrowsing() {
 
 function wireChrome() {
   const root = document.documentElement;
-  const stored = localStorage.getItem('igred-theme');
+  const stored = localStorage.getItem('igred-theme-v2');
   // Dark by default across every IGRED page; light only once the reader has chosen it.
   root.dataset.theme = stored === 'light' ? 'light' : 'dark';
   const syncTheme = () => { $('theme').textContent = root.dataset.theme === 'dark' ? (state.lang === 'nb' ? 'Lys' : 'Light') : (state.lang === 'nb' ? 'Mørk' : 'Dark'); };
   syncTheme();
   $('theme').addEventListener('click', () => {
     root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('igred-theme', root.dataset.theme);
+    localStorage.setItem('igred-theme-v2', root.dataset.theme);
     syncTheme();
   });
 

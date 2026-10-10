@@ -115,7 +115,7 @@ function setupToggles() {
   $('theme').addEventListener('click', () => {
     const root = document.documentElement;
     root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
-    safeSet('igred-theme', root.dataset.theme);
+    safeSet('igred-theme-v2', root.dataset.theme);
     paintStrings();
   });
 }

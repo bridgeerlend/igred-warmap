@@ -379,13 +379,16 @@ describe('the wire is a stream of sourced dispatches and nothing else', () => {
     expect(read('site/brief/index.html')).toMatch(/href="\.\.\/stream\/"/);
   });
 
-  it('adds no new artifact: it reads what the map and the Brief already publish', () => {
+  it('reads only the compact copy of the incident sources and the Brief’s stories, never the 14 MB stream', () => {
     const js = read('site/stream/stream.js');
-    expect(js).toMatch(/loadJson\(base, 'events\.json'\)/);
-    expect(js).toMatch(/loadJson\(base, 'stories\.json'\)/);
-    // Nothing else may be fetched — a new file would mean a new thing to keep alive.
     expect([...js.matchAll(/loadJson\(base, '([^']+)'\)/g)].map((match) => match[1]).sort())
-      .toEqual(['events.json', 'stories.json']);
+      .toEqual(['stories.json', 'wire.json']);
+    // The compact copy carries every source the full stream does.
+    const wire = readJson('data/wire.json');
+    const events = readJson('data/events.json');
+    const sources = events.events.reduce((n: number, e: { provenance: unknown[] }) => n + e.provenance.length, 0);
+    expect(wire.items.length).toBe(sources);
+    for (const row of wire.items) expect(row[1]).toMatch(/^https?:\/\//);
   });
 
   it('shows no picture of any kind', () => {
@@ -404,7 +407,8 @@ describe('the wire is a stream of sourced dispatches and nothing else', () => {
     // GDELT's stamp is dateAdded — the quarter-hour it first logged the story. Every one of
     // the live rows falls into one of twenty such buckets, so a clock in the margin would
     // put the whole day's news at the same minute.
-    expect(read('site/stream/stream.js')).toMatch(/entry\.sourceId === 'gdelt' \? 'seen' : 'published'/);
+    expect(read('site/stream/stream.js')).toMatch(/dated: row\[4\] === 1 \? 'seen' : 'published'/);
+    expect(read('src/core/crises/build.ts')).toMatch(/ext\.sourceId === 'gdelt' \? 1 : 0/);
     expect(read('site/stream/stream.js')).toMatch(/firstSeen/);
   });
 });
@@ -592,6 +596,8 @@ describe('dark by default, light on request', () => {
     expect(/:root \{[^}]*--bg: #0B0B0A/.test(atlas)).toBe(true);
     expect(atlas).toMatch(/:root\[data-theme="light"\] \{[^}]*--bg: #FBFAF7/);
     expect(atlas).not.toMatch(/prefers-color-scheme/);
+    // A new key: the old map saved "light" for anyone who ever pressed its switch.
+    for (const page of PAGES) expect(read(page)).toContain("localStorage.getItem('igred-theme-v2')");
     for (const page of PAGES) expect(read(page)).toMatch(/<html lang="en" data-theme="dark">/);
   });
 
