@@ -6,7 +6,7 @@
   "region": "Africa",
   "regionNb": "Afrika",
   "auto": false,
-  "generatedAt": "2026-10-10T16:19:13.143Z",
+  "generatedAt": "2026-10-10T19:30:09.229Z",
   "countries": [
     {
       "fips": "MZ",
@@ -31,7 +31,9 @@
     "change7dPct": 33.3,
     "reported7d": 0,
     "outlets30d": 9,
-    "level": 2,
+    "corroborated7d": 0,
+    "score": 0,
+    "level": 0,
     "daily": [
       {
         "date": "2026-09-11",
@@ -207,9 +209,22 @@
       }
     ]
   },
-  "situation": {
-    "en": "4 armed incidents were reported in Mozambique in the past seven days. Most were armed clashs (75%), followed by armed assaults (25%). The most reported locations over the past month were Cabo Delgado, Maputo and Chipene. UCDP lists 4 active armed conflicts here, the oldest dating from 2019.",
-    "nb": "4 væpnede hendelser ble meldt i Mosambik de siste sju dagene. Flest gjaldt væpnet sammenstøt (75 prosent), deretter væpnet angrep (25 prosent). De mest omtalte stedene den siste måneden var Cabo Delgado, Maputo og Chipene. UCDP fører 4 aktive væpnede konflikter her, den eldste fra 2019."
+  "status": {
+    "en": "4 armed incidents reported in the past seven days, most of them in Cabo Delgado, Maputo and Chipene.",
+    "nb": "4 væpnede hendelser meldt de siste sju dagene, flest i Cabo Delgado, Maputo og Chipene."
+  },
+  "summary": null,
+  "ucdpFatalities": {
+    "battle": {
+      "total": 151,
+      "years": "2024",
+      "url": "https://api.worldbank.org/v2/country/MOZ/indicator/VC.BTL.DETH?format=json&mrnev=1"
+    },
+    "other": {
+      "total": 2231,
+      "years": "2021–2023",
+      "conflicts": 3
+    }
   },
   "background": {
     "title": "Insurgency in Cabo Delgado",
@@ -231,7 +246,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/SP.POP.TOTL?locations=MO"
+      "url": "https://api.worldbank.org/v2/country/MOZ/indicator/SP.POP.TOTL?format=json&mrnev=1"
     },
     {
       "id": "NY.GDP.PCAP.CD",
@@ -246,7 +261,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=MO"
+      "url": "https://api.worldbank.org/v2/country/MOZ/indicator/NY.GDP.PCAP.CD?format=json&mrnev=1"
     },
     {
       "id": "NY.GDP.MKTP.KD.ZG",
@@ -261,7 +276,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG?locations=MO"
+      "url": "https://api.worldbank.org/v2/country/MOZ/indicator/NY.GDP.MKTP.KD.ZG?format=json&mrnev=1"
     },
     {
       "id": "FP.CPI.TOTL.ZG",
@@ -276,7 +291,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?locations=MO"
+      "url": "https://api.worldbank.org/v2/country/MOZ/indicator/FP.CPI.TOTL.ZG?format=json&mrnev=1"
     },
     {
       "id": "SI.POV.DDAY",
@@ -291,7 +306,7 @@
           "year": "2022"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/SI.POV.DDAY?locations=MO"
+      "url": "https://api.worldbank.org/v2/country/MOZ/indicator/SI.POV.DDAY?format=json&mrnev=1"
     },
     {
       "id": "VC.BTL.DETH",
@@ -306,7 +321,7 @@
           "year": "2024"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/VC.BTL.DETH?locations=MO"
+      "url": "https://api.worldbank.org/v2/country/MOZ/indicator/VC.BTL.DETH?format=json&mrnev=1"
     }
   ],
   "conflicts": [
@@ -509,52 +524,58 @@
   ],
   "images": [
     {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/Torched_building_in_Palma.png/500px-Torched_building_in_Palma.png",
+      "caption": "One of the buildings destroyed during the battle of Palma",
+      "url": "https://commons.wikimedia.org/wiki/File:Torched_building_in_Palma.png",
+      "credit": "Wikimedia Commons",
+      "kind": "place",
+      "author": "VOA",
+      "license": "Public domain"
+    },
+    {
       "src": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Testmapcabodelgado.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
       "caption": "Insurgency in Cabo Delgado",
       "url": "https://commons.wikimedia.org/wiki/File:Testmapcabodelgado.png",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "other",
+      "author": "BlookyNapsta",
+      "license": "CC BY-SA 4.0"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Kenneth_2019-04-25_0745Z.jpg/500px-Kenneth_2019-04-25_0745Z.jpg",
       "caption": "Satellite image of Cyclone Kenneth approaching Mozambique on 25 April 2019.",
       "url": "https://commons.wikimedia.org/wiki/File:Kenneth_2019-04-25_0745Z.jpg",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "MODIS image captured by NASA’s Terra satellite",
+      "license": "Public domain"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/NyusiCaboDelgado.png/500px-NyusiCaboDelgado.png",
       "caption": "President Filipe Nyusi visits Mozambican troops in Cabo Delgado, October 2020",
       "url": "https://commons.wikimedia.org/wiki/File:NyusiCaboDelgado.png",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/Torched_building_in_Palma.png/500px-Torched_building_in_Palma.png",
-      "caption": "One of the buildings destroyed during the battle of Palma",
-      "url": "https://commons.wikimedia.org/wiki/File:Torched_building_in_Palma.png",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "VOA",
+      "license": "Public domain"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Botswanatroopsboardplane.png/500px-Botswanatroopsboardplane.png",
       "caption": "Botswana soldiers board a Botswana Defence Force plane to Mozambique, July 2021",
       "url": "https://commons.wikimedia.org/wiki/File:Botswanatroopsboardplane.png",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "Mqondisi Dube (VOA)",
+      "license": "Public domain"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/RwandanpatrolMocimboa.png/500px-RwandanpatrolMocimboa.png",
       "caption": "Rwandan forces in Mocimboa da Praia, October 2021",
       "url": "https://commons.wikimedia.org/wiki/File:RwandanpatrolMocimboa.png",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://media.citizen.co.za/wp-content/uploads/2026/10/Kidnapping-1.jpg",
-      "caption": "Armed clash, Cabo Delgado, Mozambique",
-      "url": "https://www.citizen.co.za/news/missing-sa-mechanic-freed-after-mozambique-militant-attack/",
-      "credit": "citizen.co.za"
-    },
-    {
-      "src": "https://mwnation.com/wp-content/uploads/2026/09/luhanga-1.jpg",
-      "caption": "Armed assault, Maputo, Mozambique",
-      "url": "https://mwnation.com/ig-links-osman-crossroads-abductions/",
-      "credit": "mwnation.com"
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "Francisco Júnior (VOA)",
+      "license": "Public domain"
     }
   ],
   "videos": [],
@@ -568,7 +589,8 @@
       "lon": 40.6328,
       "intensity": 2,
       "reports": 1,
-      "image": "https://media.citizen.co.za/wp-content/uploads/2026/10/Kidnapping-1.jpg",
+      "outlets": 1,
+      "id": "evt_b0230bbe7fb4746e",
       "sources": [
         {
           "url": "https://www.citizen.co.za/news/missing-sa-mechanic-freed-after-mozambique-militant-attack/",
@@ -584,7 +606,8 @@
       "lon": 37.4967,
       "intensity": 2,
       "reports": 1,
-      "image": "https://media.citizen.co.za/wp-content/uploads/2026/10/Kidnapping-1.jpg",
+      "outlets": 1,
+      "id": "evt_7b8b82bde8db358a",
       "sources": [
         {
           "url": "https://www.citizen.co.za/news/missing-sa-mechanic-freed-after-mozambique-militant-attack/",
@@ -600,7 +623,8 @@
       "lon": 32.5892,
       "intensity": 2,
       "reports": 1,
-      "image": "https://media.citizen.co.za/wp-content/uploads/2026/10/Kidnapping-1.jpg",
+      "outlets": 1,
+      "id": "evt_6fc647a7781deadf",
       "sources": [
         {
           "url": "https://www.citizen.co.za/news/missing-sa-mechanic-freed-after-mozambique-militant-attack/",
@@ -616,7 +640,8 @@
       "lon": 32.5892,
       "intensity": 2,
       "reports": 1,
-      "image": "https://mwnation.com/wp-content/uploads/2026/09/luhanga-1.jpg",
+      "outlets": 1,
+      "id": "evt_e48f3bfa100831c5",
       "sources": [
         {
           "url": "https://mwnation.com/ig-links-osman-crossroads-abductions/",

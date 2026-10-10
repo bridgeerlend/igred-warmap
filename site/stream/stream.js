@@ -303,9 +303,9 @@ function wire() {
 
   const root = document.documentElement;
   const theme = localStorage.getItem('igred-theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  root.dataset.theme = theme ?? (prefersDark ? 'dark' : 'light');
-  const syncTheme = () => { $('theme').textContent = root.dataset.theme === 'dark' ? 'Light' : 'Dark'; };
+  // Dark by default across every IGRED page; light only once the reader has chosen it.
+  root.dataset.theme = theme === 'light' ? 'light' : 'dark';
+  const syncTheme = () => { $('theme').textContent = root.dataset.theme === 'dark' ? (state.lang === 'nb' ? 'Lys' : 'Light') : (state.lang === 'nb' ? 'Mørk' : 'Dark'); };
   syncTheme();
   $('theme').addEventListener('click', () => {
     root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';

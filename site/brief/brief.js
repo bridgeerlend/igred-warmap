@@ -14,6 +14,7 @@ import { dataBaseUrl, repoUrl, CONFIG } from '../config.js';
 const STRINGS = {
   en: {
     archive: 'Earlier editions',
+    onMap: (name) => `${name} on the map`,
     searchLabel: 'Search the edition',
     searchPlaceholder: 'Search headlines, outlets, themes…',
     sortCoverage: 'By coverage',
@@ -42,6 +43,7 @@ const STRINGS = {
   },
   nb: {
     archive: 'Tidligere utgaver',
+    onMap: (name) => `${name} på kartet`,
     searchLabel: 'Søk i utgaven',
     searchPlaceholder: 'Søk i overskrifter, kilder, temaer …',
     sortCoverage: 'Etter dekning',
@@ -85,6 +87,7 @@ const state = {
   query: '',
   theme: null,
   sort: 'coverage',
+  crises: [],
   // Which banner is showing, by key rather than by rendered text, so switching language
   // re-renders it instead of leaving it in the language it was raised in.
   banner: null,
@@ -139,7 +142,14 @@ async function load() {
   }
 
   const date = requestedDate() ?? state.index[0].date;
-  state.edition = await loadJson(`${base}${date}.json`);
+  const [edition, crises] = await Promise.all([
+    loadJson(`${base}${date}.json`),
+    // Which crisis on the map a story belongs to, by country. Optional: the Brief reads
+    // without it.
+    loadJson(`${dataBaseUrl()}crises.json`).catch(() => null),
+  ]);
+  state.edition = edition;
+  state.crises = crises?.crises ?? [];
 
   // Prose is optional by design: it lives in its own file and only exists once approved.
   try {
@@ -205,6 +215,12 @@ function sortStories(stories) {
   return ordered;
 }
 
+/** The crisis on the map a story is about, matched on the countries the story names. */
+function crisisOf(story) {
+  const fips = new Set((story.countries ?? []).map((c) => c.fips));
+  return state.crises.find((c) => c.fips.some((f) => fips.has(f))) ?? null;
+}
+
 function renderStory(story, underThemeId) {
   const summary = state.summaries.get(story.id);
   // The section heading already names the primary theme; repeating it in the meta line
@@ -222,14 +238,20 @@ function renderStory(story, underThemeId) {
     )
     .join('');
 
+  const crisis = crisisOf(story);
+  const crisisLink = crisis
+    ? `<a class="story-crisis" href="../#crisis=${encodeURIComponent(crisis.id)}">${escapeHtml(t().onMap(state.lang === 'nb' ? crisis.shortNb : crisis.short))}</a>`
+    : '';
+
   return (
-    `<li class="story">` +
+    `<li class="story" id="${escapeHtml(story.id)}">` +
     `<h3 class="story-headline"><a href="${escapeHtml(story.headlineFrom.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(story.headline)}</a></h3>` +
     `<p class="story-meta">` +
     `<span class="lead">${escapeHtml(story.headlineFrom.publisher)}</span>` +
     `<span>${escapeHtml(t().outlets(story.distinctPublishers))}</span>` +
     `<span>${escapeHtml(story.lastSeenAt.slice(0, 10))}</span>` +
     (themes ? `<span>${themes}</span>` : '') +
+    (crisisLink ? `<span>${crisisLink}</span>` : '') +
     `</p>` +
     (summary
       ? `<div class="story-summary">${escapeHtml(summary.text)}<span class="attribution">${escapeHtml(t().drafted)}</span></div>`
@@ -445,8 +467,9 @@ function wireBrowsing() {
 function wireChrome() {
   const root = document.documentElement;
   const stored = localStorage.getItem('igred-theme');
-  root.dataset.theme = stored ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  const syncTheme = () => { $('theme').textContent = root.dataset.theme === 'dark' ? 'Light' : 'Dark'; };
+  // Dark by default across every IGRED page; light only once the reader has chosen it.
+  root.dataset.theme = stored === 'light' ? 'light' : 'dark';
+  const syncTheme = () => { $('theme').textContent = root.dataset.theme === 'dark' ? (state.lang === 'nb' ? 'Lys' : 'Light') : (state.lang === 'nb' ? 'Mørk' : 'Dark'); };
   syncTheme();
   $('theme').addEventListener('click', () => {
     root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -460,6 +483,9 @@ function wireChrome() {
     state.lang = state.lang === 'en' ? 'nb' : 'en';
     localStorage.setItem('igred-lang', state.lang);
     render();
+
+  // A link from a crisis names a story by its id; bring it into view once it is drawn.
+  if (location.hash.length > 1) document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView({ block: 'start' });
   });
 }
 

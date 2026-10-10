@@ -2,7 +2,7 @@ name: Crises
 
 # Runs after each ingest: rebuilds the crisis pages and the map's compact incident file
 # from what the ingest just published, plus GDELT's article index, Google News, Wikipedia
-# and the World Bank. Like the ingest it writes only to data/, so it never triggers a deploy.
+# and the World Bank, and refreshes the machine-written summaries at most every three hours. Like the ingest it writes only to data/, so it never triggers a deploy.
 on:
   workflow_run:
     workflows: [Ingest]
@@ -33,7 +33,13 @@ jobs:
 
       - run: npm ci
 
+      # The summaries use whichever free-tier key is set; none set means the pages show the
+      # status line alone. A provider error or a rejected draft never fails this step.
       - name: Build crisis pages
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
         run: npm run crises
 
       - name: Commit data if it changed

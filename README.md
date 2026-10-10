@@ -37,26 +37,44 @@ design/     the three design explorations that preceded the map
 
 ## The map
 
-The map opens on a list of crises beside a MapLibre map drawn from Natural Earth borders (no
-third-party tiles). Selecting a crisis, on the map or in the list, opens its panel: this week's
-figures, thirty days of incidents, a fixed-template summary of the counts, the latest reporting
-with pictures, the most covered stories, video, the Wikipedia background, the most reported
-places, notable incidents with their sources, the UCDP register, World Bank country figures and
-every outlet behind the page. Each crisis also has its own page at `crisis/?id=<id>`.
+map.igred.org opens on the crisis list beside a MapLibre map drawn from Natural Earth 1:50m
+(no third-party tiles), dark by default. Two columns at most: the list, or an open crisis or
+country, on the left; the map on the right. A thirty-day timeline under the map drags back
+day by day or plays the month in about ten seconds, and the list and figures follow it.
+Crisis, country, window, date and view are all in the address.
 
-Crises are defined in `config/crises.json` and built by `npm run crises`
-(`src/core/crises/`), which runs after every ingest in `.github/workflows/crises.yml`. It
-writes `data/crises.json`, one file per crisis in `data/crises/`, and `data/map-events.json`,
-a compact copy of the incident stream for the map. No model writes any of it.
+An incident resting on one source is a hollow ring; one carried by two or more independent
+outlets is filled; one an IGRED analyst has verified is magenta. Verifying is a commit: the
+VERIFY link in a popup opens GitHub's new-file page with `config/verified-events/<id>.json`
+filled in. Crises are ranked by corroborated incidents weighted by severity, not by raw
+counts, since raw counts follow English-language media attention.
 
-`site/` is deployed to map.igred.org by a workflow filtered to `site/**`. The page is built
-once and fetches its data from the repository at view time, so the hourly data commits
-never trigger a deploy — that separation is what keeps the whole thing free.
+Each crisis also has its own page at `crisis/<id>/` with Open Graph tags, generated from
+`config/crises.json` by `npm run crisis-pages`, which writes only when the list or the
+names change (`--check` is part of the tests).
+
+Crises are built by `npm run crises` (`src/core/crises/`), which runs after every ingest in
+`.github/workflows/crises.yml` and writes only to `data/`: `crises.json`, one file per
+crisis, `map-events.json` (a compact incident file so phones need not fetch 14 MB),
+`countries.json` and `home.json` for igred.org. Pictures come from Wikimedia Commons only,
+credited; news organisations' pictures are never used.
+
+Each crisis carries three to five machine-written sentences in English and Norwegian,
+compressed from headlines already on the page and checked by `guardDraft` in both
+languages: any figure not in the sources rejects the text, and the page keeps the last text
+that passed, or shows the status line alone. GitHub Models was retired on 30 July 2026, so
+the summary uses any free OpenAI-compatible tier whose key is set as a repository secret
+(`GEMINI_API_KEY`, `GROQ_API_KEY` or `MISTRAL_API_KEY`). With no key it simply does not run.
+
+`site/` is deployed to map.igred.org by a workflow filtered to `site/**`, and `www/` to
+igred.org by Netlify, which skips builds that do not touch `www/`. Both fetch their data at
+view time, so the hourly data commits never trigger a deploy.
 
 ```bash
-npm run serve          # map at /site/, Brief at /site/brief/, Wire at /site/stream/
+npm run serve          # map at /site/, Brief at /site/brief/, Wire at /site/stream/, igred.org at /www/
+npm run crises         # rebuild the crisis files (--offline: from cache, no network)
+npm run crisis-pages   # regenerate site/crisis/<id>/ after changing config/crises.json
 npm run edition        # publish today's Brief
-npm run draft          # draft its lead paragraphs (needs GEMINI_API_KEY)
 ```
 
 ## The Brief

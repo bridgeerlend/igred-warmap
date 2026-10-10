@@ -6,7 +6,7 @@
   "region": "Africa",
   "regionNb": "Afrika",
   "auto": false,
-  "generatedAt": "2026-10-10T16:19:13.143Z",
+  "generatedAt": "2026-10-10T19:30:09.229Z",
   "countries": [
     {
       "fips": "ET",
@@ -31,7 +31,9 @@
     "change7dPct": -21.9,
     "reported7d": 8,
     "outlets30d": 96,
-    "level": 4,
+    "corroborated7d": 5,
+    "score": 20,
+    "level": 3,
     "daily": [
       {
         "date": "2026-09-11",
@@ -219,9 +221,22 @@
       }
     ]
   },
-  "situation": {
-    "en": "25 armed incidents were reported in Ethiopia in the past seven days, 22% fewer than the week before. Most were armed clashs (64%), followed by siege or blockades (12%). 8 of them were carried by two or more outlets. The most reported locations over the past month were Tigray, Amhara and Addis Ababa. UCDP lists 11 active armed conflicts here, the oldest dating from 1974. The most widely covered story this week: “Ethiopian drones hit Eritrean forces accused of backing rebels in Tigray” (Euronews, 2 outlets).",
-    "nb": "25 væpnede hendelser ble meldt i Etiopia de siste sju dagene, 22 prosent færre enn uken før. Flest gjaldt væpnet sammenstøt (64 prosent), deretter beleiring eller blokade (12 prosent). 8 av dem ble omtalt av to eller flere medier. De mest omtalte stedene den siste måneden var Tigray, Amhara og Addis Ababa. UCDP fører 11 aktive væpnede konflikter her, den eldste fra 1974. Mest omtalte sak denne uken: «Ethiopian drones hit Eritrean forces accused of backing rebels in Tigray» (Euronews, 2 medier)."
+  "status": {
+    "en": "25 armed incidents reported in the past seven days, 22% fewer than the week before, most of them in Tigray, Amhara and Addis Ababa.",
+    "nb": "25 væpnede hendelser meldt de siste sju dagene, 22 prosent færre enn uken før, flest i Tigray, Amhara og Addis Ababa."
+  },
+  "summary": null,
+  "ucdpFatalities": {
+    "battle": {
+      "total": 2824,
+      "years": "2024",
+      "url": "https://api.worldbank.org/v2/country/ETH/indicator/VC.BTL.DETH?format=json&mrnev=1"
+    },
+    "other": {
+      "total": 3050,
+      "years": "2021–2023",
+      "conflicts": 9
+    }
   },
   "background": {
     "title": "Fano insurgency",
@@ -243,7 +258,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/SP.POP.TOTL?locations=ET"
+      "url": "https://api.worldbank.org/v2/country/ETH/indicator/SP.POP.TOTL?format=json&mrnev=1"
     },
     {
       "id": "NY.GDP.PCAP.CD",
@@ -258,7 +273,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=ET"
+      "url": "https://api.worldbank.org/v2/country/ETH/indicator/NY.GDP.PCAP.CD?format=json&mrnev=1"
     },
     {
       "id": "NY.GDP.MKTP.KD.ZG",
@@ -273,7 +288,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG?locations=ET"
+      "url": "https://api.worldbank.org/v2/country/ETH/indicator/NY.GDP.MKTP.KD.ZG?format=json&mrnev=1"
     },
     {
       "id": "FP.CPI.TOTL.ZG",
@@ -288,7 +303,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?locations=ET"
+      "url": "https://api.worldbank.org/v2/country/ETH/indicator/FP.CPI.TOTL.ZG?format=json&mrnev=1"
     },
     {
       "id": "SI.POV.DDAY",
@@ -303,7 +318,7 @@
           "year": "2021"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/SI.POV.DDAY?locations=ET"
+      "url": "https://api.worldbank.org/v2/country/ETH/indicator/SI.POV.DDAY?format=json&mrnev=1"
     },
     {
       "id": "VC.BTL.DETH",
@@ -318,7 +333,7 @@
           "year": "2024"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/VC.BTL.DETH?locations=ET"
+      "url": "https://api.worldbank.org/v2/country/ETH/indicator/VC.BTL.DETH?format=json&mrnev=1"
     }
   ],
   "conflicts": [
@@ -437,6 +452,7 @@
   ],
   "headlines": [
     {
+      "storyId": "story_15f6c9cf18b0e870",
       "headline": "Ethiopian drones hit Eritrean forces accused of backing rebels in Tigray",
       "publisher": "Euronews",
       "url": "https://www.euronews.com/2026/10/08/ethiopian-drones-hit-eritrean-forces-accused-of-backing-rebels-in-tigray",
@@ -464,10 +480,50 @@
   ],
   "news": [
     {
+      "title": "Eritrea seeks UN intervention as row with Ethiopia escalates",
+      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNZ1MwdkVQVmhuLTdhLWFuY1ZxaHhmVkY2SUZmaDBSdTBVOXJWZ3VNNHk5Rl84VXNEbzJBMUg1bkJwOEZtSndsVk5IdldFY2ZsM1R2WFI5blR2ZXhVRldRSXJOQ2FwdVJzb3RaSWZrR0lHcEFaSVhkeWlvMHNYMWd0M3psVGxUdUV0cExhQktXTkpkQ0laaDlqekpHUGVHZ1pEVThaQlM4aHl6UQ?oc=5",
+      "publisher": "The Eastleigh Voice",
+      "domain": "eastleighvoice.co.ke",
+      "publishedAt": "2026-10-10T16:54:14.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "The Houthi-Saudi conflict is directly affecting African countries in the Red Sea region — and beyond",
+      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOQnBha3VpVVVrYTg2Wi1WLVJUQjRPNzNyaG1EYklBZFZuQ1A2T0hxRDFTMWJycnZjVm0zc2Q3dXR1OVBHdWh3elVBMHhxLS14RU9fcVJ4WkdqUGVZd05iVHJYU3BpcmRnbTlRdkZkcXpKX2pYZ0hIS00yOG0yMl9LaXBTSjVnaG9LQmhmTGp3dVRfbXFFQ1RtTTQ2NS10b3c5WkdwRmFHcklDdmxOSlNkT3hYS0dRRGZBM0JpWWtB0gG-AUFVX3lxTE9XT2JMLVBaekkxTy1OQ0w4R2d0bnk4SF85RlBwNDMzSE1BN1M5TmZaUVRsSFJsaE1BYjBmTnZ1TVRieUVPbVZIYmRNbHZzbmRsVXJ2cExLUVBxV2p4cnB0a3BJUHctbVc5bWJHRUQ1ZWgyNGFmZ0tCMGs2eUZhbWhwd2FtVWVnV2ZwbDhEcjRTRGlGWDZBMTBwRWtwTFBxNVd4Y3NzdS1pUGdfcE80b0lNb2hKVFFMXzFRVHdpN2c?oc=5",
+      "publisher": "DW.com",
+      "domain": "dw.com",
+      "publishedAt": "2026-10-10T16:39:18.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "Ethiopia tells UN it is acting in self-defense against Eritrea",
+      "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxPc1R5UHJPS09sSGZ2QUJMX2tNZ2ozbEZ5a3d0cE10eDVlOVc2WFgxVkNhNUNZWmFtejZvOFR5NTVkZEtKbW9hemRxTDJrcHlKYlZVTlg0anFqTWg4ZGFXNHhxalhMaHdfNk1fXzVackhGQkFmTUZhX253N0JKV0hBZ3BVc0dlVW03YjVzMkZ0S0VLVHdCZnhYMXdtdDJETXlTQnMyNFlQYUpmRE1CYTE3SzVVYmtCWHhPcE5OeEV4TkdIR2FSMU9YMWtpVDRWT3hIU0ppbk9XODEzR0Jq?oc=5",
+      "publisher": "The Washington Post",
+      "domain": "washingtonpost.com",
+      "publishedAt": "2026-10-10T16:29:00.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "Ethiopian Federal Forces Enter Adigrat in Tigray",
+      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE9pMDM3X29CQV9KdDFlSFpCVHkzYWppdGxUbFJoQi1yWVhuU1hrVDBJT29WenZ6WXFOckhpNmZ1WFFrRDRMX2hZN2k0WGpVQ1FPajhnVG5kQ1NBMjNqRFZzaHNycnA3SEpUWjBiOUV2Yw?oc=5",
+      "publisher": "kulu-media.com",
+      "domain": "kulu-media.com",
+      "publishedAt": "2026-10-10T16:27:39.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "Eritrea urges UN action against Ethiopia over ‘declaration of war’",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPbU1GOGFJWGZJN2tZaXZRclhUaHNDUXdfOE5ud0RDMng5aU1CZzFyMTdXZmZqVmVXUndyYXZtdXg5YVA0bllSREhnT01oZFV2WHltTXJ4TE40bXFRbUlPeTlXYzdFSVZ6V2J5MzlMbU04VVFqay1XUGZEOGduYW80UmY2bnVZVG5RZUZtQW90Y1VCclVvWFdYX2ZSNHlBWUU2MHREN0dqcTFTRDlNZmxzSHpOQQ?oc=5",
+      "publisher": "Somalia Today",
+      "domain": "somaliatoday.com",
+      "publishedAt": "2026-10-10T15:14:46.000Z",
+      "via": "gnews"
+    },
+    {
       "title": "Drone strike by Sudan paramilitary kills 41 near Ethiopian border, rights group says",
-      "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE43WG51QTk5R3R0d2d3VjNYUE8za0FEZkdUTVdKS1ZVcWVJbk5fQkptYnNWU0JZN1daTkhZVkh2UUROWHpONGZTeEI5ZFRiMXNoaFNIS05iSnZPMVk?oc=5",
+      "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE9PWk5qR3ZuRzdBZFAxN21jMjdyMzU4WFJCZHhEMW55cGFqSzZnMlh0Ym9aTUV6dkQxMVlJWnZCV3ZxX2l3NFlSSWxMeTVhMmw1cnJGcmwtWnZxZ2NkRWc?oc=5",
       "publisher": "BBC",
-      "domain": "bbc.com",
+      "domain": "bbc.co.uk",
       "publishedAt": "2026-10-10T14:49:32.000Z",
       "via": "gnews"
     },
@@ -480,19 +536,19 @@
       "via": "gnews"
     },
     {
-      "title": "Ethiopia regains border city after reported Eritrean incursion",
-      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOVk9sTjM2a1d6R2tTUzhnQXZUeFdXNnVxYVJSX0FJLWZrVk45LXNpN0M0ZXFMakhIaXRDOC1Td1pmalRTaTNGODQ2blZqMmdiaVFXYVFFd3dmc21PWHQ0ejRuMXVlcnVfY1g3ZFFfa0MtSGZaSF9hNlhqRkxmek9IazZqaDJwVU1KYmxjeFVPUHlTeDktN1VlRDkzaXhZTWZ4U2ZUbVQ1TC15SHU1UjRxTmRHazdwZw?oc=5",
-      "publisher": "SABC News",
-      "domain": "sabcnews.com",
-      "publishedAt": "2026-10-10T14:14:59.000Z",
+      "title": "Eritrea urges UN to act against Ethiopia’s ‘declaration of war’",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQZDJBZEl2d0dsQkdQQW82ZlJYU2RKMl9VeUZEREg0eDFZMGpnWV9FTzRQckQtN1Qwa05VT0kxeFhXZU5YTGVfNFN3Z0tOVzd1VzEwaVI5Q1ZxeVktaU92YU95bktjRmpkZHNGbXhOVXR0cV9kQU9wZUZpSmtkQzVkaDJSQVlXWEFjTzBYZkdGcGt5TnJhcTVJT3VzMlRYX3ozZWxhNTU3bW1zS1hZSHZoXzZEa1fSAboBQVVfeXFMUDlaQ3RKZldsTWF4ZUtndUVOcDRYaUFWOHdBang5VW0tQzFVQUhXM0JUSFBsTS1MVElQRUxYeVFHZWN1ak5pbldmTUoxMGhoNE9KalZWX1F6REhDSXlaVzJQaXcyS1h3elZmZ0dSQmxqd1ZFTzdpMzI5TFFEMzFhOHhteFRFMUIxNzFrRVJQbE84bWRDdGlLMGk4OW5vbDRfTTFoZDBZaU5IMjNwUW5CZG1QLXVlUTJiVlZR?oc=5",
+      "publisher": "Al Arabiya English",
+      "domain": "english.alarabiya.net",
+      "publishedAt": "2026-10-10T14:18:00.000Z",
       "via": "gnews"
     },
     {
-      "title": "The Houthi-Saudi conflict is directly affecting African countries in the Red Sea region — and beyond",
-      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOQnBha3VpVVVrYTg2Wi1WLVJUQjRPNzNyaG1EYklBZFZuQ1A2T0hxRDFTMWJycnZjVm0zc2Q3dXR1OVBHdWh3elVBMHhxLS14RU9fcVJ4WkdqUGVZd05iVHJYU3BpcmRnbTlRdkZkcXpKX2pYZ0hIS00yOG0yMl9LaXBTSjVnaG9LQmhmTGp3dVRfbXFFQ1RtTTQ2NS10b3c5WkdwRmFHcklDdmxOSlNkT3hYS0dRRGZBM0JpWWtB0gG-AUFVX3lxTE9XT2JMLVBaekkxTy1OQ0w4R2d0bnk4SF85RlBwNDMzSE1BN1M5TmZaUVRsSFJsaE1BYjBmTnZ1TVRieUVPbVZIYmRNbHZzbmRsVXJ2cExLUVBxV2p4cnB0a3BJUHctbVc5bWJHRUQ1ZWgyNGFmZ0tCMGs2eUZhbWhwd2FtVWVnV2ZwbDhEcjRTRGlGWDZBMTBwRWtwTFBxNVd4Y3NzdS1pUGdfcE80b0lNb2hKVFFMXzFRVHdpN2c?oc=5",
-      "publisher": "DW.com",
-      "domain": "dw.com",
-      "publishedAt": "2026-10-10T13:34:23.000Z",
+      "title": "26 women, 4 children killed in Sudan RSF drone strike: official, witnesses - War in Sudan - World",
+      "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE5MMkM5YUVSMkZoM2xzRHhVam45bmRGcG1Uc1p4SVFFR2QyZTE5Szl1VVIzZ2VrcUJYWVZNV0pTLUZJRnZ4Y2FOSWxjLVpHeHJ5d1RaV1lFeXo?oc=5",
+      "publisher": "Ahram Online",
+      "domain": "english.ahram.org.eg",
+      "publishedAt": "2026-10-10T14:11:39.000Z",
       "via": "gnews"
     },
     {
@@ -501,6 +557,14 @@
       "publisher": "Mirage News",
       "domain": "miragenews.com",
       "publishedAt": "2026-10-10T13:08:00.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "Ethiopian forces regain control of border city after reported Eritrean incursion",
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQQ2dYamhpUkFhTFZRdGJqM0d1eTQ3Qi1tZ0FWdWxLeGFiaGFlX2ZBX0VCWXBLcmplV1kwaldiTVlZQWtmbThQenRXWU5zQ29ndE1ja184Q3FBT3NpVWhpWl96OUVxVGRNODhvZV9HR1ZHazlyMnNCaDllbFdsc2J6bHVobWVkVEpLaEhxbTlWQ3pRVVlaM05nNktnNEpldmxlalZVWHh1RU9FWUxwVkNGdUxETzhBdw?oc=5",
+      "publisher": "The Straits Times",
+      "domain": "straitstimes.com",
+      "publishedAt": "2026-10-10T12:54:00.000Z",
       "via": "gnews"
     },
     {
@@ -544,14 +608,6 @@
       "via": "gnews"
     },
     {
-      "title": "Daily_Brief: #Sudan’s al-Burhan inspects army division in #Kassala near #Ethiopia, #Eritrea borders",
-      "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE93bEFnNmR3ZDByLTlJRThzNW9mS09sVlRCYTlXNlFaX0lrQ1FFbmoyUVdZYjFGWjJCSFRUZERZWHcxTWlaTEZZNHlmMEtOTFBLdUE?oc=5",
-      "publisher": "Addis Standard",
-      "domain": "addisstandard.com",
-      "publishedAt": "2026-10-10T07:57:07.000Z",
-      "via": "gnews"
-    },
-    {
       "title": "DW Amharic – The war between state soldiers and Fano militants in Amhara Region",
       "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNUnNRMWVPOURXd0ZrX2w0TkFVRTNKeE9CY2lvMVdWYUFXb2Iwdm9qRGdEWGtNSVNBeTJRUXgtME0zQ01IQTRUNDVMcS1TYkRzSktpMnFzZGkzVHRLZnQxZkRWUWNZcW9vbXBIOVdNZVVMeHRHRWZsUWQ1R3RsUGdxMXdkYW5HVFdvZGctVEVMYkZidFRLemo2b25MNktzczBIbWNPYzlwcURsX29sTnRBWS13?oc=5",
       "publisher": "Amhara Association of America",
@@ -568,14 +624,6 @@
       "via": "gnews"
     },
     {
-      "title": "Ethiopia tells UN it is acting in self-defense against Eritrea",
-      "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxORGc4ZkRnMUlsMF9vYURBOHc2ZURrQkNuVmJlLXpSQTZJRXNxN0VLRWdLTFl6aGp5d3ZxNlFqQWFoeW1yU3MySHdHWVRFbElZOXdYejhucC1jWUdEZzlDTzZnZjhqbnl6aUxMTkZNV1ppVVI2eG1Walljak45TDMtYmV6aHdESVJFQWNPREhISENaakM0akFwTmN2V0p3T21pR1ItMXVBclpraXlQTmxPUFhYU1NlbkE4WWNfMTJpa2xoVDhGcUZtaHpUNGd1VVNJZE1Eb1BqaUpVNjJkd0Rja0N4SGlSUQ?oc=5",
-      "publisher": "The Batesville Daily Guard",
-      "domain": "guardonline.com",
-      "publishedAt": "2026-10-10T07:14:08.000Z",
-      "via": "gnews"
-    },
-    {
       "title": "Ethiopia’s Oromo celebrate Irreecha and call for peace as federal forces enter Mekelle",
       "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOai1jMjFqSk9hRFlHZHh2X2UtZTZVOW90WktPSGVKYk1RWHNkOVNIM21lbkRPcU5yRnNMcFJlM0JTSzhMcjZOSDQ1ekZhZFhIYnhRUHdEQnAyclljU2UxS001YXhrWkt3MklZTnFXdTBBU1dXcl9RakRmaWsxbklUZHhUdEw3VjBVVXpUcU1FX2NKU08zdkZ0TV9za3FpdW0wOGJCcHBaUjlid2V4M2M2NWtHcWhpVWc2dURoNmlLX1NCUdIBxwFBVV95cUxORGRGLVlmVXJJb0NPandXbnZRVlpTdVZXeE5jZjVnMHY1TjBYaVJOdnlmc3l2aTBEMi0wX0xvWjhNNnJVTTlPemxmZUFkanZoUXFoTVFJQ2NZa0g1MGNqay14QWEtQXJVb09fY0VTRGlIMExlRVIxRnZPU3NxYTBrTlVodzhyUTR0OWN2RFU1TFlZVXVtZFRrbkNDN0tZWjRvblpXZlUwX2cwaVQteGZQZ3dCSHdJdFdRZjBiN3Vyb2l5WjF2Ynow?oc=5",
       "publisher": "Africanews",
@@ -589,6 +637,14 @@
       "publisher": "Facebook",
       "domain": "facebook.com",
       "publishedAt": "2026-10-10T07:01:47.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "Eritrean troops in Ethiopia raise fears of a regional war",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNNkI1UjFWQnV3ZElPR3V6T21BbWVSQk5uTVVseXlIREFWR185VlY0NmVBdFpFZ2pqQ21rNGF0Ml9jRzVBeXlXVHdGWWN2bVBZSXJMWXNLNWgtbl9sSDlMOWVWaWpnY2kxRVppVUZwcm9RdHkzUFVnSkVXME9qaGNMSG5ScERkZXAzWE5jZC14SEJMVnB00gGUAUFVX3lxTFBZeDBURHlHc2xMTmNmc1pxdmREOWIzRTNBdlA5UEp5eEItXzhkZE9KdDhXYlpxcXk5OVh4dlhWQkFLWlMzS01uWHoyak92RmxrcU94VWprUEN3VEt4NzhBRU9oQnprSjVocndoajV5bFNjUEh3YVJ5YXVXX2piT05NZmtZajlkZl9GQ2tTVXNlS19kUzc?oc=5",
+      "publisher": "DW.com",
+      "domain": "dw.com",
+      "publishedAt": "2026-10-10T05:39:51.000Z",
       "via": "gnews"
     },
     {
@@ -704,14 +760,6 @@
       "via": "gnews"
     },
     {
-      "title": "Eritrean troops in Ethiopia raise fears of a regional war",
-      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQWXgwVER5R3NsTE5jZnNacXZkRDliM0UzQXZQOVBKeXhCLV84ZGRPSnQ4V2JacXF5OTlYeHZYVkJBS1pTM0tNblh6MmpPdkZsa3FPeFVqa1BDd1RLeDc4QUVPaEJ6a0o1aHJ3aGo1eWxTY1BId2FSeWF1V19qYk9OTWZrWWo5ZGZfRkNrU1VzZUtfZFM30gGUAUFVX3lxTFBZeDBURHlHc2xMTmNmc1pxdmREOWIzRTNBdlA5UEp5eEItXzhkZE9KdDhXYlpxcXk5OVh4dlhWQkFLWlMzS01uWHoyak92RmxrcU94VWprUEN3VEt4NzhBRU9oQnprSjVocndoajV5bFNjUEh3YVJ5YXVXX2piT05NZmtZajlkZl9GQ2tTVXNlS19kUzc?oc=5",
-      "publisher": "DW.com",
-      "domain": "amp.dw.com",
-      "publishedAt": "2026-10-09T15:29:44.000Z",
-      "via": "gnews"
-    },
-    {
       "title": "Ethiopia warns Eritrea it will defend itself after troops enter Tigray",
       "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9sc1g0anZIc3h4MmpDV1BLcXFaS0FKR3NoQzZlVVpKQ0tvSnVsT0FhTFBuYS1yUmRveE5ZQUFLRW5VaUJwSmo3U1lUQlVZY3VxNy1lNkZmUnY3ZXc?oc=5",
       "publisher": "BBC",
@@ -733,14 +781,6 @@
       "publisher": "AFP Fact Check",
       "domain": "factcheck.afp.com",
       "publishedAt": "2026-10-09T15:02:15.000Z",
-      "via": "gnews"
-    },
-    {
-      "title": "Ethiopia tells UN Security Council it has no choice but to defend itself against Eritrea",
-      "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxPem1tUDdNWEVNQ05fckcxVHFPTGJaUXBUdmxsZ3otbVBtMmlYam5sVXdNNDZma2h0c2NCcG05OG0tbnFRbVNTUUtJUFQ1NUZ4WUxoTnNhSkhOQjNnMGVZaFNsYmlGcGlrMU9FcGZMR1BrcXA1NkxFbWxrT1ZOZ3JTYkx3SVFKYVRqM2JQazluSHB6dkU4MWRtdXRxYTF0RXdnSHJQRDBDclBEdGhLR3hvcU5yRWVrZEZCcVoxMFZ5eXRDdw?oc=5",
-      "publisher": "AZƏRTAC – Azərbaycan Dövlət İnformasiya Agentliyi",
-      "domain": "azertag.az",
-      "publishedAt": "2026-10-09T14:53:00.000Z",
       "via": "gnews"
     },
     {
@@ -768,19 +808,19 @@
       "via": "gnews"
     },
     {
+      "title": "Eritrea, Ethiopia trade barbs as Tigray rebels retreat",
+      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNNjBNeWlhSUN4VXRPdG9wUHROazI4c0xJU052SkJPXzM2UVd4d2xTNGZfRXU5cDhGVXpyc290eXgyMnJWZ0RzTG1iaUZOQWpQNEZPZ3k4WlA0WXVzemFmX3BBWVZnTlFoRXA3Z1BWSHg2bFFFUlBBTmNIX0otdGV1ekVR?oc=5",
+      "publisher": "Yahoo News UK",
+      "domain": "uk.news.yahoo.com",
+      "publishedAt": "2026-10-09T13:59:04.000Z",
+      "via": "gnews"
+    },
+    {
       "title": "Eritrea and Ethiopia accuse each other of provoking war as Tigray rebels retreat",
       "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOc2VjOGs3MTJnS0g3dnlJZXNwMVp0Qm5hRjVyWXE4VmVtWVFnUnlsVHRmazYtaDFHeXYtRHIyUGtRRmdwazgxVkRiYWswYmdyd0ZEY1l1MDVPb3g3dlN2RXBpRkNla012dEZRMjdqQjE4dk9Ec3p5R2JKN1dWRnhpdUwwZzRwU0ViNU5CY0JReEZkVzhvTTNKdmVINNIBmwFBVV95cUxOc2VjOGs3MTJnS0g3dnlJZXNwMVp0Qm5hRjVyWXE4VmVtWVFnUnlsVHRmazYtaDFHeXYtRHIyUGtRRmdwazgxVkRiYWswYmdyd0ZEY1l1MDVPb3g3dlN2RXBpRkNla012dEZRMjdqQjE4dk9Ec3p5R2JKN1dWRnhpdUwwZzRwU0ViNU5CY0JReEZkVzhvTTNKdmVINA?oc=5",
       "publisher": "Modern Ghana",
       "domain": "modernghana.com",
       "publishedAt": "2026-10-09T13:55:16.000Z",
-      "via": "gnews"
-    },
-    {
-      "title": "Ethiopian Airlines to resume flights to Tigray capital, Mekelle",
-      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQWjBDWUZlOVo3cm5Wb2tfc2ZZRGFNYTE4cU5oN3Q1Z0dwcVVodlJuXzhHWXhHQWRqZ1lmMlBXdllvV3BKa0JPQU82VGc0MU5xTDNHZTl2dWFPalVVc3hRc2syYlNfM3lVMDhjMDhHUmZPZXhNRDQtMXhwMVZiLTlVNWtmY0lYZEttdlhORUVwSDNxYWtKWkYwd1BrNE1xbzBFYVl1eHRWdERDaGtEYjY2Sko4MA?oc=5",
-      "publisher": "The Eastleigh Voice",
-      "domain": "eastleighvoice.co.ke",
-      "publishedAt": "2026-10-09T13:37:51.000Z",
       "via": "gnews"
     },
     {
@@ -816,14 +856,6 @@
       "via": "gnews"
     },
     {
-      "title": "Eritrea, Ethiopia trade barbs as Tigray rebels retreat",
-      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPeHR3MGMwbFNzOU9GNERZc1dKdW9GeVlWRm1MWFlqMVRmTHJobVZFcjktejVPbjNjLXhzSUJRcnlPNEVMb2pyR1VuWjRFa0hQVHNzVjJSaTZ0MG9UdTNXaF9BejNocVJFTkJUSHhJWDFBQ0lSYUFjTnRwa1JIQ0FKMllvTXRUeHJKcDc5RVR0V2pYSUht0gGUAUFVX3lxTE94dHcwYzBsU3M5T0Y0RFlzV0p1b0Z5WVZGbUxYWWoxVGZMcmhtVkVyOS16NU9uM2MteHNJQlFyeU80RUxvanJHVW5aNEVrSFBUc3NWMlJpNnQwb1R1M1doX0F6M2hxUkVOQlRIeElYMUFDSVJhQWNOdHBrUkhDQUoyWW9NdFR4ckpwNzlFVHRXalhJSG0?oc=5",
-      "publisher": "Modern Ghana",
-      "domain": "modernghana.com",
-      "publishedAt": "2026-10-09T11:44:51.000Z",
-      "via": "gnews"
-    },
-    {
       "title": "Ethiopian Airlines to resume flights to Tigray's capital from Sunday",
       "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNY1BjUUZHOTRKakJpUS0wU2NnYU03LXVqekN0TWh6RnB1NjJMNDFNMl9fZDRaWHpVUnN0ZVp2UFA1Y1FNelFjZW1ZN1lzT09OeDRQRkxwellBZG8xTXpOVlg1dTBrelpybURQMW9wRS00QTJhb1ZhdUxCN0F4bTIyMFE3M0NwT0Nrc3FHYk9Qcks4azE5UFR2NmdtYjJ3SVpzUkRHUEpQNVM2QQ?oc=5",
       "publisher": "Africanews English",
@@ -833,10 +865,10 @@
     },
     {
       "title": "Ethiopian police ask residents in Tigray regional capital to help restore order after rebel pullout",
-      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQZDZhQUN5dmtweFMtYWJsemhMMERxRDlzWW5namN2RjJFZ2tTU1lxTk1TN0swQkhRSHZvVGRvd3JFekQxNDV4VzhHbXpKVEVkOXpPVDM1UWRCUVR5V0FlQm9Vbkh6WDZ6N2JIemlEMWpTS3RCTU5YZ25valowb19xLTZtWU5lNXpia1RsUVFzM3A0MENpSGY3b0NVd2bSAZwBQVVfeXFMUGQ2YUFDeXZrcHhTLWFibHpoTDBEcUQ5c1luZ2pjdkYyRWdrU1NZcU5NUzdLMEJIUUh2b1Rkb3dyRXpEMTQ1eFc4R216SlRFZDl6T1QzNVFkQlFUeVdBZUJvVW5Ielg2ejdiSHppRDFqU0t0Qk1OWGdub2paMG9fcS02bVlOZTV6YmtUbFFRczNwNDBDaUhmN29DVXdm?oc=5",
-      "publisher": "KIRO 7 News Seattle",
-      "domain": "kiro7.com",
-      "publishedAt": "2026-10-09T11:21:44.000Z",
+      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxNR0hvb2h6VmVPZTEzQ0ZYU1pDOUw5dVBaNVdOZXFFdFprZ2Z3QnhPblNBeERuQm4xWW83OWtFX285Vi1kYXFuQnNfV1UwZ0U0bFFRU0I3dmtTOWxRbjhUbTZuTloyRTdEOFYxOXZJOS10RlVCVmR2M2FPWXJXNHJQbFVEeG40cW85aFNjREIxb2kxak1yUmtIR1pkUkdXRXFPZHVfRnpaNnlPM3JCMnNEeEVreUtGM2FvVlE?oc=5",
+      "publisher": "Audacy",
+      "domain": "audacy.com",
+      "publishedAt": "2026-10-09T11:21:00.000Z",
       "via": "gnews"
     },
     {
@@ -926,22 +958,6 @@
       "domain": "africa-confidential.com",
       "publishedAt": "2026-10-08T21:57:11.000Z",
       "via": "gnews"
-    },
-    {
-      "title": "‘Regional proxy contest’: What’s fuelling Ethiopia-Eritrea tensions?",
-      "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTFBiend0UEVYaV9ESEVhMzQwaXBRcTlid2YtSmRtOGZkM0FyN2hiM3JCdFVibGlFazhPbVJOdHNZSkRtelhUREcydklRRnp5SllqVW80SDRrT1I?oc=5",
-      "publisher": "TRT World",
-      "domain": "trtworld.com",
-      "publishedAt": "2026-10-08T19:50:56.000Z",
-      "via": "gnews"
-    },
-    {
-      "title": "Ethiopia and Eritrea Near Conflict; Egypt Forms anti-Ethiopia Coalition; Mali Retakes Kidal: Africa File, October 8, 2026",
-      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQMWtZaVp2UldSajZBMm9KcGVEbmlLbElZWG1zQ2RFVVJVWWVCbkhsbF9pQkF2cVVGa19MbmlROVdpMTJGNExIbThxTVNJWE8tMF9DRWNaVkttS0FZcHVQZl9NUDY5bktwOGVLTTRIdE5KY3Mta0VCQTlZQzdPOXBzTVNtQjRLdFhxVllEclZudkdVVlY4am9WWkZKblBDcXhCcDVfeENDMXRyMDQ?oc=5",
-      "publisher": "Critical Threats",
-      "domain": "criticalthreats.org",
-      "publishedAt": "2026-10-08T19:37:06.000Z",
-      "via": "gnews"
     }
   ],
   "images": [
@@ -949,61 +965,19 @@
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/Amhara_conflict_map.svg/960px-Amhara_conflict_map.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
       "caption": "Fano insurgency",
       "url": "https://commons.wikimedia.org/wiki/File:Amhara_conflict_map.svg",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://images.euronews.com/articles/stories/09/94/44/45/1200x675_cmsv2_55f008a5-d597-58ef-a9dc-a79498ea25ef-9944445.jpg",
-      "caption": "Ethiopian drones hit Eritrean forces accused of backing rebels in Tigray",
-      "url": "https://www.euronews.com/2026/10/08/ethiopian-drones-hit-eritrean-forces-accused-of-backing-rebels-in-tigray",
-      "credit": "Euronews"
+      "credit": "Wikimedia Commons",
+      "kind": "map",
+      "author": "HetmanTheResearcher",
+      "license": "CC BY 4.0"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Fano_fighters_near_Saint_George_church_after_re-capturing_it_from_the_TDF.jpg/500px-Fano_fighters_near_Saint_George_church_after_re-capturing_it_from_the_TDF.jpg",
       "caption": "Fano fighters near the Saint George Church in Lalibela shortly after recapturing it from the TDF during the Tigray War, December 2021.",
       "url": "https://commons.wikimedia.org/wiki/File:Fano_fighters_near_Saint_George_church_after_re-capturing_it_from_the_TDF.jpg",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://leadership.ng/wp-content/uploads/2026/10/8135f2d0-d633-42c4-8472-d790fea43372.jpeg",
-      "caption": "Armed clash, Addis Ababa, Ethiopia",
-      "url": "https://leadership.ng/governors-to-declare-nutrition-emergency-unleash-radical-funding-mechanism/",
-      "credit": "leadership.ng"
-    },
-    {
-      "src": "https://www.aljazeera.com/wp-content/uploads/2026/09/afp_6ab627b8ba11-1790322616.jpg?resize=1920%2C1356",
-      "caption": "Armed clash, Tigray, Ethiopia",
-      "url": "https://www.aljazeera.com/news/2026/10/9/will-ethiopias-neighbours-intervene-as-tigray-war-escalates",
-      "credit": "Al Jazeera"
-    },
-    {
-      "src": "https://chitra-api.kreatio.com/api/v1/wps/4007383/7cee3d9a-ffc8-4174-8341-f079f703f2f1/0/ZGIxZmI4NTktNTY-600x315.jpg",
-      "caption": "Armed clash, Tigray, Ethiopia",
-      "url": "http://www.africaleader.com/news/279357771/ethiopian-pm-reelected-despite-rebel-offensive",
-      "credit": "africaleader.com"
-    },
-    {
-      "src": "https://foreignpolicy.com/wp-content/uploads/2026/10/Ethiopia-conflict-GettyImages-2297941206.jpg",
-      "caption": "Aerial or missile strike, Amhara, Ethiopia",
-      "url": "https://foreignpolicy.com/2026/10/07/ethiopia-tigray-conflict-regional-impact-spread-tplf/",
-      "credit": "foreignpolicy.com"
-    },
-    {
-      "src": "https://media.premiumtimesng.com/wp-content/files/2017/08/Ethiopia-on-Map.jpg",
-      "caption": "Armed clash, Tigray, Ethiopia",
-      "url": "https://www.premiumtimesng.com/news/more-news/914804-four-african-countries-call-for-de-escalation-of-tension-in-ethiopia.html",
-      "credit": "Premium Times"
-    },
-    {
-      "src": "https://images.euronews.com/articles/stories/09/94/15/92/1024x538_cmsv2_3774262c-09e0-5cb6-88d1-443a4761262b-9941592.jpg",
-      "caption": "Armed assault, Tigray, Ethiopia",
-      "url": "https://www.africanews.com/2026/10/06/renewed-violence-in-ethiopias-tigray-leaves-dozens-of-children-wounded/",
-      "credit": "africanews.com"
-    },
-    {
-      "src": "https://cdn.allafrica.com/download/pic/main/main/csiid/00690471:0792307c179b0c367bc333e5fa823c15:arc614x376:w1200.jpg",
-      "caption": "Armed clash, Bishoftu, Ethiopia",
-      "url": "https://allafrica.com/stories/202610050053.html",
-      "credit": "allafrica.com"
+      "credit": "Wikimedia Commons",
+      "kind": "place",
+      "author": "Solan Kolli",
+      "license": "CC BY-SA 4.0"
     }
   ],
   "videos": [],
@@ -1025,7 +999,8 @@
       "lon": 38.7,
       "intensity": 2,
       "reports": 1,
-      "image": "https://leadership.ng/wp-content/uploads/2026/10/8135f2d0-d633-42c4-8472-d790fea43372.jpeg",
+      "outlets": 1,
+      "id": "evt_e6ad172a29acef60",
       "sources": [
         {
           "url": "https://leadership.ng/governors-to-declare-nutrition-emergency-unleash-radical-funding-mechanism/",
@@ -1041,6 +1016,8 @@
       "lon": 39.5,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_550079563edb0775",
       "sources": [
         {
           "url": "https://www.thereporterethiopia.com/53358/",
@@ -1056,7 +1033,8 @@
       "lon": 39.5,
       "intensity": 3,
       "reports": 5,
-      "image": "https://www.aljazeera.com/wp-content/uploads/2026/09/afp_6ab627b8ba11-1790322616.jpg?resize=1920%2C1356",
+      "outlets": 4,
+      "id": "evt_4ce920175d860ea0",
       "sources": [
         {
           "url": "https://www.aljazeera.com/news/2026/10/9/will-ethiopias-neighbours-intervene-as-tigray-war-escalates",
@@ -1081,6 +1059,22 @@
         {
           "url": "https://aa.com.tr/en/africa/ethiopia-tells-un-security-council-it-has-no-choice-but-to-defend-itself-against-eritrea/4083089",
           "publisher": "aa.com.tr"
+        },
+        {
+          "url": "https://www.bbc.co.uk/news/articles/c65ynvw250y1o",
+          "publisher": "BBC News"
+        },
+        {
+          "url": "http://www.africaleader.com/news/279362027/ethiopia-accuses-eritrea-of-all-out-invasion",
+          "publisher": "africaleader.com"
+        },
+        {
+          "url": "https://www.africanews.com/2026/10/09/ethiopian-airlines-to-resume-flights-to-tigrays-capital-from-sunday/",
+          "publisher": "africanews.com"
+        },
+        {
+          "url": "https://www.middleeasteye.net/news/how-red-sea-came-brink-new-regional-war",
+          "publisher": "Middle East Eye"
         }
       ]
     },
@@ -1092,7 +1086,8 @@
       "lon": 39.5639,
       "intensity": 2,
       "reports": 1,
-      "image": "https://www.aljazeera.com/wp-content/uploads/2026/09/afp_6ab627b8ba11-1790322616.jpg?resize=1920%2C1356",
+      "outlets": 1,
+      "id": "evt_681e156ac9e9e1c1",
       "sources": [
         {
           "url": "https://www.aljazeera.com/news/2026/10/9/will-ethiopias-neighbours-intervene-as-tigray-war-escalates",
@@ -1108,7 +1103,8 @@
       "lon": 39.4608,
       "intensity": 2,
       "reports": 1,
-      "image": "https://www.aljazeera.com/wp-content/uploads/2026/09/afp_6ab627b8ba11-1790322616.jpg?resize=1920%2C1356",
+      "outlets": 1,
+      "id": "evt_f2f241e7942e19d3",
       "sources": [
         {
           "url": "https://www.aljazeera.com/news/2026/10/9/will-ethiopias-neighbours-intervene-as-tigray-war-escalates",
@@ -1124,6 +1120,8 @@
       "lon": 39.5,
       "intensity": 1,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_4c7b185a81d49a68",
       "sources": [
         {
           "url": "http://www.thegazette.com/news/world/ethiopian-police-ask-residents-in-tigray-regional-capital-to-help-restore-order-after-rebel-pullout/article_f6a230d9-1b6c-583b-8745-a87b065a8996.html",
@@ -1139,7 +1137,8 @@
       "lon": 39.5,
       "intensity": 3,
       "reports": 4,
-      "image": "https://chitra-api.kreatio.com/api/v1/wps/4007383/7cee3d9a-ffc8-4174-8341-f079f703f2f1/0/ZGIxZmI4NTktNTY-600x315.jpg",
+      "outlets": 4,
+      "id": "evt_528aa1a114d3fc20",
       "sources": [
         {
           "url": "http://www.africaleader.com/news/279357771/ethiopian-pm-reelected-despite-rebel-offensive",
@@ -1164,6 +1163,10 @@
         {
           "url": "https://isp.netscape.com:443/news/world/story/0001/20261008/6d89a0f53f527fb45d21637c5d9a0179",
           "publisher": "isp.netscape.com"
+        },
+        {
+          "url": "https://www.winnipegfreepress.com/world/2026/10/08/eritrean-soldiers-entered-northern-ethiopian-towns-government-allied-commander-says",
+          "publisher": "winnipegfreepress.com"
         }
       ]
     },
@@ -1175,7 +1178,8 @@
       "lon": 39.1667,
       "intensity": 2,
       "reports": 1,
-      "image": "https://foreignpolicy.com/wp-content/uploads/2026/10/Ethiopia-conflict-GettyImages-2297941206.jpg",
+      "outlets": 1,
+      "id": "evt_aafc6e1324d4d818",
       "sources": [
         {
           "url": "https://foreignpolicy.com/2026/10/07/ethiopia-tigray-conflict-regional-impact-spread-tplf/",
@@ -1191,7 +1195,8 @@
       "lon": 39.1667,
       "intensity": 2,
       "reports": 1,
-      "image": "https://foreignpolicy.com/wp-content/uploads/2026/10/Ethiopia-conflict-GettyImages-2297941206.jpg",
+      "outlets": 1,
+      "id": "evt_8eb43c1fce2a568d",
       "sources": [
         {
           "url": "https://foreignpolicy.com/2026/10/07/ethiopia-tigray-conflict-regional-impact-spread-tplf/",
@@ -1207,6 +1212,8 @@
       "lon": 39.5,
       "intensity": 1,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_de8134ea87c94146",
       "sources": [
         {
           "url": "https://www.wsls.com/news/world/2026/10/08/eritrean-soldiers-entered-northern-ethiopian-towns-government-allied-commander-says/",
@@ -1222,6 +1229,8 @@
       "lon": 39.1667,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_c76cdb4c3520f935",
       "sources": [
         {
           "url": "https://www.tamilguardian.com/content/war-returns-tigray-ethiopian-forces-take-mekelle-and-airstrikes-hit-north",
@@ -1241,6 +1250,8 @@
       "lon": 39.5,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_f2774ed01f4fa22e",
       "sources": [
         {
           "url": "https://www.tamilguardian.com/content/war-returns-tigray-ethiopian-forces-take-mekelle-and-airstrikes-hit-north",
@@ -1260,7 +1271,8 @@
       "lon": 39.1667,
       "intensity": 2,
       "reports": 1,
-      "image": "https://foreignpolicy.com/wp-content/uploads/2026/10/Ethiopia-conflict-GettyImages-2297941206.jpg",
+      "outlets": 1,
+      "id": "evt_65efdd46c1a4351f",
       "sources": [
         {
           "url": "https://foreignpolicy.com/2026/10/07/ethiopia-tigray-conflict-regional-impact-spread-tplf/?tpcc=recirc_trending062921",
@@ -1276,7 +1288,8 @@
       "lon": 39.5,
       "intensity": 3,
       "reports": 4,
-      "image": "https://media.premiumtimesng.com/wp-content/files/2017/08/Ethiopia-on-Map.jpg",
+      "outlets": 4,
+      "id": "evt_23504dbb5e34cdc4",
       "sources": [
         {
           "url": "https://www.premiumtimesng.com/news/more-news/914804-four-african-countries-call-for-de-escalation-of-tension-in-ethiopia.html",
@@ -1301,6 +1314,14 @@
         {
           "url": "https://www.theepochtimes.com/world/tensions-grow-between-ethiopia-eritrea-as-fighting-rages-in-tigray-6100007",
           "publisher": "theepochtimes.com"
+        },
+        {
+          "url": "https://aa.com.tr/en/features/explainer-why-renewed-tigray-fighting-is-raising-fears-of-another-ethiopian-war/4079865",
+          "publisher": "aa.com.tr"
+        },
+        {
+          "url": "https://scroll.in/article/1096139/ethiopia-is-slipping-into-a-war-again-that-could-expand-to-more-countries",
+          "publisher": "scroll.in"
         }
       ]
     },
@@ -1312,6 +1333,8 @@
       "lon": 38.8992,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_74d471bd7d128ba6",
       "sources": [
         {
           "url": "https://www.polity.org.za/article/airstrikes-and-artillery-hit-north-ethiopia-after-tigray-capitals-fall-aid-sources-say-2026-10-05",
@@ -1327,6 +1350,8 @@
       "lon": 38.8992,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_cf6b5019a5c0d93c",
       "sources": [
         {
           "url": "https://www.polity.org.za/article/airstrikes-and-artillery-hit-north-ethiopia-after-tigray-capitals-fall-aid-sources-say-2026-10-05",
@@ -1342,7 +1367,8 @@
       "lon": 39.5,
       "intensity": 2,
       "reports": 1,
-      "image": "https://images.euronews.com/articles/stories/09/94/15/92/1024x538_cmsv2_3774262c-09e0-5cb6-88d1-443a4761262b-9941592.jpg",
+      "outlets": 1,
+      "id": "evt_68c6d5cace4195d4",
       "sources": [
         {
           "url": "https://www.africanews.com/2026/10/06/renewed-violence-in-ethiopias-tigray-leaves-dozens-of-children-wounded/",
@@ -1358,6 +1384,8 @@
       "lon": 39.5,
       "intensity": 1,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_32006101cfd67185",
       "sources": [
         {
           "url": "https://aa.com.tr/en/features/explainer-why-renewed-tigray-fighting-is-raising-fears-of-another-ethiopian-war/4079865",
@@ -1373,7 +1401,8 @@
       "lon": 37.25,
       "intensity": 2,
       "reports": 1,
-      "image": "https://cdn.allafrica.com/download/pic/main/main/csiid/00690471:0792307c179b0c367bc333e5fa823c15:arc614x376:w1200.jpg",
+      "outlets": 1,
+      "id": "evt_5e5214bdf7686328",
       "sources": [
         {
           "url": "https://allafrica.com/stories/202610050053.html",
@@ -1389,7 +1418,8 @@
       "lon": 39.5,
       "intensity": 3,
       "reports": 3,
-      "image": "https://cdn.allafrica.com/download/pic/main/main/csiid/00690471:0792307c179b0c367bc333e5fa823c15:arc614x376:w1200.jpg",
+      "outlets": 3,
+      "id": "evt_d7af482a713de1a9",
       "sources": [
         {
           "url": "https://allafrica.com/stories/202610050053.html",
@@ -1417,7 +1447,8 @@
       "lon": 39.5575,
       "intensity": 2,
       "reports": 1,
-      "image": "https://cdn.allafrica.com/download/pic/main/main/csiid/00690471:0792307c179b0c367bc333e5fa823c15:arc614x376:w1200.jpg",
+      "outlets": 1,
+      "id": "evt_afa85e1c8ae66ae7",
       "sources": [
         {
           "url": "https://allafrica.com/stories/202610050053.html",
@@ -1433,6 +1464,8 @@
       "lon": 39.5,
       "intensity": 1,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_112cd0d38b862e79",
       "sources": [
         {
           "url": "https://lasvegassun.com/news/2026/oct/04/ethiopias-government-retakes-mekelle-after-opposit/",
@@ -1448,6 +1481,8 @@
       "lon": 39.5,
       "intensity": 3,
       "reports": 3,
+      "outlets": 3,
+      "id": "evt_d9872078ca748eaf",
       "sources": [
         {
           "url": "https://www.dw.com/en/in-tigray-ethiopian-government-forces-have-advanced-against-a-northern-rebel-group-reports-indicate/a-79534372",
@@ -1472,6 +1507,14 @@
         {
           "url": "http://www.bignewsnetwork.com/news/279351365/ethiopia-captures-tigray-capital-as-its-regional-rivals-meet-in-egypt",
           "publisher": "bignewsnetwork.com"
+        },
+        {
+          "url": "https://www.aol.co.uk/articles/ethiopia-captures-tigray-capital-regional-150754000.html",
+          "publisher": "aol.co.uk"
+        },
+        {
+          "url": "https://www.latimes.com/world-nation/story/2026-10-03/ethiopian-forces-retake-airport-from-tigrayan-fighters",
+          "publisher": "latimes.com"
         }
       ]
     },
@@ -1483,6 +1526,8 @@
       "lon": 39.1667,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_1fde55276b79d668",
       "sources": [
         {
           "url": "https://www.dw.com/en/in-tigray-ethiopian-government-forces-have-advanced-against-a-northern-rebel-group-reports-indicate/a-79534372",
@@ -1498,7 +1543,8 @@
       "lon": 39.7333,
       "intensity": 2,
       "reports": 1,
-      "image": "https://images.euronews.com/articles/stories/09/93/82/28/1024x538_cmsv2_92a9865d-2af2-5113-9397-fc68735ac534-9938228.jpg",
+      "outlets": 1,
+      "id": "evt_98a126dd91a22d27",
       "sources": [
         {
           "url": "https://www.africanews.com/2026/10/04/ethiopias-oromo-celebrate-irreecha-and-call-for-peace-as-federal-forces-enter-mekelle/",
@@ -1618,15 +1664,7 @@
       "count": 3
     },
     {
-      "name": "Addis Standard",
-      "count": 3
-    },
-    {
       "name": "Facebook",
-      "count": 3
-    },
-    {
-      "name": "Modern Ghana",
       "count": 3
     },
     {
@@ -1702,11 +1740,15 @@
       "count": 2
     },
     {
+      "name": "DW.com",
+      "count": 2
+    },
+    {
       "name": "BBC",
       "count": 2
     },
     {
-      "name": "DW.com",
+      "name": "Ahram Online",
       "count": 2
     },
     {
@@ -1718,11 +1760,15 @@
       "count": 2
     },
     {
-      "name": "Critical Threats",
+      "name": "Addis Standard",
       "count": 2
     },
     {
       "name": "Deccan Herald",
+      "count": 2
+    },
+    {
+      "name": "Modern Ghana",
       "count": 2
     },
     {
@@ -1938,15 +1984,35 @@
       "count": 1
     },
     {
+      "name": "The Eastleigh Voice",
+      "count": 1
+    },
+    {
+      "name": "The Washington Post",
+      "count": 1
+    },
+    {
+      "name": "kulu-media.com",
+      "count": 1
+    },
+    {
+      "name": "Somalia Today",
+      "count": 1
+    },
+    {
       "name": "Livingston Enterprise",
       "count": 1
     },
     {
-      "name": "SABC News",
+      "name": "Al Arabiya English",
       "count": 1
     },
     {
       "name": "Mirage News",
+      "count": 1
+    },
+    {
+      "name": "The Straits Times",
       "count": 1
     },
     {
@@ -1959,10 +2025,6 @@
     },
     {
       "name": "Amhara Association of America",
-      "count": 1
-    },
-    {
-      "name": "The Batesville Daily Guard",
       "count": 1
     },
     {
@@ -1979,6 +2041,10 @@
     },
     {
       "name": "اسلام تايمز",
+      "count": 1
+    },
+    {
+      "name": "Critical Threats",
       "count": 1
     },
     {
@@ -2006,10 +2072,6 @@
       "count": 1
     },
     {
-      "name": "AZƏRTAC – Azərbaycan Dövlət İnformasiya Agentliyi",
-      "count": 1
-    },
-    {
       "name": "The New Humanitarian",
       "count": 1
     },
@@ -2018,15 +2080,11 @@
       "count": 1
     },
     {
-      "name": "The Eastleigh Voice",
+      "name": "Yahoo News UK",
       "count": 1
     },
     {
-      "name": "Ahram Online",
-      "count": 1
-    },
-    {
-      "name": "KIRO 7 News Seattle",
+      "name": "Audacy",
       "count": 1
     },
     {
@@ -2047,10 +2105,6 @@
     },
     {
       "name": "Africa Confidential",
-      "count": 1
-    },
-    {
-      "name": "TRT World",
       "count": 1
     },
     {

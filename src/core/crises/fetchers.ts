@@ -44,7 +44,6 @@ interface GdeltDocArticle {
   url?: string;
   title?: string;
   seendate?: string;
-  socialimage?: string;
   domain?: string;
   language?: string;
 }
@@ -87,7 +86,6 @@ export async function gdeltDoc(query: string, max: number): Promise<CrisisArticl
           via: 'gdelt',
         };
         if (domain) item.domain = domain;
-        if (isHttpUrl(a.socialimage) && a.socialimage.startsWith('https://')) item.image = a.socialimage;
         if (item.title.length > 8) out.push(item);
       }
       return out;
@@ -194,6 +192,35 @@ async function wikiSummary(host: string, title: string): Promise<WikiSummary | u
   return summary;
 }
 
+/**
+ * Author and licence for Commons files, so every picture is credited as its licence asks.
+ * One request for up to 50 files; a failure leaves the credit at "Wikimedia Commons" with
+ * a link to the file page, which carries the full attribution.
+ */
+export async function commonsCredits(files: string[]): Promise<Record<string, { author?: string; license?: string }>> {
+  const out: Record<string, { author?: string; license?: string }> = {};
+  for (let i = 0; i < files.length; i += 50) {
+    const batch = files.slice(i, i + 50);
+    try {
+      const data = await fetchJson<{ query?: { pages?: Record<string, { title?: string; imageinfo?: { extmetadata?: Record<string, { value?: string }> }[] }> } }>(
+        `https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata&iiextmetadatafilter=Artist|LicenseShortName&format=json&titles=${encodeURIComponent(batch.map((f) => `File:${f}`).join('|'))}`,
+        { retries: 1, timeoutMs: 20_000, headers: { 'api-user-agent': USER_AGENT } },
+      );
+      for (const page of Object.values(data.query?.pages ?? {})) {
+        const meta = page.imageinfo?.[0]?.extmetadata;
+        const file = page.title?.replace(/^File:/, '').replace(/ /g, '_');
+        if (!file || !meta) continue;
+        const author = clean(meta.Artist?.value ?? '').slice(0, 120);
+        const license = clean(meta.LicenseShortName?.value ?? '').slice(0, 40);
+        out[file] = { ...(author ? { author } : {}), ...(license ? { license } : {}) };
+      }
+    } catch {
+      // the file page still carries the attribution
+    }
+  }
+  return out;
+}
+
 export async function wikipedia(title: string): Promise<{ en?: WikiSummary; nb?: WikiSummary } | undefined> {
   try {
     const en = await wikiSummary('en.wikipedia.org', title);
@@ -259,42 +286,4 @@ export async function worldBank(iso3: string[]): Promise<WorldBankData | undefin
     await sleep(400);
   }
   return anyOk ? out : undefined;
-}
-
-/* ---------- a publisher's own preview image ---------------------------- */
-
-/**
- * Reads only the page head for its og:image. The picture stays on the publisher's server
- * and is shown linked to the article it illustrates.
- */
-export async function previewImage(url: string): Promise<string | null> {
-  try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 12_000);
-    const response = await fetch(url, {
-      signal: controller.signal,
-      redirect: 'follow',
-      headers: { 'user-agent': USER_AGENT, accept: 'text/html' },
-    });
-    clearTimeout(timer);
-    if (!response.ok || !response.body) return null;
-    const reader = response.body.getReader();
-    let html = '';
-    while (html.length < 250_000) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      html += new TextDecoder().decode(value);
-      if (/<\/head>/i.test(html)) break;
-    }
-    reader.cancel().catch(() => {});
-    const m =
-      /<meta[^>]+(?:property|name)=["'](?:og:image|twitter:image)(?::src)?["'][^>]*content=["']([^"']+)["']/i.exec(html) ??
-      /<meta[^>]+content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/i.exec(html);
-    const src = m?.[1]?.replace(/&amp;/g, '&');
-    if (!src) return null;
-    const absolute = new URL(src, response.url).toString();
-    return absolute.startsWith('https://') ? absolute : null;
-  } catch {
-    return null;
-  }
 }

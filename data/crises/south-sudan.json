@@ -6,7 +6,7 @@
   "region": "Africa",
   "regionNb": "Afrika",
   "auto": false,
-  "generatedAt": "2026-10-10T16:19:13.143Z",
+  "generatedAt": "2026-10-10T19:30:09.229Z",
   "countries": [
     {
       "fips": "OD",
@@ -31,7 +31,9 @@
     "change7dPct": 100,
     "reported7d": 0,
     "outlets30d": 8,
-    "level": 2,
+    "corroborated7d": 0,
+    "score": 0,
+    "level": 0,
     "daily": [
       {
         "date": "2026-09-11",
@@ -214,9 +216,22 @@
       }
     ]
   },
-  "situation": {
-    "en": "2 armed incidents were reported in South Sudan in the past seven days. Most were armed clashs (50%), followed by armed assaults (50%). The most reported locations over the past month were Central Equatoria State, Western Equatoria State and Juba. UCDP lists 3 active armed conflicts here, the oldest dating from 2018.",
-    "nb": "2 væpnede hendelser ble meldt i Sør-Sudan de siste sju dagene. Flest gjaldt væpnet sammenstøt (50 prosent), deretter væpnet angrep (50 prosent). De mest omtalte stedene den siste måneden var Central Equatoria State, Western Equatoria State og Juba. UCDP fører 3 aktive væpnede konflikter her, den eldste fra 2018."
+  "status": {
+    "en": "2 armed incidents reported in the past seven days, most of them in Central Equatoria State, Western Equatoria State and Juba.",
+    "nb": "2 væpnede hendelser meldt de siste sju dagene, flest i Central Equatoria State, Western Equatoria State og Juba."
+  },
+  "summary": null,
+  "ucdpFatalities": {
+    "battle": {
+      "total": 2,
+      "years": "2024",
+      "url": "https://api.worldbank.org/v2/country/SSD/indicator/VC.BTL.DETH?format=json&mrnev=1"
+    },
+    "other": {
+      "total": 317,
+      "years": "2022–2023",
+      "conflicts": 3
+    }
   },
   "background": {
     "title": "South Sudanese Civil War",
@@ -238,7 +253,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/SP.POP.TOTL?locations=SS"
+      "url": "https://api.worldbank.org/v2/country/SSD/indicator/SP.POP.TOTL?format=json&mrnev=1"
     },
     {
       "id": "NY.GDP.PCAP.CD",
@@ -253,7 +268,7 @@
           "year": "2015"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=SS"
+      "url": "https://api.worldbank.org/v2/country/SSD/indicator/NY.GDP.PCAP.CD?format=json&mrnev=1"
     },
     {
       "id": "NY.GDP.MKTP.KD.ZG",
@@ -268,7 +283,7 @@
           "year": "2015"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG?locations=SS"
+      "url": "https://api.worldbank.org/v2/country/SSD/indicator/NY.GDP.MKTP.KD.ZG?format=json&mrnev=1"
     },
     {
       "id": "FP.CPI.TOTL.ZG",
@@ -283,7 +298,7 @@
           "year": "2024"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?locations=SS"
+      "url": "https://api.worldbank.org/v2/country/SSD/indicator/FP.CPI.TOTL.ZG?format=json&mrnev=1"
     },
     {
       "id": "SI.POV.DDAY",
@@ -298,7 +313,7 @@
           "year": "2016"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/SI.POV.DDAY?locations=SS"
+      "url": "https://api.worldbank.org/v2/country/SSD/indicator/SI.POV.DDAY?format=json&mrnev=1"
     },
     {
       "id": "VC.BTL.DETH",
@@ -313,7 +328,7 @@
           "year": "2024"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/VC.BTL.DETH?locations=SS"
+      "url": "https://api.worldbank.org/v2/country/SSD/indicator/VC.BTL.DETH?format=json&mrnev=1"
     }
   ],
   "conflicts": [
@@ -457,11 +472,19 @@
       "via": "gnews"
     },
     {
-      "title": "UN plans to step up patrol along Juba – Pibor road, Shearer says",
-      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBRZkJHQkV2eG5NSUw0TEhoT3YzaFNMalRFeXhmZGl0Y2VDQ3VteUVVNEhYSmF3ejhPTjIxd25vOHZyZC1iS3BlaHFGRnowd3VLUU00cEZvMzBDSXBFUElfNnZYNHVBcldSSVl6VVY2ZEjSAXZBVV95cUxPdzNKeWNyX0hqOGVRUHFsUFpxbUJtS1pIX2Z6NWR1MFVRSkFDSHE5MEhCalYwTHNUZWRSMTJnejAxcTBLUTlnQmZCc21xUS1oUTVoWGY5Z2hVa2JsZ0xwY0ZtdTJKU0JJMnB1cFhvRGxqX2J4VlBR?oc=5",
+      "title": "50,000 IDPs return to Bor",
+      "url": "https://news.google.com/rss/articles/CBMiVkFVX3lxTFAzVTBZUXRrMnA1ZmRBX3A4UVVFT19lUGdDbGVBb1hzMEtCQmtaOXNCc3JzeUVMR2xlQTQ5YmVMVjFZVFI0ODBSZTZPRUZVeEk3X1cwTlpB0gFbQVVfeXFMTXJzejJGNl8yWi1MaTBJTlQ3RTJRVU4xV201UjFUMmFWUGRXa2RRLUx6VFFHMW93czRoc3cxM0x6VG5rcVpvNWNVcTlwV2FSNVk3VVk3Q2hCVXA1Yw?oc=5",
       "publisher": "Eye Radio",
       "domain": "eyeradio.org",
-      "publishedAt": "2026-10-09T17:30:18.000Z",
+      "publishedAt": "2026-10-09T17:23:09.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "“Frustrated” E Lakes teachers asked to be patient",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5HN0hZbTRNQUItY0xick9pQmZUN2FuSnRIRnhKeHdnVk9GdDhPNTJBTWxLRGhibkFSVjQ3Y3RIVkxJQ0pkTEd2cDVUZXZPQ2w2NWVkdzV0d1V4SUVCUXktaUZOQUNOblZvaEhmV1p30gFzQVVfeXFMT3Q5MXI1NWp0eFc4TnhLYTY2TS1yQ3lXWjU3bUxZTHBaNTlNUlNvdnl4OC1WYktQUXZjOHFfZnIzbmlPTnpQRkRYcG91Q1I0NjlUaUQ0aERBVlc5Y0IxcXo1b3c1ZlFDRUtVTERfZWxPbVlpaw?oc=5",
+      "publisher": "Eye Radio",
+      "domain": "eyeradio.org",
+      "publishedAt": "2026-10-09T17:17:12.000Z",
       "via": "gnews"
     },
     {
@@ -470,6 +493,14 @@
       "publisher": "Arab News",
       "domain": "arabnews.com",
       "publishedAt": "2026-10-09T17:17:03.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "South Sudanese in Gulf safe after Iranian strikes, envoy Lilly confirms",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQNWFFN0ViME9mMXpsYS1aSzFhOUNqNlhyTWVBOTIxMURQOGRYMFRMUXBSV05mSWFlcmFtMGRWVFdmVVpza3FRUDI0YkdFMnpGM2JJRG0yU2N5NkZUc0dJZWQxN2lpYUdhWXY1bHgzVTRsZ0d5SXdpV0UxbWZpSS1WU0NjMWxHdzN5OXk2bUo2X19CQzJ5bVow0gGcAUFVX3lxTE1JdmRjVnhRdUxwWFFGdmNXbVg4OFdRMlZyNG9jb21TbHFMYWJiQmlRSEVJYWE1OHk0RjkyODlXczR5ZnV1Rk5udzFPc2RvVWh3dmJpekZ5Z2hNamZ2WjNkUGVMWEs3cnN3V3I0bnAxb0Zhc2Z1d3hqQ3FtYlhkYTZ3NlZNdmZXanBfVVZKbHdvM1ZyaEtUMHpYYnN1dg?oc=5",
+      "publisher": "Eye Radio",
+      "domain": "eyeradio.org",
+      "publishedAt": "2026-10-09T17:16:53.000Z",
       "via": "gnews"
     },
     {
@@ -489,19 +520,19 @@
       "via": "gnews"
     },
     {
+      "title": "Gov’t offers security escorts to aid workers",
+      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE5RQ2hYYVpCTTdLWElBazM2YkhZRy0tSVFRVDNFTVAxVFFHN0FWV0JDZ3ZvWFF4T05BeVJoYWpiM2dGV2JNSk1Nc09TQjR3WXdDc2F2eGtkdDUtYnA5X0Fsd0xZMW4wNXYtekZReXpna9IBdEFVX3lxTE95eXZtTGU2THpxRFVYcUVoYWxIMWFGT3lQUFRLeEFXdzR1QkFSUl95eW9HSF9PaEVzek43UTFGZi1QYjJVTmR5Q1ZNV2dvdDNmWEQ2cDNYLVNwWF9qd29xaUJMd3UwVXpwaW1sX1Q1RU84dDct?oc=5",
+      "publisher": "Eye Radio",
+      "domain": "eyeradio.org",
+      "publishedAt": "2026-10-09T17:03:49.000Z",
+      "via": "gnews"
+    },
+    {
       "title": "South Sudan ICT ministry backs Crawford Capital following U.S. measures",
       "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNei15M05BejJoV1JpRGRGQTl1OXVVZ2N2M25TMmJ0UVZEYlBVb005Y3lER1Q5SExNdmJ1Sld4Mm1EU29zcDV5aC11YnlOaF9McEgxaUxpZ2twZE9sQkZJY3lfWkFtZlI2SHFwLWVlYVZMLTdmX0ZhdjJXWE56QlcyUE43N3J6Q19aVEw0cHB1RWNwVThyU1dr0gGcAUFVX3lxTE1XZlY1WE1mSDZnSFZ6TzZVb0tUYmRkNkxBQldGX240WWpOSi1XZDFJVlB3M25GTENFVVVySnRrVG8zUzZFTEI0Q21PWm5sVE83aEpqeFRXakl0a3lmbHV2N0l6SWNZZkhpNV9sUUFtMC1uc0ZEZldLODYtM0Z2UTdIeTF5d0Y3a1ZkVzdudkhUR2tLamxGYkR5TjEzaA?oc=5",
       "publisher": "Eye Radio",
       "domain": "eyeradio.org",
       "publishedAt": "2026-10-09T17:02:12.000Z",
-      "via": "gnews"
-    },
-    {
-      "title": "Girl who killed boyfriend in Juba sentenced to death",
-      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1MSkVLVVBFN3BMaUZIMEdpMW5jNHhUWFJkanE0VVBGZ2tKQ0VvQmdWRTQycVBsQnBuUmhVSm5HdXVxdGMzRDhLVWZZOHRHMFhnM1g4a2Z1eXpKSDMzclhwMzdNRzFrUk40VzZ3U3dIa2E1eS1OdnBQX19OX2N6SnPSAYQBQVVfeXFMTWY2ZzZ6WnFKcVl4ckoxUy0tZVdSbjRoOFJzOHZmYVg1Qk1kLUVscVdLZURublVub1hXSEc4ZHhJM1hoTVNKaUNOdXYtTzhXQkhmTTgwWFlWNlIwYUJEakxINWpCYzN6bG13eDR3d0RCeXdieTNNZkgwSG5pc1lidVoyRkVa?oc=5",
-      "publisher": "Eye Radio",
-      "domain": "eyeradio.org",
-      "publishedAt": "2026-10-09T16:52:52.000Z",
       "via": "gnews"
     },
     {
@@ -529,11 +560,19 @@
       "via": "gnews"
     },
     {
-      "title": "Government plans two new oil refineries to cut fuel imports – official",
-      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQWENkelZRZTgyYWptcEZicGVGLXJpUXdjNUFISnJVSlppc1lacHdvZmZiYU51eEUzMkt0UDNGbHRoSzlEdTNFRkYwTHNsSGpBSmYyTHEyY0l5bVpOU05STnNiVmhQbU9PNHZoZjNkWVhPcVprZmdYYUpzMUN5aWs2NnNXaFA1RXdMbFVlYnZ6NmtYVGFK0gGaAUFVX3lxTE5RdVloSzl5Z3lUQXBfTFBkQzcxTElPdXFiZnBOTXdtSm4zRkxFQTg2QVh5dkRGdS1JQnJLQVdnWEhUb1NBYWYwdTdQWk1WVjhhem4tVVlDblFqZGxVMlBnR1VPSXEwVGhiN1ZzekJuR05KbC1FVUtDS1VBRGdvVjFqNEFTV0tJZDVUWDVwLVZLd1VENlNSSDNxekE?oc=5",
+      "title": "Oil production unaffected by clashes",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9DRkZobWVGVmFvY0cxbUlpYUhfMUJGbUNoZ3I3eUdodTBVZTFxaGdUc3B4Zzd4cUhNUzZGdC1EQVVfaGdRWTZ1c2V5dnZlQ1VHRVVPWERTSW1oOGJRXzA1MUpIS05GZ9IBa0FVX3lxTE03SWJQbXlSSDhUaF9TbkZFOHVKNzhiTzR4VnhkVm9mLUhteUhDVG5jSmhUUEZtZUtHWnVtRjlpZ3hjdFRxczJBZlB1ZC1uSzFSeVlXWWhtWGlVSF9McVRPend0NFQzV2dkT2s4?oc=5",
       "publisher": "Eye Radio",
       "domain": "eyeradio.org",
-      "publishedAt": "2026-10-09T16:30:56.000Z",
+      "publishedAt": "2026-10-09T16:47:04.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "South Sudan’s security mechanisms to meet on security arrangement",
+      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQd0N5SlR3bWhUX1luZDA3WmNrcG13Q0VWd2xFZW5GbE03NmtyM0dEaXB6MEFnOWN2OVRSVUE2VGhPMVpWSjF5SWc4ZmpWdDF4OFhDRjdqbzNlMEtyS1NsMFM2UE9MeEpqeEpaU0c1SlRaY0dlYzZhczdaM05SSTd1b1dWZ2ZJYkEzcVM5S2ozONIBlAFBVV95cUxOVDVfTUFvdE9IamhWcURJeEpOcXBGSk9SYXRVSmJxRlk0RjV2NGk1bUg0OGFjeXhZS0Y3Sy0tTUNlOHlqUzducXpXYXRwNUF5WkoxNGg0Ty1KejIyS1FicVl4dVFtejk1R1ZPS09sekFUVkM2NnRJVjVLODZtalR2clNrejR3RUZING1ZUjV4dEdSRkdR?oc=5",
+      "publisher": "Eye Radio",
+      "domain": "eyeradio.org",
+      "publishedAt": "2026-10-09T16:42:46.000Z",
       "via": "gnews"
     },
     {
@@ -617,14 +656,6 @@
       "via": "gnews"
     },
     {
-      "title": "Opinion| Elections cannot create peace; peace makes elections work",
-      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxQa0VDeHFRNU1sUFpaOUduOHdfaFFHVDdqbGxvcHVJTWpTR1VlTEtKSTNxUzV6M1N3dkMwR3hTSFhmMkFXalhGN2hvOEo3M2RRTEZpWWtFc2o4V25PNmZ5LTFsTUZOOF9sVEZpRWQtbXVmU00wWU9qMThYZmRkeDc2a1hrNmM4N2Zab2YyaWQ0Sjl6N05mQjBzbEE3RndYdWF4ZE5iN0FvR1U3eDJrUVE?oc=5",
-      "publisher": "Radio Tamazuj",
-      "domain": "radiotamazuj.org",
-      "publishedAt": "2026-10-08T21:39:41.000Z",
-      "via": "gnews"
-    },
-    {
       "title": "South Sudan repatriates Lao national deported from US",
       "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxQUWlPX3FYY1NSelNPWUhybUtzZjRuNy1CZjJ1MkRRUnAxTUhsd2lndWc0VjYxUUQ4UE9GSkhHaEVKN3dITVQxQ2k5cExvZDJpOUJLc01Vd2FQMkdkR2t4Wm9PNGFnUVdLLWk0VGVFT3dnNlR4VVNaaml3RFNjWERCVNIBhgFBVV95cUxQSE5fY2VVRTBzYUE5SVljek12dFJHbXJJblNoMUxlWHF0MEhFNk02SXBtMThvV0UwZzMtY1RjWi1MX3VZaGVJOVVBUDVaa0lpZnZoWDMxdXVHQ0VXN0ZfT29yVWNKQUdhdFBwakhxd3RfdW9UY3pSOEtXTEZLOUdMNm1PdkRRUQ?oc=5",
       "publisher": "Eye Radio",
@@ -697,14 +728,6 @@
       "via": "gnews"
     },
     {
-      "title": "NBGs governor urges sworn-in caretaker ministers to work toward elections",
-      "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPYkRIb3lvYW9qdjFqVkRkSjNuZFdDU19hSE4wZFVWdzJUWE85Ul9jN0ZJTXFlSG0xeFpzdUZiQm5NM2xiOGtIaGZNWmJaN2VyRC05cmZVOXY5WXZXME43NFNaRDZOaWhZNDR2SXRjRGNpellSR3FEQ2htSnNFNFhtRjhCQ19kR2RWU1haZ2kxR2dLUmNSWVNhR2djTdIBoAFBVV95cUxNUlhtTkhWS2lJeUN1M3hfUnhESDdmeEMzeWdWUDVKUGFXWW5ZeWNGbG84cXIxdFppQUt0bkpIaXFtRmpzRlJodVVIbVNvcTI4QUgyQU02Z2tSc1NPZ1kwdWlJajdnemFOMXRtUmNldTFybHpYMEFzcDB6M0JHMUZnTWVsUTRHZWxLYnFFZWNSM3pDeEZjQV9oX1RvQUphXzl5?oc=5",
-      "publisher": "Eye Radio",
-      "domain": "eyeradio.org",
-      "publishedAt": "2026-10-08T06:06:06.000Z",
-      "via": "gnews"
-    },
-    {
       "title": "South Sudan - Conflict, Independence, Civil War",
       "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9KeVhSdTlZb25SRWtabW5nSThPYS1YTTI1OUo4OVVfbVVNQWNuQzNkNXRYdTV4SWRFbWdyV1pXOWVvSTFlOW5Lcl9qUlNTWUtwVzNvT3NxOWR0QndFbzVEQU1CYXhSUW43TjJyWHQ5X3hiel9rVE5V?oc=5",
       "publisher": "Britannica",
@@ -735,14 +758,6 @@
       "domain": "tanzaniatimes.net",
       "publishedAt": "2026-10-07T19:52:38.000Z",
       "via": "gnews"
-    },
-    {
-      "title": "Christian Workers Abducted in South Sudan Are Released",
-      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOLUhVS3Z3N2hOQU03M0d2QVdOUjBPaWlLNVlpcXNHaU92dGM5dHpGeUJEZ3g1Wm1JbTVtdzhiVDRvbGZUOXNGSHBVc3lmNzdHdU9McEZmY0ZFVjhLQ2NYUFNyWGVTX3dBTDdpVFQ2QVphYWloZGRPR0d4QU1saUdYWGl2YnFQbUxDb2xn?oc=5",
-      "publisher": "Charisma Magazine Online",
-      "domain": "mycharisma.com",
-      "publishedAt": "2026-10-07T16:55:07.000Z",
-      "via": "gnews"
     }
   ],
   "images": [
@@ -750,73 +765,91 @@
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Southern_Sudan_Civil_War.svg/960px-Southern_Sudan_Civil_War.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
       "caption": "South Sudanese Civil War",
       "url": "https://commons.wikimedia.org/wiki/File:Southern_Sudan_Civil_War.svg",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/South_Sudan_022.jpg/500px-South_Sudan_022.jpg",
-      "caption": "A South Sudanese man holding a HK G3, May 2011",
-      "url": "https://commons.wikimedia.org/wiki/File:South_Sudan_022.jpg",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/Riek_Machar_VOA_photo.jpg/500px-Riek_Machar_VOA_photo.jpg",
-      "caption": "Riek Machar, founder of the Sudan People's Liberation Movement-in-Opposition",
-      "url": "https://commons.wikimedia.org/wiki/File:Riek_Machar_VOA_photo.jpg",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/SPLA_T-72.png/500px-SPLA_T-72.png",
-      "caption": "A T-72 of the Sudan People's Liberation Army (SPLA) during the civil war",
-      "url": "https://commons.wikimedia.org/wiki/File:SPLA_T-72.png",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Nyakuer_Rambang_and_son_Wiyual_Makuach_fled_conflict_in_Nassir%2C_Upper_Nile_State%2C_now_living_in_Kule_Refugee_Camp%2C_Gambella%2C_Ethiopia_%2814950287898%29.jpg/500px-Nyakuer_Rambang_and_son_Wiyual_Makuach_fled_conflict_in_Nassir%2C_Upper_Nile_State%2C_now_living_in_Kule_Refugee_Camp%2C_Gambella%2C_Ethiopia_%2814950287898%29.jpg",
-      "caption": "A South Sudanese mother and her son at a refugee camp in Gambela in 2014. Three other sons who also tried to escape the violence were killed.",
-      "url": "https://commons.wikimedia.org/wiki/File:Nyakuer_Rambang_and_son_Wiyual_Makuach_fled_conflict_in_Nassir%2C_Upper_Nile_State%2C_now_living_in_Kule_Refugee_Camp%2C_Gambella%2C_Ethiopia_(14950287898).jpg",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/A_U.S._Marine%2C_right%2C_assigned_to_Special_Purpose_Marine_Air-Ground_Task_Force_Crisis_Response%2C_guides_U.S._citizens_down_a_flight_line_in_Juba%2C_South_Sudan%2C_during_an_evacuation_of_personnel_from_the_U.S_140103-M-HF911-006.jpg/500px-thumbnail.jpg",
-      "caption": "Marines evacuate U.S. citizens from South Sudan, 3 January 2014",
-      "url": "https://commons.wikimedia.org/wiki/File:A_U.S._Marine%2C_right%2C_assigned_to_Special_Purpose_Marine_Air-Ground_Task_Force_Crisis_Response%2C_guides_U.S._citizens_down_a_flight_line_in_Juba%2C_South_Sudan%2C_during_an_evacuation_of_personnel_from_the_U.S_140103-M-HF911-006.jpg",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a0/James_Koang_speaking_to_SPLA-IO_soldiers_%28Juba_-_April_2016%29.jpg/500px-James_Koang_speaking_to_SPLA-IO_soldiers_%28Juba_-_April_2016%29.jpg",
-      "caption": "In December 2013, parts of the SPLA's 4th Division rebelled under the leadership of James Koang (pictured).",
-      "url": "https://commons.wikimedia.org/wiki/File:James_Koang_speaking_to_SPLA-IO_soldiers_(Juba_-_April_2016).jpg",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "map",
+      "author": "Ali Zifan",
+      "license": "CC BY-SA 4.0"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Greater_Pibor_Administrative_Area.svg/500px-Greater_Pibor_Administrative_Area.svg.png",
       "caption": "The Greater Pibor Administrative Area (highlighted) created as part of a peace agreement between the government and the largely Murle rebel group, the Cobra Faction, in 2014",
       "url": "https://commons.wikimedia.org/wiki/File:Greater_Pibor_Administrative_Area.svg",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "map",
+      "author": "Goran tek-en",
+      "license": "CC BY-SA 4.0"
     },
     {
-      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/28_States_of_South_Sudan_within_regions.png/500px-28_States_of_South_Sudan_within_regions.png",
-      "caption": "In December 2015, Kiir increased the number of states from 10 to 28 and appointed governors considered loyal to him.",
-      "url": "https://commons.wikimedia.org/wiki/File:28_States_of_South_Sudan_within_regions.png",
-      "credit": "Wikimedia Commons"
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Nyakuer_Rambang_and_son_Wiyual_Makuach_fled_conflict_in_Nassir%2C_Upper_Nile_State%2C_now_living_in_Kule_Refugee_Camp%2C_Gambella%2C_Ethiopia_%2814950287898%29.jpg/500px-Nyakuer_Rambang_and_son_Wiyual_Makuach_fled_conflict_in_Nassir%2C_Upper_Nile_State%2C_now_living_in_Kule_Refugee_Camp%2C_Gambella%2C_Ethiopia_%2814950287898%29.jpg",
+      "caption": "A South Sudanese mother and her son at a refugee camp in Gambela in 2014. Three other sons who also tried to escape the violence were killed.",
+      "url": "https://commons.wikimedia.org/wiki/File:Nyakuer_Rambang_and_son_Wiyual_Makuach_fled_conflict_in_Nassir%2C_Upper_Nile_State%2C_now_living_in_Kule_Refugee_Camp%2C_Gambella%2C_Ethiopia_(14950287898).jpg",
+      "credit": "Wikimedia Commons",
+      "kind": "place",
+      "author": "Oxfam East Africa",
+      "license": "CC BY 2.0"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Wau_refugee_camp_2.png/500px-Wau_refugee_camp_2.png",
       "caption": "Refugee camp at Wau town's cathedral, where many Fertit have sought protection during the 2016–19 Wau clashes",
       "url": "https://commons.wikimedia.org/wiki/File:Wau_refugee_camp_2.png",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "place",
+      "author": "Jill Craig (VOA)",
+      "license": "Public domain"
     },
     {
-      "src": "https://www.riotimesonline.com/wp-content/uploads/2026/10/juba-retail-ban-foreign-traders-2026-photo.jpg",
-      "caption": "Armed clash, Central Equatoria State, South Sudan",
-      "url": "https://www.riotimesonline.com/juba-retail-ban-foreign-traders-2026/",
-      "credit": "riotimesonline.com"
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/Riek_Machar_VOA_photo.jpg/500px-Riek_Machar_VOA_photo.jpg",
+      "caption": "Riek Machar, founder of the Sudan People's Liberation Movement-in-Opposition",
+      "url": "https://commons.wikimedia.org/wiki/File:Riek_Machar_VOA_photo.jpg",
+      "credit": "Wikimedia Commons",
+      "kind": "other",
+      "author": "Hannah McNeish",
+      "license": "Public domain"
     },
     {
-      "src": "https://eyeradio.org/wp-content/uploads/2026/09/MACHAR-IN-CELL.jpeg",
-      "caption": "Armed assault, Upper Nile State, South Sudan",
-      "url": "https://eyeradio.org/machar-accuses-special-court-of-politically-motivated-rulings-in-first-address/",
-      "credit": "eyeradio.org"
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/SPLA_T-72.png/500px-SPLA_T-72.png",
+      "caption": "A T-72 of the Sudan People's Liberation Army (SPLA) during the civil war",
+      "url": "https://commons.wikimedia.org/wiki/File:SPLA_T-72.png",
+      "credit": "Wikimedia Commons",
+      "kind": "other",
+      "author": "Zlatica Hoke (VOA)",
+      "license": "Public domain"
+    },
+    {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/South_Sudan_022.jpg/500px-South_Sudan_022.jpg",
+      "caption": "A South Sudanese man holding a HK G3, May 2011",
+      "url": "https://commons.wikimedia.org/wiki/File:South_Sudan_022.jpg",
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "Steve Evans",
+      "license": "CC BY 2.0"
+    },
+    {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/A_U.S._Marine%2C_right%2C_assigned_to_Special_Purpose_Marine_Air-Ground_Task_Force_Crisis_Response%2C_guides_U.S._citizens_down_a_flight_line_in_Juba%2C_South_Sudan%2C_during_an_evacuation_of_personnel_from_the_U.S_140103-M-HF911-006.jpg/500px-thumbnail.jpg",
+      "caption": "Marines evacuate U.S. citizens from South Sudan, 3 January 2014",
+      "url": "https://commons.wikimedia.org/wiki/File:A_U.S._Marine%2C_right%2C_assigned_to_Special_Purpose_Marine_Air-Ground_Task_Force_Crisis_Response%2C_guides_U.S._citizens_down_a_flight_line_in_Juba%2C_South_Sudan%2C_during_an_evacuation_of_personnel_from_the_U.S_140103-M-HF911-006.jpg",
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "SSgt Robert L. Fisher III",
+      "license": "Public domain"
+    },
+    {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a0/James_Koang_speaking_to_SPLA-IO_soldiers_%28Juba_-_April_2016%29.jpg/500px-James_Koang_speaking_to_SPLA-IO_soldiers_%28Juba_-_April_2016%29.jpg",
+      "caption": "In December 2013, parts of the SPLA's 4th Division rebelled under the leadership of James Koang (pictured).",
+      "url": "https://commons.wikimedia.org/wiki/File:James_Koang_speaking_to_SPLA-IO_soldiers_(Juba_-_April_2016).jpg",
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "Jason Patinkin (VOA)",
+      "license": "Public domain"
+    },
+    {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/28_States_of_South_Sudan_within_regions.png/500px-28_States_of_South_Sudan_within_regions.png",
+      "caption": "In December 2015, Kiir increased the number of states from 10 to 28 and appointed governors considered loyal to him.",
+      "url": "https://commons.wikimedia.org/wiki/File:28_States_of_South_Sudan_within_regions.png",
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "Aotearoa based on files: File:28 States of South Sudan.png and File:SouthSudanStates.svg",
+      "license": "CC BY-SA 4.0"
     }
   ],
   "videos": [],
@@ -830,7 +863,8 @@
       "lon": 31,
       "intensity": 2,
       "reports": 1,
-      "image": "https://www.riotimesonline.com/wp-content/uploads/2026/10/juba-retail-ban-foreign-traders-2026-photo.jpg",
+      "outlets": 1,
+      "id": "evt_41fa73380eecd074",
       "sources": [
         {
           "url": "https://www.riotimesonline.com/juba-retail-ban-foreign-traders-2026/",
@@ -846,7 +880,8 @@
       "lon": 32.7,
       "intensity": 2,
       "reports": 1,
-      "image": "https://eyeradio.org/wp-content/uploads/2026/09/MACHAR-IN-CELL.jpeg",
+      "outlets": 1,
+      "id": "evt_746f6625b7db343a",
       "sources": [
         {
           "url": "https://eyeradio.org/machar-accuses-special-court-of-politically-motivated-rulings-in-first-address/",
@@ -859,7 +894,7 @@
   "outlets": [
     {
       "name": "Eye Radio",
-      "count": 27
+      "count": 29
     },
     {
       "name": "radiotamazuj.org",
@@ -879,10 +914,6 @@
     },
     {
       "name": "Sudans Post",
-      "count": 2
-    },
-    {
-      "name": "Radio Tamazuj",
       "count": 2
     },
     {
@@ -934,6 +965,10 @@
       "count": 1
     },
     {
+      "name": "Radio Tamazuj",
+      "count": 1
+    },
+    {
       "name": "Arab News",
       "count": 1
     },
@@ -959,10 +994,6 @@
     },
     {
       "name": "The Tanzania Times",
-      "count": 1
-    },
-    {
-      "name": "Charisma Magazine Online",
       "count": 1
     }
   ],

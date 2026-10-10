@@ -1,79 +1,98 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>IGRED Global Conflict Monitor</title>
-<meta name="description" content="A live map of armed conflict. Open any crisis for the latest reporting, the numbers, the background and every source behind them.">
-<meta name="color-scheme" content="light dark">
+<title>Global Conflict Monitor · IGRED</title>
+<meta name="description" content="A live map of armed conflict. Every incident carries its source, its date and a link to the original.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0B0B0A">
+<meta property="og:title" content="Global Conflict Monitor · IGRED">
+<meta property="og:description" content="A live map of armed conflict. Every incident carries its source, its date and a link to the original.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://map.igred.org/">
+<script>try{if(localStorage.getItem('igred-theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}</script>
 <link rel="preload" href="fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="fonts/fonts.css">
-<link rel="stylesheet" href="vendor/maplibre-gl.css">
 <link rel="stylesheet" href="atlas.css">
-<link rel="stylesheet" href="crisis.css">
-<link rel="stylesheet" href="map.css">
+<link rel="stylesheet" href="vendor/maplibre-gl.css">
+<link rel="stylesheet" href="app.css">
 </head>
-<body class="map-page">
-
+<body class="mapapp">
 <a class="skip" href="#crisis-list">Skip to the list of crises</a>
 
-<header class="bar">
-  <a class="bar-mark" href="https://igred.org/"><strong>IGRED</strong></a>
-  <nav class="bar-nav" aria-label="Products">
-    <a href="./" aria-current="page" data-t="map">Map</a>
-    <a href="brief/" data-t="brief">Brief</a>
-    <a href="stream/" data-t="wire">Wire</a>
-  </nav>
-  <div class="bar-search">
-    <label class="sr-only" for="search" data-t="search">Search crises and places</label>
-    <input id="search" type="search" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="search-results">
-    <ul id="search-results" class="search-results" role="listbox" hidden></ul>
-  </div>
-  <div class="bar-tools">
-    <button type="button" class="bar-btn" id="lang">NO</button>
-    <button type="button" class="bar-btn" id="theme">Dark</button>
-  </div>
-</header>
+<!-- Above everything: a note about stale data is useless below the fold. -->
+<div class="banner" id="banner" hidden></div>
 
 <div class="app" id="app">
-  <aside class="rail" aria-labelledby="rail-title">
-    <div class="rail-head">
-      <h1 class="rail-title" id="rail-title"><span data-t="crises">Crises</span> <span class="rail-count" id="rail-count"></span></h1>
-      <div class="seg" role="group" id="window" aria-label="Time window">
-        <button type="button" data-days="1">24 hours</button>
-        <button type="button" data-days="7" aria-pressed="true">7 days</button>
-        <button type="button" data-days="30">30 days</button>
+  <header class="masthead app-masthead">
+    <a class="wordmark wordmark-link" href="https://igred.org/"><strong>IGRED</strong></a>
+    <nav class="controls">
+      <a class="link-button" href="brief/" data-i18n="brief">Brief</a>
+      <a class="link-button" href="stream/" data-i18n="wire">Wire</a>
+      <button type="button" class="link-button" id="lang">NO</button>
+    </nav>
+  </header>
+  <aside class="rail" id="rail">
+
+    <div class="overview" id="overview">
+      <h1 class="title">
+        <span data-i18n="titleLine1">Global Conflict</span>
+        <span class="italic" data-i18n="titleLine2">Monitor</span>
+      </h1>
+      <p class="standfirst" id="standfirst"></p>
+
+      <div class="search">
+        <label class="sr-only" for="search" data-i18n="search">Search</label>
+        <input type="search" id="search" autocomplete="off" spellcheck="false">
+        <div class="results" id="results" role="listbox" hidden></div>
       </div>
-      <div class="regions" id="regions" role="group" aria-label="Region"></div>
+
+      <nav class="window" id="window" aria-label="Time window">
+        <button type="button" class="link-button quiet" data-w="1"></button>
+        <button type="button" class="link-button quiet" data-w="7"></button>
+        <button type="button" class="link-button quiet" data-w="30"></button>
+      </nav>
+
+      <ol class="crisis-list" id="crisis-list"></ol>
     </div>
-    <ol class="crisis-list" id="crisis-list" aria-busy="true"></ol>
-    <p class="rail-foot" id="rail-foot"></p>
+
+    <!-- A crisis or a country takes the column's place; the map stays where it is. -->
+    <section class="detail" id="detail" hidden aria-live="polite"></section>
   </aside>
 
-  <main class="stage">
-    <div id="map" class="map" role="region" aria-label="Map of reported armed incidents"></div>
-    <div class="map-tools">
-      <button type="button" class="tool" id="zoom-in" aria-label="Zoom in">+</button>
-      <button type="button" class="tool" id="zoom-out" aria-label="Zoom out">&minus;</button>
-      <button type="button" class="tool tool-wide" id="zoom-reset" aria-label="Show the whole world">
-        <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 10h15M10 2.5c2.4 2.2 2.4 12.8 0 15M10 2.5c-2.4 2.2-2.4 12.8 0 15" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
-      </button>
-    </div>
-    <p class="legend" id="legend">
-      <span class="legend-scale" aria-hidden="true"><i class="i1"></i><i class="i2"></i><i class="i3"></i><i class="i4"></i><i class="i5"></i></span>
-      <span id="legend-text"></span>
-    </p>
-    <div class="status" id="status" role="status"></div>
-  </main>
+  <main class="plate" id="plate">
+    <div class="map" id="map" role="region" aria-label="Map"></div>
 
-  <div class="panel" id="panel" hidden>
-    <div class="panel-scroll" id="panel-scroll" tabindex="-1"></div>
-  </div>
+    <div class="legend meta" id="legend"></div>
+    <div class="zoom">
+      <button type="button" class="link-button" id="zoom-out" aria-label="Zoom out">&minus;</button>
+      <button type="button" class="link-button" id="zoom-in" aria-label="Zoom in">+</button>
+      <button type="button" class="link-button" id="zoom-reset" data-i18n="reset">Reset</button>
+    </div>
+
+    <div class="timeline" id="timeline">
+      <button type="button" class="link-button" id="play">Play</button>
+      <output class="timeline-date" id="asof-date" for="asof"></output>
+      <div class="timeline-track">
+        <div class="timeline-bars" id="timeline-bars" aria-hidden="true"></div>
+        <input type="range" id="asof" min="0" max="29" step="1" value="29" aria-label="Date">
+      </div>
+      <button type="button" class="link-button" id="now">Now</button>
+    </div>
+  </main>
 </div>
+
+<footer class="colophon" id="colophon">
+  <p class="colophon-method"><span id="method"></span> <span id="ranking"></span></p>
+  <p class="meta"><span id="updated"></span></p>
+  <p class="meta"><button type="button" class="link-button quiet" id="theme">Light</button></p>
+  <p class="meta"><a href="mailto:contact@igred.org">contact@igred.org</a></p>
+</footer>
 
 <script src="vendor/maplibre-gl.js"></script>
 <script src="vendor/topojson-client.min.js"></script>
-<script type="module" src="map.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>

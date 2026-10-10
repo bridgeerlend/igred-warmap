@@ -3,13 +3,14 @@ import path from 'node:path';
 import { configDir, dataDir } from '../util/paths.js';
 import { writeArtifact } from '../pipeline/store.js';
 import {
-  clean, gdeltDoc, googleNews, googleNewsUrl, previewImage, wikipedia, worldBank,
+  clean, commonsCredits, gdeltDoc, googleNews, googleNewsUrl, wikipedia, worldBank,
   WORLD_BANK_INDICATORS, type WikiSummary, type WorldBankData,
 } from './fetchers.js';
 import {
-  crisisDetail, crisisIndex, mapEvents,
+  countriesIndex, crisisDetail, homeSnapshot, crisisIndex, mapEvents, MAP_EVENT_FIELDS,
   type CrisisArticle, type CrisisDetail, type CrisisImage, type CrisisIndexEntry, type CrisisIndicator,
 } from './schema.js';
+import { currentSummary, runSummaries, type SummaryInput, type SummarySettings, type SummaryState } from './summary.js';
 import { CATEGORY, COUNTRY, countryName, joinNames } from './names.js';
 
 /* ---------- inputs ----------------------------------------------------- */
@@ -21,7 +22,8 @@ interface CrisisDef {
 interface CrisesConfig {
   settings: {
     autoCrisisMinReported7d: number; autoCrisisExclude?: string[]; newsPerCrisis: number; gdeltSpacingMs: number;
-    wikipediaRefreshHours: number; worldBankRefreshHours: number; imageFetchPerRun: number;
+    wikipediaRefreshHours: number; worldBankRefreshHours: number;
+    summary: SummarySettings;
   };
   crises: CrisisDef[];
 }
@@ -40,6 +42,7 @@ interface ConflictRec {
   figures?: Record<string, { value: number; asOf?: string }>;
 }
 interface StoryRec {
+  id: string;
   headline: string; headlineFrom: { publisher: string; url: string };
   countries: { fips: string }[]; lastSeenAt: string; articleCount: number; distinctPublishers: number;
   prominence: number;
@@ -55,7 +58,7 @@ interface Cache {
   worldBank: { at: string; data: WorldBankData } | null;
   gdelt: Record<string, { at: string; articles: CrisisArticle[] }>;
   gnews: Record<string, { at: string; articles: CrisisArticle[] }>;
-  og: Record<string, string | null>;
+  commons: Record<string, { author?: string; license?: string }>;
 }
 
 const readJson = <T>(file: string): T | undefined =>
@@ -63,19 +66,62 @@ const readJson = <T>(file: string): T | undefined =>
 
 const cacheFile = path.join(dataDir, 'internal', 'crisis-cache.json');
 
+const summariesFile = path.join(dataDir, 'internal', 'crisis-summaries.json');
+
+function writeInternal(file: string, value: unknown): void {
+  mkdirSync(path.dirname(file), { recursive: true });
+  writeFileSync(`${file}.tmp`, JSON.stringify(value));
+  renameSync(`${file}.tmp`, file);
+}
+
 function writeCache(cache: Cache): void {
-  // Old preview-image lookups are dropped once there are many: they only matter for news
-  // that is still in the window.
-  const og = Object.entries(cache.og);
-  if (og.length > 4000) cache.og = Object.fromEntries(og.slice(-3000));
+  // News organisations' preview pictures are no longer used anywhere; old lookups go.
+  delete (cache as Partial<Cache> & { og?: unknown }).og;
   mkdirSync(path.dirname(cacheFile), { recursive: true });
   writeFileSync(`${cacheFile}.tmp`, JSON.stringify(cache));
   renameSync(`${cacheFile}.tmp`, cacheFile);
 }
 
+/* ---------- verified incidents ----------------------------------------- */
+
+interface VerifiedEntry { id: string; note: string; source: string; verifiedAt?: string }
+
+/** config/verified-events.json plus one file per incident in config/verified-events/. */
+export function readVerified(): Record<string, { note: string; source: string; verifiedAt?: string }> {
+  const entries: VerifiedEntry[] = [];
+  const main = readJson<{ events?: VerifiedEntry[] }>(path.join(configDir, 'verified-events.json'));
+  entries.push(...(main?.events ?? []));
+  const dir = path.join(configDir, 'verified-events');
+  if (existsSync(dir)) {
+    for (const file of readdirSync(dir)) {
+      if (!file.endsWith('.json')) continue;
+      try {
+        const entry = JSON.parse(readFileSync(path.join(dir, file), 'utf-8')) as VerifiedEntry;
+        entries.push({ ...entry, id: entry.id || file.replace(/\.json$/, '') });
+      } catch {
+        // a half-typed file from a phone is skipped, not fatal
+      }
+    }
+  }
+  const out: Record<string, { note: string; source: string; verifiedAt?: string }> = {};
+  for (const e of entries) {
+    const id = String(e.id ?? '').replace(/^evt_/, '').trim();
+    if (!/^[0-9a-f]{8,}$/.test(id) || !e.note?.trim() || !/^https?:\/\//.test(e.source ?? '')) continue;
+    out[id] = { note: e.note.trim().slice(0, 280), source: e.source, ...(e.verifiedAt ? { verifiedAt: e.verifiedAt } : {}) };
+  }
+  return out;
+}
+
 /* ---------- helpers ---------------------------------------------------- */
 
 const DAY = 86_400_000;
+
+/** The thirty days ending today (UTC), oldest first. */
+function daysOf(nowRef: number): string[] {
+  const out: string[] = [];
+  for (let k = 29; k >= 0; k--) out.push(new Date(nowRef - k * DAY).toISOString().slice(0, 10));
+  return out;
+}
 const hoursSince = (iso: string | undefined, now: number) => (iso ? (now - Date.parse(iso)) / 3_600_000 : Infinity);
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -106,76 +152,62 @@ function normTitle(t: string): string {
   return t.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim().slice(0, 80);
 }
 
+/** Some feeds give a homepage address where the outlet's name belongs; the host name reads better. */
+export function outletName(publisher: string | undefined, url?: string): string {
+  const raw = (publisher ?? '').trim();
+  const fromUrl = (u: string) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
+  if (/^https?:\/\//i.test(raw)) return fromUrl(raw) || raw;
+  if (raw) return raw;
+  return url ? fromUrl(url) || 'source' : 'source';
+}
+
+/**
+ * Which kind of picture a Commons file is, from its name and caption. Maps and places lead;
+ * portraits come last; flags, arms and logos are dropped before this is ever asked.
+ */
+export function imageKind(file: string, caption: string): CrisisImage['kind'] {
+  const text = `${file} ${caption}`.replace(/_/g, ' ');
+  if (/\bmaps?\b|karte|carte|locator|location map|situation map|\.svg|areas? of control|territorial control|front ?line/i.test(text)) return 'map';
+  if (/city|town|village|street|market|river|nile|mountain|desert|camp|museum|mosque|church|skyline|landscape|aerial view|valley|harbou?r|bridge|square|building|ruins|damaged|destroyed/i.test(text)) return 'place';
+  if (/\(cropped\)|portrait|president|minister|general\b|governor|leader|commander|\bmeets?\b|speech|speaking|visit|summit|king\b|emir|sheikh|\b(19|20)\d\d\b/i.test(text)) return 'person';
+  return 'other';
+}
+
+const KIND_ORDER: Record<CrisisImage['kind'], number> = { map: 0, place: 1, other: 2, person: 3 };
+
 function fmtInt(n: number, lang: 'en' | 'nb'): string {
   return n.toLocaleString(lang === 'en' ? 'en-GB' : 'nb-NO').replace(/ /g, ' ');
 }
 
-/* ---------- the fixed-template situation text ------------------------ */
+/* ---------- the fixed-template status line --------------------------- */
 
-function situation(
+/**
+ * One sentence over the counts, composed in code. It is what the page shows when no
+ * machine-written summary has passed the guard, and the frame above one when it has.
+ */
+export function statusLine(
   lang: 'en' | 'nb',
-  places: string,
-  stats: CrisisDetail['stats'],
-  activeConflicts: { startDate?: string }[],
-  lead: CrisisDetail['headlines'][number] | undefined,
+  stats: Pick<CrisisDetail['stats'], 'last7d' | 'prev7d' | 'change7dPct' | 'last30d' | 'hotspots'>,
 ): string {
-  const s: string[] = [];
-  const n7 = stats.last7d;
   const en = lang === 'en';
-
+  const n7 = stats.last7d;
   if (n7 === 0) {
-    s.push(en
-      ? `No armed incidents were reported in ${places} in the past seven days. The past 30 days hold ${fmtInt(stats.last30d, lang)}.`
-      : `Ingen væpnede hendelser ble meldt i ${places} de siste sju dagene. De siste 30 dagene er det registrert ${fmtInt(stats.last30d, lang)}.`);
-  } else {
-    let change = '';
-    if (stats.prev7d >= 5 && stats.change7dPct !== null) {
-      const pct = Math.round(Math.abs(stats.change7dPct));
-      if (stats.change7dPct >= 15) change = en ? `, ${pct}% more than the week before` : `, ${pct} prosent flere enn uken før`;
-      else if (stats.change7dPct <= -15) change = en ? `, ${pct}% fewer than the week before` : `, ${pct} prosent færre enn uken før`;
-      else change = en ? ', roughly as many as the week before' : ', omtrent like mange som uken før';
-    }
-    s.push(en
-      ? `${fmtInt(n7, lang)} armed ${n7 === 1 ? 'incident was' : 'incidents were'} reported in ${places} in the past seven days${change}.`
-      : `${fmtInt(n7, lang)} ${n7 === 1 ? 'væpnet hendelse ble' : 'væpnede hendelser ble'} meldt i ${places} de siste sju dagene${change}.`);
-
-    const cats = Object.entries(stats.categories7d).sort((a, b) => b[1] - a[1]);
-    const [c1, c2] = cats;
-    if (c1) {
-      const share = (n: number) => Math.round((100 * n) / n7);
-      const label = (c: string) => (CATEGORY[lang][c] ?? c).toLowerCase();
-      const plural = (c: string) => (en ? `${label(c)}s`.replace(/strikes?s$/, 'strikes').replace(/violences$/, 'violence').replace(/unrests$/, 'unrest').replace(/repressions$/, 'repression').replace(/blockades?s$/, 'blockades') : label(c));
-      s.push(en
-        ? `Most were ${plural(c1[0])} (${share(c1[1])}%)${c2 ? `, followed by ${plural(c2[0])} (${share(c2[1])}%)` : ''}.`
-        : `Flest gjaldt ${label(c1[0])} (${share(c1[1])} prosent)${c2 ? `, deretter ${label(c2[0])} (${share(c2[1])} prosent)` : ''}.`);
-    }
-    if (stats.reported7d > 0) {
-      s.push(en
-        ? `${fmtInt(stats.reported7d, lang)} of them were carried by two or more outlets.`
-        : `${fmtInt(stats.reported7d, lang)} av dem ble omtalt av to eller flere medier.`);
-    }
+    return en
+      ? `No armed incidents reported in the past seven days; ${fmtInt(stats.last30d, lang)} in the past 30.`
+      : `Ingen væpnede hendelser meldt de siste sju dagene; ${fmtInt(stats.last30d, lang)} de siste 30.`;
   }
-
+  let change = '';
+  if (stats.prev7d >= 5 && stats.change7dPct !== null && Math.abs(stats.change7dPct) >= 15) {
+    const pct = Math.round(Math.abs(stats.change7dPct));
+    change = stats.change7dPct > 0
+      ? (en ? `, ${pct}% more than the week before` : `, ${pct} prosent flere enn uken før`)
+      : (en ? `, ${pct}% fewer than the week before` : `, ${pct} prosent færre enn uken før`);
+  }
   const spots = stats.hotspots.slice(0, 3).map((h) => h.name.split(',')[0]!);
-  if (spots.length > 0) {
-    const list = joinNames(spots, lang);
-    s.push(en ? `The most reported locations over the past month were ${list}.` : `De mest omtalte stedene den siste måneden var ${list}.`);
-  }
-
-  if (activeConflicts.length > 0) {
-    const years = activeConflicts.map((c) => c.startDate?.slice(0, 4)).filter((y): y is string => !!y).sort();
-    const k = activeConflicts.length;
-    s.push(en
-      ? `UCDP lists ${k} active armed ${k === 1 ? 'conflict' : 'conflicts'} here${years[0] ? `, the oldest dating from ${years[0]}` : ''}.`
-      : `UCDP fører ${k} ${k === 1 ? 'aktiv væpnet konflikt' : 'aktive væpnede konflikter'} her${years[0] ? `, den eldste fra ${years[0]}` : ''}.`);
-  }
-
-  if (lead) {
-    s.push(en
-      ? `The most widely covered story this week: “${lead.headline}” (${lead.publisher}, ${lead.outlets.length} ${lead.outlets.length === 1 ? 'outlet' : 'outlets'}).`
-      : `Mest omtalte sak denne uken: «${lead.headline}» (${lead.publisher}, ${lead.outlets.length} ${lead.outlets.length === 1 ? 'medium' : 'medier'}).`);
-  }
-  return s.join(' ');
+  const where = spots.length ? (en ? `, most of them in ${joinNames(spots, lang)}` : `, flest i ${joinNames(spots, lang)}`) : '';
+  return en
+    ? `${fmtInt(n7, lang)} armed ${n7 === 1 ? 'incident' : 'incidents'} reported in the past seven days${change}${where}.`
+    : `${fmtInt(n7, lang)} ${n7 === 1 ? 'væpnet hendelse' : 'væpnede hendelser'} meldt de siste sju dagene${change}${where}.`;
 }
 
 /* ---------- build ------------------------------------------------------ */
@@ -192,10 +224,22 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
   const conflicts = readJson<{ conflicts: ConflictRec[] }>(path.join(dataDir, 'conflicts.json'))?.conflicts ?? [];
   const stories = readJson<{ stories: StoryRec[] }>(path.join(dataDir, 'stories.json'))?.stories ?? [];
   const media = readJson<MediaRec>(path.join(dataDir, 'media.json')) ?? { posts: [], videos: [] };
+  // Which Brief edition carried a story most recently, so the crisis can link to it there.
+  const editionOf = new Map<string, string>();
+  const editionsDir = path.join(dataDir, 'editions');
+  if (existsSync(editionsDir)) {
+    const dated = readdirSync(editionsDir).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort().slice(-14);
+    for (const file of dated) {
+      const edition = readJson<{ date: string; stories: { id: string }[] }>(path.join(editionsDir, file));
+      for (const st of edition?.stories ?? []) editionOf.set(st.id, edition!.date);
+    }
+  }
   const cache: Cache = {
-    wikipedia: {}, worldBank: null, gdelt: {}, gnews: {}, og: {},
+    wikipedia: {}, worldBank: null, gdelt: {}, gnews: {}, commons: {},
     ...(readJson<Partial<Cache>>(cacheFile) ?? {}),
   } as Cache;
+  const summaryStates = readJson<Record<string, SummaryState>>(summariesFile) ?? {};
+  const verified = readVerified();
 
   const now = Date.now();
   const generatedAt = new Date(now).toISOString();
@@ -264,11 +308,23 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
       if (n) cache.gnews[d.id] = { at: generatedAt, articles: n };
       log(`${d.id}: gdelt ${g ? g.length : 'kept'} · google news ${n ? n.length : 'kept'}`);
     }
+    // Credits for every Commons picture the pages may show, looked up once per file.
+    const files = new Set<string>();
+    for (const w of Object.values(cache.wikipedia)) {
+      if (w.data?.en?.image?.file) files.add(w.data.en.image.file.replace(/ /g, '_'));
+      for (const g of w.data?.en?.gallery ?? []) files.add(g.file.replace(/ /g, '_'));
+    }
+    const missing = [...files].filter((f) => !(f in cache.commons));
+    if (missing.length) {
+      const found = await commonsCredits(missing);
+      for (const f of missing) cache.commons[f] = found[f] ?? {};
+      log(`commons credits: looked up ${missing.length}`);
+    }
   }
 
   /* ---- per crisis ---- */
   const details: CrisisDetail[] = [];
-  const ogQueue: string[] = [];
+  const summaryInputs: SummaryInput[] = [];
 
   for (const d of defs) {
     const fipsSet = new Set(d.fips);
@@ -320,6 +376,7 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
     if (bbox[3] - bbox[1] < 3) bbox = [bbox[0], center[1] - 2, bbox[2], center[1] + 2];
     bbox = bbox.map((v) => Math.round(v * 100) / 100) as typeof bbox;
 
+    const corroborated = in7.filter((e) => e.distinctPublishers >= 2);
     const stats: CrisisDetail['stats'] = {
       last24h: evs.filter((e) => age(e) < DAY).length,
       last7d: in7.length,
@@ -328,6 +385,8 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
       change7dPct: prev7.length > 0 ? Math.round(((in7.length - prev7.length) / prev7.length) * 1000) / 10 : null,
       reported7d: in7.filter((e) => e.confidence === 'reported' || e.distinctPublishers > 1).length,
       outlets30d: new Set(in30.flatMap((e) => e.provenance.map((p) => p.publisher ?? ''))).size,
+      corroborated7d: corroborated.length,
+      score: corroborated.reduce((sum, e) => sum + e.severity, 0),
       level: 0,
       daily,
       categories7d: countCats(in7),
@@ -358,6 +417,8 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
       .sort((a, b) => b.distinctPublishers - a.distinctPublishers || b.lastSeenAt.localeCompare(a.lastSeenAt))
       .slice(0, 12);
     const headlines: CrisisDetail['headlines'] = storyHits.map((s) => ({
+      storyId: s.id,
+      ...(editionOf.has(s.id) ? { edition: editionOf.get(s.id)! } : {}),
       headline: s.headline,
       publisher: s.headlineFrom.publisher,
       url: s.headlineFrom.url,
@@ -372,18 +433,12 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
     for (const s of storyHits) for (const a of s.articles) {
       const item: CrisisArticle = { title: a.title, url: a.url, publisher: a.publisher, publishedAt: a.publishedAt, via: 'feed' };
       if (a.tier) item.tier = a.tier;
-      const img = cache.og[a.url];
-      if (img) item.image = img;
-      else if (img === undefined) ogQueue.push(a.url);
       pool.push(item);
     }
-    pool.push(...(cache.gdelt[d.id]?.articles ?? []), ...(cache.gnews[d.id]?.articles ?? []));
-    // Some feeds give a homepage address where the outlet's name belongs.
-    for (const a of pool) {
-      if (/^https?:\/\//i.test(a.publisher)) {
-        try { a.publisher = new URL(a.publisher).hostname.replace(/^www\./, ''); } catch { /* keep as is */ }
-      }
-    }
+    // Older caches carried publishers' preview pictures; they are stripped on the way through.
+    pool.push(...[...(cache.gdelt[d.id]?.articles ?? []), ...(cache.gnews[d.id]?.articles ?? [])]
+      .map(({ image: _image, ...a }: CrisisArticle & { image?: string }) => a));
+    for (const a of pool) a.publisher = outletName(a.publisher, a.url);
     const seen = new Set<string>();
     const news = pool
       .filter((a) => now - Date.parse(a.publishedAt) < 4 * DAY)
@@ -395,27 +450,33 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
         return true;
       })
       .slice(0, settings.newsPerCrisis * 2);
-    // Pictures first in the cut: a feed that is mostly text with a few images reads badly.
     const newsOut = news.slice(0, settings.newsPerCrisis);
 
-    /* images: the background article's own, then publishers' previews, one per outlet */
-    const images: CrisisImage[] = [];
+    /* images: Wikimedia Commons only — the article's lead picture and its gallery, maps and
+       places before portraits. News organisations' pictures are never used. */
     const wiki = cache.wikipedia[d.id]?.data ?? null;
-    if (wiki?.en?.image) {
-      images.push({
-        src: wiki.en.image.src,
-        caption: wiki.en.title,
-        url: wiki.en.image.file ? `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(wiki.en.image.file)}` : wiki.en.url,
+    const images: CrisisImage[] = [];
+    const commonsImage = (src: string, file: string | undefined, caption: string, fallbackUrl: string): CrisisImage => {
+      const key = file?.replace(/ /g, '_');
+      const credit = key ? cache.commons[key] : undefined;
+      const img: CrisisImage = {
+        src, caption,
+        url: file ? `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(key!)}` : fallbackUrl,
         credit: 'Wikimedia Commons',
-      });
+        kind: imageKind(file ?? src, caption),
+      };
+      if (credit?.author) img.author = credit.author;
+      if (credit?.license) img.license = credit.license;
+      return img;
+    };
+    if (wiki?.en?.image && !/flag|logo|coat.of.arms|emblem|seal/i.test(wiki.en.image.src)) {
+      images.push(commonsImage(wiki.en.image.src, wiki.en.image.file, wiki.en.title, wiki.en.url));
     }
-    const imgOutlets = new Set<string>();
-    for (const a of news) {
-      if (!a.image || imgOutlets.has(a.publisher) || images.length >= 13) continue;
-      if (/logo|placeholder|default|sprite|icon/i.test(a.image)) continue;
-      imgOutlets.add(a.publisher);
-      images.push({ src: a.image, caption: a.title, url: a.url, credit: a.publisher });
+    for (const g of wiki?.en?.gallery ?? []) {
+      if (images.some((im) => im.src === g.src || (wiki?.en?.image?.file && g.file === wiki.en.image.file))) continue;
+      images.push(commonsImage(g.src, g.file, g.caption, wiki!.en!.url));
     }
+    images.sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind]);
 
     /* curated posts and videos, matched by watch list or by place name */
     const re = placeTerms(d.query);
@@ -440,34 +501,16 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
         const item: CrisisDetail['incidents'][number] = {
           at: e.occurredAt, category: e.category, place: placeOf(e.location.name),
           lat: e.location.lat, lon: e.location.lon, intensity: e.intensity, reports: e.reportCount,
-          sources: e.provenance.slice(0, 6).map((p) => ({ url: p.url, publisher: p.publisher ?? (() => { try { return new URL(p.url).hostname.replace(/^www\./, ''); } catch { return 'source'; } })() })),
+          outlets: e.distinctPublishers, id: e.id,
+          sources: e.provenance.map((p) => ({ url: p.url, publisher: outletName(p.publisher, p.url) })),
         };
-        // The reporting outlet's own preview picture, when its page offers one.
-        const first = item.sources[0]?.url;
-        if (first) {
-          const img = cache.og[first];
-          if (img) item.image = img;
-          else if (img === undefined && e.intensity >= 2) ogQueue.push(first);
-        }
         return item;
       });
-
-    for (const g of wiki?.en?.gallery ?? []) {
-      if (images.length >= 22 || images.some((im) => im.src === g.src || (wiki?.en?.image?.file && g.file === wiki.en.image.file))) continue;
-      images.push({ src: g.src, caption: g.caption, url: `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(g.file)}`, credit: 'Wikimedia Commons' });
-    }
-    for (const inc of incidents) {
-      const src = inc.image;
-      const credit = inc.sources[0]?.publisher;
-      if (!src || !credit || imgOutlets.has(credit) || images.length >= 30) continue;
-      imgOutlets.add(credit);
-      images.push({ src, caption: `${CATEGORY.en[inc.category] ?? inc.category}, ${inc.place}`, url: inc.sources[0]!.url, credit });
-    }
 
     /* every outlet behind the page, counted */
     const outletCount = new Map<string, number>();
     const bump = (name: string | undefined) => { if (name) outletCount.set(name, (outletCount.get(name) ?? 0) + 1); };
-    for (const e of in30) for (const p of e.provenance) bump(p.publisher);
+    for (const e of in30) for (const p of e.provenance) bump(outletName(p.publisher, p.url));
     for (const a of newsOut) bump(a.publisher);
     for (const h of headlines) for (const a of h.articles) bump(a.publisher);
     const sourceUrls = new Set<string>([
@@ -491,10 +534,31 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
         if (values.length === 0) continue;
         indicators.push({
           id: ind.id, label: ind.label, labelNb: ind.labelNb, unit: ind.unit, values,
-          url: `https://data.worldbank.org/indicator/${ind.id}?locations=${d.iso3.map((x) => x.slice(0, 2)).join('-')}`,
+          // The query the figures came from, by ISO3 code: the site's own ?locations= wants ISO2,
+          // which slicing ISO3 does not give (UKR is UA, not UK).
+          url: `https://api.worldbank.org/v2/country/${d.iso3.join(';')}/indicator/${ind.id}?format=json&mrnev=1`,
         });
       }
     }
+
+    /* UCDP's own fatality counts, a contrast to counts of media reports */
+    const span = (years: string[]) => {
+      const sorted = [...new Set(years)].sort();
+      return sorted.length > 1 ? `${sorted[0]}–${sorted[sorted.length - 1]}` : (sorted[0] ?? '');
+    };
+    const battleInd = indicators.find((ind) => ind.id === 'VC.BTL.DETH');
+    const battle = battleInd && battleInd.values.length
+      ? { total: Math.round(battleInd.values.reduce((sum, v) => sum + v.value, 0)), years: span(battleInd.values.map((v) => v.year)), url: battleInd.url }
+      : null;
+    const withFatalities = conflictsOut.filter((c) => typeof c.fatalities === 'number');
+    const other = withFatalities.length
+      ? {
+          total: Math.round(withFatalities.reduce((sum, c) => sum + (c.fatalities ?? 0), 0)),
+          years: span(withFatalities.map((c) => c.fatalitiesAsOf?.slice(0, 4)).filter((y): y is string => !!y)),
+          conflicts: withFatalities.length,
+        }
+      : null;
+    const ucdpFatalities = battle || other ? { battle, other } : null;
 
     let background: CrisisDetail['background'] = null;
     if (wiki?.en) {
@@ -506,8 +570,30 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
       }
     }
 
-    const placesEn = joinNames(d.fips.map((f) => countryName(f, 'en')), 'en');
-    const placesNb = joinNames(d.fips.map((f) => countryName(f, 'nb')), 'nb');
+    const status = { en: statusLine('en', stats), nb: statusLine('nb', stats) };
+
+    /* material for the machine-written summary: nothing the page does not already link */
+    const seenTitles = new Set<string>();
+    const summaryHeadlines = [
+      ...headlines.map((h) => ({ title: h.headline, url: h.url, publisher: h.publisher })),
+      ...newsOut.map((a) => ({ title: a.title, url: a.url, publisher: a.publisher })),
+    ].filter((h) => {
+      const key = normTitle(h.title);
+      if (seenTitles.has(key)) return false;
+      seenTitles.add(key);
+      return true;
+    }).slice(0, 18);
+    summaryInputs.push({
+      id: d.id,
+      name: d.name,
+      facts: [
+        status.en,
+        `${stats.corroborated7d} of the incidents this week were carried by two or more outlets.`,
+        ...(battle ? [`UCDP counted ${battle.total} battle-related deaths in ${battle.years}.`] : []),
+      ],
+      headlines: summaryHeadlines,
+      ...(background?.extract ? { background: background.extract } : {}),
+    });
 
     details.push({
       artifactVersion: 1,
@@ -517,10 +603,9 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
       center: [Math.round(center[0] * 100) / 100, Math.round(center[1] * 100) / 100],
       bbox,
       stats,
-      situation: {
-        en: situation('en', placesEn, stats, active, headlines[0]),
-        nb: situation('nb', placesNb, stats, active, headlines[0]),
-      },
+      status,
+      summary: null,
+      ucdpFatalities,
       background,
       indicators,
       conflicts: conflictsOut,
@@ -541,28 +626,19 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
     });
   }
 
-  /* level: the week's summed intensity, relative to the busiest crisis, on a log scale */
-  const weight = (d: CrisisDetail) =>
-    events
-      .filter((e) => d.countries.some((c) => c.fips === e.location.countryFips) && nowRef - Date.parse(e.occurredAt) < 7 * DAY)
-      .reduce((sum, e) => sum + e.intensity, 0);
-  const weights = new Map(details.map((d) => [d.id, weight(d)]));
-  const maxW = Math.max(1, ...weights.values());
+  /* level: the score relative to the highest-scoring crisis, on a log scale */
+  const maxScore = Math.max(1, ...details.map((d) => d.stats.score));
   for (const d of details) {
-    const w = weights.get(d.id) ?? 0;
-    d.stats.level = w === 0 ? 0 : Math.max(1, Math.min(5, Math.ceil((5 * Math.log1p(w)) / Math.log1p(maxW))));
+    const w = d.stats.score;
+    d.stats.level = w === 0 ? 0 : Math.max(1, Math.min(5, Math.ceil((5 * Math.log1p(w)) / Math.log1p(maxScore))));
   }
 
-  /* preview images for curated-feed articles, a few per run, cached by URL */
+  /* machine-written summaries, on their own slower clock; failures keep the last good text */
   if (!options.offline) {
-    const queue = [...new Set(ogQueue)].slice(0, settings.imageFetchPerRun);
-    for (let i = 0; i < queue.length; i += 8) {
-      const batch = queue.slice(i, i + 8);
-      const found = await Promise.all(batch.map((u) => previewImage(u)));
-      batch.forEach((u, j) => { cache.og[u] = found[j] ?? null; });
-    }
-    log(`preview images: looked up ${queue.length}`);
+    for (const line of await runSummaries(summaryInputs, summaryStates, settings.summary, now)) log(line);
+    writeInternal(summariesFile, summaryStates);
   }
+  for (const d of details) d.summary = currentSummary(summaryStates[d.id], settings.summary.maxAgeHours, now);
 
   /* write */
   const dir = path.join(dataDir, 'crises');
@@ -580,45 +656,117 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
         short: defs.find((x) => x.id === d.id)?.short ?? d.name, shortNb: defs.find((x) => x.id === d.id)?.shortNb ?? d.nameNb,
         fips: d.countries.map((c) => c.fips), center: d.center, bbox: d.bbox,
         last24h: d.stats.last24h, last7d: d.stats.last7d, prev7d: d.stats.prev7d, last30d: d.stats.last30d,
-        change7dPct: d.stats.change7dPct, level: d.stats.level,
-        spark: d.stats.daily.slice(-14).map((x) => x.count),
-        // For the card, a picture from conflict reporting first, then a Commons photograph,
-        // and only then whatever a news story carried: feed images are often off-topic.
-        image: d.images.find((im) => d.incidents.some((inc) => inc.image === im.src))
-          ?? d.images.find((im) => im.credit === 'Wikimedia Commons' && /\.jpe?g/i.test(im.src))
-          ?? d.images[0] ?? null,
+        change7dPct: d.stats.change7dPct, corroborated7d: d.stats.corroborated7d, score: d.stats.score, level: d.stats.level,
+        daily: d.stats.daily.map((x) => x.count),
+        // For sharing previews: the first map or place picture, never a portrait if avoidable.
+        image: d.images.find((im) => im.kind === 'map' || im.kind === 'place') ?? d.images.find((im) => im.kind !== 'person') ?? null,
         lead: lead
           ? { title: lead.headline, publisher: lead.publisher, url: lead.url, publishedAt: lead.lastSeenAt }
           : news0 ? { title: news0.title, publisher: news0.publisher, url: news0.url, publishedAt: news0.publishedAt } : null,
         sourceCount: d.sourceCount,
       };
     })
-    .sort((a, b) => b.level - a.level || b.last7d - a.last7d);
-  writeArtifact(path.join(dataDir, 'crises.json'), crisisIndex, { artifactVersion: 1, generatedAt, crises: index });
+    .sort((a, b) => b.score - a.score || b.last7d - a.last7d);
+  writeArtifact(path.join(dataDir, 'crises.json'), crisisIndex, {
+    artifactVersion: 1, generatedAt, eventsGeneratedAt: eventsArtifact.generatedAt, crises: index,
+  });
 
   /* compact incident stream for the map */
   const categories = [...new Set(events.map((e) => e.category))];
-  const catIndex = new Map(categories.map((c, i) => [c, i]));
+  const catIndex = new Map(categories.map((c, k) => [c, k]));
+  const intern = () => {
+    const list: string[] = [];
+    const at = new Map<string, number>();
+    return { list, id: (v: string) => { let k = at.get(v); if (k === undefined) { k = list.length; list.push(v); at.set(v, k); } return k; } };
+  };
+  const publishers = intern();
+  const countryCodes = intern();
   const compact = events
     .map((e) => {
       const p = e.provenance[0];
-      const publisher = p?.publisher ?? (p ? (() => { try { return new URL(p.url).hostname.replace(/^www\./, ''); } catch { return ''; } })() : '');
       return [
         Math.round(Date.parse(e.occurredAt) / 60_000),
         Math.round(e.location.lon * 100), Math.round(e.location.lat * 100),
-        catIndex.get(e.category) ?? 0, e.intensity,
+        catIndex.get(e.category) ?? 0, e.intensity, e.severity,
         crisisOfFips.get(e.location.countryFips) ?? -1,
-        e.confidence === 'reported' ? 1 : 0, e.reportCount,
-        placeOf(e.location.name), p?.url ?? '', publisher,
-      ] as [number, number, number, number, number, number, number, number, string, string, string];
+        e.distinctPublishers, e.reportCount,
+        placeOf(e.location.name), p?.url ?? '', publishers.id(outletName(p?.publisher, p?.url)),
+        countryCodes.id(e.location.countryFips), e.id.replace(/^evt_/, ''),
+      ] as [number, number, number, number, number, number, number, number, number, string, string, number, number, string];
     })
     .sort((a, b) => b[0] - a[0]);
+  const present = new Set(events.map((e) => e.id.replace(/^evt_/, '')));
+  const verifiedOut = Object.fromEntries(Object.entries(verified).filter(([id]) => present.has(id)));
   // Validated like every artifact, but written without indentation: it is the one file a
   // phone fetches before it can draw anything.
-  const mapPayload = mapEvents.parse({ artifactVersion: 1, generatedAt, categories, crises: defs.map((d) => d.id), events: compact });
+  const mapPayload = mapEvents.parse({
+    artifactVersion: 2, generatedAt, fields: [...MAP_EVENT_FIELDS], categories, crises: defs.map((d) => d.id),
+    publishers: publishers.list, countries: countryCodes.list, verified: verifiedOut, events: compact,
+  });
   const mapFile = path.join(dataDir, 'map-events.json');
   writeFileSync(`${mapFile}.tmp`, JSON.stringify(mapPayload));
   renameSync(`${mapFile}.tmp`, mapFile);
+
+  /* every country the map can open: its active conflicts on the register */
+  const countriesOut: Record<string, { name: string; nameNb: string; crisis: string | null; conflicts: { name: string; type: string; startYear?: string; fatalities?: number; fatalitiesAsOf?: string }[] }> = {};
+  const fipsSeen = new Set<string>([...activeByFips.keys(), ...events.map((e) => e.location.countryFips)]);
+  for (const fips of [...fipsSeen].sort()) {
+    if (!fips) continue;
+    const fromRegister = conflicts.flatMap((c) => c.countries).find((k) => k.fips === fips)?.name;
+    const en = COUNTRY[fips]?.en ?? fromRegister ?? events.find((e) => e.location.countryFips === fips)?.location.name.split(',').pop()?.trim() ?? fips;
+    const crisisIdx = crisisOfFips.get(fips);
+    countriesOut[fips] = {
+      name: en.replace(/^the /, ''),
+      nameNb: COUNTRY[fips]?.nb ?? en.replace(/^the /, ''),
+      crisis: crisisIdx === undefined ? null : defs[crisisIdx]!.id,
+      conflicts: (activeByFips.get(fips) ?? []).map((c) => {
+        const out: { name: string; type: string; startYear?: string; fatalities?: number; fatalitiesAsOf?: string } = { name: c.name, type: c.type };
+        if (c.startDate) out.startYear = c.startDate.slice(0, 4);
+        const fat = c.figures?.fatalitiesBestEstimate;
+        if (fat && typeof fat.value === 'number') {
+          out.fatalities = fat.value;
+          if (fat.asOf) out.fatalitiesAsOf = fat.asOf;
+        }
+        return out;
+      }),
+    };
+  }
+  // Written only when the register's picture of a country changes, so this file is quiet.
+  const countriesFile = path.join(dataDir, 'countries.json');
+  const previousCountries = readJson<{ countries: unknown }>(countriesFile);
+  if (JSON.stringify(previousCountries?.countries) !== JSON.stringify(countriesOut)) {
+    writeArtifact(countriesFile, countriesIndex, { artifactVersion: 1, generatedAt, countries: countriesOut });
+  }
+
+  /* the front page's snapshot */
+  const days = daysOf(nowRef);
+  const dayIdx = new Map(days.map((d, k) => [d, k]));
+  const recent = events.filter((e) => dayIdx.has(e.occurredAt.slice(0, 10)));
+  // Every corroborated incident, then single-source ones evenly, up to a phone-sized sample.
+  const corroboratedPts = recent.filter((e) => e.distinctPublishers >= 2);
+  const single = recent.filter((e) => e.distinctPublishers < 2);
+  const room = Math.max(0, 1400 - corroboratedPts.length);
+  const stride = Math.max(1, Math.ceil(single.length / Math.max(1, room)));
+  const sample = [...corroboratedPts.slice(0, 1400), ...single.filter((_, k) => k % stride === 0).slice(0, room)];
+  let briefOut: { date: string; headlines: { headline: string; publisher: string; url: string }[] } | null = null;
+  if (existsSync(editionsDir)) {
+    const latest = readdirSync(editionsDir).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort().pop();
+    const edition = latest ? readJson<{ date: string; leadStoryIds?: string[]; stories: { id: string; headline: string; headlineFrom: { publisher: string; url: string } }[] }>(path.join(editionsDir, latest)) : undefined;
+    if (edition) {
+      const lead = new Set(edition.leadStoryIds ?? []);
+      const ordered = [...edition.stories.filter((st) => lead.has(st.id)), ...edition.stories.filter((st) => !lead.has(st.id))];
+      briefOut = { date: edition.date, headlines: ordered.slice(0, 6).map((st) => ({ headline: st.headline, publisher: outletName(st.headlineFrom.publisher, st.headlineFrom.url), url: st.headlineFrom.url })) };
+    }
+  }
+  writeArtifact(path.join(dataDir, 'home.json'), homeSnapshot, {
+    artifactVersion: 1, generatedAt,
+    incidents7d: events.filter((e) => nowRef - Date.parse(e.occurredAt) < 7 * DAY).length,
+    crisesTracked: index.length,
+    days,
+    crises: index.slice(0, 12).map((c) => ({ id: c.id, name: c.name, nameNb: c.nameNb, short: c.short, shortNb: c.shortNb, center: c.center, last7d: c.last7d, score: c.score })),
+    points: sample.map((e) => [Math.round(e.location.lon * 10), Math.round(e.location.lat * 10), dayIdx.get(e.occurredAt.slice(0, 10))!, e.intensity, e.distinctPublishers >= 2 ? 1 : 0] as [number, number, number, number, number]),
+    brief: briefOut,
+  });
 
   if (!options.offline) writeCache(cache);
   return { crises: details.length, mapEvents: compact.length };

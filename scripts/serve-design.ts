@@ -17,12 +17,19 @@ const TYPES: Record<string, string> = {
   '.css': 'text/css; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
   '.svg': 'image/svg+xml',
+  '.woff2': 'font/woff2',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.mp4': 'video/mp4',
+  '.webm': 'video/webm',
 };
 
 createServer(async (request, response) => {
   const requested = decodeURIComponent((request.url ?? '/').split('?')[0] as string);
   const relative = requested === '/' ? 'site/index.html' : requested.replace(/^\/+/, '');
-  const filePath = path.join(root, relative);
+  let filePath = path.join(root, relative);
+  // Directories serve their index.html, as GitHub Pages and Netlify do.
+  if (relative === '' || relative.endsWith('/')) filePath = path.join(filePath, 'index.html');
 
   // Never serve outside the repository.
   if (!filePath.startsWith(root)) {
@@ -32,6 +39,10 @@ createServer(async (request, response) => {
 
   try {
     const info = await stat(filePath);
+    if (info.isDirectory()) {
+      response.writeHead(301, { location: `${requested}/` }).end();
+      return;
+    }
     if (!info.isFile()) throw new Error('not a file');
     const body = await readFile(filePath);
     response.writeHead(200, {

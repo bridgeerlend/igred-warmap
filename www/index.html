@@ -1,114 +1,87 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>IGRED · Institute for Geopolitical Risk and Economic Development</title>
-<meta name="description" content="An independent analysis body monitoring geopolitical risk and economic development worldwide, with sourced, verifiable analysis.">
-<meta name="color-scheme" content="light dark">
+<meta name="description" content="IGRED tracks armed conflict as it is reported and explains geopolitical risk with every source shown.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0B0B0A">
+<meta property="og:title" content="IGRED · Institute for Geopolitical Risk and Economic Development">
+<meta property="og:description" content="Armed conflict and geopolitical risk, with every source shown.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://igred.org/">
+<script>try{if(localStorage.getItem('igred-theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}</script>
 <link rel="preload" href="fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="atlas.css">
 <link rel="stylesheet" href="home.css">
 </head>
-<body>
+<body class="home">
 
-<a class="skip" href="#now">Skip to the content</a>
-
-<header class="top">
-  <a class="top-mark" href="./"><strong>IGRED</strong> <span data-i18n="wordmarkFull"></span></a>
-  <nav class="top-nav" aria-label="Products">
-    <a href="https://map.igred.org/" data-i18n="navMap"></a>
-    <a href="https://map.igred.org/brief/" data-i18n="navBrief"></a>
-  </nav>
-  <div class="top-tools">
-    <button type="button" class="pill" id="lang">NO</button>
-    <button type="button" class="pill" id="theme">Dark</button>
+<!-- The hero is a film made of today's data: it is drawn in the page from the same files the
+     map reads, so it is never out of date and weighs almost nothing. No buttons inside it. -->
+<header class="hero" id="hero" aria-label="IGRED">
+  <canvas class="hero-canvas" id="hero-canvas" aria-hidden="true"></canvas>
+  <div class="hero-scene" id="hero-scene" aria-live="off"></div>
+  <div class="hero-mark">
+    <p class="wordmark"><strong>IGRED</strong></p>
+    <p class="hero-name" data-i18n="fullName">Institute for Geopolitical Risk and Economic Development</p>
   </div>
+  <p class="hero-line" data-i18n="heroLine">Armed conflict and geopolitical risk, with every source shown.</p>
+  <a class="hero-down" href="#products" aria-label="Down">
+    <svg viewBox="0 0 16 24" width="14" height="22" aria-hidden="true"><path d="M8 1v20M1.5 15l6.5 6.5 6.5-6.5" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+  </a>
 </header>
 
 <main>
-  <section class="hero">
-    <div class="hero-text">
-      <h1 class="hero-title" data-i18n="heroTitle"></h1>
-      <p class="hero-lede" data-i18n="heroStandfirst"></p>
-      <div class="hero-actions">
-        <a class="btn btn-solid" href="https://map.igred.org/" data-i18n="ctaMap"></a>
-        <a class="btn" href="https://map.igred.org/brief/" data-i18n="ctaBrief"></a>
+  <section class="products" id="products" aria-labelledby="products-h">
+    <h2 class="section-h" id="products-h" data-i18n="productsHeading">What we publish</h2>
+    <div class="entries">
+      <a class="entry" href="https://map.igred.org/">
+        <div class="entry-preview" id="preview-map" aria-hidden="true"></div>
+        <h3 class="entry-name">Global Conflict Monitor</h3>
+        <p class="entry-body" data-i18n="mapBody">A live map of armed conflict. Open any crisis for the latest reporting, the numbers and every source behind them.</p>
+        <span class="link-button" data-i18n="open">Open</span>
+      </a>
+      <a class="entry" href="https://map.igred.org/brief/">
+        <div class="entry-preview entry-preview-text" id="preview-brief"></div>
+        <h3 class="entry-name">The IGRED Brief</h3>
+        <p class="entry-body" data-i18n="briefBody">A daily synthesis of geopolitical risk and economic development. Each edition is dated and fixed, so it can be cited.</p>
+        <span class="link-button" data-i18n="read">Read</span>
+      </a>
+      <div class="entry is-coming" aria-disabled="true">
+        <div class="entry-preview entry-preview-text"><p class="coming" data-i18n="coming">Coming</p></div>
+        <h3 class="entry-name">Reports</h3>
+        <p class="entry-body" data-i18n="reportsBody">Half-yearly assessments of geopolitical risk, written to the same framework each time so findings compare across editions.</p>
+      </div>
+      <div class="entry is-coming" aria-disabled="true">
+        <div class="entry-preview entry-preview-text"><p class="coming" data-i18n="coming">Coming</p></div>
+        <h3 class="entry-name">Knowledge base</h3>
+        <p class="entry-body" data-i18n="baseBody">Books, articles and research worth reading, each with the institute’s own assessment of what it argues and where it holds.</p>
       </div>
     </div>
-
-    <figure class="live">
-      <a class="live-map" id="live-map" href="https://map.igred.org/" aria-describedby="live-caption">
-        <svg id="live-svg" viewBox="0 0 1000 520" role="img" aria-labelledby="live-caption"></svg>
-      </a>
-      <figcaption class="live-caption" id="live-caption"></figcaption>
-    </figure>
   </section>
 
-  <section class="band" id="now" aria-labelledby="now-heading">
-    <div class="band-head">
-      <h2 class="band-title" id="now-heading" data-i18n="nowHeading"></h2>
-      <a class="band-link" href="https://map.igred.org/" data-i18n="nowAll"></a>
-    </div>
-    <ol class="cards" id="cards" aria-busy="true"></ol>
-  </section>
-
-  <section class="band" id="publish" aria-labelledby="publish-heading">
-    <div class="band-head">
-      <h2 class="band-title" id="publish-heading" data-i18n="productsHeading"></h2>
-    </div>
-    <ul class="products">
-      <li>
-        <a class="product" href="https://map.igred.org/">
-          <span class="product-name" data-i18n="mapName"></span>
-          <span class="product-kind" data-i18n="kindLive"></span>
-          <span class="product-body" data-i18n="mapBody"></span>
-        </a>
-      </li>
-      <li>
-        <a class="product" href="https://map.igred.org/brief/">
-          <span class="product-name" data-i18n="briefName"></span>
-          <span class="product-kind" data-i18n="kindDaily"></span>
-          <span class="product-body" data-i18n="briefBody"></span>
-        </a>
-      </li>
-      <li>
-        <div class="product is-coming">
-          <span class="product-name" data-i18n="reportsName"></span>
-          <span class="product-kind" data-i18n="kindTwiceYearly"></span>
-          <span class="product-body" data-i18n="reportsBody"></span>
-        </div>
-      </li>
-      <li>
-        <div class="product is-coming">
-          <span class="product-name" data-i18n="baseName"></span>
-          <span class="product-kind" data-i18n="kindOngoing"></span>
-          <span class="product-body" data-i18n="baseBody"></span>
-        </div>
-      </li>
-    </ul>
-  </section>
-
-  <section class="band about" aria-labelledby="about-heading">
-    <div class="band-head">
-      <h2 class="band-title" id="about-heading" data-i18n="whatHeading"></h2>
-    </div>
+  <section class="about" aria-labelledby="about-h">
+    <h2 class="section-h" id="about-h" data-i18n="aboutHeading">About IGRED</h2>
     <div class="about-body">
-      <p class="about-lede" data-i18n="whatBody1"></p>
-      <p data-i18n="whatBody2"></p>
+      <p class="about-lead" data-i18n="about1">IGRED is an independent analysis body. We track where political risk and economic conditions meet, and what that means for the countries and sectors exposed to both.</p>
+      <p data-i18n="about2">Everything we publish carries its sources. Each figure names where it came from, when it was collected, and links to the original, so a reader can check the work rather than take it on trust.</p>
       <ul class="people">
-        <li><span class="person-name">Erlend B. Moe</span> <span class="person-role" data-i18n="role"></span></li>
-        <li><span class="person-name">Viktor T. Bratberg</span> <span class="person-role" data-i18n="role"></span></li>
+        <li><span class="person-name">Erlend B. Moe</span> <span class="meta" data-i18n="role">Co-Founder &amp; Analyst</span></li>
+        <li><span class="person-name">Viktor T. Bratberg</span> <span class="meta" data-i18n="role">Co-Founder &amp; Analyst</span></li>
       </ul>
     </div>
   </section>
 </main>
 
-<footer class="foot">
-  <p data-i18n="wordmarkFull"></p>
-  <p><a href="mailto:contact@igred.org">contact@igred.org</a></p>
+<footer class="colophon">
+  <p class="meta"><strong>IGRED</strong> · <span data-i18n="fullName">Institute for Geopolitical Risk and Economic Development</span></p>
+  <p class="meta"><a href="mailto:contact@igred.org">contact@igred.org</a></p>
+  <p class="meta"><button type="button" class="link-button quiet" id="lang">NO</button></p>
+  <p class="meta"><button type="button" class="link-button quiet" id="theme">Light</button></p>
 </footer>
 
 <script type="module" src="home.js"></script>

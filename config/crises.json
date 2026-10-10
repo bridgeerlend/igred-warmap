@@ -11,7 +11,21 @@
     "gdeltSpacingMs": 6500,
     "wikipediaRefreshHours": 24,
     "worldBankRefreshHours": 168,
-    "imageFetchPerRun": 160
+    "$rankingNote": "Crises are ranked by score: the severity of each incident in the past seven days carried by two or more independent outlets, summed. Raw counts follow media attention, which English-language coverage inflates.",
+    "summary": {
+      "$note": "Three to five machine-written sentences per crisis, from headlines already on the page, checked by guardDraft in both languages. GitHub Models was retired on 30 July 2026, so any OpenAI-compatible free tier works: add its key as a repository secret and it is used. A provider whose key is absent is never called; no key at all leaves the status line alone. Only free tiers belong here: this must never cost money and never stop the run.",
+      "enabled": true,
+      "minHoursBetween": 3,
+      "maxAgeHours": 72,
+      "maxPerRun": 30,
+      "maxWords": 110,
+      "timeoutMs": 45000,
+      "providers": [
+        { "id": "gemini", "url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", "model": "gemini-2.5-flash-lite", "keyEnv": "GEMINI_API_KEY" },
+        { "id": "groq", "url": "https://api.groq.com/openai/v1/chat/completions", "model": "llama-3.3-70b-versatile", "keyEnv": "GROQ_API_KEY" },
+        { "id": "mistral", "url": "https://api.mistral.ai/v1/chat/completions", "model": "mistral-small-latest", "keyEnv": "MISTRAL_API_KEY" }
+      ]
+    }
   },
   "crises": [
     { "id": "ukraine", "short": "Ukraine", "shortNb": "Ukraina", "name": "Russia's war in Ukraine", "nameNb": "Krigen i Ukraina", "region": "Europe", "regionNb": "Europa",

@@ -12,7 +12,7 @@ import { repoRoot } from '../src/core/util/paths.js';
 import { toView, VIEW_HEIGHT, VIEW_WIDTH, X_MAX, Y_MAX } from './lib/projection.js';
 
 const buildDir = path.join(repoRoot, 'design', 'build');
-const siteDir = path.join(repoRoot, 'site');
+const wwwDir = path.join(repoRoot, 'www');
 
 const round = (value: number): string => value.toFixed(1).replace(/\.0$/, '');
 
@@ -177,8 +177,8 @@ const output = {
   countries,
 };
 
-// The site is the canonical consumer; the design explorations read the same file.
-writeFileSync(path.join(siteDir, 'world.json'), JSON.stringify(output), 'utf-8');
+// The front page's hero is the canonical consumer; the design explorations read the same file.
+writeFileSync(path.join(wwwDir, 'world.json'), JSON.stringify(output), 'utf-8');
 
 const bytes = JSON.stringify(output).length;
 console.log(

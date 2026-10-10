@@ -6,7 +6,7 @@
   "region": "Asia",
   "regionNb": "Asia",
   "auto": false,
-  "generatedAt": "2026-10-10T16:19:13.143Z",
+  "generatedAt": "2026-10-10T19:30:09.229Z",
   "countries": [
     {
       "fips": "IN",
@@ -31,6 +31,8 @@
     "change7dPct": -10.3,
     "reported7d": 113,
     "outlets30d": 201,
+    "corroborated7d": 44,
+    "score": 164,
     "level": 5,
     "daily": [
       {
@@ -222,9 +224,22 @@
       }
     ]
   },
-  "situation": {
-    "en": "321 armed incidents were reported in India in the past seven days, roughly as many as the week before. Most were armed clashs (53%), followed by armed assaults (21%). 113 of them were carried by two or more outlets. The most reported locations over the past month were Delhi, Mumbai and Hyderabad. UCDP lists 4 active armed conflicts here, the oldest dating from 1948. The most widely covered story this week: “India's 'cockroach' movement chief detained ahead of major protest” (France 24, 6 outlets).",
-    "nb": "321 væpnede hendelser ble meldt i India de siste sju dagene, omtrent like mange som uken før. Flest gjaldt væpnet sammenstøt (53 prosent), deretter væpnet angrep (21 prosent). 113 av dem ble omtalt av to eller flere medier. De mest omtalte stedene den siste måneden var Delhi, Mumbai og Hyderabad. UCDP fører 4 aktive væpnede konflikter her, den eldste fra 1948. Mest omtalte sak denne uken: «India's 'cockroach' movement chief detained ahead of major protest» (France 24, 6 medier)."
+  "status": {
+    "en": "321 armed incidents reported in the past seven days, most of them in Delhi, Mumbai and Hyderabad.",
+    "nb": "321 væpnede hendelser meldt de siste sju dagene, flest i Delhi, Mumbai og Hyderabad."
+  },
+  "summary": null,
+  "ucdpFatalities": {
+    "battle": {
+      "total": 437,
+      "years": "2024",
+      "url": "https://api.worldbank.org/v2/country/IND/indicator/VC.BTL.DETH?format=json&mrnev=1"
+    },
+    "other": {
+      "total": 143,
+      "years": "2023",
+      "conflicts": 2
+    }
   },
   "background": {
     "title": "Kashmir conflict",
@@ -246,7 +261,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/SP.POP.TOTL?locations=IN"
+      "url": "https://api.worldbank.org/v2/country/IND/indicator/SP.POP.TOTL?format=json&mrnev=1"
     },
     {
       "id": "NY.GDP.PCAP.CD",
@@ -261,7 +276,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=IN"
+      "url": "https://api.worldbank.org/v2/country/IND/indicator/NY.GDP.PCAP.CD?format=json&mrnev=1"
     },
     {
       "id": "NY.GDP.MKTP.KD.ZG",
@@ -276,7 +291,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG?locations=IN"
+      "url": "https://api.worldbank.org/v2/country/IND/indicator/NY.GDP.MKTP.KD.ZG?format=json&mrnev=1"
     },
     {
       "id": "FP.CPI.TOTL.ZG",
@@ -291,7 +306,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?locations=IN"
+      "url": "https://api.worldbank.org/v2/country/IND/indicator/FP.CPI.TOTL.ZG?format=json&mrnev=1"
     },
     {
       "id": "SI.POV.DDAY",
@@ -306,7 +321,7 @@
           "year": "2023"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/SI.POV.DDAY?locations=IN"
+      "url": "https://api.worldbank.org/v2/country/IND/indicator/SI.POV.DDAY?format=json&mrnev=1"
     },
     {
       "id": "VC.BTL.DETH",
@@ -321,7 +336,7 @@
           "year": "2024"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/VC.BTL.DETH?locations=IN"
+      "url": "https://api.worldbank.org/v2/country/IND/indicator/VC.BTL.DETH?format=json&mrnev=1"
     }
   ],
   "conflicts": [
@@ -369,6 +384,7 @@
   ],
   "headlines": [
     {
+      "storyId": "story_2c55584ca49602f9",
       "headline": "India's 'cockroach' movement chief detained ahead of major protest",
       "publisher": "France 24",
       "url": "https://www.france24.com/en/asia-pacific/20261010-india-s-cockroach-movement-chief-detained-ahead-of-major-protest",
@@ -440,6 +456,7 @@
       ]
     },
     {
+      "storyId": "story_182abb7259e808cd",
       "headline": "India’s central bank tries to shore up rupee as it nears record lows",
       "publisher": "Financial Times",
       "url": "https://www.ft.com/content/b373cf00-9a94-4dc7-bdda-bc7006da1148?syn-25a6b1a6=1",
@@ -458,6 +475,7 @@
       ]
     },
     {
+      "storyId": "story_60b0fa8dc7052da6",
       "headline": "New Delhi’s Crackdown on Protesters",
       "publisher": "The New York Times",
       "url": "https://www.nytimes.com/video/world/asia/100000011193986/india-protest-delhi-crackdown.html",
@@ -484,11 +502,75 @@
   ],
   "news": [
     {
-      "title": "5 Killed, 30 Houses And Shops Burned As Violence Breaks Out In Manipur Again",
-      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPbkt2NXNZUHJzZ2RLSnNLdzEtOURwY1hzQVBIUXJIU1FxNkhzRVlacEIzckRzUDFZVWVVckNNYkZwdWVmUG93QVl3aHR3WGh4QTlVdERlM01CYVFBUFdtVExjVDV5bW1tTS1felBxLTEzeWFFeVpFenJLMjI5ZDBEcGNJOVBfV2JVWjF4ZTIwb2Njd3dUOEVPakk0WFpMbzVqOFM0elRCNUV1emt4YTdISHd2RjJ5eEnSAb8BQVVfeXFMTWRyTVNFY21VZ3ZfSUZWTW1UT2JpTmhoQzU5Y2VsRFgxRXZQcThJbGIyVE5DVWZVQVVnV2ZfU2RnQWw1VFFFT1JmSm16RlNaRnk4emZEUU9LRzNZVUVtQkdQZnZnc28zVzRsc0h1aVRqaFI0M2cwcHhmQkFYczYzcm4waDZHWnB4c0NZb0dTejdBUWg3VThxMU8ydHBlM1ctY2ZnaUR4dTJUbW8tR0QydDZxX1J4TzNrb2hLX1pYUHc?oc=5",
-      "publisher": "NDTV",
-      "domain": "ndtv.com",
-      "publishedAt": "2026-10-10T15:40:36.000Z",
+      "title": "Aga Ruhullah Mehdi Criticises Security Deployment to Prevent Delhi Protest",
+      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQQ180NFJnUDNDMUhxMll2aHV0djNBWE9GTjN1akxQVTMxSmpDdGxTQ1pUcnV1dWZBbXVIT21yZmlGREdpTmdZMTFqOEVmeVJsR0FfX3BYYk1Ga0R5RjBrbjBrMHVxcGRjMjJhT01UNzZCRzRCNHhCN2lCUWFfd3pDN2dXNUEyREZvTjZmODR4dw?oc=5",
+      "publisher": "Rising Kashmir",
+      "domain": "risingkashmir.com",
+      "publishedAt": "2026-10-10T17:17:17.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "At least five killed in fresh Manipur violence",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOZ3h5OFhITWF1YnZWODVURmpSVVQ5cExTcXhBbW5CQ1VYT2RBVVFXbUFHZUNIQ3FGVWkzSjlnQWphbTBQaWxjTndFdGFTT0Z1QWtLSXFsOENUYk5nbW9vMUZ3amQ1VF9uTGM1bHpzZVM2YlZxMWgzZzVnaHZ0TjJ3ZlNLR0tfRHlWQXZ4QVdXbnhsMjJDdmlOZHdXNlBQUlJqMEF2VXZ2MzRHWTRkWTdMeWJxWdIBugFBVV95cUxOUnlPUjRWSm1PNWpKRnAzbWxCREJKdGJ6NzVPZ1g0RDNkREJmanpOQmQzckNKSnFnNkF0a0NiUXJ6ZHVzUm1RbDMwUk5HRERDNjRmOF9FeEM5Wmx6Y2RycUx4TEd0R21oOGhqWnNmNWRWOUpja1laYjNwZDlnNklGMkhiUUVEemNQSnRvWjAxdDhTYVl4eUx0QXA3ZGd2UXowUllwY25tSWljYlo2ZlRhTkpQdktEa1pVbHc?oc=5",
+      "publisher": "The Hindu",
+      "domain": "thehindu.com",
+      "publishedAt": "2026-10-10T17:12:28.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "Ruhullah Mehdi Slams Heavy Security Deployment to Prevent Delhi Protest",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOeEhaRS1Gc0RhVVVWUnlqaXkycVNVSUp4Szl4S21rRE5USi1tbjl1cDh2ODNBTnVkNkRPUExWZjQxRG1SQUFIY2ZibWxjMWlVZktKTzFCS01fRldXV0dVdDdXbm9QMWxZc1o4bnNGaFFSU0k0alZyZU5kQ2ZkQ0pXb2N5LXFBWm45S29WUndERFhCMnM0TE5aSWRyLTk5cjJKOU9mWmtB?oc=5",
+      "publisher": "Kashmir Life",
+      "domain": "kashmirlife.net",
+      "publishedAt": "2026-10-10T16:54:43.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "Nine Killed, 14 Houses Torched in Fresh Violence Across Manipur Hill Districts",
+      "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxQb3dXR2RPcEFVY09hYlRtbEpMSUNjRjVkNl85QmNQN3hBS0MxUWlxaThkNmJ1RXpQUkp0VVFqVHdaaVBVYnhDNGN5T3hrcXQxaElwRVZPN0VCVzQyVHQtVWZkb0xoX1BWR0VXVTBQV2ppMjI4Ty15RktFY0xlei1DM08zWjVEYmt0QUV1OXRUWEY3WngyMjA0YURXX3pJMDdjcDJueVFMUkdRN2NMQkEwXw?oc=5",
+      "publisher": "FM Bharat",
+      "domain": "fmbharat.com",
+      "publishedAt": "2026-10-10T16:40:50.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "PM Modi assures all possible help to Manipur to restore peace, normalcy",
+      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNeV9kanc4Sl9MZWd1dzVVam5welVWTDB6NlYxSGJ4ajlfR2NEcEZlUXpFN1NsOFN4bXdaRTl4WG05ajBGUE11N2dxbkFnR3E0eW85Nm95eWM1UFN5dHpMOU1nR2VQTEthQVI3WGZpamdtM01zRVVhQUpxaHhXWVpjTDFqbUNmMEJlODZlSHdacTU0X3J0UFdPYU1fQ0hYWUdyUF9JMFJUbG03OUFNcEdlVVJ6TFh1TXhUNnNIaDBn?oc=5",
+      "publisher": "Deccan Herald",
+      "domain": "deccanherald.com",
+      "publishedAt": "2026-10-10T16:40:10.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "5 killed as violence breaks out in Manipur again",
+      "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE9zejFlMnVGU0thdXEyXy1BY0tlOVdtY2JJNGJMUFRTOGt4SkViWWh6VTc3NDkzalRKaXhXYWNIdDB3MldWSUVJNVAtQ3NZSzZwd25sNUNuc0R5RVlQTVlyQk43NGY?oc=5",
+      "publisher": "Jagonews24",
+      "domain": "jagonews24.com",
+      "publishedAt": "2026-10-10T16:16:48.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "Manipur: CoTU shutdown brings Kangpokpi to a standstill amid security concerns",
+      "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxOTFJVOHFsdHl3OU52RDJUZmVySHZWckZsemZTc3ZKVHZRNEthTlZVZTA2REIzM012VDJ2NlZ1bVZab2dCNlpZeWI3OVVLR2dLZmhuWWl2azh5U2tjcGRiQW1aeFY0WXAzSHdqV1ZtVE8zdUVUNmxudWlxY2FLWHprandLdTctUHRQSFd2dUtvemxWbE5xcFk5NjFjYzkwRFVPVnFJY0x0NDhadFpUVENYU3VMRllXdTRYU0xadk1Kb2RtXzAtY0hYb2tvOTlpZW9VM0pPQ9IB2gFBVV95cUxQcEhPQWxJMVdzU1hvNHROenMydTJLOVpkelpEV3I4UzdGZFZhcElIczMzdjNDUE95Yl9IRG9BbExlVTBSR3JVV0NZV2tlS1BvRzBYM0lMRjdNTV9Hck0tdEtUYUdiNS1RTHkxOFZNY2oxQWNTY2tHQ0dDQzk3V1lYdFpfbjN5elRvRlFMVWxnNVhwOHhySHllUnFYSWtqMTQtNmRqRkE2MzFXeGNFRjNJVDJ6eThXSWhPVFRKdFY5SlExaUlMbC1BM0hkS2RncVdISWZ6a3RxNTdoZw?oc=5",
+      "publisher": "India Today NE",
+      "domain": "indiatodayne.in",
+      "publishedAt": "2026-10-10T16:00:56.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "5 killed in fresh Kuki-Naga clashes in Manipur, 10 houses torched",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPeGlBaG42VE5mSkJsY0t3VFF2c1VvdDFOa2RDVHV2OS1CaHhPSnZFOEtFVWl5RldRZ1o1MURIUDVlT0RiTDgwN3hobV84Zk4tWnQ0V0RweXQ0OHJISTJ2Z0wwdzI3aUFmU2VlaFRkemg5QnhQbGkxWWp6X09LVHZTUnNpa1ZxcGlGRXRBaTdEb0ZteE1OVVczbTVEZFh0SElzVkVraUJqaGzSAagBQVVfeXFMT3hpQWhuNlROZkpCbGNLd1RRdnNVb3QxTmtkQ1R1djktQmh4T0p2RThLRVVpeUZXUWdaNTFESFA1ZU9EYkw4MDd4aG1fOGZOLVp0NFdEcHl0NDhySEkydmdMMHcyN2lBZlNlZWhUZHpoOUJ4UGxpMVlqel9PS1R2U1JzaWtWcXBpRkV0QWk3RG9GbXhNTlVXM201RGRYdEhJc1ZFa2lCamhs?oc=5",
+      "publisher": "WION",
+      "domain": "wionews.com",
+      "publishedAt": "2026-10-10T15:25:00.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "Manipur hills flare up again, Naga-Kuki clashes claim at least 6 lives in 24 hours",
+      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNYVduOTNNNmNHVk93VXFpLVA4aUZiOHV2RWwxYzRSal9CTHVKUUxub1I0Y3lJelZNbzdvbVpJSHRlZnFLLTZPT3V1SVBUYVlCTEI3YVhXN0pfdzFIRDlPY0dfTWJLSmd2REppQS1QbzN2V3I1WHRUaEdWVk1VWTR0UWhNX0pSUEZpODZwQXZtVmhaak9HSDBsSUljVHNWUS1VYlhBcDhfZlVjOFdaQ0UxNnV3azhoLV8tdnRnMtIBvAFBVV95cUxNYVduOTNNNmNHVk93VXFpLVA4aUZiOHV2RWwxYzRSal9CTHVKUUxub1I0Y3lJelZNbzdvbVpJSHRlZnFLLTZPT3V1SVBUYVlCTEI3YVhXN0pfdzFIRDlPY0dfTWJLSmd2REppQS1QbzN2V3I1WHRUaEdWVk1VWTR0UWhNX0pSUEZpODZwQXZtVmhaak9HSDBsSUljVHNWUS1VYlhBcDhfZlVjOFdaQ0UxNnV3azhoLV8tdnRnMg?oc=5",
+      "publisher": "ThePrint",
+      "domain": "theprint.in",
+      "publishedAt": "2026-10-10T15:12:13.000Z",
       "via": "gnews"
     },
     {
@@ -501,15 +583,15 @@
     },
     {
       "title": "Manipur: Nine killed within 24 hours in three districts",
-      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPQmhKOVhVVW9YU3dNYVhCdXVpUmxwYWRGdlNUc0REajZnVUtNem5tQV9QWGNmbWQtdURKc3EzQ3pLc1pyUUcyc21zRGpJdmRMNHhXUmZXdEpsYkppSW04VWduYUF4Vm96R1FwMHZxSXV0TExCVGtCVGVRWnRKdnJKQ2RGbFk3NmQyUEVpS05IUzhnc0FubWJhdlR0RVrSAaIBQVVfeXFMTm1LY1Z2R2xlQVlXUFhpUU1yeVVidHNkTzhTUGtVNTVNWkFhdXg2ZFcwM0FYWEhEVnBzS0FLV29qeVAtVHdCVlpjYlhpbFZtdS1aX0hucGZuclcwaERtQUN4SWZwMnhBWlY0SkdwZ0VSRFNJcThqMkJub2x1Uk96WVJGMWN1T0FaV25UbF9GX0drcEU5bVBHWDFOcWw2NHJSUTZB?oc=5",
+      "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxObUtjVnZHbGVBWVdQWGlRTXJ5VWJ0c2RPOFNQa1U1NU1aQWF1eDZkVzAzQVhYSERWcHNLQUtXb2p5UC1Ud0JWWmNiWGlsVm11LVpfSG5wZm5yVzBoRG1BQ3hJZnAyeEFaVjRKR3BnRVJEU0lxOGoyQm5vbHVST3pZUkYxY3VPQVpXblRsX0ZfR2twRTltUEdYMU5xbDY0clJRNkHSAaIBQVVfeXFMTm1LY1Z2R2xlQVlXUFhpUU1yeVVidHNkTzhTUGtVNTVNWkFhdXg2ZFcwM0FYWEhEVnBzS0FLV29qeVAtVHdCVlpjYlhpbFZtdS1aX0hucGZuclcwaERtQUN4SWZwMnhBWlY0SkdwZ0VSRFNJcThqMkJub2x1Uk96WVJGMWN1T0FaV25UbF9GX0drcEU5bVBHWDFOcWw2NHJSUTZB?oc=5",
       "publisher": "Scroll.in",
-      "domain": "scroll.in",
+      "domain": "amp.scroll.in",
       "publishedAt": "2026-10-10T14:39:00.000Z",
       "via": "gnews"
     },
     {
       "title": "Three civilians killed in Manipur’s Ukhrul, Kamjong; Manipur Deputy CM calls for impartial probe",
-      "url": "https://news.google.com/rss/articles/CBMi7wFBVV95cUxOajVCa0NMNkZCcV8wdjNtQXdoZ1FSTi1qdEZPZC1VM1p5T0ZhMUZFM183QTM1TkU2aDg5U192V1piSDM5allvRHdNR0RSLTFTYnJ2U3Q0d0RNaVNhcXNmMjFvVTd5NUx4TUQ0Wml3YlRRaUFLSGJDbG8xeDVZUU40RFZPWTNMRDItSDV6WlZiazdTRHVlcjBDU0NGbGtNaE1EQk9BUllJNjlhQWFOelNfMUxhT0NXYUxnZlVjZ3RoY3lTZzNvTWViXzdiN2Y5bW9TMV9YSlhzT2V3ZGVwTXNNa19nN0IzWmlYMm5XeGhEc9IB7wFBVV95cUxOajVCa0NMNkZCcV8wdjNtQXdoZ1FSTi1qdEZPZC1VM1p5T0ZhMUZFM183QTM1TkU2aDg5U192V1piSDM5allvRHdNR0RSLTFTYnJ2U3Q0d0RNaVNhcXNmMjFvVTd5NUx4TUQ0Wml3YlRRaUFLSGJDbG8xeDVZUU40RFZPWTNMRDItSDV6WlZiazdTRHVlcjBDU0NGbGtNaE1EQk9BUllJNjlhQWFOelNfMUxhT0NXYUxnZlVjZ3RoY3lTZzNvTWViXzdiN2Y5bW9TMV9YSlhzT2V3ZGVwTXNNa19nN0IzWmlYMm5XeGhEcw?oc=5",
+      "url": "https://news.google.com/rss/articles/CBMi6gFBVV95cUxQWUxHOVY3SHdYTDNaUThWSnBVVVhFU3pLRUFwN1pkeFoxYU9ZdDEwY0d6RDFRU2hWOGtHUkhJaWxUUjVGU3ZPSFVSVFhSVHlfd0N1M1pOMTA4eDJCQlhJNDc3U0UwMU1HVk16MHFrUGsxcUlkekUycHl3VE5YYlU3NEl2RXJhSDFoNzd5S2MtUGVIbS1xaGRVM3QxRTcxbDhQTzFKbUhTQnJmWjl3YmdheWRTaUQ0bHZ6UExiZjllZmdTMWZPQU81b2xhM1RDSExfNHBNNTlJeldzOEFTb0N4dmcxM21XTXg1YkHSAe8BQVVfeXFMTmo1QmtDTDZGQnFfMHYzbUF3aGdRUk4tanRGT2QtVTNaeU9GYTFGRTNfN0EzNU5FNmg4OVNfdldaYkgzOWpZb0R3TUdEUi0xU2JydlN0NHdETWlTYXFzZjIxb1U3eTVMeE1ENFppd2JUUWlBS0hiQ2xvMXg1WVFONERWT1kzTEQyLUg1elpWYms3U0R1ZXIwQ1NDRmxrTWhNREJPQVJZSTY5YUFhTnpTXzFMYU9DV2FMZ2ZVY2d0aGN5U2czb01lYl83YjdmOW1vUzFfWEpYc09ld2RlcE1zTWtfZzdCM1ppWDJuV3hoRHM?oc=5",
       "publisher": "India Today NE",
       "domain": "indiatodayne.in",
       "publishedAt": "2026-10-10T14:27:08.000Z",
@@ -525,7 +607,7 @@
     },
     {
       "title": "Five killed, 10 houses torched in fresh Kuki-Naga clashes in Manipur",
-      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNZE9DcERWUHI5eVFPZThsQzFoeTg1Rm0wV0RHa0lTbEwwSExjT0cwXzZ4Z3dzVXluZnZhMFVOaFlGU1dVYlNzbWJiUGg4bmVSNFRxemZnZGVHRThXdEZlNmVmdm1LOFJPeW9JVktycXdLX0x6TzlZVk0tdWUtTlhVcGNqRC1uaEl6b0l3MHRoc0w4VHBpWHRBRElJUXNfZXpOZERoWlI0b1Jvb2Nw0gGwAUFVX3lxTFBIdUp4N2lzZ1dnLU1iR1p2RTBlVzlib2JhN2c5SG9ONk13dFZmQnlnRkp1UTBFbTFvVzNlSWZweHhsc3V0UUQ4aWNGQ01aZFFiQUdSZHJVd0hnNGQyX0F2S0E0WFl0VTBRMUVfcmw3aEZoRlBnUXVCM0JOc2UxVi1oeDZsa0o3bWdRQUhic01lSVhCamRBWHgxaEotbHlxYl9CU01CQ2NoY2dyc2QtMXVo?oc=5",
+      "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxQSHVKeDdpc2dXZy1NYkdadkUwZVc5Ym9iYTdnOUhvTjZNd3RWZkJ5Z0ZKdVEwRW0xb1czZUlmcHh4bHN1dFFEOGljRkNNWmRRYkFHUmRyVXdIZzRkMl9BdktBNFhZdFUwUTFFX3JsN2hGaEZQZ1F1QjNCTnNlMVYtaHg2bGtKN21nUUFIYnNNZUlYQmpkQVh4MWhKLWx5cWJfQlNNQkNjaGNncnNkLTF1aNIBsAFBVV95cUxQSHVKeDdpc2dXZy1NYkdadkUwZVc5Ym9iYTdnOUhvTjZNd3RWZkJ5Z0ZKdVEwRW0xb1czZUlmcHh4bHN1dFFEOGljRkNNWmRRYkFHUmRyVXdIZzRkMl9BdktBNFhZdFUwUTFFX3JsN2hGaEZQZ1F1QjNCTnNlMVYtaHg2bGtKN21nUUFIYnNNZUlYQmpkQVh4MWhKLWx5cWJfQlNNQkNjaGNncnNkLTF1aA?oc=5",
       "publisher": "The Tribune",
       "domain": "tribuneindia.com",
       "publishedAt": "2026-10-10T14:14:31.000Z",
@@ -540,11 +622,27 @@
       "via": "gnews"
     },
     {
-      "title": "At least 11 killed, several injured in fresh Manipur violence",
-      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQb0kybnNGcEJmTVc3VVBtQ2pEN0ctc1U0cEdsb3hKOG1YSlAwclBWQjlxNTYxTU5GQ0FqYWZIOU1venRpZzRHY0dOa3hZRlhIWlh2U0dTUUppbjkyaVQxY1JUUjlaMV81a1dSU0dJN3BGR2h1WVlDZlJiT3hwcjFwRmhYeWRLZzNSLVNGM1VqNWVmZllhaFhPUmprQUVDODJrdU53?oc=5",
-      "publisher": "EastMojo",
-      "domain": "eastmojo.com",
-      "publishedAt": "2026-10-10T13:13:41.000Z",
+      "title": "Violence in Manipur’s Kamjong, Ukhrul leaves 5 dead: Militants torch police station, 10 houses; over 40 kil...",
+      "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQaHZxX1dyOEx4Ql83czl6bXdxclMtLXpVNFl0YkVfd0lHMHl6eDhUeXoyaWhDY1FFTHFLYXhZS01RLUl3c1lVTmJSSDY2X1FORzFMR2hDbjNXM1Y5NWIxREZSek1wNEt5ZmsyOXJDMUJ1clNLenJXNU9qZWNXUDNoVU15bFVJMGF1bjJfcTJBamd1UnRILS1fNUFYa0ROZTlBZzZ0VEY1ZWxYSDhLRU5fa2k2NU5yOER3OWoyRzZIa0dwZ9IBwgFBVV95cUxQaHZxX1dyOEx4Ql83czl6bXdxclMtLXpVNFl0YkVfd0lHMHl6eDhUeXoyaWhDY1FFTHFLYXhZS01RLUl3c1lVTmJSSDY2X1FORzFMR2hDbjNXM1Y5NWIxREZSek1wNEt5ZmsyOXJDMUJ1clNLenJXNU9qZWNXUDNoVU15bFVJMGF1bjJfcTJBamd1UnRILS1fNUFYa0ROZTlBZzZ0VEY1ZWxYSDhLRU5fa2k2NU5yOER3OWoyRzZIa0dwZw?oc=5",
+      "publisher": "Bhaskar English",
+      "domain": "bhaskarenglish.in",
+      "publishedAt": "2026-10-10T13:44:15.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "5 killed in fresh violence in strife-torn Manipur",
+      "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxOLVY1N0tETk5jNzl5X3RQa290X2dLeERGS2ppQWRBSTVnSG5zMHlEVlFydjJ0bnk3LTZGM3ROdmtIeVNNY29xTy1OYU1hUWQtQTluNERaVm9kMjkwRTVKa3N4Wms2UHN0QjJfOUdXSHZMVmZ4dXQ1WF9CdXZPcW9STkNGWUZ5TkdPVVd1U3BZMENBQ2FTUjRWdF9PQ1R1NmxUVFpLQWxrbFpSU0t3ZFZvekZBdkNxR3NxcmVhMVU4M2NzMl9TSnUzdzd1RzY?oc=5",
+      "publisher": "Rediff",
+      "domain": "rediff.com",
+      "publishedAt": "2026-10-10T13:43:01.000Z",
+      "via": "gnews"
+    },
+    {
+      "title": "Two Tangkhul Family Members Among Eight Confirmed Dead in Manipur Clashes",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPYzIwbDJIUmNBZ3QxMWNXUzA3NXNGek1oTXNuWGRWaHhfM1pPY3ZkQjdJT08xU1V2ZWFLS0czYk5CaTFHTjZhbHVnNDNvUnNCZXVlbE5ONjVJaUJIMHZ0UFlhRktwU3lVaHBFZFVqS0FQS2xkckphSGlwZWtLQmdrTDJ3U2k2ZlNiaDB1dk9iZTBEU1l6Tk5MNGVPOEFCams?oc=5",
+      "publisher": "Ukhrul Times",
+      "domain": "ukhrultimes.com",
+      "publishedAt": "2026-10-10T13:41:51.000Z",
       "via": "gnews"
     },
     {
@@ -552,7 +650,6 @@
       "url": "https://www.aljazeera.com/news/2026/10/10/indias-cockroach-leaders-detained-new-delhi-in-lockdown?traffic_source=rss",
       "publisher": "Al Jazeera",
       "publishedAt": "2026-10-10T12:50:34.000Z",
-      "image": "https://www.aljazeera.com/wp-content/uploads/2026/10/2026-10-10T071845Z_1459547873_RC250OABX3V4_RTRMADP_3_INDIA-POLITICS-GEN-Z-1791626580.jpg?resize=1920%2C1440",
       "via": "feed",
       "tier": 1
     },
@@ -571,14 +668,6 @@
       "publishedAt": "2026-10-10T12:29:31.000Z",
       "via": "feed",
       "tier": 1
-    },
-    {
-      "title": "3 killed in fresh Manipur clashes, tribal body calls 24-hr shutdown",
-      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNTFkzVUhGdDU0UF8zQlFSejBpcFRKRXV5VUJ2bzlkOWdOMDh6TFVUdGhPRjhKclUwbXdWeks5OVVVdi1Nc1RsS3pqelc2NUlwX0E5bWVwNVVBYzZpNmRVS3dCNVdSaXNibkhrYXZTNWlXUEdiU2Rzd0g3UTJGSGFfLU1uQV8xRXJoXzBtWGFscm5uWjZwUGtIX2NmbVFJN0hqVnE3cVNxd182aDN2QXJSd19R0gGyAUFVX3lxTE1MWTNVSEZ0NTRQXzNCUVJ6MGlwVEpFdXlVQnZvOWQ5Z04wOHpMVVR0aE9GOEpyVTBtd1Z6Szk5VVV2LU1zVGxLemp6VzY1SXBfQTltZXA1VUFjNmk2ZFVLd0I1V1Jpc2JuSGthdlM1aVdQR2JTZHN3SDdRMkZIYV8tTW5BXzFFcmhfMG1YYWxybm5aNnBQa0hfY2ZtUUk3SGpWcTdxU3F3XzZoM3ZBclJ3X1E?oc=5",
-      "publisher": "Madhyamam",
-      "domain": "madhyamamonline.com",
-      "publishedAt": "2026-10-10T12:26:56.000Z",
-      "via": "gnews"
     },
     {
       "title": "Police arrest leader of India’s ‘Cockroach’ movement as protesters take to streets",
@@ -665,7 +754,6 @@
       "url": "https://www.france24.com/en/video/20261010-india-s-cockroach-movement-this-is-unprecedented",
       "publisher": "France 24",
       "publishedAt": "2026-10-10T09:20:21.000Z",
-      "image": "https://s.france24.com/media/display/2fe79dce-c488-11f1-b92e-53993c5f1f18/w:1280/p:16x9/EN-20261010-090404-091253-CS.jpg",
       "via": "feed",
       "tier": 1
     },
@@ -682,7 +770,6 @@
       "url": "https://www.france24.com/en/video/20261010-india-detains-cockroach-leaders-ahead-of-election-protest",
       "publisher": "France 24",
       "publishedAt": "2026-10-10T09:18:11.000Z",
-      "image": "https://s.france24.com/media/display/1b855ea2-c483-11f1-a9b2-77317c09f325/w:1280/p:16x9/EN-20261010-100108-100645-CS.jpg",
       "via": "feed",
       "tier": 1
     },
@@ -747,7 +834,6 @@
       "url": "https://www.aljazeera.com/news/2026/10/10/how-can-you-stop-these-kids-indian-capital-on-lockdown-before-protests?traffic_source=rss",
       "publisher": "Al Jazeera",
       "publishedAt": "2026-10-10T07:17:11.000Z",
-      "image": "https://www.aljazeera.com/wp-content/uploads/2026/10/2026-10-10T055914Z_486384300_RC230OA2WL89_RTRMADP_3_INDIA-POLITICS-GEN-Z-1791612285.jpg?resize=1920%2C1440",
       "via": "feed",
       "tier": 1
     },
@@ -780,7 +866,6 @@
       "url": "https://www.france24.com/en/asia-pacific/20261010-india-s-cockroach-movement-chief-detained-ahead-of-major-protest",
       "publisher": "France 24",
       "publishedAt": "2026-10-10T06:37:40.000Z",
-      "image": "https://s.france24.com/media/display/9bd82c12-c4b8-11f1-bf73-3774aeac812a/w:1280/p:16x9/2026-10-10T130134Z-1370249502-RC280OAT8E3W-RTRMADP-3-INDIA-POLITICS-GEN-Z.jpg",
       "via": "feed",
       "tier": 1
     },
@@ -833,14 +918,6 @@
       "via": "gnews"
     },
     {
-      "title": "Manipur: Four killed, three injured in Kamjong violence",
-      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOa2RfR2RIcU5RcXd0UmNFOUp6MW1EczhSU3lLWHdQeDJiM1hUN2llTGJfNnhHbFVwdjBwRnVLSUF0SFVkMUYtSXNnSXcxN0ozMmtPVldETE52Zy1BMUc4MktCUHhGbmM1M2N1ZndKWFFxSG9kdG1saVFCeHlFSk45eEZRQTZZTVk3WEZfVXpIVDB0b0hFVWc?oc=5",
-      "publisher": "EastMojo",
-      "domain": "eastmojo.com",
-      "publishedAt": "2026-10-10T05:04:40.000Z",
-      "via": "gnews"
-    },
-    {
       "title": "Manipur violence: Kuki groups claim woman killed in firing by security forces",
       "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNWk5YV2Z0bUM3VDlXcG1Jd3lBUERYRlpEb3g4NXAzWTJnWkNYQXJwc0ZHRHRQM3RJVWFueGhCN2dUTTk3YjlnTTVsUXdIVllISUlMR2s4V3FEU2ZPWmJtYnIzZG9EM1I0T20tZnB2T1g5M1pTaXJMLVEtdEtFNk1qaXJzWF9XRWVOMVNLN082d0FuWjZmUHF5VXViaTE4SEs3SmkwZHhTTmJFVGl4SGpiZFZtWdIBuAFBVV95cUxQLWFoZ2lTOWVDUlhmaVo0cU1iRUh4YjhGanU0YzlXNFBBOUZ6UUZrcjI1clR5WUc2Qkp5QzNMVlF1Q1Vlbm90T3ZrTlRpck1TYzY5cy1HaEhmemMzQ1M4UUdtNUk3Y3llYzAtRjhXdm04Q1FPRkduSjI1cjVyeTd0ellyZlBfT1hXcFZjclo1Mng5Rnc3aC1pTG5FYXFzWEJ1RzJFY0pNMW1NWFhzMW54WS1HbGlUSV9B?oc=5",
       "publisher": "The Economic Times",
@@ -889,207 +966,111 @@
       "via": "gnews"
     },
     {
+      "title": "‘Kashmir Model’ Reaches Delhi: CM Omar Abdullah Criticises Centre Over Internet Suspension",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPdXFvZ3Z1NVZZMXRuMmtSX0xVLTRpWi01MzdFVXI4Z05aRlVoZGh0d0k2OV9kbVNzZzM4OXd6RnY2cVZYd2lCSXlNcUlySlQ4OTBzS013Z2JJU2dUZmJXNTE3RWwxc1BDeFVseWZHTndqOUtncnJpQjZRNWxZSlNPYXJEVDItXzBWRlg0TURhY29zakRtTkVWYTJBRHlNdktVUElvdm53LW9JZzg4NU1sem9uMUNwQkxxdFpz?oc=5",
+      "publisher": "Kashmir Life",
+      "domain": "kashmirlife.net",
+      "publishedAt": "2026-10-10T03:59:08.000Z",
+      "via": "gnews"
+    },
+    {
       "title": "India slams Pak at UN over 'lies' on Jammu and Kashmir, sponsoring terror",
       "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxPUzNtRVdacmlIM0Z4MjN1a2paTDc0MkxRSTlnM2hCU2Etb1BCUG0tRF9Kb0VobU5PVkdHLVVsRGJlUTJTdjVJMENMVW5IMTZtNWJiVzFQNHpZek83SjdOQUFyX0NDaGlDWkVELXhSVFJCUEduZ1VaeGJkbnVtaXduYU9nSzhfMWNIOW5YNzctZExoRHlBZlBocWN1S1BtVGg4X3NIYUtaWVJnd0RjY1FXR0VsZWhabFZRclZUMDdzRTluME1HMkZ3R2hRZ0lTOTJvSE1qSEwzbzZOMEhOYlUxcFNsa3dJWDBsWC1mRXlXSzhPM1B2QkHSAfsBQVVfeXFMTjQ1ZklLd0tvNGVwSmpIRC1fcDExRjNZdl9QS0RZbmVUckRsejd5SXQ3YjBYV045RWhCZW5jbXAyUHNDY2JWMzZyd0VTVmplTmJNRHhxa3RJNXIwdVdPM3F1R0tZclZqbnRQbGhINTBPRnB4M21rUXgyNGZTUkd0S2JweFlLU1liQ2lGemlKbDhWbGs4a1I4THdNMkxoZGU0S0FZZHBRWDBhOGlnRmIydUR1NVQ0NXlRYmRDdnNmT3pLT29jLXJnZEhZa0szaVdVdFd0UlBwR05fX0JKRmpQUGtUYTVDQ1hjNUoxdGRBMjI2ZnhlN0c3RXlTTVE?oc=5",
       "publisher": "Business Standard",
       "domain": "business-standard.com",
       "publishedAt": "2026-10-10T03:04:04.000Z",
       "via": "gnews"
-    },
-    {
-      "title": "India’s ‘cockroach’ movement leader detained as capital locks down",
-      "url": "https://www.scmp.com/news/asia/south-asia/article/3370415/central-delhi-locked-down-internet-cut-youth-protest-demands-election-chief-quit?utm_source=rss_feed",
-      "publisher": "South China Morning Post",
-      "publishedAt": "2026-10-10T01:13:54.000Z",
-      "image": "https://cdn.i-scmp.com/sites/default/files/styles/og_image_scmp_generic/public/d8/images/canvas/2026/10/10/dc875987-6bda-4a06-947e-f0e939f28417_483c48a8.jpg?itok=lmekl4jd&v=1791594828",
-      "via": "feed",
-      "tier": 2
-    },
-    {
-      "title": "Major Police reshuffle in J&K, 100 IPS, JKPS officers transferred, posted",
-      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQVzRvVG5zT3hON2RUQXNOUGRaNTBWbFVOeUZETkVDUzBfSDNrSng4NHFWY0pBUURaZ292Mm9HMHZzOTM4ZUVyNUtuUkdfUGx4Y2RncmY2SDN2ZTZ6eG1yTXQ4ZlVSMldjVzNGZkhEeEFVR3NBTDcwMTBUNlhmbU42bWdwRUU5ZHRxMV9FQm1qdlFFcHliR0ZkTXFCZEFuZy01MDRtREhOOS1JVWVhUDRYTWVaNFNEZzAw0gG-AUFVX3lxTE80WnF5dld1VFQwNmM5OXcyeUJuQUpFdWJzSnlNR3N6ZXRKRWNYZFdpVGFqSFBEUzJHYWVUeDIwdkpuQW5ibHZRc3ZSdDdFamhFVXRlcmFyWXl0SExuTGNhN3FYMWsyQzZua3lJeWV6RDk3OE4yWlBnUWIxUGZUaWdsZlJpeHlCRDJTanJ3cWRYZ2IzRHBiNHN0ajJoNEtER1BSRDdTZ3ZIcEJZZkFudGZxbVAza0ZxZXlaZFJvMmc?oc=5",
-      "publisher": "Greater Kashmir",
-      "domain": "greaterkashmir.com",
-      "publishedAt": "2026-10-10T01:00:05.000Z",
-      "via": "gnews"
-    },
-    {
-      "title": "Assam Rifles steps up community outreach in Manipur",
-      "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxPRVg0MnpBN0N3WGtmY2VmQ0FlRnFNbUlDTDA5MVNTRmlFNm0zblZNbmpXbm9kMVh0VlNtb0VrT0xqN2JpWXJ3d0Z5Y2ZRbHVLRjFBQ3RSaHBrMUh1T2NfMDg2STQtcWxObWlzZHBDZGtHbnptSzJsZnptSGhaVWlYZW5mcWRBUQ?oc=5",
-      "publisher": "Brighter Kashmir",
-      "domain": "brighterkashmir.com",
-      "publishedAt": "2026-10-10T00:56:57.000Z",
-      "via": "gnews"
-    },
-    {
-      "title": "Could Elon Musk’s Starlink threaten India’s security?: What govt suspects and how it changed the war in Ukr...",
-      "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxNWWc2WDBkam5oaXZIM1FhUzBCU0dwWnJNdlhQRlpNeXdoUDhVVkFBZVNCQ1V0eWFIWUllME5vWHdXU1J1cWhMRTQwZm10QjNNNWs3YldJTlZxMS1rNGtTQ2o0YzJhb0lNc3FKQnl4LWFRTVMzVUlUVWZQYnpRME5lYXo0NWZKZnBESFhxQjJnSkYxRlVWLV9GblJYcG1XeGt3NTBZdXRYMFUxQnJoUmI5ZzZSTTlSM05GMC1sY2JiaURBdlg2OGtvMVZCRdIBywFBVV95cUxNWWc2WDBkam5oaXZIM1FhUzBCU0dwWnJNdlhQRlpNeXdoUDhVVkFBZVNCQ1V0eWFIWUllME5vWHdXU1J1cWhMRTQwZm10QjNNNWs3YldJTlZxMS1rNGtTQ2o0YzJhb0lNc3FKQnl4LWFRTVMzVUlUVWZQYnpRME5lYXo0NWZKZnBESFhxQjJnSkYxRlVWLV9GblJYcG1XeGt3NTBZdXRYMFUxQnJoUmI5ZzZSTTlSM05GMC1sY2JiaURBdlg2OGtvMVZCRQ?oc=5",
-      "publisher": "Bhaskar English",
-      "domain": "bhaskarenglish.in",
-      "publishedAt": "2026-10-09T23:30:00.000Z",
-      "via": "gnews"
-    },
-    {
-      "title": "Man Killed in Armed Attack Along Mahadev–Toloi Road in Manipur’s Ukhrul",
-      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxOZ2dMSXJ5VW9QOWRkTzBaemdYMzd1VUZTalIzd2FZWUEyQk1MYy1UR1Z5Y0RlaWc0Tk9xdldvYTdkVEt5bHI1b2laY1BpMDRDY0RIRUFMQXhyRFJQSkxYY0xBcXJBeEZFZHpvalFfMXZHUXJxV0xnRjR5clpnZUViY1RyejRvR3pkWWVvOHR6MzJKeXM?oc=5",
-      "publisher": "Hindusthan Samachar English",
-      "domain": "english.hindusthansamachar.in",
-      "publishedAt": "2026-10-09T21:30:00.000Z",
-      "via": "gnews"
-    },
-    {
-      "title": "IGP Kashmir praises security arrangements for Urs",
-      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNazBCNWwtX1ViSWc5aDFXSzJfQjN6N3lsNG1OSEt6SVVaNFY1M1M3UHdPSE0xZjl4b0Zza2JycUZxclpzaHVUcU1NUzRRQWtOWEhqSEhKRGEtamVMNzF3ekdTYk12MjNyTGlCa3Zkcnp6RUtNOERyZ0x3SXhGUVhRQjNleWZTTDMzN3JkSlgxWklfdFZ5UUI1ZEZsTDgwWkdKRnFQMThOVElneTZ6RHpDSHEtMXE3Zw?oc=5",
-      "publisher": "Rising Kashmir",
-      "domain": "risingkashmir.com",
-      "publishedAt": "2026-10-09T19:52:37.000Z",
-      "via": "gnews"
-    },
-    {
-      "title": "Post-Maoist Bastar: 8 Senior Cops Shifted In Security Reshuffle",
-      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPWUZTcVhYTW1iRi1pWWJ4QTdMalhlUFoxbGp1UzF3d25iX3ZxQkUyV195aXk0YmlXVVZUV05iRkE4ZmhLUmc4M294blFsRmxISFhyOGdfcjJBOFRyeUdRV1RsQ1MtekdPdDFoZE4zaWNLSnRnVGxnRU1DT0dxdDM1Zm9WNmVMbUhKLWplc19fb2c2dnFSVUduWE85TGMyTDFueDJyMnJmQ1NDanhNREHSAbMBQVVfeXFMTjhLNUI2em44V2hxSUQ0UGVkM2h4NGJtM3hxam42N01udjhOMmZLS1BTM1B0eElSLVd1a281TzF2eGRpeFhKeE1aa01PVERRMThPS25yenp0SUVCcHhVempET29yUmJDbnJvaV9JU1VmODI3TXRDc2xoS2pITURTSENueGlpNy1yZFk1Y0VPdFJfZDBzT2g0RGdDOFJCNXJmWU1vR1YtRXp0RWFKNExpZ0hnUUk?oc=5",
-      "publisher": "Deccan Chronicle",
-      "domain": "deccanchronicle.com",
-      "publishedAt": "2026-10-09T18:37:41.000Z",
-      "via": "gnews"
-    },
-    {
-      "title": "Pakistan reiterates support for Saudi Arabia, rejects India’s Kashmir map claims",
-      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQYk9UMl9RMFZ2QTJsOG5kQXh4OGFhd21sZ1pZaWNuU20teURiQmpnSnMtTEtMTkpjb3FCZnkwNjdiTkZRUTNKOFQ3ZTZUYUhOUG9mRVBpakNCN29ONmE3dFBSVHRUVUF4SEdyXzBWYkd5aVdZQ2wxaHRkWXU2MHpMcGlkektkc2ZlTHpsMjhXNGpwMzhIZVo2QjhNT1pRbkNKbDZVczNyVUd4V0pQMm1lTkJXWQ?oc=5",
-      "publisher": "The Nation (Pakistan )",
-      "domain": "nation.com.pk",
-      "publishedAt": "2026-10-09T18:37:00.000Z",
-      "via": "gnews"
-    },
-    {
-      "title": "Kashmir model exported to Delhi: Omar Abdullah as cops step up security, shut down internet ahead of CJP stir",
-      "url": "https://news.google.com/rss/articles/CBMi_AFBVV95cUxNZkNxSUlTa2prdHVybVJsdWFDSHg4YjhBVm5lczBFaWhtVlJZanZZRmNxWHkzWWFETHNSN2lrM19pNXVxdURvMDFucHkyOEhBVm1hb3FPNnpOMTFuU25NRjdpWFpzTVdtQUg4bnUySk11RzV5ZldUMmdqd0hNSmN3a2hvb29oXzRZVC1hOFdIRTJtZHhnUHhhY1J3S3VMekJJY0VkQUZMWndsenRIdmJyODl3ZkdmNEpFY2FfMm5hdmZfZVQ3V0dTUE1BM00tZWtxUkFvWklacHVzQmM4QTBGdHJMV1JDaWhOUEFKSUtCbGpmeC1DdkVNSjJLTlLSAfwBQVVfeXFMTWZDcUlJU2tqa3R1cm1SbHVhQ0h4OGI4QVZuZXMwRWlobVZSWWp2WUZjcVh5M1lhRExzUjdpazNfaTV1cXVEbzAxbnB5MjhIQVZtYW9xTzZ6TjExblNuTUY3aVhac01XbUFIOG51MkpNdUc1eWZXVDJnandITUpjd2tob29vaF80WVQtYThXSEUybWR4Z1B4YWNSd0t1THpCSWNFZEFGTFp3bHp0SHZicjg5d2ZHZjRKRWNhXzJuYXZmX2VUN1dHU1BNQTNNLWVrcVJBb1pJWnB1c0JjOEEwRnRyTFdSQ2loTlBBSklLQmxqZngtQ3ZFTUoyS05S?oc=5",
-      "publisher": "India Today",
-      "domain": "indiatoday.in",
-      "publishedAt": "2026-10-09T16:35:09.000Z",
-      "via": "gnews"
     }
   ],
   "images": [
     {
-      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Kashmir_region._LOC_2003626427_-_showing_sub-regions_administered_by_different_countries.jpg/960px-Kashmir_region._LOC_2003626427_-_showing_sub-regions_administered_by_different_countries.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
-      "caption": "Kashmir conflict",
-      "url": "https://commons.wikimedia.org/wiki/File:Kashmir_region._LOC_2003626427_-_showing_sub-regions_administered_by_different_countries.jpg",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://www.aljazeera.com/wp-content/uploads/2026/10/2026-10-10T071845Z_1459547873_RC250OABX3V4_RTRMADP_3_INDIA-POLITICS-GEN-Z-1791626580.jpg?resize=1920%2C1440",
-      "caption": "India’s ‘Cockroach’ leaders detained; New Delhi in lockdown",
-      "url": "https://www.aljazeera.com/news/2026/10/10/indias-cockroach-leaders-detained-new-delhi-in-lockdown?traffic_source=rss",
-      "credit": "Al Jazeera"
-    },
-    {
-      "src": "https://s.france24.com/media/display/2fe79dce-c488-11f1-b92e-53993c5f1f18/w:1280/p:16x9/EN-20261010-090404-091253-CS.jpg",
-      "caption": "India's 'cockroach' movement: \"This is unprecedented\"",
-      "url": "https://www.france24.com/en/video/20261010-india-s-cockroach-movement-this-is-unprecedented",
-      "credit": "France 24"
-    },
-    {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Partition_of_India_1947_en.svg/500px-Partition_of_India_1947_en.svg.png",
       "caption": "The partition of India: green regions were all part of Pakistan by 1948, and orange ones part of India.",
       "url": "https://commons.wikimedia.org/wiki/File:Partition_of_India_1947_en.svg",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Admiral_Lord_Louis_Mountbatten%2C_1943._TR1230.jpg/500px-Admiral_Lord_Louis_Mountbatten%2C_1943._TR1230.jpg",
-      "caption": "The Instrument of Accession of Kashmir to India was accepted by the Governor General of India, Lord Mountbatten.",
-      "url": "https://commons.wikimedia.org/wiki/File:Admiral_Lord_Louis_Mountbatten%2C_1943._TR1230.jpg",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Dixon_01.jpg/330px-Dixon_01.jpg",
-      "caption": "Sir Owen Dixon, UN mediator",
-      "url": "https://commons.wikimedia.org/wiki/File:Dixon_01.jpg",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "map",
+      "author": "Own work",
+      "license": "CC BY-SA 4.0"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Un-kashmir-jammu.png/500px-Un-kashmir-jammu.png",
       "caption": "The Line of Control between India and Pakistan agreed in the Simla Agreement (UN Map)",
       "url": "https://commons.wikimedia.org/wiki/File:Un-kashmir-jammu.png",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/Kashmir_Solidarity_Day.JPG/500px-Kashmir_Solidarity_Day.JPG",
-      "caption": "Kashmir Solidarity Day on every 5 February is observed in Pakistan. This banner was hung in Islamabad.",
-      "url": "https://commons.wikimedia.org/wiki/File:Kashmir_Solidarity_Day.JPG",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "map",
+      "license": "Public domain"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Election_Boycott_Graffito_-_Old_City_-_Srinagar_-_Jammu_%26_Kashmir_-_India_%2826552145580%29.jpg/500px-Election_Boycott_Graffito_-_Old_City_-_Srinagar_-_Jammu_%26_Kashmir_-_India_%2826552145580%29.jpg",
       "caption": "Election Boycott Graffito - Old City - Srinagar - Jammu & Kashmir - India (26552145580)",
       "url": "https://commons.wikimedia.org/wiki/File:Election_Boycott_Graffito_-_Old_City_-_Srinagar_-_Jammu_%26_Kashmir_-_India_(26552145580).jpg",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "place",
+      "author": "Adam Jones from Kelowna, BC, Canada",
+      "license": "CC BY-SA 2.0"
+    },
+    {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Dixon_01.jpg/330px-Dixon_01.jpg",
+      "caption": "Sir Owen Dixon, UN mediator",
+      "url": "https://commons.wikimedia.org/wiki/File:Dixon_01.jpg",
+      "credit": "Wikimedia Commons",
+      "kind": "other",
+      "author": "The original uploader was Queens-counsel at English Wikipedia .",
+      "license": "Public domain"
+    },
+    {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/Kashmir_Solidarity_Day.JPG/500px-Kashmir_Solidarity_Day.JPG",
+      "caption": "Kashmir Solidarity Day on every 5 February is observed in Pakistan. This banner was hung in Islamabad.",
+      "url": "https://commons.wikimedia.org/wiki/File:Kashmir_Solidarity_Day.JPG",
+      "credit": "Wikimedia Commons",
+      "kind": "other",
+      "author": "Khalid Mahmood",
+      "license": "CC BY-SA 3.0"
+    },
+    {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Kashmir_region._LOC_2003626427_-_showing_sub-regions_administered_by_different_countries.jpg/960px-Kashmir_region._LOC_2003626427_-_showing_sub-regions_administered_by_different_countries.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "caption": "Kashmir conflict",
+      "url": "https://commons.wikimedia.org/wiki/File:Kashmir_region._LOC_2003626427_-_showing_sub-regions_administered_by_different_countries.jpg",
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "US Central Intelligence Agency (old labels removed, new added by Fowler&fowler ( talk ) 02:56, 11 April 2022 (UTC))",
+      "license": "Public domain"
+    },
+    {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Admiral_Lord_Louis_Mountbatten%2C_1943._TR1230.jpg/500px-Admiral_Lord_Louis_Mountbatten%2C_1943._TR1230.jpg",
+      "caption": "The Instrument of Accession of Kashmir to India was accepted by the Governor General of India, Lord Mountbatten.",
+      "url": "https://commons.wikimedia.org/wiki/File:Admiral_Lord_Louis_Mountbatten%2C_1943._TR1230.jpg",
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "British official photographer",
+      "license": "Public domain"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/29/A_large_crowd_assembled_to_cast_their_vote_for_the_first_phase_of_General_Elections-2009_at_a_booth%2C_at_Shiv_Nagar_in_R_S_Pura%2C_Jammu_on_April_16%2C_2009.jpg/500px-A_large_crowd_assembled_to_cast_their_vote_for_the_first_phase_of_General_Elections-2009_at_a_booth%2C_at_Shiv_Nagar_in_R_S_Pura%2C_Jammu_on_April_16%2C_2009.jpg",
       "caption": "A large crowd assembled to cast their vote for the first phase of General Elections-2009 at a booth, at Shiv Nagar in R S Pura, Jammu on April 16, 2009",
       "url": "https://commons.wikimedia.org/wiki/File:A_large_crowd_assembled_to_cast_their_vote_for_the_first_phase_of_General_Elections-2009_at_a_booth%2C_at_Shiv_Nagar_in_R_S_Pura%2C_Jammu_on_April_16%2C_2009.jpg",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "Election Commission of India",
+      "license": "GODL-India"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5e/A_large_number_of_voters_in_a_queue_to_cast_their_vote_at_a_polling_booth_near_Thiksey_Monastery_in_Ladakh_during_the_5th_and_final_phase_of_General_Election-2009%2C_in_J%26K_on_May_13%2C_2009.jpg/500px-thumbnail.jpg",
       "caption": "A large number of voters in a queue to cast their vote at a polling booth near Thiksey Monastery in Ladakh during the 5th and final phase of General Election-2009, in J&K on May 13, 2009",
       "url": "https://commons.wikimedia.org/wiki/File:A_large_number_of_voters_in_a_queue_to_cast_their_vote_at_a_polling_booth_near_Thiksey_Monastery_in_Ladakh_during_the_5th_and_final_phase_of_General_Election-2009%2C_in_J%26K_on_May_13%2C_2009.jpg",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "Election Commission of India",
+      "license": "GODL-India"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/The_polling_officer_administering_indelible_ink_to_the_finger_of_a_woman_voter_at_a_polling_booth_of_Srinagar-_Badgam_Parliamentary_Constituency_during_General_Elections_2004_on_April_26%2C_2004.jpg/500px-thumbnail.jpg",
       "caption": "The polling officer administering indelible ink to the finger of a woman voter at a polling booth of Srinagar- Badgam Parliamentary Constituency during General Elections 2004 on April 26, 2004",
       "url": "https://commons.wikimedia.org/wiki/File:The_polling_officer_administering_indelible_ink_to_the_finger_of_a_woman_voter_at_a_polling_booth_of_Srinagar-_Badgam_Parliamentary_Constituency_during_General_Elections_2004_on_April_26%2C_2004.jpg",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://i.tribune.com.pk/media/images/farrukh1777120893-0/farrukh1777120893-0-640x480.webp",
-      "caption": "Siege or blockade, Delhi, India",
-      "url": "https://tribune.com.pk/story/2633965/visa-mills-to-censorship-machine",
-      "credit": "The Express Tribune"
-    },
-    {
-      "src": "https://chitra-api.kreatio.com/api/v1/wps/dec7203/a07b2524-0519-4974-bdf6-d216073e5afb/0/ANI-20261009171411-600x315.jpg",
-      "caption": "Armed clash, Kishtwar, India",
-      "url": "http://www.vietnamtribune.com/news/279362751/nia-files-chargesheet-against-arrested-accused-three-killed-jem-terrorists-in-kishtwar-terror-attack-case",
-      "credit": "vietnamtribune.com"
-    },
-    {
-      "src": "https://www.newsx.com/wp-content/uploads/2026/10/barabanki.jpg",
-      "caption": "Armed clash, Lucknow, India",
-      "url": "https://www.newsx.com/regionals/driver-burnt-alive-returning-from-lucknow-airport-cng-car-mysteriously-catches-fire-vehicle-reduced-to-ashes-while-his-bones-were-still-burning-281651/",
-      "credit": "newsx.com"
-    },
-    {
-      "src": "https://www.orissapost.com/wp-content/uploads/2026/10/Dhruv-Rathee.jfif",
-      "caption": "Violent repression, Orissa, India",
-      "url": "https://www.orissapost.com/dhruv-rathee-detained-ahead-of-delhi-protest/",
-      "credit": "orissapost.com"
-    },
-    {
-      "src": "https://imagesvs.oneindia.com/img/2026/10/ravindra-chavan-attacks-1791623074905-1200x675.jpg",
-      "caption": "Armed clash, Kolkata, India",
-      "url": "https://www.oneindia.com/partner-content/ravindra-chavan-attacks-congress-rahul-gandhi-over-changing-colours-and-electoral-defeats-012-8230911.html",
-      "credit": "oneindia.com"
-    },
-    {
-      "src": "https://d2lnbwhcsmj8tp.cloudfront.net/ianslive_watermark/202610103973581.jpg",
-      "caption": "Armed clash, Pahalgam, India",
-      "url": "https://ianslive.in/pakistans-continuous-use-of-cross-border-terrorism-deepens-instability-across-south-asia--20261010164336",
-      "credit": "ianslive.in"
-    },
-    {
-      "src": "https://www.mangalorean.com/wp-content/uploads/2026/10/202610103973420.png",
-      "caption": "Armed clash, Indore, India",
-      "url": "https://www.mangalorean.com/massive-fire-at-scrap-warehouse-spreads-to-nearby-units-in-mps-pithampur-no-casualty/",
-      "credit": "mangalorean.com"
-    },
-    {
-      "src": "https://techcrunch.com/wp-content/uploads/2026/10/starlink.jpg?resize=1200,800",
-      "caption": "Armed clash, Delhi, India",
-      "url": "https://techcrunch.com/2026/10/08/elon-musk-questions-ambanis-influence-as-starlink-india-launch-stalls/",
-      "credit": "techcrunch.com"
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "Government of India",
+      "license": "GODL-India"
     }
   ],
   "videos": [],
@@ -1103,6 +1084,8 @@
       "lon": 77.2,
       "intensity": 4,
       "reports": 17,
+      "outlets": 14,
+      "id": "evt_9845d61d7f1521f2",
       "sources": [
         {
           "url": "https://timesofindia.indiatimes.com/city/gurgaon/youtuber-dhruv-rathee-from-gurgaon-ahead-of-cjp-protest-in-delhi/articleshow/134847287.cms",
@@ -1127,6 +1110,82 @@
         {
           "url": "https://www.prokerala.com/news/articles/a1822649.html",
           "publisher": "prokerala.com"
+        },
+        {
+          "url": "https://economictimes.indiatimes.com/news/india/youtuber-dhruv-rathee-arrested-ahead-of-cjp-protest-in-delhi/articleshow/134847373.cms",
+          "publisher": "economictimes.indiatimes.com"
+        },
+        {
+          "url": "https://www.thehindubusinessline.com/news/youtuber-dhruv-rathee-detained-by-delhi-police-ahead-of-cjp-protest-sources/article71567093.ece",
+          "publisher": "thehindubusinessline.com"
+        },
+        {
+          "url": "https://www.freepressjournal.in/india/cjp-jantar-mantar-delhi-protest-live-news-and-updates-today-10-october-2026-abhijeet-dipke-dhruv-rathee-against-cec-gyanesh-kumar-resign-and-sir-voter-deletion-scam",
+          "publisher": "freepressjournal.in"
+        },
+        {
+          "url": "https://scroll.in/latest/1096296/dhruv-rathee-detained-ahead-of-cjp-protest-against-cec",
+          "publisher": "scroll.in"
+        },
+        {
+          "url": "https://bdnews24.com/neighbours/2mhgfnp6z5",
+          "publisher": "bdnews24.com"
+        },
+        {
+          "url": "https://www.moneycontrol.com/city/abhijeet-dipke-saurav-das-and-ashutosh-ranka-detained-by-delhi-police-from-plane-at-igi-airport-article-14048982.html",
+          "publisher": "moneycontrol.com"
+        },
+        {
+          "url": "https://kashmirlife.net/youtuber-dhruv-rathee-detained-in-delhi-455926/",
+          "publisher": "kashmirlife.net"
+        },
+        {
+          "url": "https://www.indiablooms.com/news/delhi-on-high-alert-ahead-of-cjp-protest-against-cec-gyanesh-kumar-metro-internet-restrictions-announced/details",
+          "publisher": "indiablooms.com"
+        },
+        {
+          "url": "https://www.orissapost.com/cjps-dipke-ranka-das-detained-at-delhi-airport-ahead-of-jantar-mantar/",
+          "publisher": "orissapost.com"
+        },
+        {
+          "url": "https://economictimes.indiatimes.com/news/new-updates/delhi-protest-watch-how-abhijeet-dipke-saurav-das-and-ashutosh-ranka-were-detained-directly-from-inside-the-plane-after-landing-in-delhi-amid-inqualab-jindaabad-slogans/articleshow/134848124.cms",
+          "publisher": "economictimes.indiatimes.com"
+        },
+        {
+          "url": "http://thepeninsulaqatar.com/article/10/10/2026/indias-cockroach-movement-chief-detained-ahead-of-major-protest-party",
+          "publisher": "thepeninsulaqatar.com"
+        },
+        {
+          "url": "https://www.thehindu.com/news/national/anti-cec-protest-what-happened-moments-before-cjp-leaders-were-detained-inside-ai-2428/article71567895.ece",
+          "publisher": "The Hindu"
+        },
+        {
+          "url": "https://timesofindia.indiatimes.com/india/stones-hurled-at-bus-carrying-detained-protesters-in-delhis-jhandewalan-cops-injured/articleshow/134854032.cms",
+          "publisher": "The Times of India"
+        },
+        {
+          "url": "https://timesofindia.indiatimes.com/city/mumbai/actor-imran-khan-among-several-detained-in-support-of-cjp-stir-in-mumbai/articleshow/134854059.cms",
+          "publisher": "The Times of India"
+        },
+        {
+          "url": "https://www.rediff.com/news/report/detained-cjp-founder-abhijeet-dipke-informed-of-grandmothers-death/20261010.htm",
+          "publisher": "rediff.com"
+        },
+        {
+          "url": "https://www.oneindia.com/india/cockroach-helmets-to-gurdwara-hideout-unusual-scenes-at-cjp-protest-in-new-delhi-8230943.html",
+          "publisher": "oneindia.com"
+        },
+        {
+          "url": "https://bdnews24.com/neighbours/z2fpma7z1p",
+          "publisher": "bdnews24.com"
+        },
+        {
+          "url": "https://www.sentinelassam.com/breakingnews/cjp-protest-arvind-kejriwal-detained-by-delhi-police",
+          "publisher": "sentinelassam.com"
+        },
+        {
+          "url": "https://news.webindia123.com/news/Articles/India/20261010/4509308.html",
+          "publisher": "news.webindia123.com"
         }
       ]
     },
@@ -1138,6 +1197,8 @@
       "lon": 77.2,
       "intensity": 3,
       "reports": 3,
+      "outlets": 3,
+      "id": "evt_70589ac0406e443a",
       "sources": [
         {
           "url": "https://timesofindia.indiatimes.com/india/before-cjp-protest-delhi-bandh/articleshow/134845750.cms",
@@ -1173,7 +1234,8 @@
       "lon": 77.2167,
       "intensity": 3,
       "reports": 4,
-      "image": "https://i.tribune.com.pk/media/images/farrukh1777120893-0/farrukh1777120893-0-640x480.webp",
+      "outlets": 4,
+      "id": "evt_3ed2e9c661e80a97",
       "sources": [
         {
           "url": "https://tribune.com.pk/story/2633965/visa-mills-to-censorship-machine",
@@ -1198,6 +1260,10 @@
         {
           "url": "https://aninews.in/news/national/politics/if-you-do-not-allow-voices-to-be-raised-in-this-country-says-aaps-saurabh-bharadwaj-on-anti-cec-protest20261010170656/",
           "publisher": "aninews.in"
+        },
+        {
+          "url": "https://news.webindia123.com/news/Articles/India/20261010/4509326.html",
+          "publisher": "news.webindia123.com"
         }
       ]
     },
@@ -1209,6 +1275,8 @@
       "lon": 92.9167,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_2946b77e70d66321",
       "sources": [
         {
           "url": "https://www.business-standard.com/blueprint-defence-magazine/reports/a-frontier-gambit-126100700424_1.html",
@@ -1224,6 +1292,8 @@
       "lon": 79.3583,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_dde2c54abe7f20d7",
       "sources": [
         {
           "url": "https://www.business-standard.com/blueprint-defence-magazine/reports/a-frontier-gambit-126100700424_1.html",
@@ -1243,6 +1313,8 @@
       "lon": 77.85,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_9c16d538629ea580",
       "sources": [
         {
           "url": "https://aninews.in/news/national/general-news/seven-arrested-in-ghaziabad-for-cyber-fraud-issuing-fake-motor-insurance-policies20261010010940/",
@@ -1258,6 +1330,8 @@
       "lon": 79.3583,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_3d962fafdfbd2a80",
       "sources": [
         {
           "url": "https://www.business-standard.com/blueprint-defence-magazine/reports/a-frontier-gambit-126100700424_1.html",
@@ -1273,6 +1347,8 @@
       "lon": 72.8258,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_3b6344d4c7d64819",
       "sources": [
         {
           "url": "https://www.business-standard.com/blueprint-defence-magazine/insights/where-s-the-theatre-command-plan-headed-126100700513_1.html",
@@ -1288,6 +1364,8 @@
       "lon": 72.8258,
       "intensity": 2,
       "reports": 2,
+      "outlets": 2,
+      "id": "evt_d82f421f9a74a52f",
       "sources": [
         {
           "url": "https://www.business-standard.com/blueprint-defence-magazine/reports/foreign-partnerships-126100600513_1.html",
@@ -1311,7 +1389,8 @@
       "lon": 75.7667,
       "intensity": 2,
       "reports": 1,
-      "image": "https://chitra-api.kreatio.com/api/v1/wps/dec7203/a07b2524-0519-4974-bdf6-d216073e5afb/0/ANI-20261009171411-600x315.jpg",
+      "outlets": 1,
+      "id": "evt_4dd87a12077d6c88",
       "sources": [
         {
           "url": "http://www.vietnamtribune.com/news/279362751/nia-files-chargesheet-against-arrested-accused-three-killed-jem-terrorists-in-kishtwar-terror-attack-case",
@@ -1331,6 +1410,8 @@
       "lon": 80.2833,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_8dae87fa54ac96c0",
       "sources": [
         {
           "url": "https://www.business-standard.com/blueprint-defence-magazine/reports/engines-of-opportunity-126100600540_1.html",
@@ -1346,7 +1427,8 @@
       "lon": 80.9167,
       "intensity": 2,
       "reports": 1,
-      "image": "https://www.newsx.com/wp-content/uploads/2026/10/barabanki.jpg",
+      "outlets": 1,
+      "id": "evt_1592c6c6fd9809e2",
       "sources": [
         {
           "url": "https://www.newsx.com/regionals/driver-burnt-alive-returning-from-lucknow-airport-cng-car-mysteriously-catches-fire-vehicle-reduced-to-ashes-while-his-bones-were-still-burning-281651/",
@@ -1362,6 +1444,8 @@
       "lon": 77.5,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_6cce437c9167bb5c",
       "sources": [
         {
           "url": "https://www.hindustantimes.com/lifestyle/travel/mokobara-swiss-military-and-delsey-paris-are-all-available-at-discounted-prices-at-the-amazon-sale-101791608432592.html",
@@ -1377,6 +1461,8 @@
       "lon": 77.2,
       "intensity": 2,
       "reports": 2,
+      "outlets": 2,
+      "id": "evt_3fdb268ff1744ac5",
       "sources": [
         {
           "url": "https://economictimes.indiatimes.com/news/politics-and-nation/bjps-jagdambika-pal-accuses-cjp-of-creating-anarchy-in-delhi-amid-proposed-protest/articleshow/134848953.cms",
@@ -1400,6 +1486,8 @@
       "lon": 77.0333,
       "intensity": 2,
       "reports": 2,
+      "outlets": 1,
+      "id": "evt_6ca414bc4f92057c",
       "sources": [
         {
           "url": "https://timesofindia.indiatimes.com/city/gurgaon/youtuber-dhruv-rathee-from-gurgaon-ahead-of-cjp-protest-in-delhi/articleshow/134847287.cms",
@@ -1419,7 +1507,8 @@
       "lon": 84.4167,
       "intensity": 2,
       "reports": 2,
-      "image": "https://www.orissapost.com/wp-content/uploads/2026/10/Dhruv-Rathee.jfif",
+      "outlets": 2,
+      "id": "evt_e7326b3969bc0525",
       "sources": [
         {
           "url": "https://www.orissapost.com/dhruv-rathee-detained-ahead-of-delhi-protest/",
@@ -1443,6 +1532,8 @@
       "lon": 72.8258,
       "intensity": 2,
       "reports": 3,
+      "outlets": 2,
+      "id": "evt_440a31fd401ecfb4",
       "sources": [
         {
           "url": "https://www.moneycontrol.com/city/abhijeet-dipke-saurav-das-and-ashutosh-ranka-detained-by-delhi-police-from-plane-at-igi-airport-article-14048982.html",
@@ -1474,7 +1565,8 @@
       "lon": 77.2,
       "intensity": 2,
       "reports": 1,
-      "image": "https://www.orissapost.com/wp-content/uploads/2026/09/NIA.png",
+      "outlets": 1,
+      "id": "evt_a7d21e28ca34ed67",
       "sources": [
         {
           "url": "https://www.orissapost.com/nia-to-probe-mid-air-attack-on-captain-smit-machchhar-aboard-flydubai-flight/",
@@ -1490,6 +1582,8 @@
       "lon": 78.5,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_ba8d156890065a11",
       "sources": [
         {
           "url": "https://www.jagranjosh.com/news/mp-high-court-restores-14-per-cent-obc-quota-strikes-down-27-per-cent-reservation-in-jobs-and-higher-education-188252",
@@ -1505,7 +1599,8 @@
       "lon": 88.3697,
       "intensity": 2,
       "reports": 1,
-      "image": "https://imagesvs.oneindia.com/img/2026/10/ravindra-chavan-attacks-1791623074905-1200x675.jpg",
+      "outlets": 1,
+      "id": "evt_edf57e4c4122f6cc",
       "sources": [
         {
           "url": "https://www.oneindia.com/partner-content/ravindra-chavan-attacks-congress-rahul-gandhi-over-changing-colours-and-electoral-defeats-012-8230911.html",
@@ -1521,7 +1616,8 @@
       "lon": 75.3333,
       "intensity": 2,
       "reports": 1,
-      "image": "https://d2lnbwhcsmj8tp.cloudfront.net/ianslive_watermark/202610103973581.jpg",
+      "outlets": 1,
+      "id": "evt_1d4a5614386bb201",
       "sources": [
         {
           "url": "https://ianslive.in/pakistans-continuous-use-of-cross-border-terrorism-deepens-instability-across-south-asia--20261010164336",
@@ -1537,6 +1633,8 @@
       "lon": 94.3667,
       "intensity": 2,
       "reports": 2,
+      "outlets": 2,
+      "id": "evt_34911ad40aee423e",
       "sources": [
         {
           "url": "https://www.prokerala.com/news/articles/a1822817.html",
@@ -1556,7 +1654,8 @@
       "lon": 75.8333,
       "intensity": 2,
       "reports": 1,
-      "image": "https://www.mangalorean.com/wp-content/uploads/2026/10/202610103973420.png",
+      "outlets": 1,
+      "id": "evt_d14a91cee2ceb085",
       "sources": [
         {
           "url": "https://www.mangalorean.com/massive-fire-at-scrap-warehouse-spreads-to-nearby-units-in-mps-pithampur-no-casualty/",
@@ -1572,6 +1671,8 @@
       "lon": 94.3667,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_7b5119e282fd043c",
       "sources": [
         {
           "url": "https://www.prokerala.com/news/articles/a1822817.html",
@@ -1587,6 +1688,8 @@
       "lon": 93.9667,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_f1b5112a71586282",
       "sources": [
         {
           "url": "https://www.prokerala.com/news/articles/a1822817.html",
@@ -1602,7 +1705,8 @@
       "lon": 75.8333,
       "intensity": 2,
       "reports": 1,
-      "image": "https://www.mangalorean.com/wp-content/uploads/2026/10/202610103973108.png",
+      "outlets": 1,
+      "id": "evt_29164f3a93ce188b",
       "sources": [
         {
           "url": "https://www.mangalorean.com/six-cops-including-station-in-charge-suspended-after-bjp-workers-protest-in-indore/",
@@ -1618,6 +1722,8 @@
       "lon": 94.5167,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_cd622683a2dc692e",
       "sources": [
         {
           "url": "https://www.prokerala.com/news/articles/a1822817.html",
@@ -1633,6 +1739,8 @@
       "lon": 80.2833,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_dc457ab3e4fa74bd",
       "sources": [
         {
           "url": "https://www.newindianexpress.com/states/tamil-nadu/2026/Oct/10/dmk-chief-stalin-backs-cjp-protest-in-jantar-mantar-says-dissent-not-crime",
@@ -1648,6 +1756,8 @@
       "lon": 74.8656,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_84dbef9a3d41f970",
       "sources": [
         {
           "url": "https://timesofindia.indiatimes.com/city/chandigarh/punjab-police-crackdown-on-drugs-arms-4-assault-rifles-seized-in-12-days/articleshow/134854963.cms",
@@ -1663,7 +1773,8 @@
       "lon": 77.2167,
       "intensity": 3,
       "reports": 4,
-      "image": "https://techcrunch.com/wp-content/uploads/2026/10/starlink.jpg?resize=1200,800",
+      "outlets": 4,
+      "id": "evt_a48cac0b434b08f5",
       "sources": [
         {
           "url": "https://techcrunch.com/2026/10/08/elon-musk-questions-ambanis-influence-as-starlink-india-launch-stalls/",
@@ -1688,6 +1799,22 @@
         {
           "url": "https://www.dw.com/en/indias-cockroaches-vs-election-commission-what-you-need-to-know-ahead-of-cjps-october-10-protests/a-79608760",
           "publisher": "Deutsche Welle"
+        },
+        {
+          "url": "https://aninews.in/news/national/general-news/will-ensure-that-citizens-get-their-rights-congress-after-sc-remarks-on-delhi-security-curbs-ahead-of-oct-10-protest20261009183928/",
+          "publisher": "aninews.in"
+        },
+        {
+          "url": "https://www.moneycontrol.com/news/india/rahul-gandhi-quotes-nehru-s-1947-speech-ahead-of-india-bloc-mps-meeting-with-president-14048794.html",
+          "publisher": "moneycontrol.com"
+        },
+        {
+          "url": "https://aninews.in/news/national/politics/rahul-gandhi-quotes-nehrus-1947-speech-ahead-of-india-bloc-mps-meeting-with-president20261009201706/",
+          "publisher": "aninews.in"
+        },
+        {
+          "url": "https://www.thehindu.com/news/national/rajasthan/three-cjp-activists-detained-in-rajasthan-ahead-of-delhi-protest/article71564762.ece",
+          "publisher": "The Hindu"
         }
       ]
     },
@@ -1699,6 +1826,8 @@
       "lon": 77.2167,
       "intensity": 3,
       "reports": 3,
+      "outlets": 3,
+      "id": "evt_11bcd395178f0bce",
       "sources": [
         {
           "url": "https://timesofindia.indiatimes.com/india/fir-registered-after-kashmiri-youth-alleges-assault-at-connaught-place-protest/articleshow/134816243.cms",
@@ -1723,6 +1852,14 @@
         {
           "url": "https://www.thehindu.com/news/cities/Delhi/protesters-allege-assault-in-custody-abuse-in-tihar-after-demanding-fir-against-delhi-police-acp/article71564446.ece",
           "publisher": "The Hindu"
+        },
+        {
+          "url": "https://www.prokerala.com/news/articles/a1822602.html",
+          "publisher": "prokerala.com"
+        },
+        {
+          "url": "https://www.rediff.com/news/report/cjp-leaders-to-reach-delhi-airport-amid-govt-crackdown/20261010.htm",
+          "publisher": "rediff.com"
         }
       ]
     },
@@ -1734,6 +1871,8 @@
       "lon": 77.2167,
       "intensity": 3,
       "reports": 5,
+      "outlets": 3,
+      "id": "evt_9ace3ecc9f91e0f7",
       "sources": [
         {
           "url": "https://aninews.in/news/national/general-news/delhi-hc-seeks-police-status-report-on-plea-by-man-alleging-assault-by-minister-parvesh-verma20261008114234/",
@@ -1758,6 +1897,18 @@
         {
           "url": "https://www.thehindu.com/news/national/bjp-accuses-rahul-gandhi-priyanka-of-misconduct-with-policewomen/article71559935.ece",
           "publisher": "The Hindu"
+        },
+        {
+          "url": "https://scroll.in/article/1096258/is-2026-the-beginning-of-the-end-of-the-modi-era",
+          "publisher": "scroll.in"
+        },
+        {
+          "url": "https://www.hindustantimes.com/india-news/amit-shah-meets-manipur-cm-khemchand-says-he-will-visit-state-later-this-month-101791472213800.html",
+          "publisher": "hindustantimes.com"
+        },
+        {
+          "url": "https://www.dailyexcelsior.com/srinagar-youth-protest-over-alleged-assault-on-kashmiri-youth-in-delhi-by-cong-workers/",
+          "publisher": "dailyexcelsior.com"
         }
       ]
     },
@@ -1769,6 +1920,8 @@
       "lon": 77.2167,
       "intensity": 3,
       "reports": 3,
+      "outlets": 3,
+      "id": "evt_08bc1296592ab70f",
       "sources": [
         {
           "url": "https://aninews.in/news/world/asia/pm-modi-meets-ex-japan-pm-shinzo-abe8217s-wife-calls-late-leader-8220visionary8221-who-took-india-japan-ties-to-new-heights20261008190636/",
@@ -1796,6 +1949,8 @@
       "lon": 77.2,
       "intensity": 3,
       "reports": 4,
+      "outlets": 4,
+      "id": "evt_6fdb86a655daf4fc",
       "sources": [
         {
           "url": "http://www.bignewsnetwork.com/news/279354035/cec-row-security-heightened-around-jantar-mantar-eci-hq-ahead-of-opposition-march-today",
@@ -1820,6 +1975,22 @@
         {
           "url": "https://timesofindia.indiatimes.com/city/delhi/misbehaved-torn-clothes-and-badges-delhi-police-flags-assault-on-women-cops-during-protests/articleshow/134743185.cms",
           "publisher": "The Times of India"
+        },
+        {
+          "url": "https://www.siasat.com/3-indians-injured-in-attack-on-commercial-vessel-in-black-sea-3553433/",
+          "publisher": "siasat.com"
+        },
+        {
+          "url": "https://www.muscatdaily.com/2026/10/06/12-sailors-injured-in-attack-on-vessel-near-oman/",
+          "publisher": "muscatdaily.com"
+        },
+        {
+          "url": "https://www.deccanchronicle.com/opinion/columnists/manash-ghosh-can-india-bangladesh-ties-survive-the-brics-snub-1993640",
+          "publisher": "deccanchronicle.com"
+        },
+        {
+          "url": "https://www.thehindu.com/news/cities/Delhi/delhi-court-seeks-report-on-custodial-torture-charges-by-protesters/article71553131.ece",
+          "publisher": "The Hindu"
         }
       ]
     },
@@ -1831,6 +2002,8 @@
       "lon": 77.2167,
       "intensity": 3,
       "reports": 5,
+      "outlets": 4,
+      "id": "evt_f06053384dd90589",
       "sources": [
         {
           "url": "https://timesofindia.indiatimes.com/india/ensure-every-womans-safety-even-at-10pm-sc-raps-centre-delhi-police-over-recent-rape-incidents/articleshow/134686942.cms",
@@ -1855,6 +2028,14 @@
         {
           "url": "https://economictimes.indiatimes.com/news/india/parliament-street-violence-delhi-police-files-4-firs-for-rioting-stabbing-and-obstruction-18-arrested/articleshow/134708006.cms",
           "publisher": "economictimes.indiatimes.com"
+        },
+        {
+          "url": "https://www.siasat.com/delhi-police-mulls-fir-against-woman-accusing-acp-of-molestation-3552881/",
+          "publisher": "siasat.com"
+        },
+        {
+          "url": "https://www.prokerala.com/news/articles/a1820739.html",
+          "publisher": "prokerala.com"
         }
       ]
     },
@@ -1866,6 +2047,8 @@
       "lon": 77.2167,
       "intensity": 3,
       "reports": 5,
+      "outlets": 5,
+      "id": "evt_5c95b6175c842874",
       "sources": [
         {
           "url": "https://www.thehindu.com/news/cities/Delhi/woman-journalist-who-alleged-sexual-harassment-by-acp-detention-by-delhi-police/article71545816.ece",
@@ -1901,6 +2084,8 @@
       "lon": 85.1167,
       "intensity": 3,
       "reports": 3,
+      "outlets": 1,
+      "id": "evt_4f49cecaeeff2d7c",
       "sources": [
         {
           "url": "https://indiankanoon.org/doc/186724289/",
@@ -1924,6 +2109,8 @@
       "lon": 85.1167,
       "intensity": 3,
       "reports": 3,
+      "outlets": 1,
+      "id": "evt_3a54c4a250e5781c",
       "sources": [
         {
           "url": "https://indiankanoon.org/doc/65448432/",
@@ -1947,7 +2134,8 @@
       "lon": 77.2,
       "intensity": 3,
       "reports": 2,
-      "image": "https://www.orissapost.com/wp-content/uploads/2026/05/Netanyahu.png",
+      "outlets": 2,
+      "id": "evt_e89bd40f3e0fc00a",
       "sources": [
         {
           "url": "https://www.orissapost.com/netanyahu-invites-modi-capt-smit-machchhar-to-israels-independence-day-ceremony/",
@@ -1971,6 +2159,8 @@
       "lon": 72.8258,
       "intensity": 3,
       "reports": 3,
+      "outlets": 3,
+      "id": "evt_a8b4aedb58e797f8",
       "sources": [
         {
           "url": "https://www.moneycontrol.com/news/india/uddhav-thackeray-invokes-hitler-at-anti-ec-march-in-mumbai-raj-demands-sir-rollback-return-to-ballot-papers-14044144.html",
@@ -1995,7 +2185,7 @@
       ]
     }
   ],
-  "sourceCount": 1848,
+  "sourceCount": 1849,
   "outlets": [
     {
       "name": "The Times of India",
@@ -2007,7 +2197,7 @@
     },
     {
       "name": "The Hindu",
-      "count": 147
+      "count": 148
     },
     {
       "name": "aninews.in",
@@ -2170,6 +2360,10 @@
       "count": 8
     },
     {
+      "name": "India Today NE",
+      "count": 8
+    },
+    {
       "name": "kashmirlife.net",
       "count": 7
     },
@@ -2187,10 +2381,6 @@
     },
     {
       "name": "theglobeandmail.com",
-      "count": 7
-    },
-    {
-      "name": "India Today NE",
       "count": 7
     },
     {
@@ -2303,6 +2493,10 @@
     },
     {
       "name": "northeasttoday.in",
+      "count": 3
+    },
+    {
+      "name": "Rediff",
       "count": 3
     },
     {
@@ -2442,7 +2636,7 @@
       "count": 2
     },
     {
-      "name": "NDTV",
+      "name": "Kashmir Life",
       "count": 2
     },
     {
@@ -2454,27 +2648,11 @@
       "count": 2
     },
     {
-      "name": "EastMojo",
-      "count": 2
-    },
-    {
       "name": "Imphal Times",
       "count": 2
     },
     {
       "name": "The Assam Tribune",
-      "count": 2
-    },
-    {
-      "name": "Rediff",
-      "count": 2
-    },
-    {
-      "name": "Hindusthan Samachar English",
-      "count": 2
-    },
-    {
-      "name": "South China Morning Post",
       "count": 2
     },
     {
@@ -2595,6 +2773,18 @@
     },
     {
       "name": "mankatofreepress.com",
+      "count": 1
+    },
+    {
+      "name": "jacarandafm.com",
+      "count": 1
+    },
+    {
+      "name": "sott.net",
+      "count": 1
+    },
+    {
+      "name": "pressdemocrat.com",
       "count": 1
     }
   ],

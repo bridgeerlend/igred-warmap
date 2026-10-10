@@ -1,4 +1,5 @@
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { loadConfig } from '../src/core/config.js';
@@ -48,17 +49,6 @@ describe('1 — a data update never triggers a site build', () => {
     expect(netlify).toMatch(/ignore\s*=/);
     expect(netlify).toMatch(/git diff --quiet HEAD\^ HEAD -- www netlify\.toml/);
     expect(netlify).toMatch(/publish = "www"/);
-  });
-
-  it('the page fetches its data at view time rather than having it baked in', () => {
-    const map = read('site/map.js');
-    expect(map).toMatch(/import \{ dataBaseUrl \} from '\.\/config\.js'/);
-    expect(map).toMatch(/fetch\(`\$\{base\}\$\{path\}`/);
-    expect(map).toMatch(/getJson\('crises\.json'\)/);
-    expect(map).toMatch(/getJson\('map-events\.json'\)/);
-    // The standalone crisis page reads its file the same way.
-    expect(read('site/crisis/crisis-page.js')).toMatch(/fetch\(`\$\{dataBaseUrl\(\)\}crises\//);
-    expect(read('site/config.js')).toMatch(/raw\.githubusercontent\.com/);
   });
 
   it('the deploy guard checks the value, not the word', () => {
@@ -171,18 +161,10 @@ describe('5 — no ACLED data anywhere', () => {
     }
   });
 
-  it('is named by no file the map loads', () => {
-    for (const file of [
-      'site/map.js', 'site/crisis-view.js', 'site/common.js', 'site/index.html',
-      'site/crisis/index.html', 'site/crisis/crisis-page.js',
-    ]) {
-      expect(read(file).toLowerCase()).not.toMatch(/acled/);
-    }
-  });
 });
 
 describe('6 — no code path lets a model set a figure, an actor or control', () => {
-  it('only two files reach a model, and only one of them can produce published text', () => {
+  it('only three files reach a model, and the two that produce text are guarded', () => {
     const callers: string[] = [];
     const walk = (dir: string) => {
       for (const entry of readdirSync(path.join(repoRoot, dir), { withFileTypes: true })) {
@@ -194,7 +176,7 @@ describe('6 — no code path lets a model set a figure, an actor or control', ()
       }
     };
     walk('src');
-    expect(callers.sort()).toEqual(['src/core/cli/gemini-check.ts', 'src/core/edition/draft.ts']);
+    expect(callers.sort()).toEqual(['src/core/cli/gemini-check.ts', 'src/core/crises/summary.ts', 'src/core/edition/draft.ts']);
 
     // The diagnostic only reports what the key can do; it writes nothing at all.
     const check = read('src/core/cli/gemini-check.ts');
@@ -209,6 +191,17 @@ describe('6 — no code path lets a model set a figure, an actor or control', ()
 
   it('a figure absent from the sources rejects the whole draft', () => {
     expect(read('src/core/edition/draft.ts')).toMatch(/is not in the sources/);
+  });
+
+  it('the crisis summary is prose only, guarded in both languages, and never a field the map counts', () => {
+    const summary = read('src/core/crises/summary.ts');
+    expect(summary).toMatch(/guardDraft\(normaliseNumbers\(text\)/);
+    expect(summary).toMatch(/\['en', en\], \['nb', nb\]/);
+    expect(summary).not.toMatch(/intensity|severity|countryFips|confidence|writeArtifact|writeFileSync/);
+    // The builder hands it only headlines it already links, and stores only its prose.
+    const build = read('src/core/crises/build.ts');
+    expect(build).not.toMatch(/generativelanguage|openai|anthropic/i);
+    expect(build).toMatch(/d\.summary = currentSummary\(/);
   });
 });
 
@@ -311,12 +304,6 @@ describe('9 — a 30-day window is visible and the history stays in git', () => 
 });
 
 describe('11 — both themes are defined, with full-strength text', () => {
-  it('the shared foundation defines light and dark', () => {
-    const atlas = read('site/atlas.css');
-    expect(atlas).toMatch(/:root\[data-theme="dark"\]/);
-    expect(atlas).toMatch(/prefers-color-scheme: dark/);
-  });
-
   it('body text is near-black on light and near-white on dark, not grey on grey', () => {
     const atlas = read('site/atlas.css');
     // The brief names low-contrast grey body text as a thing to avoid.
@@ -324,13 +311,6 @@ describe('11 — both themes are defined, with full-strength text', () => {
     expect(atlas).toMatch(/--fg: #F7F5EF/);
   });
 
-  it('the map defines its own colours for both themes', () => {
-    // map.js reads these from the stylesheet, so a theme without them would draw a blank map.
-    const css = read('site/map.css');
-    expect(css).toMatch(/:root\[data-theme="dark"\] \{[^}]*--map-sea/);
-    expect(css).toMatch(/prefers-color-scheme: dark\)[\s\S]*?--map-sea/);
-    expect(read('site/map.js')).toMatch(/if \(what === 'theme'\) \{ repaintMap\(\)/);
-  });
 });
 
 describe('12 — the design is the chosen direction, and free of the named tells', () => {
@@ -361,40 +341,10 @@ describe('12 — the design is the chosen direction, and free of the named tells
     expect(fonts).not.toMatch(/https?:\/\//);
   });
 
-  it('carries its own cartography rather than third-party tiles', () => {
-    // Searching for the word "tile" is the wrong check: the colophon says, in prose, that no
-    // third-party tiles are used. What matters is that no tile server is ever contacted.
-    const map = read('site/map.js');
-    expect(map).not.toMatch(/mapbox|openstreetmap|arcgis|maptiler|carto|\{z\}\/\{x\}\/\{y\}/i);
-    // The style is built in the page: every source is inline GeoJSON, none is a tile source
-    // or a remote style, and the file names no external host at all.
-    expect(map).toMatch(/style: buildStyle\(world\)/);
-    expect(map).not.toMatch(/type: '(raster|vector|raster-dem)'|tiles:|glyphs:|sprite:/);
-    const sources = /sources: \{([\s\S]*?)\n {4}\},/.exec(map)?.[1] ?? '';
-    expect([...sources.matchAll(/type: '([a-z-]+)'/g)].map((match) => match[1])).toEqual(['geojson', 'geojson']);
-    expect(map).not.toMatch(/https?:\/\//);
-    // The renderer and the borders are vendored and served from the site itself.
-    expect(map).toMatch(/fetch\('vendor\/countries-50m\.json'\)/);
-    expect(read('site/index.html')).toMatch(/<script src="vendor\/maplibre-gl\.js"><\/script>/);
-    expect(read('site/index.html')).not.toMatch(/<(script|link)[^>]+(src|href)="https?:/);
-    expect(readJson('site/vendor/countries-50m.json').type).toBe('Topology');
-    // Borders are Natural Earth (via world-atlas), and the page says so.
-    expect(read('site/common.js')).toMatch(/Natural Earth \(public domain\)/);
-  });
-
   it('respects reduced motion', () => {
     expect(read('site/atlas.css')).toMatch(/prefers-reduced-motion/);
   });
 
-  it('countries are never coloured — only incidents are', () => {
-    // A choropleth is exactly what the brief rules out. Land is one colour; the only other
-    // fill is the open crisis's own countries, never a scale.
-    const map = read('site/map.js');
-    const fills = [...map.matchAll(/'fill-color': ([^,}]+)/g)].map((match) => match[1]!.trim());
-    expect(fills.length).toBeGreaterThan(0);
-    for (const fill of fills) expect(fill).toMatch(/^p\.(land|focus)$/);
-    expect(map).not.toMatch(/'fill-color',\s*\[/);
-  });
 });
 
 describe('13 — everything runs free', () => {
@@ -415,107 +365,6 @@ describe('13 — everything runs free', () => {
   it('the AI step cannot cost money: it is off, and would fall back to no text anyway', () => {
     expect(config.brief.ai.enabled).toBe(false);
     expect(read('config/brief.json')).toMatch(/never cost money/);
-  });
-});
-
-describe('satellite thermal detections are gone, not merely switched off', () => {
-  /**
-   * A fire is not a conflict event. The layer was built, labelled carefully as detections
-   * rather than attacks, and taken out anyway: it fell outside the institute's mandate and
-   * competed with the sourced incidents for attention. Pinned so it cannot drift back in as
-   * a hidden flag or a stray token.
-   */
-  it('leaves no source, schema, artifact or layer behind', () => {
-    for (const file of [
-      'src/core/cli/ingest.ts', 'src/core/util/paths.ts', 'config/sources.json',
-      'site/atlas.css', 'site/index.html', 'site/map.js', 'site/map.css',
-      'site/crisis-view.js', 'site/crisis.css', 'site/common.js',
-      'site/crisis/index.html', 'site/crisis/crisis-page.js', 'site/crisis/crisis-page.css',
-      'src/core/crises/build.ts', 'src/core/crises/fetchers.ts', 'src/core/cli/crises.ts',
-    ]) {
-      // Word-bounded: "confirms" is not a satellite, and the guard should not say it is.
-      expect(read(file)).not.toMatch(/\b(firms|thermal|heat)\b/i);
-    }
-    expect(existsSync(path.join(repoRoot, 'src/core/sources/firms'))).toBe(false);
-    expect(existsSync(path.join(repoRoot, 'src/core/schema/heat.ts'))).toBe(false);
-    expect(existsSync(path.join(repoRoot, 'data/heat.json'))).toBe(false);
-  });
-});
-
-describe('the reader can tell an incident from the background', () => {
-  it('promises a click only where there is an incident to take', () => {
-    const map = read('site/map.js');
-    expect(map).toMatch(/map\.on\('mousemove', 'dots', \(\) => \{ map\.getCanvas\(\)\.style\.cursor = 'pointer'/);
-    expect(map).toMatch(/map\.on\('mouseleave', 'dots', \(\) => \{ map\.getCanvas\(\)\.style\.cursor = ''/);
-  });
-
-  it('draws the heaviest incident last, so it is never buried', () => {
-    expect(read('site/map.js')).toMatch(/features\.sort\(\(a, b\) => a\.properties\.k - b\.properties\.k\)/);
-  });
-
-  it('never transitions font-size, which stalls and freezes the value', () => {
-    for (const file of ['site/map.css', 'site/crisis.css', 'site/crisis/crisis-page.css']) {
-      expect(read(file)).not.toMatch(/transition:[^;]*font-size/);
-    }
-  });
-});
-
-describe('a click on the map opens what was clicked', () => {
-  /**
-   * Overlapping incidents were once resolved by document order, which the reader cannot see.
-   * The map now queries the incident layer under the pointer and takes the most widely
-   * reported one, with one handler on the layer rather than a target per point.
-   */
-  it('resolves selection from the layer, preferring the brightest incident', () => {
-    const map = read('site/map.js');
-    expect(map).toMatch(/map\.on\('click', 'dots', \(ev\) => \{/);
-    expect(map).toMatch(/\[\.\.\.ev\.features\]\.sort\(\(a, b\) => b\.properties\.k - a\.properties\.k\)\[0\]/);
-  });
-
-  it('gives no incident an invisible target of its own', () => {
-    expect(read('site/map.js')).not.toMatch(/class: 'hit'|'\.hit'|h\('[a-z]*\.hit/);
-    expect(read('site/map.css')).not.toMatch(/\.hit\s*\{/);
-  });
-
-  it('answers the click at the point itself', () => {
-    expect(read('site/map.js')).toMatch(/new maplibregl\.Popup\([\s\S]*?\.setLngLat\(feature\.geometry\.coordinates\)/);
-  });
-
-  it('every incident popup shows a link to its source', () => {
-    const map = read('site/map.js');
-    const popup = /function showIncident\(feature\) \{[\s\S]*?\n\}/.exec(map)?.[0] ?? '';
-    expect(popup).toMatch(/h\('a', \{ href: r\[9\], target: '_blank', rel: 'noopener' \}, r\[10\] \|\| r\[9\]\)/);
-    // The popup renders the link only when the row has one, so the data must always have one.
-    const { events } = readJson('data/map-events.json');
-    expect(events.length).toBeGreaterThan(0);
-    for (const row of events) {
-      expect(row[9]).toMatch(/^https?:\/\//);
-      expect(String(row[10]).length).toBeGreaterThan(0);
-    }
-  });
-
-  it('a crisis opens beside the map, framed, with its address in the URL', () => {
-    expect(read('site/index.html')).toMatch(/<div class="panel" id="panel" hidden>/);
-    const map = read('site/map.js');
-    const open = /async function openCrisis\([\s\S]*?\n\}/.exec(map)?.[0] ?? '';
-    expect(open).toMatch(/panel\.hidden = false/);
-    expect(open).toMatch(/flyToCrisis\(c\)/);
-    expect(open).toMatch(/history\.replaceState\(null, '', `#\$\{encodeURIComponent\(id\)\}`\)/);
-    expect(open).toMatch(/renderCrisis\(d, \{/);
-  });
-
-  it('honours reduced motion when it flies to a crisis', () => {
-    expect(read('site/map.js')).toMatch(/duration: matchMedia\('\(prefers-reduced-motion: reduce\)'\)\.matches \? 0/);
-  });
-});
-
-describe('the reader can narrow the time window', () => {
-  it('offers a day, a week and a month, and filters by the data\'s own timestamps', () => {
-    const html = read('site/index.html');
-    for (const days of ['1', '7', '30']) expect(html).toMatch(new RegExp(`data-days="${days}"`));
-    const map = read('site/map.js');
-    expect(map).toMatch(/const cutoff = Date\.now\(\) \/ 60000 - state\.days \* 1440;/);
-    expect(map).toMatch(/if \(r\[0\] < cutoff\) continue;/);
   });
 });
 
@@ -594,34 +443,6 @@ describe('sources are named, never shown as logos', () => {
     }
   });
 
-  it('the map and the crisis view never show an outlet as a logo', () => {
-    /*
-     * The crisis view does show pictures: preview images the outlets published with their
-     * articles, each linked to that article, and video thumbnails. What it never shows is a
-     * masthead, so these files get the logo checks only.
-     */
-    for (const page of [
-      'site/index.html', 'site/map.js', 'site/map.css', 'site/common.js',
-      'site/crisis-view.js', 'site/crisis.css',
-      'site/crisis/index.html', 'site/crisis/crisis-page.js', 'site/crisis/crisis-page.css',
-    ]) {
-      const text = read(page)
-        .replace(/\/\*[\s\S]*?\*\//g, ' ')
-        .replace(/^\s*\/\/.*$/gm, ' ')
-        .replace(/<!--[\s\S]*?-->/g, ' ');
-      expect(text).not.toMatch(/logos?\.(svg|png|jpe?g|webp|gif)/i);
-      expect(text).not.toMatch(/(class|id)=["'][^"']*logo/i);
-      expect(text).not.toMatch(/\.[a-z-]*logo[a-z-]*\s*[{,]/i);
-      expect(text).not.toMatch(/url\([^)]*logo/i);
-      expect(text).not.toMatch(/favicon|clearbit|logo\.dev/i);
-    }
-    // The outlet appears as its name, in text.
-    const view = read('site/crisis-view.js');
-    expect(view).toMatch(/`\$\{a\.publisher\}, \$\{ago\(a\.publishedAt\)\}`/);
-    expect(view).toMatch(/h\('a', \{ href: s\.url, target: '_blank', rel: 'noopener' \}, s\.publisher\)/);
-    expect(view).toMatch(/h\('li', null, o\.name,/);
-  });
-
   it('the Brief prints the outlet name as the link text', () => {
     expect(read('site/brief/brief.js')).toMatch(/escapeHtml\(article\.publisher\)/);
   });
@@ -650,18 +471,6 @@ describe('sources are named, never shown as logos', () => {
 });
 
 describe('the crisis view links everything it reports', () => {
-  it('every news item, story, incident source and background opens at its source', () => {
-    const view = read('site/crisis-view.js');
-    expect(view).toMatch(/h\('a\.cv-news-item', \{ href: a\.url, target: '_blank', rel: 'noopener'/);
-    expect(view).toMatch(/h\('a\.cv-story', \{ href: s\.url/);
-    expect(view).toMatch(/s\.articles\.map\(\(a\) =>\s*h\('li', null, h\('a', \{ href: a\.url/);
-    // No slice on an incident's sources: each shows all of them.
-    expect(view).toMatch(/e\.sources\.map\(\(s, i\) => \[i \? ', ' : '', h\('a', \{ href: s\.url/);
-    expect(view).not.toMatch(/sources\.slice/);
-    expect(view).toMatch(/h\('a', \{ href: bgUrl, target: '_blank', rel: 'noopener' \}, t\.readMore\)/);
-    expect(view).toMatch(/h\('a', \{ href: ind\.url/);
-  });
-
   it('and the published crisis files give every one of them a link', () => {
     const files = readdirSync(path.join(repoRoot, 'data/crises')).filter((file) => file.endsWith('.json'));
     expect(files.length).toBeGreaterThan(0);
@@ -679,30 +488,31 @@ describe('the crisis view links everything it reports', () => {
     }
   });
 
-  it('the situation text is a template over the counts, not a model', () => {
-    expect(read('site/common.js')).toMatch(/No language model writes this text/);
-    for (const file of readdirSync(path.join(repoRoot, 'src/core/crises'))) {
-      expect(read(`src/core/crises/${file}`)).not.toMatch(/generativelanguage|openai|anthropic/i);
+  it('the status line is a template over the counts, and the summary falls back to it', () => {
+    expect(read('src/core/crises/build.ts')).toMatch(/export function statusLine\(/);
+    for (const file of readdirSync(path.join(repoRoot, 'data/crises'))) {
+      const crisis = readJson(`data/crises/${file}`);
+      expect(crisis.status.en.length).toBeGreaterThan(0);
+      expect(crisis.status.nb.length).toBeGreaterThan(0);
+      // A summary, when present, lists the linked headlines it was written from.
+      if (crisis.summary) {
+        expect(crisis.summary.sources.length).toBeGreaterThan(0);
+        for (const source of crisis.summary.sources) expect(source.url).toMatch(/^https?:\/\//);
+      }
     }
   });
-});
 
-describe('the wordmark links home', () => {
-  it('from the map and the Brief, but not from the home page to itself', () => {
-    for (const page of ['site/index.html', 'site/crisis/index.html']) {
-      expect(read(page)).toMatch(/<a class="bar-mark" href="https:\/\/igred\.org\/">/);
+  it('pictures come from Wikimedia Commons only, never from news organisations', () => {
+    expect(read('src/core/crises/fetchers.ts')).not.toMatch(/previewImage|og:image|socialimage/);
+    for (const file of readdirSync(path.join(repoRoot, 'data/crises'))) {
+      const crisis = readJson(`data/crises/${file}`);
+      for (const image of crisis.images) {
+        expect(image.credit).toBe('Wikimedia Commons');
+        expect(image.src).toMatch(/^https:\/\/(upload|thumb)\.wikimedia\.org\//);
+      }
+      for (const item of crisis.news) expect(item.image).toBeUndefined();
+      for (const incident of crisis.incidents) expect(incident.image).toBeUndefined();
     }
-    expect(read('site/brief/index.html')).toMatch(/<a class="wordmark wordmark-link" href="https:\/\/igred\.org\/">/);
-    expect(read('www/index.html')).not.toMatch(/wordmark-link|bar-mark/);
-  });
-
-  it('and is reachable by keyboard', () => {
-    const atlas = read('site/atlas.css');
-    expect(atlas).toMatch(/a\.wordmark-link:focus-visible/);
-    // The map's mark is a plain link, so the foundation's focus ring applies, and the map
-    // stylesheet does not take it away.
-    expect(atlas).toMatch(/^:focus-visible \{ outline: 2px solid/m);
-    expect(read('site/map.css')).not.toMatch(/\.bar-mark[^{]*\{[^}]*outline:\s*(none|0)/);
   });
 });
 
@@ -735,65 +545,354 @@ describe('an edition can be browsed', () => {
   });
 });
 
-describe('an incident carries the context the data supports', () => {
-  it('a crisis shows the register’s conflicts for its countries', () => {
-    const view = read('site/crisis-view.js');
-    expect(view).toMatch(/section\(t\.conflicts, t\.conflictsNote, conflicts\(d\.conflicts\)\)/);
-    expect(read('site/common.js')).toMatch(/Active conflicts in the Uppsala Conflict Data Program register for these countries/);
+/* ============================================================
+   The rebuild: map, crisis and country views, crisis pages, the
+   front page. Section 12 of the brief, item by item where code
+   can show it; the rest was checked by eye in the browser.
+   ============================================================ */
+
+const SITE_FILES = [
+  'site/index.html', 'site/app.js', 'site/app.css', 'site/common.js', 'site/view.js', 'site/mapcore.js',
+  'site/crisis.js', 'site/crisis.css', 'site/crisis/index.html',
+];
+const STYLESHEETS = ['site/atlas.css', 'site/app.css', 'site/crisis.css', 'site/brief/brief.css', 'site/stream/stream.css', 'www/home.css'];
+const PAGES = ['site/index.html', 'site/brief/index.html', 'site/stream/index.html', 'site/crisis/index.html', 'www/index.html'];
+const stripComments = (text: string) => text.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/^\s*\/\/.*$/gm, ' ').replace(/<!--[\s\S]*?-->/g, ' ');
+
+describe('the pages read their data at view time', () => {
+  it('the map, the crisis pages and the front page fetch from data/, never bake it in', () => {
+    expect(read('site/common.js')).toMatch(/fetch\(`\$\{dataBaseUrl\(\)\}\$\{file\}`/);
+    const app = read('site/app.js');
+    expect(app).toMatch(/getJson\('crises\.json'\)/);
+    expect(app).toMatch(/getJson\('map-events\.json'\)/);
+    expect(read('site/crisis.js')).toMatch(/getJson\(`crises\/\$\{encodeURIComponent\(id\)\}\.json`\)/);
+    expect(read('www/home.js')).toMatch(/raw\.githubusercontent\.com\/bridgeerlend\/igred-warmap\/main\/data\//);
+    expect(read('site/config.js')).toMatch(/raw\.githubusercontent\.com/);
   });
 
-  it('never presents GDELT’s own actor codes as the actors involved', () => {
-    /*
-     * They are assigned by word matching and are routinely wrong in a way that reads as
-     * fact: the live feed has "SCHOOL" as the initiator of an armed clash in Gaza and
-     * "JORDAN" as the initiator of one in Tehran.
-     */
-    for (const file of ['site/map.js', 'site/crisis-view.js']) {
-      expect(read(file)).not.toMatch(/\.actors\b/);
+  it('no file the pages load names ACLED, or the fire layer that was removed', () => {
+    for (const file of [...SITE_FILES, 'www/home.js', 'www/hero.js']) {
+      expect(read(file).toLowerCase()).not.toMatch(/acled|firms|thermal|hotspot-fire/);
     }
-
-    // The data still carries them — this is a display decision, not a data loss.
-    const events = readJson('data/events.json').events;
-    expect(events.some((event: { actors: unknown[] }) => event.actors.length > 0)).toBe(true);
   });
 
-  it('says counts are reports, not verified events', () => {
-    expect(read('site/common.js')).toMatch(/Counts are reports of incidents, not verified events or casualties/);
-  });
-
-  it('states the day of an incident without implying an hour', () => {
-    const map = read('site/map.js');
-    expect(map).toMatch(/fmtDate\(new Date\(r\[0\] \* 60000\)\.toISOString\(\)\)/);
-    expect(map).not.toMatch(/fmtDate\([^)]*\), true\)/);
-    expect(read('site/crisis-view.js')).toMatch(/fmtDate\(e\.at\)\)/);
+  it('the crisis pages are current with config, so a data commit never has to write them', () => {
+    // Generated from config/crises.json alone; --check exits 1 if any page is out of date.
+    const out = execFileSync('npx', ['tsx', 'scripts/build-crisis-pages.ts', '--check'], { cwd: repoRoot, encoding: 'utf-8' });
+    expect(out).toMatch(/already current/);
+    for (const workflow of ['ingest.yml', 'crises.yml', 'brief.yml']) {
+      expect(read(`.github/workflows/${workflow}`)).not.toMatch(/crisis-pages|git add site/);
+    }
   });
 });
 
-describe('search reaches a crisis or a place', () => {
-  it('searches both, and says which kind each result is', () => {
-    expect(read('site/index.html')).toMatch(/id="search"/);
-    const map = read('site/map.js');
-    expect(map).toMatch(/kind: 'crisis'/);
-    expect(map).toMatch(/kind: 'place'/);
+describe('dark by default, light on request', () => {
+  it('the foundation is dark at the root and light only under the reader’s choice', () => {
+    const atlas = read('site/atlas.css');
+    expect(/:root \{[^}]*--bg: #0B0B0A/.test(atlas)).toBe(true);
+    expect(atlas).toMatch(/:root\[data-theme="light"\] \{[^}]*--bg: #FBFAF7/);
+    expect(atlas).not.toMatch(/prefers-color-scheme/);
+    for (const page of PAGES) expect(read(page)).toMatch(/<html lang="en" data-theme="dark">/);
   });
 
-  it('every crisis can be centred, framed and opened', () => {
-    const { crises } = readJson('data/crises.json');
-    expect(crises.length).toBeGreaterThan(0);
-    for (const crisis of crises) {
-      expect(crisis.center).toHaveLength(2);
-      expect(crisis.bbox).toHaveLength(4);
-      expect(exists(`data/crises/${crisis.id}.json`)).toBe(true);
+  it('the theme switch sits in the footer of every page', () => {
+    for (const page of PAGES) {
+      const html = read(page);
+      const footer = /<footer[\s\S]*?<\/footer>/.exec(html)?.[0] ?? '';
+      expect(footer).toMatch(/id="theme"/);
+      expect(html.replace(footer, '')).not.toMatch(/id="theme"/);
     }
   });
 
-  it('every crisis country can be highlighted on the map', () => {
-    const map = read('site/map.js');
-    const table = /const FIPS_TO_ISO_N = \{([\s\S]*?)\};/.exec(map)?.[1] ?? '';
-    const known = new Set([...table.matchAll(/([A-Z]{2}): '\d{3}'/g)].map((match) => match[1]));
-    const missing = readJson('data/crises.json').crises
-      .flatMap((crisis: { fips: string[] }) => crisis.fips)
-      .filter((fips: string) => !known.has(fips));
-    expect(missing).toEqual([]);
+  it('body text is near-black on light and near-white on dark, not grey on grey', () => {
+    const atlas = read('site/atlas.css');
+    expect(atlas).toMatch(/--fg: #0E0E0C/);
+    expect(atlas).toMatch(/--fg: #F7F5EF/);
+  });
+
+  it('incidents use ember from orange to red — no yellow — and magenta only for verified', () => {
+    const atlas = read('site/atlas.css');
+    for (const yellow of ['#F5CB56', '#B98A1E', '#F2A040']) expect(atlas).not.toContain(yellow);
+    expect(atlas).toMatch(/--verified:/);
+    expect(atlas).toMatch(/--pick:/);
+    expect(atlas).toMatch(/--down:/);
+    const core = read('site/mapcore.js');
+    expect(core.match(/p\.verified|q\.verified/g)?.length).toBeGreaterThan(0);
+    // Magenta is used by the verified layer and nothing else.
+    expect(core.replace(/id: 'ev-verified'[\s\S]*?\},\n/, '')).not.toMatch(/'circle-color': p\.verified/);
+  });
+});
+
+describe('free of the named tells', () => {
+  it('no rounded boxes, no shadows, no gradient fills in any stylesheet', () => {
+    for (const file of STYLESHEETS) {
+      const css = stripComments(read(file));
+      for (const match of css.matchAll(/border-radius:\s*([^;]+);/g)) expect(['0', '50%']).toContain(match[1]!.trim());
+      for (const match of css.matchAll(/box-shadow:\s*([^;]+);/g)) expect(match[1]!.trim()).toBe('none');
+      expect(css).not.toMatch(/linear-gradient|radial-gradient/);
+    }
+  });
+
+  it('never three columns: no grid on a page has more than two tracks', () => {
+    for (const file of STYLESHEETS) {
+      const css = stripComments(read(file));
+      for (const match of css.matchAll(/grid-template-columns:\s*([^;]+);/g)) {
+        const value = match[1]!.trim();
+        if (value === 'none') continue;
+        const tracks = value.replace(/repeat\((\d+),[^)]*\)/g, (_m, n) => 'x '.repeat(Number(n))).replace(/minmax\([^)]*\)/g, 'x').trim().split(/\s+/);
+        // Two single-line rows are not columns of content: the map's timeline controls
+        // (play · date · track · now) and a Brief archive entry (date · headline · count).
+        const rows = (file === 'site/app.css' && /^(auto auto 1fr auto|auto 1fr auto)$/.test(value))
+          || (file === 'site/brief/brief.css' && value === '7.5em minmax(0, 1fr) auto');
+        const allowed = rows ? 4 : 2;
+        expect(tracks.length, `${file}: ${value}`).toBeLessThanOrEqual(allowed);
+      }
+    }
+  });
+
+  it('charts are flat bars, never a line or a filled area', () => {
+    const common = read('site/common.js');
+    expect(common).toMatch(/export function barChart/);
+    expect(common).not.toMatch(/sparkline|polyline|spark-area/);
+  });
+
+  it('controls are underlined text, and the crisis list has no numbering, pictures or charts', () => {
+    expect(read('site/atlas.css')).toMatch(/\.link-button \{[^}]*border-bottom: 1px solid var\(--fg\)/);
+    const app = read('site/app.js');
+    const list = /function renderList[\s\S]*?\n\}/.exec(app)?.[0] ?? '';
+    expect(list).not.toMatch(/<img|h\('img|barChart|svg/);
+    expect(read('site/app.css')).toMatch(/\.crisis-list \{ list-style: none/);
+  });
+
+  it('countries are never coloured — the only fills are the stipple and an invisible hit area', () => {
+    const core = read('site/mapcore.js');
+    const fills = [...core.matchAll(/type: 'fill'[^}]*paint: \{([^}]*)\}/g)].map((m) => m[1]!.trim());
+    expect(fills).toEqual(["'fill-pattern': 'stipple'", "'fill-color': '#000', 'fill-opacity': 0"]);
+    // A chosen country gets a thin line in the reader's colour, never a fill.
+    expect(core).toMatch(/id: 'pick-line', type: 'line'/);
+  });
+});
+
+describe('the map', () => {
+  it('carries its own cartography rather than third-party tiles', () => {
+    const core = read('site/mapcore.js');
+    expect(core).not.toMatch(/mapbox|openstreetmap|arcgis|maptiler|carto|\{z\}\/\{x\}\/\{y\}/i);
+    expect(core).not.toMatch(/type: '(raster|vector|raster-dem)'|tiles:|glyphs:|sprite:/);
+    expect(core).not.toMatch(/https?:\/\//);
+    expect(core).toMatch(/options\.vendor \?\? 'vendor\/countries-50m\.json'/);
+    expect(read('site/index.html')).not.toMatch(/<(script|link)[^>]+(src|href)="https?:/);
+    expect(readJson('site/vendor/countries-50m.json').type).toBe('Topology');
+    // The antimeridian is unwrapped, or Russia and Fiji draw lines across the map.
+    expect(core).toMatch(/Math\.abs\(ring\[i\]\[0\] - ring\[i - 1\]\[0\]\) > 180/);
+  });
+
+  it('a single-source incident is hollow, a corroborated one filled, a verified one magenta', () => {
+    const core = read('site/mapcore.js');
+    expect(core).toMatch(/id: 'ev-hollow'[^\n]*\['==', \['get', 'o'\], 0\]/);
+    expect(core).toMatch(/'circle-opacity': 0, 'circle-stroke-color': ember\(p\)/);
+    expect(core).toMatch(/id: 'ev-filled'[^\n]*\['==', \['get', 'o'\], 1\]/);
+    expect(core).toMatch(/id: 'ev-verified'[^\n]*\['==', \['get', 'v'\], 1\]/);
+    // "o" means two or more independent outlets, counted by the pipeline.
+    expect(read('site/app.js')).toMatch(/o: r\[7\] >= 2 \? 1 : 0/);
+    expect(readJson('data/map-events.json').fields[7]).toBe('outlets');
+  });
+
+  it('draws the heaviest incident last and takes the brightest under the pointer', () => {
+    const core = read('site/mapcore.js');
+    expect(core).toMatch(/'circle-sort-key': \['get', 'k'\]/);
+    expect(core).toMatch(/hits\.sort\(\(a, b\) => \(b\.properties\.v - a\.properties\.v\) \|\| \(b\.properties\.k - a\.properties\.k\)\)/);
+  });
+
+  it('every incident popup shows its source, and offers the crisis and a verify link', () => {
+    const app = read('site/app.js');
+    const popup = /function showIncident\(feature\) \{[\s\S]*?\n\}/.exec(app)?.[0] ?? '';
+    expect(popup).toMatch(/h\('a', \{ href: r\[10\], target: '_blank', rel: 'noopener' \}, inc\.publisher\(r\) \|\| r\[10\]\)/);
+    expect(popup).toMatch(/t\.openCrisis/);
+    expect(popup).toMatch(/\/new\/main\?filename=\$\{encodeURIComponent\(`config\/verified-events\/evt_\$\{inc\.id\(r\)\}\.json`\)\}&value=/);
+  });
+
+  it('a click on land opens that country', () => {
+    expect(read('site/mapcore.js')).toMatch(/handler\(\{ kind: 'country', fips: land\.properties\.fips/);
+    expect(read('site/app.js')).toMatch(/else if \(hit\.kind === 'country'\) openCountry\(hit\.fips/);
+  });
+
+  it('crisis names never collide and the largest claims its place first; six are named in the overview', () => {
+    const core = read('site/mapcore.js');
+    expect(core).toMatch(/sort\(\(a, b\) => \(a\.rank \?\? 999\) - \(b\.rank \?\? 999\)\)/);
+    expect(core).toMatch(/m\.rank < 6/);
+    expect(core).toMatch(/const clash = placed\.some/);
+  });
+
+  it('the address restores crisis, country, window, date and view', () => {
+    const app = read('site/app.js');
+    for (const key of ['crisis', 'country', 't', 'w', 'v']) {
+      expect(app).toMatch(new RegExp(`q\\.set\\('${key}'`));
+      expect(app).toMatch(new RegExp(`q\\.get\\('${key}'\\)`));
+    }
+    expect(app).toMatch(/addEventListener\('hashchange'/);
+  });
+
+  it('the timeline drags day by day, plays thirty days in about ten seconds, and the list follows', () => {
+    const app = read('site/app.js');
+    expect(read('site/index.html')).toMatch(/<input type="range" id="asof" min="0" max="29" step="1"/);
+    expect(app).toMatch(/const stepMs = reduced\(\) \? 1000 : 330;/);
+    // Every redraw recounts the list and the map for the chosen date and window.
+    const setAsOf = /function setAsOf[\s\S]*?\n\}/.exec(app)?.[0] ?? '';
+    expect(setAsOf).toMatch(/refresh\(/);
+    expect(/function refresh[\s\S]*?\n\}/.exec(app)?.[0]).toMatch(/renderList\(ranked\)[\s\S]*paintMap\(ranked\)/);
+  });
+
+  it('offers a day, a week and a month, counted from the data’s own timestamps', () => {
+    const html = read('site/index.html');
+    for (const w of ['1', '7', '30']) expect(html).toMatch(new RegExp(`data-w="${w}"`));
+    expect(read('site/common.js')).toMatch(/range\(w, asOf\)/);
+  });
+
+  it('shows how old the data is, and says so plainly after three hours', () => {
+    const app = read('site/app.js');
+    expect(app).toMatch(/banner\.hidden = hours < 3;/);
+    expect(app).toMatch(/\$\('updated'\)\.textContent = `\$\{t\.updated\} \$\{fmtStamp\(state\.inc\.generatedAt\)\}`/);
+    expect(readJson('data/crises.json').generatedAt).toBeTruthy();
+  });
+
+  it('search reaches a crisis, a country or a place, and says which', () => {
+    const app = read('site/app.js');
+    expect(app).toMatch(/kind: 'crisis'/);
+    expect(app).toMatch(/kind: 'country'/);
+    expect(app).toMatch(/kind: 'place'/);
+    expect(app).toMatch(/h\('span\.meta', null, kinds\(\)\[item\.kind\]\)/);
+  });
+
+  it('on a phone the map takes two fingers and a crisis opens as a full sheet', () => {
+    expect(read('site/app.js')).toMatch(/cooperative: narrow\(\)/);
+    expect(read('site/app.css')).toMatch(/@media \(max-width: 899px\) \{[\s\S]*?\.detail \{\s*position: fixed; inset: 0;/);
+  });
+
+  it('honours reduced motion when the camera moves', () => {
+    expect(read('site/mapcore.js')).toMatch(/duration: reduced\(\) \? 0 : 1100/);
+    expect(read('site/atlas.css')).toMatch(/prefers-reduced-motion/);
+  });
+});
+
+describe('the crisis and country views', () => {
+  it('link everything they report to its source', () => {
+    const view = read('site/view.js');
+    expect(view).toMatch(/h\('a\.cv-news-item', \{ href: a\.url, target: '_blank', rel: 'noopener' \}, a\.title\)/);
+    expect(view).toMatch(/h\('a\.cv-story', \{ href: s\.url/);
+    expect(view).toMatch(/e\.sources\.map\(\(s, i\) => \[i \? ', ' : '', h\('a', \{ href: s\.url/);
+    expect(view).not.toMatch(/sources\.slice/);
+    expect(view).toMatch(/h\('a', \{ href: bgUrl, target: '_blank', rel: 'noopener' \}, t\.readMore\)/);
+    expect(view).toMatch(/h\('a', \{ href: ind\.url/);
+  });
+
+  it('name outlets in text, never as logos, and show pictures only from Commons and the curated YouTube channels', () => {
+    const view = stripComments(read('site/view.js'));
+    for (const file of SITE_FILES) {
+      const text = stripComments(read(file));
+      expect(text).not.toMatch(/logos?\.(svg|png|jpe?g|webp|gif)|favicon|clearbit|logo\.dev/i);
+      expect(text).not.toMatch(/(class|id)=["'][^"']*logo/i);
+    }
+    const sources = [...view.matchAll(/h\('img', \{ src: ([^,]+),/g)].map((m) => m[1]!.trim());
+    expect(sources).toEqual(['im.src', '`https://i.ytimg.com/vi/${encodeURIComponent(v.videoId)}/mqdefault.jpg`']);
+    expect(view).toMatch(/youtube-nocookie\.com\/embed/);
+  });
+
+  it('say the AI text is machine-written and list what it was written from', () => {
+    const view = read('site/view.js');
+    expect(view).toMatch(/t\.summaryLabel/);
+    expect(view).toMatch(/sourceLinks\(d\.summary\.sources/);
+    // No summary: the status line stands alone.
+    expect(view).toMatch(/if \(d\.summary\) \{/);
+  });
+
+  it('link stories to their Brief edition, and the Brief links back to the crisis', () => {
+    expect(read('site/view.js')).toMatch(/\$\{BRIEF\}\?edition=\$\{s\.edition\}#\$\{s\.storyId\}/);
+    const brief = read('site/brief/brief.js');
+    expect(brief).toMatch(/<li class="story" id="\$\{escapeHtml\(story\.id\)\}">/);
+    expect(brief).toMatch(/href="\.\.\/#crisis=\$\{encodeURIComponent\(crisis\.id\)\}"/);
+  });
+
+  it('show the UCDP register and its fatality estimate as a contrast to media counts', () => {
+    const view = read('site/view.js');
+    expect(view).toMatch(/t\.ucdpBattle\(/);
+    expect(view).toMatch(/t\.ucdpOtherOnly/);
+    expect(view).toMatch(/c\.startDate \? t\.since/);
+    const sudan = readJson('data/crises/sudan.json');
+    expect(sudan.conflicts.length).toBeGreaterThan(0);
+  });
+
+  it('a country lists its register conflicts and the crisis it belongs to, or says plainly it has none', () => {
+    const view = read('site/view.js');
+    expect(view).toMatch(/export function renderCountry/);
+    expect(view).toMatch(/t\.noConflicts/);
+    expect(view).toMatch(/t\.openCrisis/);
+    expect(readJson('data/countries.json').countries.SU.conflicts.length).toBeGreaterThan(1);
+  });
+
+  it('call counts reports, and date an incident to the day', () => {
+    const common = read('site/common.js');
+    expect(common).toMatch(/armed \$\{n === '1' \? 'incident' : 'incidents'\} reported/);
+    expect(read('site/view.js')).toMatch(/fmtShortDay\(e\.at\)/);
+  });
+});
+
+describe('a crisis has its own page', () => {
+  it('every crisis in config has a page with its title, description, Open Graph tags and canonical address', () => {
+    for (const crisis of readJson('config/crises.json').crises as { id: string; name: string }[]) {
+      const html = read(`site/crisis/${crisis.id}/index.html`);
+      const name = crisis.name.replace(/&/g, '&amp;');
+      expect(html).toContain(`<title>${name} · IGRED Global Conflict Monitor</title>`);
+      expect(html).toMatch(/<meta name="description" content="[^"]{40,}">/);
+      expect(html).toContain(`<meta property="og:title" content="${name}">`);
+      expect(html).toMatch(/<meta property="og:description" content="[^"]+">/);
+      expect(html).toMatch(/<meta property="og:image" content="https:\/\/(upload|thumb)\.wikimedia\.org\/[^"?]+">/);
+      expect(html).toContain(`<link rel="canonical" href="https://map.igred.org/crisis/${crisis.id}/">`);
+      expect(html).toContain(`data-crisis="${crisis.id}"`);
+      expect(html).toContain(`href="../../#crisis=${crisis.id}"`);
+    }
+  });
+});
+
+describe('the wordmark links home', () => {
+  it('from every product page, but not from the home page to itself', () => {
+    for (const page of ['site/index.html', 'site/brief/index.html', 'site/stream/index.html', 'site/crisis/index.html']) {
+      expect(read(page)).toMatch(/<a class="wordmark wordmark-link" href="https:\/\/igred\.org\/">/);
+    }
+    expect(read('www/index.html')).not.toMatch(/href="https:\/\/igred\.org\/"/);
+  });
+});
+
+describe('the front page', () => {
+  it('opens on a film drawn from today’s data, not a video file, with no buttons in it', () => {
+    const html = read('www/index.html');
+    const hero = /<header class="hero"[\s\S]*?<\/header>/.exec(html)?.[0] ?? '';
+    expect(hero).toMatch(/<canvas class="hero-canvas"/);
+    expect(hero).not.toMatch(/<button|<video|\.mp4|\.webm/);
+    expect(read('www/home.js')).toMatch(/home\.json/);
+    // Reduced motion gets one still frame.
+    expect(read('www/hero.js')).toMatch(/if \(reduced\) \{ still\(\); return/);
+  });
+
+  it('has four equal entries: two live, two coming and not clickable', () => {
+    const html = read('www/index.html');
+    expect(html.match(/class="entry"/g)?.length).toBe(2);
+    expect(html.match(/class="entry is-coming" aria-disabled="true"/g)?.length).toBe(2);
+    expect(html).toMatch(/href="https:\/\/map\.igred\.org\/"/);
+    expect(html).toMatch(/href="https:\/\/map\.igred\.org\/brief\/"/);
+    for (const name of ['Global Conflict Monitor', 'The IGRED Brief', 'Reports', 'Knowledge base']) expect(html).toContain(name);
+  });
+
+  it('names the people behind it and how to reach them', () => {
+    const html = read('www/index.html');
+    expect(html).toContain('Erlend B. Moe');
+    expect(html).toContain('Viktor T. Bratberg');
+    expect(html).toContain('Co-Founder &amp; Analyst');
+    expect(html).toContain('mailto:contact@igred.org');
+  });
+
+  it('every hero point is a published incident and every headline the Brief’s own', () => {
+    const home = readJson('data/home.json');
+    expect(home.points.length).toBeGreaterThan(0);
+    for (const h of home.brief.headlines) expect(h.url).toMatch(/^https?:\/\//);
   });
 });

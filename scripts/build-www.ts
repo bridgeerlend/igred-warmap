@@ -16,9 +16,8 @@ const wwwDir = path.join(repoRoot, 'www');
 
 mkdirSync(path.join(wwwDir, 'fonts'), { recursive: true });
 copyFileSync(path.join(siteDir, 'atlas.css'), path.join(wwwDir, 'atlas.css'));
-// The front page draws its live map in the same projection and outlines as the map once did.
-copyFileSync(path.join(siteDir, 'world.json'), path.join(wwwDir, 'world.json'));
-copyFileSync(path.join(siteDir, 'projection.js'), path.join(wwwDir, 'projection.js'));
+// www/world.json and www/projection.js belong to the front page alone; the map now draws
+// from Natural Earth 1:50m in MapLibre, so they are no longer mirrored from site/.
 
 let fonts = 0;
 for (const file of readdirSync(path.join(siteDir, 'fonts'))) {

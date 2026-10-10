@@ -6,7 +6,7 @@
   "region": "Americas",
   "regionNb": "Amerika",
   "auto": false,
-  "generatedAt": "2026-10-10T16:19:13.143Z",
+  "generatedAt": "2026-10-10T19:30:09.229Z",
   "countries": [
     {
       "fips": "VE",
@@ -31,6 +31,8 @@
     "change7dPct": 70,
     "reported7d": 3,
     "outlets30d": 52,
+    "corroborated7d": 3,
+    "score": 12,
     "level": 3,
     "daily": [
       {
@@ -220,9 +222,22 @@
       }
     ]
   },
-  "situation": {
-    "en": "17 armed incidents were reported in Venezuela in the past seven days, 70% more than the week before. Most were armed assaults (35%), followed by armed clashs (35%). 3 of them were carried by two or more outlets. The most reported locations over the past month were Caracas, Valencia and Llano Alto. UCDP lists 2 active armed conflicts here.",
-    "nb": "17 væpnede hendelser ble meldt i Venezuela de siste sju dagene, 70 prosent flere enn uken før. Flest gjaldt væpnet angrep (35 prosent), deretter væpnet sammenstøt (35 prosent). 3 av dem ble omtalt av to eller flere medier. De mest omtalte stedene den siste måneden var Caracas, Valencia og Llano Alto. UCDP fører 2 aktive væpnede konflikter her."
+  "status": {
+    "en": "17 armed incidents reported in the past seven days, 70% more than the week before, most of them in Caracas, Valencia and Llano Alto.",
+    "nb": "17 væpnede hendelser meldt de siste sju dagene, 70 prosent flere enn uken før, flest i Caracas, Valencia og Llano Alto."
+  },
+  "summary": null,
+  "ucdpFatalities": {
+    "battle": {
+      "total": 2,
+      "years": "2007",
+      "url": "https://api.worldbank.org/v2/country/VEN/indicator/VC.BTL.DETH?format=json&mrnev=1"
+    },
+    "other": {
+      "total": 150,
+      "years": "2023",
+      "conflicts": 2
+    }
   },
   "background": {
     "title": "Crisis in Venezuela",
@@ -244,7 +259,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/SP.POP.TOTL?locations=VE"
+      "url": "https://api.worldbank.org/v2/country/VEN/indicator/SP.POP.TOTL?format=json&mrnev=1"
     },
     {
       "id": "NY.GDP.PCAP.CD",
@@ -259,7 +274,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=VE"
+      "url": "https://api.worldbank.org/v2/country/VEN/indicator/NY.GDP.PCAP.CD?format=json&mrnev=1"
     },
     {
       "id": "NY.GDP.MKTP.KD.ZG",
@@ -274,7 +289,7 @@
           "year": "2025"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG?locations=VE"
+      "url": "https://api.worldbank.org/v2/country/VEN/indicator/NY.GDP.MKTP.KD.ZG?format=json&mrnev=1"
     },
     {
       "id": "FP.CPI.TOTL.ZG",
@@ -289,7 +304,7 @@
           "year": "2016"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?locations=VE"
+      "url": "https://api.worldbank.org/v2/country/VEN/indicator/FP.CPI.TOTL.ZG?format=json&mrnev=1"
     },
     {
       "id": "SI.POV.DDAY",
@@ -304,7 +319,7 @@
           "year": "2006"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/SI.POV.DDAY?locations=VE"
+      "url": "https://api.worldbank.org/v2/country/VEN/indicator/SI.POV.DDAY?format=json&mrnev=1"
     },
     {
       "id": "VC.BTL.DETH",
@@ -319,7 +334,7 @@
           "year": "2007"
         }
       ],
-      "url": "https://data.worldbank.org/indicator/VC.BTL.DETH?locations=VE"
+      "url": "https://api.worldbank.org/v2/country/VEN/indicator/VC.BTL.DETH?format=json&mrnev=1"
     }
   ],
   "conflicts": [
@@ -829,64 +844,94 @@
   ],
   "images": [
     {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Hugo_Chavez_Signature.svg/120px-Hugo_Chavez_Signature.svg.png",
+      "caption": "Hugo Chavez Signature",
+      "url": "https://commons.wikimedia.org/wiki/File:Hugo_Chavez_Signature.svg",
+      "credit": "Wikimedia Commons",
+      "kind": "map",
+      "author": "Hugo Chavez",
+      "license": "Public domain"
+    },
+    {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Gdp-per-capita-maddison.png/960px-Gdp-per-capita-maddison.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
       "caption": "Crisis in Venezuela",
       "url": "https://commons.wikimedia.org/wiki/File:Gdp-per-capita-maddison.png",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "other",
+      "author": "Our World in Data",
+      "license": "CC BY 4.0"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/Marcha_hacia_el_Palacio_de_Justicia_de_Maracaibo_-_Venezuela_06.jpg/500px-Marcha_hacia_el_Palacio_de_Justicia_de_Maracaibo_-_Venezuela_06.jpg",
       "caption": "Marcha hacia el Palacio de Justicia de Maracaibo - Venezuela 06",
       "url": "https://commons.wikimedia.org/wiki/File:Marcha_hacia_el_Palacio_de_Justicia_de_Maracaibo_-_Venezuela_06.jpg",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/%C2%A9UNICEF-ECU-2018-Arcos.jpg/500px-%C2%A9UNICEF-ECU-2018-Arcos.jpg",
-      "caption": "©UNICEF-ECU-2018-Arcos",
-      "url": "https://commons.wikimedia.org/wiki/File:%C2%A9UNICEF-ECU-2018-Arcos.jpg",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "other",
+      "author": "María Alejandra Mora (SoyMAM)",
+      "license": "CC BY-SA 3.0"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Escasez_en_Venezuela%2C_Central_Madeirense_8.JPG/500px-Escasez_en_Venezuela%2C_Central_Madeirense_8.JPG",
       "caption": "Escasez en Venezuela, Central Madeirense 8",
       "url": "https://commons.wikimedia.org/wiki/File:Escasez_en_Venezuela%2C_Central_Madeirense_8.JPG",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "other",
+      "author": "Wilfredor",
+      "license": "CC0"
+    },
+    {
+      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/%C2%A9UNICEF-ECU-2018-Arcos.jpg/500px-%C2%A9UNICEF-ECU-2018-Arcos.jpg",
+      "caption": "©UNICEF-ECU-2018-Arcos",
+      "url": "https://commons.wikimedia.org/wiki/File:%C2%A9UNICEF-ECU-2018-Arcos.jpg",
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "UNICEF Ecuador from Ecuador",
+      "license": "CC BY 2.0"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/2024_Venezuelan_protest_28_Aug_03.jpg/500px-2024_Venezuelan_protest_28_Aug_03.jpg",
       "caption": "2024 Venezuelan protest 28 Aug 03",
       "url": "https://commons.wikimedia.org/wiki/File:2024_Venezuelan_protest_28_Aug_03.jpg",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "VOA",
+      "license": "Public domain"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/P20260103MR-0139_President_Donald_Trump%2C_CIA_Director_John_Ratcliffe_and_Secretary_of_State_Marco_Rubio_monitor_U.S._military_operations_in_Venezuela.jpg/500px-P20260103MR-0139_President_Donald_Trump%2C_CIA_Director_John_Ratcliffe_and_Secretary_of_State_Marco_Rubio_monitor_U.S._military_operations_in_Venezuela.jpg",
       "caption": "P20260103MR-0139 President Donald Trump, CIA Director John Ratcliffe and Secretary of State Marco Rubio monitor U.S. military operations in Venezuela",
       "url": "https://commons.wikimedia.org/wiki/File:P20260103MR-0139_President_Donald_Trump%2C_CIA_Director_John_Ratcliffe_and_Secretary_of_State_Marco_Rubio_monitor_U.S._military_operations_in_Venezuela.jpg",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "Official White House Photo by Molly Riley.",
+      "license": "Public domain"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f6/Hugo_Ch%C3%A1vez_2012_%28cropped%29.jpg/500px-Hugo_Ch%C3%A1vez_2012_%28cropped%29.jpg",
       "caption": "Hugo Chávez 2012",
       "url": "https://commons.wikimedia.org/wiki/File:Hugo_Ch%C3%A1vez_2012_(cropped).jpg",
-      "credit": "Wikimedia Commons"
-    },
-    {
-      "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Hugo_Chavez_Signature.svg/120px-Hugo_Chavez_Signature.svg.png",
-      "caption": "Hugo Chavez Signature",
-      "url": "https://commons.wikimedia.org/wiki/File:Hugo_Chavez_Signature.svg",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "ElBarcobasurero",
+      "license": "CC BY-SA 4.0"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/35/Brent_vs_WTI_crude_oil.webp/500px-Brent_vs_WTI_crude_oil.webp",
       "caption": "The world oil price had fallen to a historic low when Chavez was elected in December 1998 and rose over 1000% over the first ten years of his presidency. Major crisis events occur after the 2008 oil price collapse and en",
       "url": "https://commons.wikimedia.org/wiki/File:Brent_vs_WTI_crude_oil.webp",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "Wikideas1",
+      "license": "CC0"
     },
     {
       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/%D0%9D%D0%B8%D0%BA%D0%BE%D0%BB%D0%B0%D1%81_%D0%9C%D0%B0%D0%B4%D1%83%D1%80%D0%BE_%2811-01-2025%29_%28cropped%29.jpg/500px-%D0%9D%D0%B8%D0%BA%D0%BE%D0%BB%D0%B0%D1%81_%D0%9C%D0%B0%D0%B4%D1%83%D1%80%D0%BE_%2811-01-2025%29_%28cropped%29.jpg",
       "caption": "Николас Мадуро (11-01-2025)",
       "url": "https://commons.wikimedia.org/wiki/File:%D0%9D%D0%B8%D0%BA%D0%BE%D0%BB%D0%B0%D1%81_%D0%9C%D0%B0%D0%B4%D1%83%D1%80%D0%BE_(11-01-2025)_(cropped).jpg",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "kind": "person",
+      "author": "Пресс-служба Госдумы РФ",
+      "license": "CC BY 4.0"
     }
   ],
   "videos": [],
@@ -900,6 +945,8 @@
       "lon": -66.9167,
       "intensity": 3,
       "reports": 5,
+      "outlets": 5,
+      "id": "evt_02b45b278eddebb1",
       "sources": [
         {
           "url": "https://www.thehindu.com/news/international/venezuelas-maduro-charged-in-us-with-ordering-torture-of-opponents-americans/article71561348.ece",
@@ -924,6 +971,10 @@
         {
           "url": "https://albaniandailynews.com/news/venezuela-s-ex-leader-nicol-s-maduro-charged-with-conspiracy-to-commit-torture",
           "publisher": "albaniandailynews.com"
+        },
+        {
+          "url": "https://sputnikglobe.com/20261009/maduros-wife-paroled-into-us-to-participate-in-criminal-proceedings-in-january---dhs-1124857654.html",
+          "publisher": "sputnikglobe.com"
         }
       ]
     },
@@ -935,6 +986,8 @@
       "lon": -66.9167,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_a5c1f876f0cf9f5a",
       "sources": [
         {
           "url": "https://www.wsws.org/en/articles/2026/10/09/xkrc-o09.html",
@@ -950,6 +1003,8 @@
       "lon": -67.877,
       "intensity": 1,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_e649906cdc4a395d",
       "sources": [
         {
           "url": "https://www.wsws.org/en/articles/2026/10/09/xkrc-o09.html",
@@ -965,6 +1020,8 @@
       "lon": -64.5973,
       "intensity": 1,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_08d1ea85bb96a504",
       "sources": [
         {
           "url": "https://www.wsws.org/en/articles/2026/10/09/xkrc-o09.html",
@@ -980,6 +1037,8 @@
       "lon": -66.9167,
       "intensity": 3,
       "reports": 3,
+      "outlets": 3,
+      "id": "evt_6baa9110064342a1",
       "sources": [
         {
           "url": "https://fox23maine.com/news/nation-world/former-venezuelan-nicolas-maduro-his-wife-might-face-new-charges-over-alleged-torture-of-americans-report-drug-trafficking-narco-terrorists-venezuela-prisons-prison-abuse-president-donald-trump",
@@ -1004,6 +1063,10 @@
         {
           "url": "https://www.thenationalnews.com/news/us/2026/10/08/maduro-torture-indictment-wife/",
           "publisher": "The National"
+        },
+        {
+          "url": "https://saharareporters.com/2026/10/08/us-prosecutors-charge-ex-venezuelan-leader-nicolas-maduro-wife-torture-conspiracy",
+          "publisher": "saharareporters.com"
         }
       ]
     },
@@ -1015,6 +1078,8 @@
       "lon": -66.9167,
       "intensity": 3,
       "reports": 3,
+      "outlets": 3,
+      "id": "evt_131896965ffbc9e3",
       "sources": [
         {
           "url": "https://www.israelnationalnews.com/news/434272",
@@ -1046,6 +1111,8 @@
       "lon": -69.9529,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_7371da15ba1e1d5d",
       "sources": [
         {
           "url": "https://www.houstonpublicmedia.org/npr/2026/10/08/nx-s1-5995360/new-u-s-indictment-charges-former-venezuelan-president-nicolas-maduro-with-torture/",
@@ -1061,6 +1128,8 @@
       "lon": -66.9167,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_0270b5fac5f767ce",
       "sources": [
         {
           "url": "https://www.cubaheadlines.com/articles/342211",
@@ -1076,6 +1145,8 @@
       "lon": -68.0039,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_75b82743fbf6bc50",
       "sources": [
         {
           "url": "https://www.kold.com/2026/10/05/13-crime-files-2014-death-joshua-gradillas/",
@@ -1091,6 +1162,8 @@
       "lon": -66.9167,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_8d6ae48cf9df773d",
       "sources": [
         {
           "url": "https://www.riotimesonline.com/venezuela-un-mission-2-more-years-2026/",
@@ -1106,6 +1179,8 @@
       "lon": -66.9167,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_f011dd00b6c52e31",
       "sources": [
         {
           "url": "https://www.riotimesonline.com/venezuela-un-mission-2-more-years-2026/",
@@ -1121,6 +1196,8 @@
       "lon": -66.9167,
       "intensity": 2,
       "reports": 2,
+      "outlets": 1,
+      "id": "evt_743eef377efd951d",
       "sources": [
         {
           "url": "https://www.riotimesonline.com/colombia-role-in-latin-america-explained-2026/",
@@ -1140,6 +1217,8 @@
       "lon": -66,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_d26371e6fc7b3bf6",
       "sources": [
         {
           "url": "https://www.riotimesonline.com/brazil-in-south-america-explained-2026/",
@@ -1155,6 +1234,8 @@
       "lon": -68.0039,
       "intensity": 1,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_f993708ecac2c594",
       "sources": [
         {
           "url": "https://metro.co.uk/2026/10/05/spanish-protestors-fed-tourists-threaten-bring-country-a-standstill-29679193/",
@@ -1170,6 +1251,8 @@
       "lon": -68.0039,
       "intensity": 1,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_f8f6b0daf151d75e",
       "sources": [
         {
           "url": "https://metro.co.uk/2026/10/05/spanish-protestors-fed-tourists-threaten-bring-country-a-standstill-29679193/",
@@ -1185,6 +1268,8 @@
       "lon": -68.0039,
       "intensity": 2,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_127a631c60ab536a",
       "sources": [
         {
           "url": "http://www.irishsun.com/news/279350126/police-fire-tear-gas-as-housing-protests-sweep-spain",
@@ -1204,6 +1289,8 @@
       "lon": -68.0039,
       "intensity": 1,
       "reports": 1,
+      "outlets": 1,
+      "id": "evt_267c94b028e2b565",
       "sources": [
         {
           "url": "https://dominicanrepublicpost.com/spain-protests-flare-after-housing-bill-rejected-will-it-cause-snap-poll/",
