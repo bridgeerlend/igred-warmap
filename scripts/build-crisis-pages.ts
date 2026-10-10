@@ -64,13 +64,14 @@ ${image ? `<meta property="og:image" content="${esc(image)}">\n<meta name="twitt
 </head>
 <body class="crisis-page"${c ? ` data-crisis="${c.id}"` : ''}>
 <div class="banner" id="banner" hidden></div>
-<header class="masthead page-masthead">
+<header class="masthead page-masthead is-sticky">
   <a class="wordmark wordmark-link" href="https://igred.org/"><strong>IGRED</strong></a>
   <nav class="controls">
     <a class="link-button" href="${up}" data-i18n="map">Map</a>
     <a class="link-button" href="${up}brief/" data-i18n="brief">Brief</a>
     <a class="link-button" href="${up}stream/" data-i18n="wire">Wire</a>
     <button type="button" class="link-button" id="lang">NO</button>
+    <button type="button" class="link-button" id="theme">Light</button>
   </nav>
 </header>
 <div class="page-map"><div class="map" id="map" role="region" aria-label="Map"></div></div>
@@ -81,7 +82,6 @@ ${image ? `<meta property="og:image" content="${esc(image)}">\n<meta name="twitt
 <footer class="colophon">
   <p class="colophon-method"><span id="method"></span> <span id="ranking"></span></p>
   <p class="meta"><span id="updated"></span></p>
-  <p class="meta"><button type="button" class="link-button quiet" id="theme">Light</button></p>
   <p class="meta"><a href="mailto:contact@igred.org">contact@igred.org</a></p>
 </footer>
 <script src="${up}vendor/maplibre-gl.js"></script>

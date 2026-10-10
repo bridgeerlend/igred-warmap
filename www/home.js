@@ -27,6 +27,7 @@ const STRINGS = {
     role: 'Co-Founder & Analyst',
     open: 'Open', read: 'Read', coming: 'Coming',
     switchLang: 'NO', dark: 'Dark', light: 'Light',
+    navMap: 'Map', navAbout: 'About',
     countLede: 'armed incidents reported in the past seven days',
     weekCount: (n) => `${n} incidents this week`,
     playback: 'Thirty days of reported incidents',
@@ -47,6 +48,7 @@ const STRINGS = {
     role: 'Medgründer og analytiker',
     open: 'Åpne', read: 'Les', coming: 'Kommer',
     switchLang: 'EN', dark: 'Mørk', light: 'Lys',
+    navMap: 'Kart', navAbout: 'Om oss',
     countLede: 'væpnede hendelser meldt de siste sju dagene',
     weekCount: (n) => `${n} hendelser denne uken`,
     playback: 'Tretti dager med meldte hendelser',
@@ -129,9 +131,18 @@ function restartHero() {
   hero = startHero({ canvas: $('hero-canvas'), scene: $('hero-scene'), data: home, world, strings: t(), lang, freezeAt: Number.isFinite(at) ? at : null });
 }
 
+/** The top bar is clear over the film and takes the page's colours once the film is passed. */
+function watchTopbar() {
+  const bar = $('topbar');
+  new IntersectionObserver(([entry]) => bar.classList.toggle('is-solid', !entry.isIntersecting), {
+    rootMargin: `-${bar.offsetHeight}px 0px 0px 0px`,
+  }).observe($('hero'));
+}
+
 async function start() {
   paintStrings();
   setupToggles();
+  watchTopbar();
   try {
     [home, world] = await Promise.all([
       fetch(`${DATA}home.json`, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : Promise.reject(r.status))),

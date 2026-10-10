@@ -22,13 +22,24 @@
 
 <!-- The hero is a film made of today's data: it is drawn in the page from the same files the
      map reads, so it is never out of date and weighs almost nothing. No buttons inside it. -->
-<header class="hero" id="hero" aria-label="IGRED">
-  <canvas class="hero-canvas" id="hero-canvas" aria-hidden="true"></canvas>
-  <div class="hero-scene" id="hero-scene" aria-live="off"></div>
+<!-- The menu and the light switch stay at the top of the page, over the film and after it. -->
+<div class="topbar" id="topbar">
   <div class="hero-mark">
     <p class="wordmark"><strong>IGRED</strong></p>
     <p class="hero-name" data-i18n="fullName">Institute for Geopolitical Risk and Economic Development</p>
   </div>
+  <nav class="controls" aria-label="Menu">
+    <a class="link-button" href="https://map.igred.org/" data-i18n="navMap">Map</a>
+    <a class="link-button" href="https://map.igred.org/brief/">Brief</a>
+    <a class="link-button" href="#about" data-i18n="navAbout">About</a>
+    <button type="button" class="link-button" id="lang">NO</button>
+    <button type="button" class="link-button" id="theme">Light</button>
+  </nav>
+</div>
+
+<header class="hero" id="hero" aria-label="IGRED">
+  <canvas class="hero-canvas" id="hero-canvas" aria-hidden="true"></canvas>
+  <div class="hero-scene" id="hero-scene" aria-live="off"></div>
   <p class="hero-line" data-i18n="heroLine">Armed conflict and geopolitical risk, with every source shown.</p>
   <a class="hero-down" href="#products" aria-label="Down">
     <svg viewBox="0 0 16 24" width="14" height="22" aria-hidden="true"><path d="M8 1v20M1.5 15l6.5 6.5 6.5-6.5" fill="none" stroke="currentColor" stroke-width="1"/></svg>
@@ -64,7 +75,7 @@
     </div>
   </section>
 
-  <section class="about" aria-labelledby="about-h">
+  <section class="about" id="about" aria-labelledby="about-h">
     <h2 class="section-h" id="about-h" data-i18n="aboutHeading">About IGRED</h2>
     <div class="about-body">
       <p class="about-lead" data-i18n="about1">IGRED is an independent analysis body. We track where political risk and economic conditions meet, and what that means for the countries and sectors exposed to both.</p>
@@ -80,8 +91,6 @@
 <footer class="colophon">
   <p class="meta"><strong>IGRED</strong> · <span data-i18n="fullName">Institute for Geopolitical Risk and Economic Development</span></p>
   <p class="meta"><a href="mailto:contact@igred.org">contact@igred.org</a></p>
-  <p class="meta"><button type="button" class="link-button quiet" id="lang">NO</button></p>
-  <p class="meta"><button type="button" class="link-button quiet" id="theme">Light</button></p>
 </footer>
 
 <script type="module" src="home.js"></script>

@@ -114,7 +114,16 @@ a.wordmark-link { color: inherit; text-decoration: none; display: inline-block; 
 a.wordmark-link:hover strong { color: var(--s3); }
 a.wordmark-link:hover span { opacity: 1; }
 
-.controls { display: flex; gap: 18px; flex: none; align-items: baseline; }
+.controls { display: flex; gap: 18px; flex: none; align-items: baseline; flex-wrap: wrap; justify-content: flex-end; }
+
+/* The menu and the light switch stay at the top while the page scrolls under them. */
+.masthead.is-sticky {
+  position: sticky; top: 0; z-index: 30;
+  background: var(--bg);
+  padding-top: max(14px, env(safe-area-inset-top));
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--hair-soft);
+}
 
 /* Every control is underlined text in small capitals — never a pill, never a box. */
 .link-button {

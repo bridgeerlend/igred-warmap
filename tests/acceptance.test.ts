@@ -601,13 +601,17 @@ describe('dark by default, light on request', () => {
     for (const page of PAGES) expect(read(page)).toMatch(/<html lang="en" data-theme="dark">/);
   });
 
-  it('the theme switch sits in the footer of every page', () => {
+  it('the menu and the light switch sit at the top of every page, and stay there', () => {
     for (const page of PAGES) {
       const html = read(page);
+      const top = /<(header class="masthead[^"]*"|div class="topbar")[\s\S]*?<\/(header|nav)>/.exec(html)?.[0] ?? '';
+      expect(top, page).toMatch(/id="theme"/);
+      expect(top, page).toMatch(/id="lang"/);
       const footer = /<footer[\s\S]*?<\/footer>/.exec(html)?.[0] ?? '';
-      expect(footer).toMatch(/id="theme"/);
-      expect(html.replace(footer, '')).not.toMatch(/id="theme"/);
+      expect(footer).not.toMatch(/id="theme"/);
     }
+    expect(read('site/atlas.css')).toMatch(/\.masthead\.is-sticky \{\s*position: sticky; top: 0;/);
+    expect(read('www/home.css')).toMatch(/\.topbar \{\s*position: fixed;/);
   });
 
   it('body text is near-black on light and near-white on dark, not grey on grey', () => {
