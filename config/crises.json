@@ -22,7 +22,7 @@
       "timeoutMs": 45000,
       "providers": [
         { "id": "gemini", "url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", "model": "gemini-2.5-flash-lite", "keyEnv": "GEMINI_API_KEY" },
-        { "id": "groq", "url": "https://api.groq.com/openai/v1/chat/completions", "model": "openai/gpt-oss-120b", "keyEnv": "GROQ_API_KEY", "params": { "reasoning_effort": "low" }, "$modelNote": "llama-3.3-70b-versatile was retired by Groq on 16 August 2026. gpt-oss-120b reasons before it answers, so it gets a low effort and a large token budget." },
+        { "id": "groq", "url": "https://api.groq.com/openai/v1/chat/completions", "model": "openai/gpt-oss-120b", "keyEnv": "GROQ_API_KEY", "params": { "reasoning_effort": "low" }, "minIntervalMs": 20000, "$paceNote": "The free tier allows about 8,000 tokens a minute for this model and one summary costs 2,000 to 3,000, so calls are spaced and a short 429 is waited out.", "$modelNote": "llama-3.3-70b-versatile was retired by Groq on 16 August 2026. gpt-oss-120b reasons before it answers, so it gets a low effort and a large token budget." },
         { "id": "mistral", "url": "https://api.mistral.ai/v1/chat/completions", "model": "mistral-small-latest", "keyEnv": "MISTRAL_API_KEY" }
       ]
     }

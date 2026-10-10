@@ -93,6 +93,17 @@ describe('the crisis summary run', () => {
     expect(body.max_tokens).toBeGreaterThanOrEqual(4000);
   });
 
+  it('waits out a short per-minute limit instead of giving up', async () => {
+    let calls = 0;
+    vi.stubGlobal('fetch', vi.fn(async () => (++calls === 1
+      ? new Response('rate limited', { status: 429, headers: { 'retry-after': '0.01' } })
+      : new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(good) } }] }), { status: 200 }))));
+    const states: Record<string, SummaryState> = {};
+    await runSummaries([input], states, settings, Date.now(), { TEST_KEY: 'k' });
+    expect(calls).toBe(2);
+    expect(states.sudan!.approved).not.toBeNull();
+  });
+
   it('a failed call does not hold the crisis back for three hours', async () => {
     vi.stubGlobal('fetch', reply('server error', 500));
     const states: Record<string, SummaryState> = {};

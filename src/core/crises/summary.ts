@@ -22,6 +22,8 @@ export interface Provider {
   id: string; url: string; model: string; keyEnv: string;
   /** Extra request fields this provider needs, e.g. a reasoning model's effort level. */
   params?: Record<string, unknown>;
+  /** Least time between two calls, for free tiers that cap tokens per minute. */
+  minIntervalMs?: number;
 }
 export interface SummarySettings {
   enabled: boolean;
@@ -109,7 +111,9 @@ function promptFor(input: SummaryInput, maxWords: number): string {
   ].join('\n');
 }
 
-type Reply = { text: string } | { failure: string; quota?: boolean };
+type Reply = { text: string } | { failure: string; quota?: boolean; retryAfterMs?: number };
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function callProvider(provider: Provider, key: string, prompt: string, timeoutMs: number): Promise<Reply> {
   const controller = new AbortController();
@@ -134,7 +138,12 @@ async function callProvider(provider: Provider, key: string, prompt: string, tim
       const body = await response.text().catch(() => '');
       // 404 is a retired or unknown model: no crisis will fare better with this provider, so
       // like a spent quota it moves the run on to the next one.
-      return { failure: `HTTP ${response.status} ${body.slice(0, 120)}`, quota: [402, 403, 404, 429].includes(response.status) };
+      const retry = Number(response.headers.get('retry-after'));
+      return {
+        failure: `HTTP ${response.status} ${body.slice(0, 120)}`,
+        quota: [402, 403, 404, 429].includes(response.status),
+        ...(response.status === 429 && Number.isFinite(retry) && retry > 0 ? { retryAfterMs: retry * 1000 } : {}),
+      };
     }
     const payload = (await response.json()) as { choices?: { message?: { content?: string } }[] };
     const text = payload.choices?.[0]?.message?.content?.trim();
@@ -176,6 +185,7 @@ export async function runSummaries(
   const providers = settings.providers.filter((p) => !!env[p.keyEnv]);
   if (providers.length === 0) return ['summaries: no provider key set; pages keep their last approved text'];
   const exhausted = new Set<string>();
+  const lastCall = new Map<string, number>();
 
   let attempts = 0;
   for (const input of inputs) {
@@ -194,7 +204,16 @@ export async function runSummaries(
     // for this same crisis, rather than costing the crisis its turn.
     for (provider of providers) {
       if (exhausted.has(provider.id)) continue;
+      const wait = (lastCall.get(provider.id) ?? -Infinity) + (provider.minIntervalMs ?? 0) - Date.now();
+      if (wait > 0) await sleep(wait);
       reply = await callProvider(provider, env[provider.keyEnv]!, prompt, settings.timeoutMs);
+      lastCall.set(provider.id, Date.now());
+      // A per-minute cap says how long to wait; a short wait is worth it, a long one is not.
+      if ('failure' in reply && reply.retryAfterMs !== undefined && reply.retryAfterMs <= 90_000) {
+        await sleep(reply.retryAfterMs);
+        reply = await callProvider(provider, env[provider.keyEnv]!, prompt, settings.timeoutMs);
+        lastCall.set(provider.id, Date.now());
+      }
       if ('failure' in reply && reply.quota) {
         exhausted.add(provider.id);
         log.push(`summaries: ${provider.id} unavailable this run (${reply.failure})`);

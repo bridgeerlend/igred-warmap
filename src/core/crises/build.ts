@@ -635,7 +635,10 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
 
   /* machine-written summaries, on their own slower clock; failures keep the last good text */
   if (!options.offline) {
-    for (const line of await runSummaries(summaryInputs, summaryStates, settings.summary, now)) log(line);
+    // Highest-ranked first, so a free tier that runs dry leaves the quiet crises waiting, not the worst.
+    const rank = new Map(details.map((d) => [d.id, d.stats.score * 1000 + d.stats.last7d]));
+    const ordered = [...summaryInputs].sort((a, b) => (rank.get(b.id) ?? 0) - (rank.get(a.id) ?? 0));
+    for (const line of await runSummaries(ordered, summaryStates, settings.summary, now)) log(line);
     writeInternal(summariesFile, summaryStates);
   }
   for (const d of details) d.summary = currentSummary(summaryStates[d.id], settings.summary.maxAgeHours, now);
