@@ -18,7 +18,11 @@ import { guardDraft } from '../edition/draft.js';
  * OpenAI-compatible endpoint with a free tier, tried in the order config lists them.
  */
 
-export interface Provider { id: string; url: string; model: string; keyEnv: string }
+export interface Provider {
+  id: string; url: string; model: string; keyEnv: string;
+  /** Extra request fields this provider needs, e.g. a reasoning model's effort level. */
+  params?: Record<string, unknown>;
+}
 export interface SummarySettings {
   enabled: boolean;
   minHoursBetween: number;
@@ -118,14 +122,19 @@ async function callProvider(provider: Provider, key: string, prompt: string, tim
       body: JSON.stringify({
         model: provider.model,
         temperature: 0.2,
-        max_tokens: 1200,
+        // Reasoning models spend this budget thinking before they answer; too small a budget
+        // returns an empty reply rather than a short one.
+        max_tokens: 4000,
         response_format: { type: 'json_object' },
         messages: [{ role: 'user', content: prompt }],
+        ...(provider.params ?? {}),
       }),
     });
     if (!response.ok) {
       const body = await response.text().catch(() => '');
-      return { failure: `HTTP ${response.status} ${body.slice(0, 120)}`, quota: response.status === 429 || response.status === 402 || response.status === 403 };
+      // 404 is a retired or unknown model: no crisis will fare better with this provider, so
+      // like a spent quota it moves the run on to the next one.
+      return { failure: `HTTP ${response.status} ${body.slice(0, 120)}`, quota: [402, 403, 404, 429].includes(response.status) };
     }
     const payload = (await response.json()) as { choices?: { message?: { content?: string } }[] };
     const text = payload.choices?.[0]?.message?.content?.trim();
@@ -178,19 +187,32 @@ export async function runSummaries(
     if (state.inputHash === hash && state.approved) continue;
     if (since < settings.minHoursBetween) continue;
 
-    const provider = providers.find((p) => !exhausted.has(p.id));
-    if (!provider) { log.push('summaries: every provider is out of free quota this run'); break; }
+    const prompt = promptFor(input, settings.maxWords);
+    let reply: Reply | undefined;
+    let provider: Provider | undefined;
+    // A provider that is out of quota or no longer has the model hands over to the next one
+    // for this same crisis, rather than costing the crisis its turn.
+    for (provider of providers) {
+      if (exhausted.has(provider.id)) continue;
+      reply = await callProvider(provider, env[provider.keyEnv]!, prompt, settings.timeoutMs);
+      if ('failure' in reply && reply.quota) {
+        exhausted.add(provider.id);
+        log.push(`summaries: ${provider.id} unavailable this run (${reply.failure})`);
+        continue;
+      }
+      break;
+    }
+    if (!reply || !provider || ('failure' in reply && reply.quota)) { log.push('summaries: every provider is out of free quota this run'); break; }
     attempts += 1;
-    state.attemptedAt = new Date(now).toISOString();
-    state.inputHash = hash;
-
-    const reply = await callProvider(provider, env[provider.keyEnv]!, promptFor(input, settings.maxWords), settings.timeoutMs);
     if ('failure' in reply) {
-      if (reply.quota) exhausted.add(provider.id);
+      // A timeout or a server error: try this crisis again next run, not in three hours.
       state.lastOutcome = `${provider.id}: ${reply.failure}`;
       log.push(`${input.id}: no summary (${state.lastOutcome})`);
       continue;
     }
+    // Only an answer counts as a turn: it is what the three-hour spacing protects.
+    state.attemptedAt = new Date(now).toISOString();
+    state.inputHash = hash;
     const parsed = parseReply(reply.text);
     if (!parsed) { state.lastOutcome = `${provider.id}: unreadable reply`; log.push(`${input.id}: ${state.lastOutcome}`); continue; }
     const check = checkSummary(parsed.en, parsed.nb, sourceTextOf(input), settings.maxWords);

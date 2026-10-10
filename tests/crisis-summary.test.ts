@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { checkSummary, currentSummary, normaliseNumbers, runSummaries, type SummarySettings } from '../src/core/crises/summary.js';
+import { checkSummary, currentSummary, normaliseNumbers, runSummaries, type SummarySettings, type SummaryState } from '../src/core/crises/summary.js';
 
 const input = {
   id: 'sudan',
@@ -70,6 +70,34 @@ describe('the crisis summary run', () => {
     const log = await runSummaries([input, { ...input, id: 'yemen' }], states, settings, Date.now(), { TEST_KEY: 'k' });
     expect(log.join('\n')).toMatch(/HTTP 429/);
     expect(log.join('\n')).toMatch(/out of free quota/);
+  });
+
+  it('moves to the next provider when a model is retired, without costing the crisis its turn', async () => {
+    const fetch = vi.fn(async (url: string) => (url.includes('retired')
+      ? new Response('{"error":{"message":"The model does not exist"}}', { status: 404 })
+      : new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(good) } }] }), { status: 200 })));
+    vi.stubGlobal('fetch', fetch);
+    const two: SummarySettings = { ...settings, providers: [
+      { id: 'old', url: 'https://retired.example/v1/chat/completions', model: 'gone', keyEnv: 'TEST_KEY' },
+      { id: 'new', url: 'https://llm.example/v1/chat/completions', model: 'm', keyEnv: 'TEST_KEY', params: { reasoning_effort: 'low' } },
+    ] };
+    const states: Record<string, SummaryState> = {};
+    const log = await runSummaries([input, { ...input, id: 'yemen' }], states, two, Date.now(), { TEST_KEY: 'k' });
+    expect(log.join('\n')).toMatch(/old unavailable this run \(HTTP 404/);
+    expect(states.sudan!.approved!.model).toBe('new/m');
+    expect(states.yemen!.approved!.model).toBe('new/m');
+    // The retired model is asked once, not once per crisis; the reasoning effort is sent.
+    expect(fetch.mock.calls.filter(([url]) => String(url).includes('retired'))).toHaveLength(1);
+    const body = JSON.parse(String((fetch.mock.calls.at(-1) as unknown as [string, { body: string }])[1].body));
+    expect(body.reasoning_effort).toBe('low');
+    expect(body.max_tokens).toBeGreaterThanOrEqual(4000);
+  });
+
+  it('a failed call does not hold the crisis back for three hours', async () => {
+    vi.stubGlobal('fetch', reply('server error', 500));
+    const states: Record<string, SummaryState> = {};
+    await runSummaries([input], states, settings, Date.now(), { TEST_KEY: 'k' });
+    expect(states.sudan?.attemptedAt).toBeUndefined();
   });
 
   it('never calls a provider whose key is absent', async () => {
