@@ -37,13 +37,24 @@ design/     the three design explorations that preceded the map
 
 ## The map
 
+The map opens on a list of crises beside a MapLibre map drawn from Natural Earth borders (no
+third-party tiles). Selecting a crisis, on the map or in the list, opens its panel: this week's
+figures, thirty days of incidents, a fixed-template summary of the counts, the latest reporting
+with pictures, the most covered stories, video, the Wikipedia background, the most reported
+places, notable incidents with their sources, the UCDP register, World Bank country figures and
+every outlet behind the page. Each crisis also has its own page at `crisis/?id=<id>`.
+
+Crises are defined in `config/crises.json` and built by `npm run crises`
+(`src/core/crises/`), which runs after every ingest in `.github/workflows/crises.yml`. It
+writes `data/crises.json`, one file per crisis in `data/crises/`, and `data/map-events.json`,
+a compact copy of the incident stream for the map. No model writes any of it.
+
 `site/` is deployed to map.igred.org by a workflow filtered to `site/**`. The page is built
 once and fetches its data from the repository at view time, so the hourly data commits
 never trigger a deploy — that separation is what keeps the whole thing free.
 
 ```bash
 npm run serve          # map at /site/, Brief at /site/brief/, Wire at /site/stream/
-npm run site:snapshot  # one self-contained file for offline review
 npm run edition        # publish today's Brief
 npm run draft          # draft its lead paragraphs (needs GEMINI_API_KEY)
 ```

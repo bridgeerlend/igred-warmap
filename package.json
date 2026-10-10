@@ -19,8 +19,6 @@
     "design": "tsx scripts/build-map-geometry.ts && tsx scripts/build-design.ts",
     "design:fixture": "tsx scripts/build-design-fixture.ts",
     "verify": "npm run typecheck && npm run test",
-    "preview:data": "tsx scripts/build-preview-data.ts",
-    "site:snapshot": "tsx scripts/build-preview-data.ts && tsx scripts/build-site-snapshot.ts",
     "serve": "tsx scripts/serve-design.ts",
     "fonts": "tsx scripts/fetch-fonts.ts",
     "edition": "tsx src/core/cli/edition.ts",
@@ -29,7 +27,8 @@
     "www": "tsx scripts/build-www.ts",
     "home:snapshot": "tsx scripts/build-www.ts && tsx scripts/build-home-snapshot.ts",
     "gemini:check": "tsx src/core/cli/gemini-check.ts",
-    "propose-conflict": "tsx src/core/cli/propose-conflict.ts"
+    "propose-conflict": "tsx src/core/cli/propose-conflict.ts",
+    "crises": "tsx src/core/cli/crises.ts"
   },
   "dependencies": {
     "fast-xml-parser": "^5.10.1",

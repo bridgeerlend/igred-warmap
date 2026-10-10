@@ -51,7 +51,13 @@ describe('1 — a data update never triggers a site build', () => {
   });
 
   it('the page fetches its data at view time rather than having it baked in', () => {
-    expect(read('site/app.js')).toMatch(/fetch\(/);
+    const map = read('site/map.js');
+    expect(map).toMatch(/import \{ dataBaseUrl \} from '\.\/config\.js'/);
+    expect(map).toMatch(/fetch\(`\$\{base\}\$\{path\}`/);
+    expect(map).toMatch(/getJson\('crises\.json'\)/);
+    expect(map).toMatch(/getJson\('map-events\.json'\)/);
+    // The standalone crisis page reads its file the same way.
+    expect(read('site/crisis/crisis-page.js')).toMatch(/fetch\(`\$\{dataBaseUrl\(\)\}crises\//);
     expect(read('site/config.js')).toMatch(/raw\.githubusercontent\.com/);
   });
 
@@ -157,9 +163,20 @@ describe('5 — no ACLED data anywhere', () => {
     for (const publisher of config.publishersByDomain.values()) {
       expect(publisher.domain.toLowerCase()).not.toContain('acled');
     }
-    for (const file of readdirSync(path.join(repoRoot, 'data'))) {
-      if (!file.endsWith('.json')) continue;
-      expect(read(`data/${file}`).toLowerCase()).not.toMatch(/acled/);
+    for (const dir of ['data', 'data/crises']) {
+      for (const file of readdirSync(path.join(repoRoot, dir))) {
+        if (!file.endsWith('.json')) continue;
+        expect(read(`${dir}/${file}`).toLowerCase()).not.toMatch(/acled/);
+      }
+    }
+  });
+
+  it('is named by no file the map loads', () => {
+    for (const file of [
+      'site/map.js', 'site/crisis-view.js', 'site/common.js', 'site/index.html',
+      'site/crisis/index.html', 'site/crisis/crisis-page.js',
+    ]) {
+      expect(read(file).toLowerCase()).not.toMatch(/acled/);
     }
   });
 });
@@ -306,6 +323,14 @@ describe('11 — both themes are defined, with full-strength text', () => {
     expect(atlas).toMatch(/--fg: #0E0E0C/);
     expect(atlas).toMatch(/--fg: #F7F5EF/);
   });
+
+  it('the map defines its own colours for both themes', () => {
+    // map.js reads these from the stylesheet, so a theme without them would draw a blank map.
+    const css = read('site/map.css');
+    expect(css).toMatch(/:root\[data-theme="dark"\] \{[^}]*--map-sea/);
+    expect(css).toMatch(/prefers-color-scheme: dark\)[\s\S]*?--map-sea/);
+    expect(read('site/map.js')).toMatch(/if \(what === 'theme'\) \{ repaintMap\(\)/);
+  });
 });
 
 describe('12 — the design is the chosen direction, and free of the named tells', () => {
@@ -339,11 +364,22 @@ describe('12 — the design is the chosen direction, and free of the named tells
   it('carries its own cartography rather than third-party tiles', () => {
     // Searching for the word "tile" is the wrong check: the colophon says, in prose, that no
     // third-party tiles are used. What matters is that no tile server is ever contacted.
-    const app = read('site/app.js');
-    expect(app).not.toMatch(/mapbox|openstreetmap|arcgis|\{z\}\/\{x\}\/\{y\}/i);
-    expect(exists('site/world.json')).toBe(true);
-    // Geometry is generated from public-domain Natural Earth by our own build step.
-    expect(readJson('site/world.json').$comment).toMatch(/Natural Earth/);
+    const map = read('site/map.js');
+    expect(map).not.toMatch(/mapbox|openstreetmap|arcgis|maptiler|carto|\{z\}\/\{x\}\/\{y\}/i);
+    // The style is built in the page: every source is inline GeoJSON, none is a tile source
+    // or a remote style, and the file names no external host at all.
+    expect(map).toMatch(/style: buildStyle\(world\)/);
+    expect(map).not.toMatch(/type: '(raster|vector|raster-dem)'|tiles:|glyphs:|sprite:/);
+    const sources = /sources: \{([\s\S]*?)\n {4}\},/.exec(map)?.[1] ?? '';
+    expect([...sources.matchAll(/type: '([a-z-]+)'/g)].map((match) => match[1])).toEqual(['geojson', 'geojson']);
+    expect(map).not.toMatch(/https?:\/\//);
+    // The renderer and the borders are vendored and served from the site itself.
+    expect(map).toMatch(/fetch\('vendor\/countries-50m\.json'\)/);
+    expect(read('site/index.html')).toMatch(/<script src="vendor\/maplibre-gl\.js"><\/script>/);
+    expect(read('site/index.html')).not.toMatch(/<(script|link)[^>]+(src|href)="https?:/);
+    expect(readJson('site/vendor/countries-50m.json').type).toBe('Topology');
+    // Borders are Natural Earth (via world-atlas), and the page says so.
+    expect(read('site/common.js')).toMatch(/Natural Earth \(public domain\)/);
   });
 
   it('respects reduced motion', () => {
@@ -351,8 +387,13 @@ describe('12 — the design is the chosen direction, and free of the named tells
   });
 
   it('countries are never coloured — only incidents are', () => {
-    // A choropleth is exactly what the brief rules out.
-    expect(read('site/styles.css')).not.toMatch(/\.land-fill\s*\{[^}]*fill:\s*var\(--s[1-5]\)/);
+    // A choropleth is exactly what the brief rules out. Land is one colour; the only other
+    // fill is the open crisis's own countries, never a scale.
+    const map = read('site/map.js');
+    const fills = [...map.matchAll(/'fill-color': ([^,}]+)/g)].map((match) => match[1]!.trim());
+    expect(fills.length).toBeGreaterThan(0);
+    for (const fill of fills) expect(fill).toMatch(/^p\.(land|focus)$/);
+    expect(map).not.toMatch(/'fill-color',\s*\[/);
   });
 });
 
@@ -387,8 +428,10 @@ describe('satellite thermal detections are gone, not merely switched off', () =>
   it('leaves no source, schema, artifact or layer behind', () => {
     for (const file of [
       'src/core/cli/ingest.ts', 'src/core/util/paths.ts', 'config/sources.json',
-      'site/app.js', 'site/styles.css', 'site/atlas.css', 'site/index.html',
-      'scripts/build-site-snapshot.ts',
+      'site/atlas.css', 'site/index.html', 'site/map.js', 'site/map.css',
+      'site/crisis-view.js', 'site/crisis.css', 'site/common.js',
+      'site/crisis/index.html', 'site/crisis/crisis-page.js', 'site/crisis/crisis-page.css',
+      'src/core/crises/build.ts', 'src/core/crises/fetchers.ts', 'src/core/cli/crises.ts',
     ]) {
       // Word-bounded: "confirms" is not a satellite, and the guard should not say it is.
       expect(read(file)).not.toMatch(/\b(firms|thermal|heat)\b/i);
@@ -400,74 +443,79 @@ describe('satellite thermal detections are gone, not merely switched off', () =>
 });
 
 describe('the reader can tell an incident from the background', () => {
-  it('marks the incident a click would take, before the click', () => {
-    const app = read('site/app.js');
-    expect(app).toMatch(/function trackCandidate\(/);
-    expect(app).toMatch(/addEventListener\('pointermove'/);
-    expect(read('site/styles.css')).toMatch(/\.evt\.candidate/);
-    // The cursor only promises something where there is something to take.
-    expect(read('site/styles.css')).toMatch(/#map\.over-mark \{ cursor: pointer/);
+  it('promises a click only where there is an incident to take', () => {
+    const map = read('site/map.js');
+    expect(map).toMatch(/map\.on\('mousemove', 'dots', \(\) => \{ map\.getCanvas\(\)\.style\.cursor = 'pointer'/);
+    expect(map).toMatch(/map\.on\('mouseleave', 'dots', \(\) => \{ map\.getCanvas\(\)\.style\.cursor = ''/);
+  });
+
+  it('draws the heaviest incident last, so it is never buried', () => {
+    expect(read('site/map.js')).toMatch(/features\.sort\(\(a, b\) => a\.properties\.k - b\.properties\.k\)/);
   });
 
   it('never transitions font-size, which stalls and freezes the value', () => {
-    expect(read('site/styles.css')).not.toMatch(/transition:[^;]*font-size/);
+    for (const file of ['site/map.css', 'site/crisis.css', 'site/crisis/crisis-page.css']) {
+      expect(read(file)).not.toMatch(/transition:[^;]*font-size/);
+    }
   });
 });
 
 describe('a click on the map opens what was clicked', () => {
   /**
-   * Pinned because the failure was invisible in review and survived every other test: points
-   * carried per-incident hit targets, and overlapping targets were resolved by document
-   * order. The behavioural guarantee is covered by tests/picking.test.ts against the live
-   * register; these two checks stop the old mechanism from creeping back into the page.
+   * Overlapping incidents were once resolved by document order, which the reader cannot see.
+   * The map now queries the incident layer under the pointer and takes the most widely
+   * reported one, with one handler on the layer rather than a target per point.
    */
-  it('resolves selection by distance, not by which circle is on top', () => {
-    const app = read('site/app.js');
-    expect(app).toMatch(/nearestMark\(state\.nodes/);
-    // One handler on the map, rather than a listener per point.
-    expect(app).toMatch(/\$\('map'\)\.addEventListener\('click'/);
+  it('resolves selection from the layer, preferring the brightest incident', () => {
+    const map = read('site/map.js');
+    expect(map).toMatch(/map\.on\('click', 'dots', \(ev\) => \{/);
+    expect(map).toMatch(/\[\.\.\.ev\.features\]\.sort\(\(a, b\) => b\.properties\.k - a\.properties\.k\)\[0\]/);
   });
 
   it('gives no incident an invisible target of its own', () => {
-    expect(read('site/app.js')).not.toMatch(/class: 'hit'/);
-    expect(read('site/styles.css')).not.toMatch(/\.hit\s*\{/);
+    expect(read('site/map.js')).not.toMatch(/class: 'hit'|'\.hit'|h\('[a-z]*\.hit/);
+    expect(read('site/map.css')).not.toMatch(/\.hit\s*\{/);
   });
 
-  it('lists every incident a mark holds, and every source behind each of them', () => {
-    const app = read('site/app.js');
-    // No slice on the provenance: an incident shows all of its sources.
-    expect(app).toMatch(/function sourceList\(provenance\) \{[\s\S]*?return provenance\.map/);
-    expect(app).not.toMatch(/provenance\.slice/);
-    // And a pile renders one entry per incident rather than only its lead.
-    expect(app).toMatch(/mark\.events\.map\(\(event, index\)/);
+  it('answers the click at the point itself', () => {
+    expect(read('site/map.js')).toMatch(/new maplibregl\.Popup\([\s\S]*?\.setLngLat\(feature\.geometry\.coordinates\)/);
   });
 
-  it('does not claim incidents are on one spot when they are merely close', () => {
-    expect(read('site/app.js')).toMatch(/function pileShape\(mark\)/);
+  it('every incident popup shows a link to its source', () => {
+    const map = read('site/map.js');
+    const popup = /function showIncident\(feature\) \{[\s\S]*?\n\}/.exec(map)?.[0] ?? '';
+    expect(popup).toMatch(/h\('a', \{ href: r\[9\], target: '_blank', rel: 'noopener' \}, r\[10\] \|\| r\[9\]\)/);
+    // The popup renders the link only when the row has one, so the data must always have one.
+    const { events } = readJson('data/map-events.json');
+    expect(events.length).toBeGreaterThan(0);
+    for (const row of events) {
+      expect(row[9]).toMatch(/^https?:\/\//);
+      expect(String(row[10]).length).toBeGreaterThan(0);
+    }
+  });
+
+  it('a crisis opens beside the map, framed, with its address in the URL', () => {
+    expect(read('site/index.html')).toMatch(/<div class="panel" id="panel" hidden>/);
+    const map = read('site/map.js');
+    const open = /async function openCrisis\([\s\S]*?\n\}/.exec(map)?.[0] ?? '';
+    expect(open).toMatch(/panel\.hidden = false/);
+    expect(open).toMatch(/flyToCrisis\(c\)/);
+    expect(open).toMatch(/history\.replaceState\(null, '', `#\$\{encodeURIComponent\(id\)\}`\)/);
+    expect(open).toMatch(/renderCrisis\(d, \{/);
+  });
+
+  it('honours reduced motion when it flies to a crisis', () => {
+    expect(read('site/map.js')).toMatch(/duration: matchMedia\('\(prefers-reduced-motion: reduce\)'\)\.matches \? 0/);
   });
 });
 
-describe('the reader can move in time and narrow to one theatre', () => {
-  it('takes the timeline range from the data, not from a nominal month', () => {
-    const app = read('site/app.js');
-    // The artifact keeps thirty days but has only been running for some of them. A slider
-    // offering a month of empty history would be a lie told by a widget.
-    expect(app).toMatch(/function timelineDays\(\)/);
-    expect(app).toMatch(/state\.events\.map\(\(event\) => event\.occurredAt\.slice\(0, 10\)\)/);
-    expect(app).toMatch(/historyNote/);
-  });
-
-  it('moves the whole window back, rather than only its start', () => {
-    const app = read('site/app.js');
-    expect(app).toMatch(/const end = state\.asOf \?\? Date\.now\(\);\s*\n\s*const start = end - state\.windowDays/);
-  });
-
-  it('says a theatre is a country, because that is what the data supports', () => {
-    // The register lists 27 conflicts in Nigeria and every one of them would draw the same
-    // map, so the menu is by country and the caveat is on the page rather than implied.
-    const app = read('site/app.js');
-    expect(app).toMatch(/theatreNote/);
-    expect(app).toMatch(/event\.location\.countryFips !== state\.theatre/);
+describe('the reader can narrow the time window', () => {
+  it('offers a day, a week and a month, and filters by the data\'s own timestamps', () => {
+    const html = read('site/index.html');
+    for (const days of ['1', '7', '30']) expect(html).toMatch(new RegExp(`data-days="${days}"`));
+    const map = read('site/map.js');
+    expect(map).toMatch(/const cutoff = Date\.now\(\) \/ 60000 - state\.days \* 1440;/);
+    expect(map).toMatch(/if \(r\[0\] < cutoff\) continue;/);
   });
 });
 
@@ -520,7 +568,6 @@ describe('sources are named, never shown as logos', () => {
    */
   it('no product references an image of any kind', () => {
     for (const page of [
-      'site/index.html', 'site/app.js', 'site/picking.js', 'site/styles.css',
       'site/brief/index.html', 'site/brief/brief.js', 'site/brief/brief.css',
       'site/stream/index.html', 'site/stream/stream.js', 'site/stream/stream.css',
       'www/index.html', 'www/home.js', 'www/home.css',
@@ -547,6 +594,34 @@ describe('sources are named, never shown as logos', () => {
     }
   });
 
+  it('the map and the crisis view never show an outlet as a logo', () => {
+    /*
+     * The crisis view does show pictures: preview images the outlets published with their
+     * articles, each linked to that article, and video thumbnails. What it never shows is a
+     * masthead, so these files get the logo checks only.
+     */
+    for (const page of [
+      'site/index.html', 'site/map.js', 'site/map.css', 'site/common.js',
+      'site/crisis-view.js', 'site/crisis.css',
+      'site/crisis/index.html', 'site/crisis/crisis-page.js', 'site/crisis/crisis-page.css',
+    ]) {
+      const text = read(page)
+        .replace(/\/\*[\s\S]*?\*\//g, ' ')
+        .replace(/^\s*\/\/.*$/gm, ' ')
+        .replace(/<!--[\s\S]*?-->/g, ' ');
+      expect(text).not.toMatch(/logos?\.(svg|png|jpe?g|webp|gif)/i);
+      expect(text).not.toMatch(/(class|id)=["'][^"']*logo/i);
+      expect(text).not.toMatch(/\.[a-z-]*logo[a-z-]*\s*[{,]/i);
+      expect(text).not.toMatch(/url\([^)]*logo/i);
+      expect(text).not.toMatch(/favicon|clearbit|logo\.dev/i);
+    }
+    // The outlet appears as its name, in text.
+    const view = read('site/crisis-view.js');
+    expect(view).toMatch(/`\$\{a\.publisher\}, \$\{ago\(a\.publishedAt\)\}`/);
+    expect(view).toMatch(/h\('a', \{ href: s\.url, target: '_blank', rel: 'noopener' \}, s\.publisher\)/);
+    expect(view).toMatch(/h\('li', null, o\.name,/);
+  });
+
   it('the Brief prints the outlet name as the link text', () => {
     expect(read('site/brief/brief.js')).toMatch(/escapeHtml\(article\.publisher\)/);
   });
@@ -558,19 +633,76 @@ describe('sources are named, never shown as logos', () => {
         expect(source.sourceName).not.toMatch(/^https?:/);
       }
     }
+    for (const file of readdirSync(path.join(repoRoot, 'data/crises'))) {
+      const crisis = readJson(`data/crises/${file}`);
+      const names = [
+        ...crisis.news.map((item: { publisher: string }) => item.publisher),
+        ...crisis.incidents.flatMap((incident: { sources: { publisher: string }[] }) =>
+          incident.sources.map((source) => source.publisher)),
+        ...crisis.outlets.map((outlet: { name: string }) => outlet.name),
+      ];
+      for (const name of names) {
+        // Any script: an Arabic agency's own name is as readable as an English one.
+        expect(name).toMatch(/\p{L}/u);
+      }
+    }
+  });
+});
+
+describe('the crisis view links everything it reports', () => {
+  it('every news item, story, incident source and background opens at its source', () => {
+    const view = read('site/crisis-view.js');
+    expect(view).toMatch(/h\('a\.cv-news-item', \{ href: a\.url, target: '_blank', rel: 'noopener'/);
+    expect(view).toMatch(/h\('a\.cv-story', \{ href: s\.url/);
+    expect(view).toMatch(/s\.articles\.map\(\(a\) =>\s*h\('li', null, h\('a', \{ href: a\.url/);
+    // No slice on an incident's sources: each shows all of them.
+    expect(view).toMatch(/e\.sources\.map\(\(s, i\) => \[i \? ', ' : '', h\('a', \{ href: s\.url/);
+    expect(view).not.toMatch(/sources\.slice/);
+    expect(view).toMatch(/h\('a', \{ href: bgUrl, target: '_blank', rel: 'noopener' \}, t\.readMore\)/);
+    expect(view).toMatch(/h\('a', \{ href: ind\.url/);
+  });
+
+  it('and the published crisis files give every one of them a link', () => {
+    const files = readdirSync(path.join(repoRoot, 'data/crises')).filter((file) => file.endsWith('.json'));
+    expect(files.length).toBeGreaterThan(0);
+    for (const file of files) {
+      const crisis = readJson(`data/crises/${file}`);
+      for (const item of crisis.news) expect(item.url).toMatch(/^https?:\/\//);
+      for (const story of crisis.headlines) {
+        expect(story.url).toMatch(/^https?:\/\//);
+        for (const article of story.articles) expect(article.url).toMatch(/^https?:\/\//);
+      }
+      for (const incident of crisis.incidents) {
+        expect(incident.sources.length).toBeGreaterThan(0);
+        for (const source of incident.sources) expect(source.url).toMatch(/^https?:\/\//);
+      }
+    }
+  });
+
+  it('the situation text is a template over the counts, not a model', () => {
+    expect(read('site/common.js')).toMatch(/No language model writes this text/);
+    for (const file of readdirSync(path.join(repoRoot, 'src/core/crises'))) {
+      expect(read(`src/core/crises/${file}`)).not.toMatch(/generativelanguage|openai|anthropic/i);
+    }
   });
 });
 
 describe('the wordmark links home', () => {
   it('from the map and the Brief, but not from the home page to itself', () => {
-    for (const page of ['site/index.html', 'site/brief/index.html']) {
-      expect(read(page)).toMatch(/<a class="wordmark wordmark-link" href="https:\/\/igred\.org\/">/);
+    for (const page of ['site/index.html', 'site/crisis/index.html']) {
+      expect(read(page)).toMatch(/<a class="bar-mark" href="https:\/\/igred\.org\/">/);
     }
-    expect(read('www/index.html')).not.toMatch(/wordmark-link/);
+    expect(read('site/brief/index.html')).toMatch(/<a class="wordmark wordmark-link" href="https:\/\/igred\.org\/">/);
+    expect(read('www/index.html')).not.toMatch(/wordmark-link|bar-mark/);
   });
 
   it('and is reachable by keyboard', () => {
-    expect(read('site/atlas.css')).toMatch(/a\.wordmark-link:focus-visible/);
+    const atlas = read('site/atlas.css');
+    expect(atlas).toMatch(/a\.wordmark-link:focus-visible/);
+    // The map's mark is a plain link, so the foundation's focus ring applies, and the map
+    // stylesheet does not take it away.
+    expect(atlas).toMatch(/^:focus-visible \{ outline: 2px solid/m);
+    expect(read('site/map.css')).not.toMatch(/\.bar-mark[^{]*\{[^}]*outline:\s*(none|0)/);
   });
 });
 
@@ -603,37 +735,11 @@ describe('an edition can be browsed', () => {
   });
 });
 
-describe('a click on the map is visibly answered', () => {
-  it('a callout is anchored at the point, not only in the distant panel', () => {
-    // On a wide screen the label sits ~900px from the mark you clicked. Without something
-    // at the point, the click reads as having done nothing.
-    expect(read('site/index.html')).toMatch(/id="callout"/);
-    expect(read('site/app.js')).toMatch(/function showCallout/);
-    // It is positioned in screen space, so panning and zooming must carry it along.
-    expect(read('site/app.js')).toMatch(/if \(state\.selected\) showCallout/);
-  });
-
-  it('the callout is clamped inside the plate, with the leader still on the point', () => {
-    // Flipping by a fixed offset was not enough when the box is wider than the space beside
-    // the point; on a narrow plate it still hung over the edge.
-    const app = read('site/app.js');
-    expect(app).toMatch(/Math\.min\(Math\.max\(x - width \/ 2, pad\)/);
-    expect(app).toMatch(/--leader-x/);
-    expect(read('site/styles.css')).toMatch(/left: var\(--leader-x/);
-  });
-
-  it('the panel acknowledges the update, and honours reduced motion', () => {
-    expect(read('site/styles.css')).toMatch(/\.detail\.just-updated/);
-    // The blanket reduced-motion rule in atlas.css disables it.
-    expect(read('site/atlas.css')).toMatch(/prefers-reduced-motion/);
-  });
-});
-
 describe('an incident carries the context the data supports', () => {
-  it('shows the register’s conflicts for the country, with their verified parties', () => {
-    const app = read('site/app.js');
-    expect(app).toMatch(/function conflictsInCountry/);
-    expect(app).toMatch(/conflict\.parties\.map/);
+  it('a crisis shows the register’s conflicts for its countries', () => {
+    const view = read('site/crisis-view.js');
+    expect(view).toMatch(/section\(t\.conflicts, t\.conflictsNote, conflicts\(d\.conflicts\)\)/);
+    expect(read('site/common.js')).toMatch(/Active conflicts in the Uppsala Conflict Data Program register for these countries/);
   });
 
   it('never presents GDELT’s own actor codes as the actors involved', () => {
@@ -642,54 +748,52 @@ describe('an incident carries the context the data supports', () => {
      * fact: the live feed has "SCHOOL" as the initiator of an armed clash in Gaza and
      * "JORDAN" as the initiator of one in Tehran.
      */
-    const app = read('site/app.js');
-    expect(app).not.toMatch(/event\.actors/);
+    for (const file of ['site/map.js', 'site/crisis-view.js']) {
+      expect(read(file)).not.toMatch(/\.actors\b/);
+    }
 
     // The data still carries them — this is a display decision, not a data loss.
     const events = readJson('data/events.json').events;
     expect(events.some((event: { actors: unknown[] }) => event.actors.length > 0)).toBe(true);
   });
 
-  it('describes the link as by country, because that is all the data establishes', () => {
-    const app = read('site/app.js');
-    expect(app).toMatch(/conflictsHere: \(country\)/);
-    expect(app).toMatch(/is not something the source data establishes/);
-    // The callout counts conflicts rather than naming one of several.
-    expect(app).toMatch(/conflictCount: \(n\)/);
+  it('says counts are reports, not verified events', () => {
+    expect(read('site/common.js')).toMatch(/Counts are reports of incidents, not verified events or casualties/);
   });
 
-  it('states the date precision instead of implying an hour', () => {
-    expect(read('site/app.js')).toMatch(/event\.dateBasis === 'report_date'/);
+  it('states the day of an incident without implying an hour', () => {
+    const map = read('site/map.js');
+    expect(map).toMatch(/fmtDate\(new Date\(r\[0\] \* 60000\)\.toISOString\(\)\)/);
+    expect(map).not.toMatch(/fmtDate\([^)]*\), true\)/);
+    expect(read('site/crisis-view.js')).toMatch(/fmtDate\(e\.at\)\)/);
   });
 });
 
-describe('search reaches a conflict or a place', () => {
+describe('search reaches a crisis or a place', () => {
   it('searches both, and says which kind each result is', () => {
-    const app = read('site/app.js');
-    expect(app).toMatch(/kind: 'conflict'/);
-    expect(app).toMatch(/kind: 'place'/);
+    expect(read('site/index.html')).toMatch(/id="search"/);
+    const map = read('site/map.js');
+    expect(map).toMatch(/kind: 'crisis'/);
+    expect(map).toMatch(/kind: 'place'/);
   });
 
-  it('can centre a conflict that has no incident in the window', () => {
-    // Most registered conflicts have none, so the geometry carries a centroid per country.
-    const world = readJson('site/world.json');
-    const withCentre = world.countries.filter((country: { centre?: number[] }) => country.centre);
-    expect(withCentre.length).toBe(world.countries.length);
-    expect(read('site/app.js')).toMatch(/country\?\.centre/);
+  it('every crisis can be centred, framed and opened', () => {
+    const { crises } = readJson('data/crises.json');
+    expect(crises.length).toBeGreaterThan(0);
+    for (const crisis of crises) {
+      expect(crisis.center).toHaveLength(2);
+      expect(crisis.bbox).toHaveLength(4);
+      expect(exists(`data/crises/${crisis.id}.json`)).toBe(true);
+    }
   });
 
-  it('every registered active conflict can be reached', () => {
-    const world = readJson('site/world.json');
-    const known = new Set(
-      world.countries.filter((c: { centre?: number[] }) => c.centre).map((c: { fips: string }) => c.fips),
-    );
-    const active = readJson('data/conflicts.json').conflicts.filter(
-      (conflict: { status: string }) => conflict.status === 'active',
-    );
-    const unreachable = active.filter(
-      (conflict: { countries: { fips?: string }[] }) =>
-        !conflict.countries.some((country) => country.fips && known.has(country.fips)),
-    );
-    expect(unreachable).toEqual([]);
+  it('every crisis country can be highlighted on the map', () => {
+    const map = read('site/map.js');
+    const table = /const FIPS_TO_ISO_N = \{([\s\S]*?)\};/.exec(map)?.[1] ?? '';
+    const known = new Set([...table.matchAll(/([A-Z]{2}): '\d{3}'/g)].map((match) => match[1]));
+    const missing = readJson('data/crises.json').crises
+      .flatMap((crisis: { fips: string[] }) => crisis.fips)
+      .filter((fips: string) => !known.has(fips));
+    expect(missing).toEqual([]);
   });
 });

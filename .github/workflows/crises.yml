@@ -1,0 +1,53 @@
+name: Crises
+
+# Runs after each ingest: rebuilds the crisis pages and the map's compact incident file
+# from what the ingest just published, plus GDELT's article index, Google News, Wikipedia
+# and the World Bank. Like the ingest it writes only to data/, so it never triggers a deploy.
+on:
+  workflow_run:
+    workflows: [Ingest]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Shares the ingest's group, so the two never push to data/ at the same moment.
+concurrency:
+  group: ingest
+  cancel-in-progress: false
+
+jobs:
+  crises:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build crisis pages
+        run: npm run crises
+
+      - name: Commit data if it changed
+        run: |
+          if [ -z "$(git status --porcelain data)" ]; then
+            echo "No data changes."
+            exit 0
+          fi
+          git config user.name "igred-bot"
+          git config user.email "map@igred.org"
+          git add data
+          git commit -m "data: crises $(date -u +%Y-%m-%dT%H:%MZ)"
+          for attempt in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            sleep 10
+          done
+          exit 1

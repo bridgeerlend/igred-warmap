@@ -4,101 +4,76 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>IGRED Global Conflict Monitor</title>
-<meta name="description" content="An automated global conflict map. Every incident carries its source, its date and a link to the original.">
+<meta name="description" content="A live map of armed conflict. Open any crisis for the latest reporting, the numbers, the background and every source behind them.">
 <meta name="color-scheme" content="light dark">
 <link rel="preload" href="fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="vendor/maplibre-gl.css">
 <link rel="stylesheet" href="atlas.css">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="crisis.css">
+<link rel="stylesheet" href="map.css">
 </head>
-<body>
+<body class="map-page">
 
-<a class="skip" href="#index">Skip to the list of places</a>
+<a class="skip" href="#crisis-list">Skip to the list of crises</a>
 
-<!-- Above the stage, not below it: a message about missing or stale data is useless
-     if it sits under the fold. -->
-<div class="banner" id="banner" hidden></div>
-
-<div class="stage">
-  <div class="rail">
-    <header class="masthead">
-      <a class="wordmark wordmark-link" href="https://igred.org/"><strong>IGRED</strong></a>
-      <div class="controls">
-        <a class="link-button" href="brief/">Brief</a>
-        <a class="link-button" href="stream/">Wire</a>
-        <button type="button" class="link-button" id="lang" aria-label="Bytt til norsk">NO</button>
-        <button type="button" class="link-button" id="theme">Dark</button>
-      </div>
-    </header>
-
-    <h1 class="title">
-      <span data-i18n="titleLine1">Global Conflict</span>
-      <span class="italic" data-i18n="titleLine2">Monitor</span>
-    </h1>
-
-    <p class="standfirst" id="standfirst"></p>
-
-    <label class="map-search">
-      <span class="sr-only" data-i18n="searchLabel">Search conflicts and places</span>
-      <input type="search" id="search" autocomplete="off" spellcheck="false">
-    </label>
-    <div class="results" id="results" role="listbox" aria-label="Search results" hidden></div>
-
-    <nav class="window" aria-label="Time window">
-      <button type="button" class="window-option" data-days="1" data-i18n="win1">24 hours</button>
-      <button type="button" class="window-option" data-days="7" data-i18n="win7">7 days</button>
-      <button type="button" class="window-option is-on" data-days="30" data-i18n="win30">30 days</button>
-    </nav>
-
-    <!-- Drag back to a date and the map shows the window ending there. The range comes from
-         the data, not from a nominal month: the register only holds what has been ingested. -->
-    <div class="timeline" id="timeline" hidden>
-      <div class="timeline-head">
-        <span class="timeline-label" data-i18n="asOfLabel">As of</span>
-        <output class="timeline-date" id="asof-date" for="asof"></output>
-        <button type="button" class="link-button" id="asof-now" data-i18n="toNow">Now</button>
-      </div>
-      <input type="range" id="asof" min="0" max="0" step="1" value="0">
-      <p class="timeline-note" id="timeline-note"></p>
-    </div>
-
-    <!-- A theatre is a country on the register, which is the unit the data actually
-         supports. Which of a country's conflicts an incident belongs to is not in it. -->
-    <nav class="theatres" id="theatres" aria-label="Conflict theatre" hidden></nav>
+<header class="bar">
+  <a class="bar-mark" href="https://igred.org/"><strong>IGRED</strong></a>
+  <nav class="bar-nav" aria-label="Products">
+    <a href="./" aria-current="page" data-t="map">Map</a>
+    <a href="brief/" data-t="brief">Brief</a>
+    <a href="stream/" data-t="wire">Wire</a>
+  </nav>
+  <div class="bar-search">
+    <label class="sr-only" for="search" data-t="search">Search crises and places</label>
+    <input id="search" type="search" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="search-results">
+    <ul id="search-results" class="search-results" role="listbox" hidden></ul>
   </div>
-
-  <div class="plate" id="plate">
-    <svg id="map" role="img" aria-describedby="standfirst"></svg>
-
-    <!-- Anchored at the point you clicked. The full record is in the label at the side, but
-         a click 900px away from its own response is a click most people never notice. -->
-    <div class="callout" id="callout" hidden></div>
-
-    <div class="plate-tools">
-      <button type="button" class="link-button" id="zoom-out" aria-label="Zoom out">&minus;</button>
-      <button type="button" class="link-button" id="zoom-in" aria-label="Zoom in">+</button>
-      <button type="button" class="link-button" id="zoom-reset" data-i18n="reset">Reset</button>
-    </div>
-
-    <p class="scale-key" id="scale-key"></p>
+  <div class="bar-tools">
+    <button type="button" class="bar-btn" id="lang">NO</button>
+    <button type="button" class="bar-btn" id="theme">Dark</button>
   </div>
+</header>
 
-  <!-- After the plate in source order: on a phone or tablet the detail belongs below the
-       map you just tapped. On desktop the grid lifts it into the foot of the label. -->
-  <section class="detail" id="detail" aria-live="polite"></section>
+<div class="app" id="app">
+  <aside class="rail" aria-labelledby="rail-title">
+    <div class="rail-head">
+      <h1 class="rail-title" id="rail-title"><span data-t="crises">Crises</span> <span class="rail-count" id="rail-count"></span></h1>
+      <div class="seg" role="group" id="window" aria-label="Time window">
+        <button type="button" data-days="1">24 hours</button>
+        <button type="button" data-days="7" aria-pressed="true">7 days</button>
+        <button type="button" data-days="30">30 days</button>
+      </div>
+      <div class="regions" id="regions" role="group" aria-label="Region"></div>
+    </div>
+    <ol class="crisis-list" id="crisis-list" aria-busy="true"></ol>
+    <p class="rail-foot" id="rail-foot"></p>
+  </aside>
+
+  <main class="stage">
+    <div id="map" class="map" role="region" aria-label="Map of reported armed incidents"></div>
+    <div class="map-tools">
+      <button type="button" class="tool" id="zoom-in" aria-label="Zoom in">+</button>
+      <button type="button" class="tool" id="zoom-out" aria-label="Zoom out">&minus;</button>
+      <button type="button" class="tool tool-wide" id="zoom-reset" aria-label="Show the whole world">
+        <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 10h15M10 2.5c2.4 2.2 2.4 12.8 0 15M10 2.5c-2.4 2.2-2.4 12.8 0 15" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+      </button>
+    </div>
+    <p class="legend" id="legend">
+      <span class="legend-scale" aria-hidden="true"><i class="i1"></i><i class="i2"></i><i class="i3"></i><i class="i4"></i><i class="i5"></i></span>
+      <span id="legend-text"></span>
+    </p>
+    <div class="status" id="status" role="status"></div>
+  </main>
+
+  <div class="panel" id="panel" hidden>
+    <div class="panel-scroll" id="panel-scroll" tabindex="-1"></div>
+  </div>
 </div>
 
-<nav class="index" id="index" aria-labelledby="index-heading">
-  <h2 id="index-heading" data-i18n="whereToday">Where, today</h2>
-  <div class="index-grid" id="index-grid"></div>
-</nav>
-
-<footer class="colophon">
-  <p id="colophon-text"></p>
-  <p class="colophon-meta" id="colophon-meta"></p>
-</footer>
-
-<script type="module" src="app.js"></script>
+<script src="vendor/maplibre-gl.js"></script>
+<script src="vendor/topojson-client.min.js"></script>
+<script type="module" src="map.js"></script>
 </body>
 </html>
