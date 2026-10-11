@@ -52,9 +52,23 @@ describe('1 — a data update never triggers a site build', () => {
     // this the institute page would rebuild all day for changes it does not contain, and
     // the rule would hold for the map while quietly failing here.
     const netlify = read('netlify.toml');
-    expect(netlify).toMatch(/ignore\s*=/);
-    expect(netlify).toMatch(/git diff --quiet HEAD\^ HEAD -- www netlify\.toml/);
+    expect(netlify).toMatch(/ignore = "sh scripts\/netlify-ignore\.sh"/);
     expect(netlify).toMatch(/publish = "www"/);
+    const ignore = read('scripts/netlify-ignore.sh');
+    expect(ignore).toMatch(/git diff --quiet "\$\{CACHED_COMMIT_REF:-HEAD\^\}" "\$\{COMMIT_REF:-HEAD\}" -- www netlify\.toml scripts\/build-reports\.ts/);
+    expect(ignore.split('\n').find((l) => l.startsWith('git diff'))).not.toMatch(/ data\b| data\//);
+  });
+
+  it('editor drafts, deploy previews and branch deploys never build', () => {
+    const run = (env: Record<string, string>) => {
+      try { execFileSync('sh', ['scripts/netlify-ignore.sh'], { cwd: repoRoot, env: { ...process.env, ...env }, stdio: 'pipe' }); return 'skip'; } catch { return 'build'; }
+    };
+    expect(run({ HEAD: 'cms/analyse/2026-10-ny-analyse', BRANCH: 'cms/analyse/2026-10-ny-analyse' })).toBe('skip');
+    expect(run({ CONTEXT: 'deploy-preview', HEAD: 'feature', BRANCH: 'feature' })).toBe('skip');
+    expect(run({ CONTEXT: 'branch-deploy', HEAD: 'x', BRANCH: 'x' })).toBe('skip');
+    const netlify = read('netlify.toml');
+    expect(netlify).toMatch(/\[context\.deploy-preview\]\s*\n\s*command = "echo 'deploy previews are off' && exit 0"\s*\n\s*ignore = "exit 0"/);
+    expect(netlify).toMatch(/\[context\.branch-deploy\][\s\S]*?ignore = "exit 0"/);
   });
 
   it('the deploy guard checks the value, not the word', () => {
@@ -1169,5 +1183,78 @@ describe('the front page', () => {
     const home = readJson('data/home.json');
     expect(home.points.length).toBeGreaterThan(0);
     for (const h of home.brief.headlines) expect(h.url).toMatch(/^https?:\/\//);
+  });
+});
+
+describe('reports on igred.org', () => {
+  it('igred.org links to the reports and the method from its top menu', () => {
+    for (const [file, up] of [['www/index.html', ''], ['www/knowledge/index.html', '../']] as const) {
+      const html = read(file);
+      expect(html).toContain(`<a class="link-button" href="${up}reports/" data-i18n="navReports">Reports</a>`);
+      expect(html).toContain('<a class="link-button" href="https://map.igred.org/metode/" data-i18n="navMethod">Method</a>');
+    }
+    expect(read('www/home.js')).toMatch(/navReports: 'Rapporter', navMethod: 'Metode'/);
+  });
+
+  it('a build without Chromium still succeeds, without the PDF button', () => {
+    const netlify = read('netlify.toml');
+    expect(netlify).toMatch(/\(npx playwright install chromium --only-shell \|\| echo [^)]*\) && npx tsx scripts\/build-reports\.ts --pdf/);
+    expect(read('scripts/build-reports.ts')).toMatch(/await browser\?\.close\(\);\s*server\.close\(\);/);
+  });
+
+  const build = () => execFileSync('npx', ['tsx', 'scripts/build-reports.ts'], { cwd: repoRoot, encoding: 'utf-8' });
+
+  it('builds the list and one page per report, half-year reports first and larger', () => {
+    expect(build()).toMatch(/reports: 2 built \(1 half-year, 1 analyses\)/);
+    const list = read('www/reports/index.html');
+    expect(list.indexOf('Halvårsrapporter')).toBeLessThan(list.indexOf('Analyser'));
+    expect(list).toMatch(/class="r-entry r-entry-big"[\s\S]*?Halvårsrapport ·/);
+    expect(list).toMatch(/class="r-entry"><a[^>]*>[\s\S]*?Analyse ·/);
+  });
+
+  it('a half-year report keeps its fixed order, fixed probability words and register arrows', () => {
+    build();
+    const page = read('www/reports/2026-h2/index.html');
+    const order = ['Hovedvurderinger', 'Risikoregister', 'Regioner', 'Økonomisk utvikling', 'Temaessay', 'Hva vi bommet på', 'Metode og kilder'];
+    const at = order.map((h) => page.indexOf(`</span>${h}`));
+    expect(at.every((i) => i > 0)).toBe(true);
+    expect([...at].sort((a, b) => a - b)).toEqual(at);
+    expect(page).toMatch(/svært usannsynlig, under 10 %; usannsynlig, 10-35 %; like sannsynlig, 35-55 %; sannsynlig, 55-80 %; svært sannsynlig, over 80 %/);
+    expect(page).toMatch(/class="r-up">↑ opp fra 16/);
+    expect(page).toMatch(/class="r-down">↓ ned fra 12/);
+    expect(page).toMatch(/class="r-new">Ny/);
+    // Title, type, authors, date, version, ingress, how to cite, and the PDF.
+    expect(page).toMatch(/Halvårsrapport · April til september 2026 · 11\. oktober 2026 · Versjon 1\.0/);
+    expect(page).toMatch(/Moe, E\. B\. og Bratberg, V\. \(2026\)\. Krigene som former høsten 2026\. IGRED halvårsrapport, versjon 1\.0, 11\. oktober 2026\. https:\/\/igred\.org\/reports\/2026-h2\//);
+    expect(page).toMatch(/<a class="link-button" href="igred-2026-h2\.pdf" download>Last ned PDF<\/a>/);
+  });
+
+  it('every building block renders, and the figures come frozen from the first build', () => {
+    build();
+    const page = read('www/reports/2026-10-sudan-kordofan/index.html');
+    for (const cls of ['r-figures', 'r-chart-svg', 'r-table', 'r-risk', 'r-map-svg', 'r-quote', 'r-fn', 'r-sources', 'r-cite']) expect(page).toContain(cls);
+    expect(page).not.toMatch(/r-empty">\[/);
+    const frozen = readJson('www/content/reports/frozen/2026-10-sudan-kordofan.json');
+    expect(Object.keys(frozen).some((k) => k.startsWith('chart:'))).toBe(true);
+    expect(Object.keys(frozen).some((k) => k.startsWith('map:'))).toBe(true);
+  });
+
+  it('prints to A4 with a cover, a running header and page numbers', () => {
+    const css = read('www/reports.css');
+    expect(css).toMatch(/@page \{ size: A4;/);
+    expect(css).toMatch(/\.r-cover \{\s*display: flex;[^}]*break-after: page;/);
+    build();
+    expect(read('www/reports/2026-h2/index.html')).toMatch(/@bottom-right \{ content: "Side " counter\(page\); \}[^<]*@page :first/);
+  });
+
+  it('the editor: Decap on GitHub through Netlify OAuth, editorial workflow, one component per block', () => {
+    const admin = read('www/admin/admin.js');
+    expect(admin).toMatch(/name: 'github',\s*repo: 'bridgeerlend\/igred-warmap',\s*branch: 'main',\s*base_url: 'https:\/\/api\.netlify\.com'/);
+    expect(admin).toMatch(/publish_mode: 'editorial_workflow'/);
+    expect(admin).toMatch(/folder: 'www\/content\/reports'/);
+    for (const id of ['chart', 'map', 'figures', 'table', 'risk', 'quote', 'sources']) expect(admin).toMatch(new RegExp(`block\\('${id}'`));
+    expect(admin).toMatch(/id: 'footnote'/);
+    expect(read('www/admin/index.html')).toMatch(/decap-cms@3\.16\.3/);
+    expect(read('.gitignore')).toMatch(/^www\/reports\/$/m);
   });
 });

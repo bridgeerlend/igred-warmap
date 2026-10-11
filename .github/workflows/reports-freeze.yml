@@ -1,0 +1,41 @@
+name: Freeze reports
+
+# A published report's charts and maps are drawn from the map's data, which keeps only a
+# rolling window of days. When a report lands on main, this writes what each of its blocks
+# shows into www/content/reports/frozen/, so the report says the same thing a year from now.
+# The commit carries [skip netlify]: the build that published the report already drew the
+# same figures from the same data, so there is nothing new to build.
+on:
+  push:
+    branches: [main]
+    paths: ['www/content/reports/*.md']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: reports-freeze
+  cancel-in-progress: false
+
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx tsx scripts/build-reports.ts --freeze
+      - name: Commit frozen figures if new
+        run: |
+          if [ -z "$(git status --porcelain www/content/reports/frozen)" ]; then echo "nothing new"; exit 0; fi
+          git config user.name "igred-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add www/content/reports/frozen
+          git commit -m "Reports: freeze figures [skip netlify]"
+          for i in 1 2 3; do git pull --rebase && git push && exit 0; sleep 5; done
+          exit 1

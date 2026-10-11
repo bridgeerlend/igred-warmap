@@ -5,15 +5,31 @@
 
 [build]
   publish = "www"
-  # Nothing to build: www/ is plain HTML, CSS and ES modules, with the shared Atlas
-  # foundation mirrored into it and committed. A build step would only add a failure mode.
-  command = ""
+  # www/ is plain HTML, CSS and ES modules. The one build step is the reports: Markdown from
+  # the editor in www/content/reports/ becomes www/reports/ and a PDF of each report, printed
+  # by Playwright from the same page. Nothing else is generated.
+  # If Chromium cannot be installed the reports still build, without a PDF and without the
+  # button: a failed build would cost the same credits as a good one.
+  command = "(npx playwright install chromium --only-shell || echo 'Chromium not installed: reports without PDF') && npx tsx scripts/build-reports.ts --pdf"
 
-  # Netlify builds on every push by default, and the pipeline commits data every hour.
-  # Without this the institute page would rebuild twenty-four times a day for changes it
-  # does not contain — and the brief's rule that a data update never triggers a site build
-  # would hold for the map but quietly fail here. Exit 0 means "skip this build".
-  ignore = "git diff --quiet HEAD^ HEAD -- www netlify.toml"
+  # Netlify builds on every push by default, and the pipeline commits data every hour. The
+  # script skips those, and skips every draft branch the editor makes (cms/...), every deploy
+  # preview and every branch deploy: only a change to what igred.org is made from, on main,
+  # builds. Exit 0 means "skip this build".
+  ignore = "sh scripts/netlify-ignore.sh"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Drafts are branches with pull requests (Decap's editorial workflow). They are never built:
+# the ignore script skips them, and these contexts are told the same in case it is bypassed.
+[context.deploy-preview]
+  command = "echo 'deploy previews are off' && exit 0"
+  ignore = "exit 0"
+
+[context.branch-deploy]
+  command = "echo 'branch deploys are off' && exit 0"
+  ignore = "exit 0"
 
 [[headers]]
   for = "/fonts/*"
@@ -33,3 +49,14 @@
   [headers.values]
     # Netlify does not know the extension; browsers want the manifest type to install the icon.
     Content-Type = "application/manifest+json; charset=utf-8"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    # The editor is not for search engines.
+    X-Robots-Tag = "noindex"
+
+[[headers]]
+  for = "/reports/*.pdf"
+  [headers.values]
+    Content-Disposition = "attachment"
