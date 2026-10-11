@@ -43,6 +43,11 @@ function page(c: Crisis | null, depth: number): string {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="${up}favicon.ico" sizes="32x32">
+<link rel="icon" href="${up}favicon.svg" type="image/svg+xml">
+<link rel="icon" href="${up}favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="${up}apple-touch-icon.png">
+<link rel="manifest" href="${up}site.webmanifest">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
 <meta name="color-scheme" content="dark light">

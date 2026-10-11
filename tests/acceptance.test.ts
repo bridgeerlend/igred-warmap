@@ -15,6 +15,12 @@ import { repoRoot } from '../src/core/util/paths.js';
 const read = (relative: string) => readFileSync(path.join(repoRoot, relative), 'utf-8');
 const readJson = (relative: string) => JSON.parse(read(relative));
 const exists = (relative: string) => existsSync(path.join(repoRoot, relative));
+/**
+ * IGRED's own icon, served from the site itself, is the one picture every page may name in
+ * its head. Removed before the checks that keep outlets' logos and favicons off the pages.
+ */
+const ICON_LINK = /<link rel="(icon|apple-touch-icon|manifest)" href="(\.\.\/)*(favicon\.(ico|svg)|favicon-32\.png|apple-touch-icon\.png|site\.webmanifest)"[^>]*>/g;
+const withoutOwnIcon = (text: string) => text.replace(ICON_LINK, ' ');
 
 const config = loadConfig();
 
@@ -393,7 +399,7 @@ describe('the wire is a stream of sourced dispatches and nothing else', () => {
 
   it('shows no picture of any kind', () => {
     for (const file of ['site/stream/index.html', 'site/stream/stream.js', 'site/stream/stream.css']) {
-      const text = read(file)
+      const text = withoutOwnIcon(read(file))
         .replace(/\/\*[\s\S]*?\*\//g, ' ')
         .replace(/^\s*\/\/.*$/gm, ' ')
         .replace(/<!--[\s\S]*?-->/g, ' ');
@@ -428,7 +434,7 @@ describe('sources are named, never shown as logos', () => {
     ]) {
       // Comments are stripped first: this guard is about what the page loads, and it should
       // not fire on a note explaining why the code avoids mastheads in the first place.
-      const text = read(page)
+      const text = withoutOwnIcon(read(page))
         .replace(/\/\*[\s\S]*?\*\//g, ' ')
         .replace(/^\s*\/\/.*$/gm, ' ')
         .replace(/<!--[\s\S]*?-->/g, ' ');
@@ -819,7 +825,7 @@ describe('the crisis and country views', () => {
   it('name outlets in text, never as logos, and show pictures only from Commons and the curated YouTube channels', () => {
     const view = stripComments(read('site/view.js'));
     for (const file of SITE_FILES) {
-      const text = stripComments(read(file));
+      const text = withoutOwnIcon(stripComments(read(file)));
       expect(text).not.toMatch(/logos?\.(svg|png|jpe?g|webp|gif)|favicon|clearbit|logo\.dev/i);
       expect(text).not.toMatch(/(class|id)=["'][^"']*logo/i);
     }
@@ -890,6 +896,28 @@ describe('the wordmark links home', () => {
       expect(read(page)).toMatch(/<a class="wordmark wordmark-link" href="https:\/\/igred\.org\/">/);
     }
     expect(read('www/index.html')).not.toMatch(/href="https:\/\/igred\.org\/"/);
+  });
+});
+
+describe('the icon', () => {
+  it('every page names the same icon set, and the files are there on both hosts', () => {
+    for (const page of [...PAGES, 'site/crisis/sudan/index.html', 'www/knowledge/index.html']) {
+      const html = read(page);
+      for (const rel of ['icon" href="(\\.\\.\\/)*favicon\\.ico', 'icon" href="(\\.\\.\\/)*favicon\\.svg', 'apple-touch-icon" href="(\\.\\.\\/)*apple-touch-icon\\.png', 'manifest" href="(\\.\\.\\/)*site\\.webmanifest']) {
+        expect(html, `${page}: ${rel}`).toMatch(new RegExp(`<link rel="${rel}"`));
+      }
+    }
+    for (const host of ['site', 'www']) {
+      for (const file of ['favicon.svg', 'favicon.ico', 'favicon-32.png', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'site.webmanifest']) {
+        expect(exists(`${host}/${file}`), `${host}/${file}`).toBe(true);
+      }
+      expect(readJson(`${host}/site.webmanifest`).icons.map((i: { sizes: string }) => i.sizes)).toEqual(['192x192', '512x512', 'any']);
+    }
+    // The letter is outlined, so the icon does not depend on a font being present.
+    const svg = read('site/favicon.svg');
+    expect(svg).not.toMatch(/<text\b|font-family/);
+    expect(svg).toMatch(/<path fill="#F4F2EC" d="M/);
+    expect(read('www/favicon.svg')).toBe(svg);
   });
 });
 
