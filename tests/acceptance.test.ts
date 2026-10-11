@@ -1248,7 +1248,11 @@ describe('reports on igred.org', () => {
     // The front page leads to the list, never to a report, and its cover says the first one is coming.
     const home = read('www/index.html');
     expect(home).not.toMatch(/href="reports\/[^"]+"/);
-    expect(home).toMatch(/<span data-i18n="reportEdition">First edition<\/span><span class="coming" data-i18n="coming">Coming<\/span>/);
+    expect(home).toMatch(/<span data-i18n="reportEdition">First edition<\/span> · <span class="coming" data-i18n="coming">Coming<\/span>/);
+    // Its picture: a cairn on Molden from Wikimedia Commons, credited like the other covers.
+    expect(home).toContain('<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/2024_Sogn_og_Fjordane_49.jpg/960px-2024_Sogn_og_Fjordane_49.jpg"');
+    expect(home).toMatch(/data-i18n="reportPicture">A cairn on Molden, Sogn og Fjordane · Øyvind Holmstad, CC BY-SA 4\.0 · Wikimedia Commons</);
+    expect(read('www/home.js')).toMatch(/reportPicture: 'Varde på Molden, Sogn og Fjordane · Øyvind Holmstad, CC BY-SA 4\.0 · Wikimedia Commons'/);
   });
 
   it('builds the list and one page per report, half-year reports first and larger', () => {
