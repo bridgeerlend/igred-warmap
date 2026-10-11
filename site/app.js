@@ -147,8 +147,8 @@ function paintMap(ranked) {
 }
 
 function padding() {
-  if (narrow()) return { top: 24, bottom: 24, left: 24, right: 24 };
-  return { top: 50, bottom: 96, left: 40, right: 40 };
+  if (narrow()) return { top: 28, bottom: 28, left: 28, right: 28 };
+  return { top: 58, bottom: 110, left: 46, right: 46 };
 }
 
 function frameCrisis(c) {
@@ -159,7 +159,9 @@ function frameCrisis(c) {
     if (!box) continue;
     w = Math.min(w, box[0]); s = Math.min(s, box[1]); e = Math.max(e, box[2]); n = Math.max(n, box[3]);
   }
-  atlas.fit([[w, s], [e, n]], padding());
+  // A margin of about 15% around the crisis, so the whole country and its borders show.
+  const mx = (e - w) * 0.15, my = (n - s) * 0.15;
+  atlas.fit([[w - mx, s - my], [e + mx, n + my]], padding());
 }
 
 /* ---------- popup -------------------------------------------------------- */
@@ -471,6 +473,8 @@ function renderStatic() {
   $('zoom-out').setAttribute('aria-label', t.zoomOut);
   $('method').textContent = t.method;
   $('ranking').textContent = t.ranking;
+  $('list-note').textContent = t.listNote;
+  $('sources-toggle').textContent = t.sourcesToggle;
   if (state.inc) $('updated').textContent = `${t.updated} ${fmtStamp(state.inc.generatedAt)}`;
   renderLegend();
 }
@@ -561,6 +565,12 @@ async function start() {
   $('play').addEventListener('click', togglePlay);
   $('now').addEventListener('click', () => { stopPlay(); state.asOf = null; refresh({ keepSearch: true }); });
   resetSearch = setupSearch();
+  $('sources-toggle').addEventListener('click', () => {
+    const open = $('colophon-sources').hidden;
+    $('colophon-sources').hidden = !open;
+    $('sources-toggle').setAttribute('aria-expanded', String(open));
+    $('colophon').classList.toggle('colophon-folded', !open);
+  });
 
   if (state.crisis) openCrisis(state.crisis, { frame: false });
   else if (state.country) openCountry(state.country, { frame: false });

@@ -33,6 +33,8 @@ export interface SummarySettings {
   maxWords: number;
   timeoutMs: number;
   providers: Provider[];
+  minPreferred?: number;
+  preferredOutlets?: { names: string[]; domains: string[] };
 }
 
 export interface Summary {
@@ -45,6 +47,7 @@ export interface Summary {
 
 export interface SummaryState {
   approved: Summary | null;
+  promptVersion?: number;
   inputHash?: string;
   attemptedAt?: string;
   lastOutcome?: string;
@@ -53,10 +56,18 @@ export interface SummaryState {
 export interface SummaryInput {
   id: string;
   name: string;
+  /** Dated reference figures (UCDP, World Bank), each with the year it applies to. */
   facts: string[];
   headlines: { title: string; url: string; publisher: string }[];
   background?: string;
+  /** The last summary that passed, so the new one can say what has changed since. */
+  previous?: { text: string; writtenAt: string };
+  /** The status line's own figures: the summary must not repeat them. */
+  avoid?: number[];
 }
+
+/** Bumped when the brief to the model changes, so every crisis is rewritten once. */
+export const PROMPT_VERSION = 2;
 
 /** Norwegian writes 1 200 and 4,5; the guard compares digits, so thousands spaces are closed up. */
 export function normaliseNumbers(text: string): string {
@@ -68,6 +79,8 @@ export function sourceTextOf(input: SummaryInput): string {
     ...input.facts,
     ...input.headlines.map((h) => `${h.publisher}: ${h.title}`),
     input.background ?? '',
+    // The previous summary passed this same guard against its own sources.
+    input.previous?.text ?? '',
   ].join('\n');
 }
 
@@ -80,14 +93,34 @@ function sentences(text: string): number {
 }
 
 /** The whole gate, both languages: the guard's figures rule, then length and shape. */
-export function checkSummary(en: string, nb: string, sourceText: string, maxWords: number): { ok: boolean; reason?: string } {
+export function checkSummary(
+  en: string, nb: string, sourceText: string, maxWords: number, avoid: number[] = [],
+): { ok: boolean; reason?: string } {
   const source = normaliseNumbers(sourceText);
   for (const [lang, text] of [['en', en], ['nb', nb]] as const) {
-    const guard = guardDraft(normaliseNumbers(text), source, maxWords);
+    const plain = normaliseNumbers(text);
+    const guard = guardDraft(plain, source, maxWords);
     if (!guard.ok) return { ok: false, reason: `${lang}: ${guard.reason}` };
     const n = sentences(text);
     if (n < 2 || n > 6) return { ok: false, reason: `${lang}: ${n} sentences` };
     if (/INSUFFICIENT|as an ai|language model/i.test(text)) return { ok: false, reason: `${lang}: not a summary` };
+    // The status line above already gives the counts and the change; the summary explains.
+    const figures = new Set([...plain.matchAll(/\d[\d.,]*/g)].map((m) => m[0].replace(/[.,]+$/, '').replace(/,/g, '')));
+    const repeated = avoid.find((v) => v >= 2 && figures.has(String(v)));
+    if (repeated !== undefined) return { ok: false, reason: `${lang}: repeats the status line's figure ${repeated}` };
+    // One figure with its source, never a span like "40-41"; a span of years is fine.
+    const span = /\b(\d{1,3}(?:[.,]\d+)?)\s?[-–]\s?(\d{1,3}(?:[.,]\d+)?)\b(?!\s?(?:km|kilomet))/.exec(plain);
+    if (span) return { ok: false, reason: `${lang}: a range of figures (${span[0]})` };
+    // No sentences about how the monitor works.
+    if (/\b(outlets?|medier|several sources|multiple sources|flere kilder|reported by|meldt av|incident monitor|hendelsesmonitor)\b/i.test(text)) {
+      return { ok: false, reason: `${lang}: talks about method, not events` };
+    }
+    // A UCDP or World Bank figure always says which year it is for.
+    for (const sentence of text.split(/(?<=[.!?])\s+/)) {
+      if (/UCDP|World Bank|Verdensbanken/i.test(sentence) && /\d/.test(sentence) && !/\b(19|20)\d{2}\b/.test(sentence)) {
+        return { ok: false, reason: `${lang}: a UCDP or World Bank figure without its year` };
+      }
+    }
   }
   return { ok: true };
 }
@@ -96,16 +129,21 @@ function promptFor(input: SummaryInput, maxWords: number): string {
   return [
     `Crisis: ${input.name}`,
     '',
-    'Counts from the incident monitor:',
-    ...input.facts.map((f) => `- ${f}`),
-    '',
     'Headlines from the past few days, each with its outlet:',
     ...input.headlines.map((h) => `- ${h.publisher}: ${h.title}`),
+    ...(input.facts.length ? ['', 'Reference figures, each with the year it applies to:', ...input.facts.map((f) => `- ${f}`)] : []),
+    ...(input.previous ? ['', `What we wrote on ${input.previous.writtenAt.slice(0, 10)}:`, input.previous.text] : []),
     ...(input.background ? ['', 'Background (Wikipedia):', input.background.slice(0, 1200)] : []),
     '',
-    `Write 3 to 5 sentences (at most ${maxWords} words) on what is happening in this crisis now, using only the material above.`,
-    'Add no fact, name, date, cause or figure that is not in it. Use a figure only if it appears above, written the same way. Do not speculate and do not name outlets.',
-    'Then write the same text in Norwegian (bokmål).',
+    `Write 3 to 5 sentences (at most ${maxWords} words) for an analyst: what is happening in this crisis now, where, and why, and what is new compared with what we wrote before.`,
+    'Rules:',
+    '- Use only the material above. Add no fact, name, date, cause or figure that is not in it.',
+    '- Do not give counts of incidents or percentage changes; the page states those separately.',
+    '- A figure from UCDP or the World Bank always names its source and its year, e.g. "4,680 battle-related deaths in 2024, according to UCDP".',
+    '- Give one figure and name who reported it; never a range such as "40-41".',
+    '- Write about events, not about reporting: no sentences about outlets, sources or how many reported something.',
+    '- Do not speculate. Do not name the outlets in the headlines.',
+    'Then write the same text in natural Norwegian (bokmål), not a word-for-word translation.',
     'If the material is too thin, reply {"en":"INSUFFICIENT","nb":"INSUFFICIENT"}.',
     'Reply with JSON only: {"en": "...", "nb": "..."}',
   ].join('\n');
@@ -194,8 +232,9 @@ export async function runSummaries(
     const hash = inputHash(input);
     const since = state.attemptedAt ? (now - Date.parse(state.attemptedAt)) / 3_600_000 : Infinity;
     if (input.headlines.length < 3) continue;
-    if (state.inputHash === hash && state.approved) continue;
-    if (since < settings.minHoursBetween) continue;
+    const rewrite = state.promptVersion !== PROMPT_VERSION;
+    if (state.inputHash === hash && state.approved && !rewrite) continue;
+    if (since < settings.minHoursBetween && !rewrite) continue;
 
     const prompt = promptFor(input, settings.maxWords);
     let reply: Reply | undefined;
@@ -232,9 +271,10 @@ export async function runSummaries(
     // Only an answer counts as a turn: it is what the three-hour spacing protects.
     state.attemptedAt = new Date(now).toISOString();
     state.inputHash = hash;
+    state.promptVersion = PROMPT_VERSION;
     const parsed = parseReply(reply.text);
     if (!parsed) { state.lastOutcome = `${provider.id}: unreadable reply`; log.push(`${input.id}: ${state.lastOutcome}`); continue; }
-    const check = checkSummary(parsed.en, parsed.nb, sourceTextOf(input), settings.maxWords);
+    const check = checkSummary(parsed.en, parsed.nb, sourceTextOf(input), settings.maxWords, input.avoid ?? []);
     if (!check.ok) { state.lastOutcome = `rejected — ${check.reason}`; log.push(`${input.id}: ${state.lastOutcome}`); continue; }
 
     state.approved = {

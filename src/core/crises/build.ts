@@ -175,6 +175,10 @@ export function imageKind(file: string, caption: string): CrisisImage['kind'] {
   return 'other';
 }
 
+function hostOfUrl(url: string): string {
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; }
+}
+
 const KIND_ORDER: Record<CrisisImage['kind'], number> = { map: 0, place: 1, other: 2, person: 3 };
 
 function fmtInt(n: number, lang: 'en' | 'nb'): string {
@@ -241,6 +245,15 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
     ...(readJson<Partial<Cache>>(cacheFile) ?? {}),
   } as Cache;
   const summaryStates = readJson<Record<string, SummaryState>>(summariesFile) ?? {};
+  const preferredNames = (settings.summary.preferredOutlets?.names ?? []).map((n) => n.toLowerCase());
+  const preferredDomains = settings.summary.preferredOutlets?.domains ?? [];
+  /** An established agency or newsroom, by name or by the domain it publishes from. */
+  const isPreferred = (h: { publisher: string; domain?: string | undefined }) => {
+    const name = h.publisher.toLowerCase();
+    const domain = (h.domain ?? '').toLowerCase();
+    return preferredNames.some((n) => name === n || name.startsWith(`${n} `) || name.endsWith(` ${n}`))
+      || preferredDomains.some((d) => domain === d || domain.endsWith(`.${d}`));
+  };
   const verified = readVerified();
 
   const now = Date.now();
@@ -636,27 +649,30 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
 
     const status = { en: statusLine('en', stats), nb: statusLine('nb', stats) };
 
-    /* material for the machine-written summary: nothing the page does not already link */
+    /* material for the machine-written summary: nothing the page does not already link,
+       and established newsrooms first */
     const seenTitles = new Set<string>();
-    const summaryHeadlines = [
-      ...headlines.map((h) => ({ title: h.headline, url: h.url, publisher: h.publisher })),
-      ...newsOut.map((a) => ({ title: a.title, url: a.url, publisher: a.publisher })),
+    const summaryPool = [
+      ...headlines.map((h) => ({ title: h.headline, url: h.url, publisher: h.publisher, domain: hostOfUrl(h.url) })),
+      ...newsOut.map((a) => ({ title: a.title, url: a.url, publisher: a.publisher, domain: a.domain ?? hostOfUrl(a.url) })),
     ].filter((h) => {
       const key = normTitle(h.title);
       if (seenTitles.has(key)) return false;
       seenTitles.add(key);
       return true;
-    }).slice(0, 18);
+    });
+    const good = summaryPool.filter(isPreferred);
+    const minGood = settings.summary.minPreferred ?? 6;
+    const chosen = (good.length >= minGood ? good : [...good, ...summaryPool.filter((h) => !isPreferred(h))]).slice(0, 18);
+    const previous = summaryStates[d.id]?.approved;
     summaryInputs.push({
       id: d.id,
       name: d.name,
-      facts: [
-        status.en,
-        `${stats.corroborated7d} of the incidents this week were carried by two or more outlets.`,
-        ...(battle ? [`UCDP counted ${battle.total} battle-related deaths in ${battle.years}.`] : []),
-      ],
-      headlines: summaryHeadlines,
+      facts: battle ? [`UCDP counted ${battle.total} battle-related deaths in ${battle.years}.`] : [],
+      headlines: chosen.map(({ title, url, publisher }) => ({ title, url, publisher })),
       ...(background?.extract ? { background: background.extract } : {}),
+      ...(previous ? { previous: { text: previous.en, writtenAt: previous.writtenAt } } : {}),
+      avoid: [stats.last7d, stats.prev7d, stats.corroborated7d, ...(stats.change7dPct === null ? [] : [Math.round(Math.abs(stats.change7dPct))])],
     });
 
     details.push({

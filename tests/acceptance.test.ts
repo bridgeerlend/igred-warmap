@@ -201,7 +201,7 @@ describe('6 — no code path lets a model set a figure, an actor or control', ()
 
   it('the crisis summary is prose only, guarded in both languages, and never a field the map counts', () => {
     const summary = read('src/core/crises/summary.ts');
-    expect(summary).toMatch(/guardDraft\(normaliseNumbers\(text\)/);
+    expect(summary).toMatch(/const plain = normaliseNumbers\(text\);\s*const guard = guardDraft\(plain, source, maxWords\);/);
     expect(summary).toMatch(/\['en', en\], \['nb', nb\]/);
     expect(summary).not.toMatch(/intensity|severity|countryFips|confidence|writeArtifact|writeFileSync/);
     // The builder hands it only headlines it already links, and stores only its prose.
@@ -783,6 +783,29 @@ describe('the map', () => {
     const html = read('site/index.html');
     for (const w of ['1', '7', '30']) expect(html).toMatch(new RegExp(`data-w="${w}"`));
     expect(read('site/common.js')).toMatch(/range\(w, asOf\)/);
+  });
+
+  it('says above the list how it is ranked, and keeps the footer to one line with the sources folded', () => {
+    expect(read('site/common.js')).toMatch(/listNote: 'Ranked by incidents confirmed by several sources'/);
+    expect(read('site/common.js')).toMatch(/listNote: 'Rangert etter hendelser bekreftet av flere kilder'/);
+    const html = read('site/index.html');
+    expect(html).toMatch(/<p class="meta list-note" id="list-note"><\/p>\s*<ol class="crisis-list"/);
+    expect(html).toMatch(/id="sources-toggle" aria-expanded="false" aria-controls="colophon-sources"/);
+    expect(html).toMatch(/<p class="colophon-method" id="colophon-sources" hidden>/);
+    // A crisis opens with room around it: the whole country and its borders.
+    expect(read('site/app.js')).toMatch(/const mx = \(e - w\) \* 0\.15, my = \(n - s\) \* 0\.15;/);
+  });
+
+  it('the summary is written from established newsrooms first, and never repeats the status line', () => {
+    const cfg = readJson('config/crises.json').settings.summary;
+    expect(cfg.preferredOutlets.names).toContain('Reuters');
+    expect(cfg.preferredOutlets.domains).toContain('reliefweb.int');
+    expect(cfg.minPreferred).toBeGreaterThan(0);
+    const build = read('src/core/crises/build.ts');
+    expect(build).toMatch(/good\.length >= minGood \? good : \[\.\.\.good, \.\.\.summaryPool\.filter/);
+    expect(build).toMatch(/avoid: \[stats\.last7d, stats\.prev7d, stats\.corroborated7d/);
+    // The panel's news list is built before, and apart from, the summary's choice of sources.
+    expect(build).toMatch(/const newsOut = news\.slice\(0, settings\.newsPerCrisis\)/);
   });
 
   it('shows how old the data is, and says so plainly after three hours', () => {

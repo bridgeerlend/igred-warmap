@@ -61,6 +61,7 @@
         <button type="button" class="link-button quiet" data-w="30"></button>
       </nav>
 
+      <p class="meta list-note" id="list-note"></p>
       <ol class="crisis-list" id="crisis-list"></ol>
     </div>
 
@@ -90,10 +91,12 @@
   </main>
 </div>
 
-<footer class="colophon" id="colophon">
-  <p class="colophon-method"><span id="method"></span> <span id="ranking"></span></p>
+<!-- One line: when the data was updated, and the sources folded away until asked for. -->
+<footer class="colophon colophon-folded" id="colophon">
   <p class="meta"><span id="updated"></span></p>
+  <p class="meta"><button type="button" class="link-button quiet" id="sources-toggle" aria-expanded="false" aria-controls="colophon-sources">Sources</button></p>
   <p class="meta"><a href="mailto:contact@igred.org">contact@igred.org</a></p>
+  <p class="colophon-method" id="colophon-sources" hidden><span id="method"></span> <span id="ranking"></span></p>
 </footer>
 
 <script src="vendor/maplibre-gl.js"></script>

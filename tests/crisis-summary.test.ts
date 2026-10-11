@@ -41,6 +41,18 @@ describe('the crisis summary guard', () => {
     expect(result.reason).toMatch(/^nb: figure "14"/);
   });
 
+  it('refuses what the status line already says, ranges, method talk and undated UCDP figures', () => {
+    const source = 'UCDP counted 4680 battle-related deaths in 2024.\nRSF drone strike kills 41 near the Ethiopian border\nArmy repels attack on Babanusa; 27 armed incidents';
+    const ok = 'Fighting has shifted to Kordofan. A drone strike killed 41 people near the Ethiopian border. The army says it repelled an attack on Babanusa.';
+    const nb = 'Kampene har flyttet seg til Kordofan. Et droneangrep drepte 41 mennesker nær grensen til Etiopia. Hæren sier den slo tilbake et angrep på Babanusa.';
+    expect(checkSummary(ok, nb, source, 110, [27, 23])).toEqual({ ok: true });
+    expect(checkSummary(`27 armed incidents were reported. ${ok}`, nb, source, 110, [27]).reason).toMatch(/repeats the status line's figure 27/);
+    expect(checkSummary(ok.replace('41 people', '40-41 people'), nb, `${source} 40`, 110).reason).toMatch(/range of figures/);
+    expect(checkSummary(`${ok} The strike was reported by several outlets.`, nb, source, 110).reason).toMatch(/method/);
+    expect(checkSummary(`${ok} UCDP counted 4,680 battle-related deaths.`, nb, source, 110).reason).toMatch(/without its year/);
+    expect(checkSummary(`${ok} UCDP counted 4,680 battle-related deaths in 2024.`, nb, source, 110)).toEqual({ ok: true });
+  });
+
   it('reads Norwegian thousands spaces as the same figure', () => {
     expect(normaliseNumbers('1 481 hendelser')).toBe('1481 hendelser');
   });

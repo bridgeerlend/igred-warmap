@@ -19,6 +19,12 @@
       "maxAgeHours": 72,
       "maxPerRun": 30,
       "maxWords": 110,
+      "$sourcesNote": "The summary is written from established news agencies and newsrooms first; other outlets are used only when fewer than minPreferred of these have reported. The news list in the panel is not affected.",
+      "minPreferred": 6,
+      "preferredOutlets": {
+        "names": ["Reuters", "Associated Press", "AP News", "AFP", "Agence France-Presse", "BBC", "Al Jazeera", "The Guardian", "Guardian", "The New York Times", "New York Times", "Financial Times", "The Washington Post", "Washington Post", "The Economist", "Bloomberg", "DW", "Deutsche Welle", "France 24", "Le Monde", "NPR", "Radio Free Europe/Radio Liberty", "RFE/RL", "UN News", "OCHA", "ReliefWeb", "Kyiv Independent", "Haaretz", "The Times of Israel", "Dawn", "The Hindu", "Nikkei Asia", "The Wall Street Journal", "Euronews", "Sky News", "CNN", "NRK"],
+        "domains": ["reuters.com", "apnews.com", "afp.com", "bbc.co.uk", "bbc.com", "aljazeera.com", "theguardian.com", "nytimes.com", "ft.com", "washingtonpost.com", "economist.com", "bloomberg.com", "dw.com", "france24.com", "lemonde.fr", "npr.org", "rferl.org", "news.un.org", "unocha.org", "reliefweb.int", "kyivindependent.com", "haaretz.com", "timesofisrael.com", "dawn.com", "thehindu.com", "asia.nikkei.com", "wsj.com", "euronews.com", "news.sky.com", "cnn.com", "nrk.no"]
+      },
       "timeoutMs": 45000,
       "providers": [
         { "id": "gemini", "url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", "model": "gemini-2.5-flash-lite", "keyEnv": "GEMINI_API_KEY" },
