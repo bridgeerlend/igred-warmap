@@ -680,6 +680,10 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
     /* material for the machine-written summary: nothing the page does not already link,
        and established newsrooms first */
     const seenTitles = new Set<string>();
+    // A headline or an old text about the neighbouring crisis (South Sudan for Sudan) never
+    // reaches the model: the guard would refuse whatever it wrote from it.
+    const notAbout = defs.find((x) => x.id === d.id)?.notAbout ?? [];
+    const neighbour = notAbout.length ? new RegExp(`\\b(?:${notAbout.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`, 'i') : null;
     const summaryPool = [
       ...headlines.map((h) => ({ title: h.headline, url: h.url, publisher: h.publisher, domain: hostOfUrl(h.url) })),
       ...newsOut.map((a) => ({ title: a.title, url: a.url, publisher: a.publisher, domain: a.domain ?? hostOfUrl(a.url) })),
@@ -687,12 +691,13 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
       const key = normTitle(h.title);
       if (seenTitles.has(key)) return false;
       seenTitles.add(key);
-      return true;
+      return !neighbour?.test(h.title);
     });
     const good = summaryPool.filter(isPreferred);
     const minGood = settings.summary.minPreferred ?? 6;
     const chosen = (good.length >= minGood ? good : [...good, ...summaryPool.filter((h) => !isPreferred(h))]).slice(0, MAX_SUMMARY_SOURCES);
-    const previous = summaryStates[d.id]?.approved;
+    const approvedBefore = summaryStates[d.id]?.approved;
+    const previous = approvedBefore && !neighbour?.test(approvedBefore.en) ? approvedBefore : undefined;
     summaryInputs.push({
       id: d.id,
       name: d.name,
@@ -700,7 +705,7 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
       headlines: chosen.map(({ title, url, publisher }) => ({ title, url, publisher })),
       ...(background?.extract ? { background: leadOf(background.extract) } : {}),
       ...(previous ? { previous: { text: previous.en, writtenAt: previous.writtenAt } } : {}),
-      notAbout: defs.find((x) => x.id === d.id)?.notAbout ?? [],
+      notAbout,
       avoid: [stats.last7d, stats.prev7d, stats.corroborated7d, ...(stats.change7dPct === null ? [] : [Math.round(Math.abs(stats.change7dPct))])],
     });
 

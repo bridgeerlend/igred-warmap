@@ -921,6 +921,12 @@ describe('the quota goes where the news is', () => {
     expect(read('site/metode/index.html')).toMatch(/updated several times a day[\s\S]*oppdateres flere ganger i døgnet/);
     for (const file of SITE_FILES) expect(read(file)).not.toMatch(/every hour|hver time/i);
   });
+
+  it('a headline or an old text about the neighbouring crisis never reaches the model', () => {
+    const build = read('src/core/crises/build.ts');
+    expect(build).toMatch(/return !neighbour\?\.test\(h\.title\);/);
+    expect(build).toMatch(/const previous = approvedBefore && !neighbour\?\.test\(approvedBefore\.en\)/);
+  });
 });
 
 describe('the method is one click away', () => {
