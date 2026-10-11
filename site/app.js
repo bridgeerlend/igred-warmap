@@ -10,7 +10,7 @@
  */
 import {
   prefs, setupPrefs, h, $, esc, fmtNum, fmtDay, fmtShortDay, fmtStamp, shortName, crisisName,
-  getJson, Incidents, scoreOf, changeOf, hoursOld, CATEGORY, DAY,
+  getJson, Incidents, scoreOf, changeOf, hoursOld, CATEGORY, DAY, downloadData,
 } from './common.js';
 import { renderCrisis, renderCountry } from './view.js';
 import { createMap, WORLD } from './mapcore.js';
@@ -547,6 +547,8 @@ function renderStatic() {
   $('method').textContent = t.method;
   $('ranking').textContent = t.ranking;
   $('list-note').textContent = t.listNote;
+  $('download-all').textContent = t.downloadAll;
+  $('licence').textContent = t.licence;
   $('sources-toggle').textContent = t.sourcesToggle;
   if (state.inc) $('updated').textContent = `${t.updated} ${fmtStamp(state.inc.generatedAt)}`;
   renderLegend();
@@ -644,6 +646,10 @@ async function start() {
   $('play').addEventListener('click', togglePlay);
   $('now').addEventListener('click', () => { stopPlay(); state.asOf = null; refresh({ keepSearch: true }); });
   resetSearch = setupSearch();
+  $('download-all').addEventListener('click', (ev) => {
+    ev.preventDefault();
+    downloadData('csv/all.csv', `igred-all-crises-${new Date().toISOString().slice(0, 10)}.csv`).catch(() => {});
+  });
   $('sources-toggle').addEventListener('click', () => {
     const open = $('colophon-sources').hidden;
     $('colophon-sources').hidden = !open;

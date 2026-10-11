@@ -837,6 +837,36 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
   writeFileSync(`${wirePath}.tmp`, JSON.stringify(wirePayload));
   renameSync(`${wirePath}.tmp`, wirePath);
 
+  /* downloads: the past 30 days of incidents per crisis and in all, every source URL included */
+  const csvDir = path.join(dataDir, 'csv');
+  mkdirSync(csvDir, { recursive: true });
+  const cell = (v: string | number) => {
+    const text = String(v);
+    return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  };
+  const header = 'date,crisis,country,place,latitude,longitude,type,category,intensity,outlets,reports,verified,source_urls,event_id';
+  const month = events.filter((e) => nowRef - Date.parse(e.occurredAt) < 30 * DAY);
+  const rowOf = (e: EventRec) => {
+    const crisisIdx = crisisOfFips.get(e.location.countryFips);
+    return [
+      e.occurredAt.slice(0, 10), crisisIdx === undefined ? '' : defs[crisisIdx]!.id, e.location.countryFips, placeOf(e.location.name),
+      e.location.lat, e.location.lon, incidentType(e.cameoCode), e.category, e.intensity, e.distinctPublishers, e.reportCount,
+      verified[e.id.replace(/^evt_/, '')] ? 'yes' : 'no', e.provenance.map((pv) => pv.url).join(' | '), e.id,
+    ].map(cell).join(',');
+  };
+  const writeCsv = (name: string, list: EventRec[]) => {
+    const file = path.join(csvDir, name);
+    writeFileSync(`${file}.tmp`, `${header}\n${list.map(rowOf).join('\n')}\n`);
+    renameSync(`${file}.tmp`, file);
+  };
+  writeCsv('all.csv', month);
+  for (const d of defs) {
+    const fips = new Set(d.fips);
+    writeCsv(`${d.id}.csv`, month.filter((e) => fips.has(e.location.countryFips)));
+  }
+  const keepCsv = new Set(['all.csv', ...defs.map((d) => `${d.id}.csv`)]);
+  for (const file of readdirSync(csvDir)) if (file.endsWith('.csv') && !keepCsv.has(file)) unlinkSync(path.join(csvDir, file));
+
   /* the trade and energy layer, with the week's incidents near each point */
   const RADIUS_KM = 300;
   const week = events.filter((e) => nowRef - Date.parse(e.occurredAt) < 7 * DAY);

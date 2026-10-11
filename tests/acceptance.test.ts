@@ -792,7 +792,7 @@ describe('the map', () => {
     const html = read('site/index.html');
     expect(html).toMatch(/<p class="meta list-note" id="list-note"><\/p>\s*<ol class="crisis-list"/);
     expect(html).toMatch(/id="sources-toggle" aria-expanded="false" aria-controls="colophon-sources"/);
-    expect(html).toMatch(/<p class="colophon-method" id="colophon-sources" hidden>/);
+    expect(html).toMatch(/<div class="colophon-method" id="colophon-sources" hidden>/);
     // A crisis opens with room around it: the whole country and its borders.
     expect(read('site/app.js')).toMatch(/const mx = \(e - w\) \* 0\.15, my = \(n - s\) \* 0\.15;/);
   });
@@ -888,6 +888,24 @@ describe('the trade and energy layer', () => {
     expect(view).toMatch(/const STAKE = \['NY\.GDP\.MKTP\.CD', 'NY\.GDP\.PCAP\.CD', 'NE\.EXP\.GNFS\.ZS', 'TM\.VAL\.FOOD\.ZS\.UN', 'SM\.POP\.REFG\.OR', 'VC\.IDP\.TOCV'\]/);
     expect(view).toMatch(/h\('td\.meta', null, v\.year, ' · ', h\('a', \{ href: ind\.url/);
     expect(readJson('data/crises/yemen.json').nearestRoute.id).toBe('bab-el-mandeb');
+  });
+});
+
+describe('the data can be downloaded', () => {
+  it('a CSV per crisis and one for all, the past 30 days, with every source URL', () => {
+    const csv = read('data/csv/all.csv').split('\n');
+    expect(csv[0]).toBe('date,crisis,country,place,latitude,longitude,type,category,intensity,outlets,reports,verified,source_urls,event_id');
+    expect(csv.length).toBeGreaterThan(10);
+    for (const c of readJson('config/crises.json').crises as { id: string }[]) expect(exists(`data/csv/${c.id}.csv`)).toBe(true);
+    expect(read('site/view.js')).toMatch(/downloadData\(`csv\/\$\{d\.id\}\.csv`/);
+    expect(read('site/app.js')).toMatch(/downloadData\('csv\/all\.csv'/);
+  });
+
+  it('says how the data may be used, with the other licences linked', () => {
+    expect(read('site/common.js')).toMatch(/Våre egne data: CC BY 4\.0/);
+    const html = read('site/index.html');
+    expect(html).toMatch(/href="https:\/\/ucdp\.uu\.se\/downloads\/"/);
+    expect(html).toMatch(/href="https:\/\/www\.worldbank\.org\/en\/about\/legal\/terms-of-use-for-datasets"/);
   });
 });
 

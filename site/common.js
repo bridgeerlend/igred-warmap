@@ -28,6 +28,9 @@ export const STRINGS = {
     allCrises: 'All crises',
     filter: 'Filter', filterAll: 'All types',
     tradeLayer: 'Trade and energy',
+    downloadCsv: 'Download data (CSV)', downloadAll: 'Download all crises (CSV)',
+    csvNote: 'The past 30 days: date, place, coordinates, type, intensity, number of sources and every source URL.',
+    licence: 'Our own data: CC BY 4.0. UCDP and World Bank data under their own licences:',
     routeKind: { chokepoint: 'Chokepoint', pipeline: 'Pipeline', port: 'Port' },
     nearIncidents: (n, c, km) => `${n} incidents within ${km} km in the past seven days, ${c} of them confirmed by several sources.`,
     noNearIncidents: (km) => `No incidents within ${km} km in the past seven days.`,
@@ -123,6 +126,9 @@ export const STRINGS = {
     allCrises: 'Alle kriser',
     filter: 'Filter', filterAll: 'Alle typer',
     tradeLayer: 'Handel og energi',
+    downloadCsv: 'Last ned data (CSV)', downloadAll: 'Last ned alle kriser (CSV)',
+    csvNote: 'De siste 30 dagene: dato, sted, koordinater, type, intensitet, antall kilder og alle kilde-URL-er.',
+    licence: 'Våre egne data: CC BY 4.0. Data fra UCDP og Verdensbanken har egne lisenser:',
     routeKind: { chokepoint: 'Flaskehals', pipeline: 'Rørledning', port: 'Havn' },
     nearIncidents: (n, c, km) => `${n} hendelser innen ${km} km de siste sju dagene, ${c} av dem bekreftet av flere kilder.`,
     noNearIncidents: (km) => `Ingen hendelser innen ${km} km de siste sju dagene.`,
@@ -467,4 +473,19 @@ export function barChart(counts, days, { from = days.length - 7, to = days.lengt
 /** Hours since the incident stream was published, for the staleness line. */
 export function hoursOld(iso) {
   return Math.floor((Date.now() - Date.parse(iso)) / 3_600_000);
+}
+
+/**
+ * A file from data/ saved under its own name. Fetched and handed over as a blob: the data
+ * lives on another host, where the download attribute alone would only open the text.
+ */
+export async function downloadData(file, name) {
+  const response = await fetch(`${dataBaseUrl()}${file}`, { cache: 'no-cache' });
+  if (!response.ok) throw new Error(`${file}: HTTP ${response.status}`);
+  const url = URL.createObjectURL(new Blob([await response.text()], { type: 'text/csv;charset=utf-8' }));
+  const a = Object.assign(document.createElement('a'), { href: url, download: name });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
