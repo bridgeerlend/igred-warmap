@@ -1,0 +1,211 @@
+/* ============================================================
+   Reports: the half-year report and the analysis, on the Atlas
+   foundation. One column written for reading; the same page
+   prints to A4 for the PDF, with a cover and page numbers.
+   ============================================================ */
+
+.r-masthead { padding-left: var(--gutter); padding-right: var(--gutter); }
+
+.r-main, .r-list { padding: clamp(28px, 6vw, 72px) var(--gutter) 64px; }
+.r-article, .r-list { max-width: 760px; }
+.r-list { padding-top: clamp(28px, 6vw, 72px); }
+
+/* ---------- the head of a report ---------------------------------------- */
+
+.r-head { margin-bottom: 40px; }
+.r-label { margin: 0 0 18px; }
+.r-title { font-size: clamp(38px, 7.5vw, 76px); margin-bottom: 22px; }
+.r-ingress { max-width: 56ch; font-size: clamp(16px, 1.4vw, 19px); line-height: 1.55; }
+.r-byline { margin: 18px 0 0; font-size: 14px; }
+.r-actions { display: flex; gap: 22px; flex-wrap: wrap; margin: 22px 0 0; }
+
+.r-contents { border-top: 1px solid var(--hair); padding-top: 14px; margin-bottom: 8px; }
+.r-contents p { margin: 0 0 8px; }
+.r-contents ol { margin: 0; padding-left: 1.6em; columns: 2; column-gap: 32px; font-size: 14px; line-height: 1.9; }
+.r-contents a { text-decoration: none; }
+.r-contents a:hover { text-decoration: underline; }
+
+/* ---------- sections and running text ----------------------------------- */
+
+.r-section { border-top: 1px solid var(--hair); padding-top: 22px; margin-top: 44px; }
+.r-analyse .r-section:first-of-type { border-top: 0; margin-top: 0; padding-top: 0; }
+.r-h2 {
+  font-family: var(--display); font-weight: 400; font-size: clamp(26px, 3.2vw, 36px);
+  line-height: 1.1; letter-spacing: -0.015em; margin: 0 0 20px;
+  font-variation-settings: "opsz" 72;
+}
+.r-num { font-family: var(--text); font-size: 11px; letter-spacing: 0.2em; color: var(--fg-2); display: block; margin-bottom: 8px; }
+
+.r-article p, .r-article li { font-size: 16.5px; line-height: 1.68; }
+.r-article p { margin: 0 0 1em; max-width: 68ch; }
+.r-article h2:not(.r-h2):not(.meta) { font-family: var(--display); font-weight: 400; font-size: 26px; margin: 1.6em 0 0.5em; }
+.r-article h3 { font-family: var(--display); font-weight: 400; font-size: 23px; margin: 1.4em 0 0.4em; }
+.r-article h4.meta { margin: 1.4em 0 0.4em; font-weight: 400; }
+.r-article ul, .r-article ol { padding-left: 1.3em; max-width: 68ch; }
+
+.r-fn a { text-decoration: none; color: var(--pick); font-size: 0.75em; padding-left: 1px; }
+.r-note { font-size: 13px !important; color: var(--fg-2); }
+
+/* ---------- key judgements ------------------------------------------------ */
+
+.r-judgements { list-style: none; padding: 0 !important; counter-reset: j; }
+.r-judgements > li { counter-increment: j; position: relative; padding: 14px 0 6px 40px; border-top: 1px solid var(--hair-soft); }
+.r-judgements > li::before {
+  content: counter(j); position: absolute; left: 0; top: 12px;
+  font-family: var(--display); font-size: 24px; line-height: 1; font-weight: 300;
+}
+.r-judgement-word { margin: 0 0 4px !important; }
+.r-judgement-word b { font-weight: 600; }
+
+/* ---------- risk register ------------------------------------------------- */
+
+.r-register { display: block; }
+.r-register .r-matrix { max-width: 250px; margin-top: 26px; }
+.r-risk-note { display: block; font-size: 13px; color: var(--fg-2); margin-top: 2px; }
+.r-up { color: var(--up); white-space: nowrap; }
+.r-down { color: var(--down); white-space: nowrap; }
+.r-same, .r-new { color: var(--fg-2); white-space: nowrap; }
+
+.r-matrix { width: 100%; max-width: 210px; height: auto; overflow: visible; }
+.r-cell { fill: none; stroke: var(--hair); stroke-width: 1; }
+.r-cell-on { fill: var(--s3); }
+.r-cell-label { font: 600 11px var(--text); fill: var(--bg); }
+
+/* ---------- tables -------------------------------------------------------- */
+
+.r-table-wrap { overflow-x: auto; }
+.r-article table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+.r-article th { text-align: left; font-weight: 400; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-2); padding: 8px 12px 8px 0; border-bottom: 1px solid var(--hair); vertical-align: bottom; }
+.r-article td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--hair-soft); vertical-align: top; }
+.r-article .num { text-align: right; }
+
+/* ---------- figures: charts, maps, tables, risk, quote -------------------- */
+
+.r-fig { margin: 30px 0; }
+.r-fig-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+.r-fig-source { font-size: 12.5px !important; line-height: 1.5 !important; color: var(--fg-2); margin-top: 8px !important; }
+.r-empty { color: var(--fg-2); }
+
+.r-chart-svg { width: 100%; height: auto; display: block; }
+.r-grid { stroke: var(--hair-soft); stroke-width: 1; }
+.r-axis { font: 10px var(--text); fill: var(--fg-2); letter-spacing: 0.06em; }
+.r-line { fill: none; stroke: var(--s3); stroke-width: 1.8; stroke-linejoin: round; }
+.r-dot { fill: var(--s3); }
+
+.r-map-svg { width: 100%; height: auto; display: block; border-top: 1px solid var(--hair-soft); border-bottom: 1px solid var(--hair-soft); }
+.r-land { fill: none; stroke: var(--coast); stroke-width: var(--sw); }
+.r-land-on { fill: none; stroke: var(--fg); stroke-width: calc(var(--sw) * 1.6); }
+.r-ev { fill: var(--s3); fill-opacity: 0.85; }
+.r-ev-single { fill: none; stroke: var(--s3); stroke-width: var(--sw); }
+
+/* No boxes: the figures sit on a hairline, two to a row, never three. */
+.r-figures { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; margin: 30px 0; }
+.r-figures > div { border-top: 1px solid var(--hair); padding: 12px 0 14px; }
+.r-figures dt { font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-2); }
+.r-figures dd { margin: 4px 0 0; }
+.r-figure { display: block; font-family: var(--display); font-weight: 300; font-size: clamp(34px, 4.6vw, 48px); line-height: 1.05; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.r-figure-source { display: block; font-size: 12.5px; color: var(--fg-2); margin-top: 4px; }
+
+.r-risk { display: grid; grid-template-columns: minmax(0, 1fr) 170px; gap: 24px; align-items: start; border-top: 1px solid var(--hair); padding-top: 14px; }
+.r-risk-text p { margin: 0 0 6px; }
+.r-risk-name { font-family: var(--display); font-size: 22px !important; line-height: 1.25 !important; }
+.r-risk-score .r-figure { display: inline; }
+.r-risk-parts { font-size: 14px !important; }
+
+.r-quote { margin: 36px 0; padding-left: 22px; border-left: 1px solid var(--s3); }
+.r-quote blockquote { margin: 0; }
+.r-quote blockquote p { font-family: var(--display); font-style: italic; font-weight: 300; font-size: clamp(21px, 2.4vw, 27px) !important; line-height: 1.35 !important; margin-bottom: 10px; }
+.r-quote figcaption { font-size: 13px; color: var(--fg-2); }
+
+.r-sources { padding-left: 1.4em !important; }
+.r-sources li { font-size: 14px !important; line-height: 1.55 !important; margin-bottom: 6px; overflow-wrap: anywhere; }
+
+.r-region { margin-bottom: 30px; }
+.r-region h3 { margin-top: 0.8em !important; }
+.r-watch li { margin-bottom: 4px; }
+
+.r-notes, .r-cite { border-top: 1px solid var(--hair); margin-top: 48px; padding-top: 16px; }
+.r-notes h2, .r-cite h2 { margin: 0 0 12px; font-weight: 400; }
+.r-notes li { font-size: 14px !important; line-height: 1.55 !important; margin-bottom: 6px; }
+.r-back { text-decoration: none; color: var(--fg-2); }
+.r-cite p { font-size: 14.5px !important; overflow-wrap: anywhere; }
+
+.r-cover { display: none; }
+.r-colophon { padding-left: var(--gutter); }
+
+/* ---------- the list ------------------------------------------------------ */
+
+.r-list .title { margin-bottom: 20px; }
+.r-group { margin-top: 52px; }
+.r-group > h2 { margin: 0 0 4px; font-weight: 400; }
+.r-entries { list-style: none; margin: 0; padding: 0; }
+.r-entry { border-top: 1px solid var(--hair); }
+.r-entry a { display: block; padding: 18px 0 22px; text-decoration: none; }
+.r-entry a:hover .r-entry-title, .r-entry a:hover .r-entry-title-big { color: var(--s3); }
+.r-entry .meta { margin: 0 0 10px; }
+.r-entry-title-big { font-family: var(--display); font-weight: 300; font-size: clamp(32px, 5.4vw, 54px); line-height: 1; letter-spacing: -0.025em; margin: 0 0 14px; font-variation-settings: "opsz" 144; }
+.r-entry-title { font-family: var(--display); font-weight: 400; font-size: clamp(22px, 2.6vw, 28px); line-height: 1.15; margin: 0 0 8px; }
+.r-entry-big .r-entry-ingress { font-size: 17px; max-width: 56ch; }
+.r-entry-ingress { margin: 0 0 8px; max-width: 62ch; font-size: 15px; line-height: 1.55; }
+.r-entry-by { margin: 0; font-size: 13px; color: var(--fg-2); }
+
+@media (max-width: 620px) {
+  .r-risk { grid-template-columns: 1fr; }
+  .r-matrix { max-width: 190px; }
+  .r-contents ol { columns: 1; }
+  .masthead .controls { gap: 12px; }
+}
+
+/* ---------- print: A4, cover, page numbers -------------------------------- */
+
+@page { size: A4; margin: 22mm 20mm 20mm; }
+@page {
+  @top-left { font: 7.5pt "Inter", sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #4B4A44; }
+  @top-right { font: 7.5pt "Inter", sans-serif; color: #4B4A44; }
+  @bottom-right { font: 8pt "Inter", sans-serif; color: #4B4A44; }
+}
+
+@media print {
+  /* Paper is light, whatever the reader chose on screen. */
+  :root, :root[data-theme="light"], :root[data-theme="dark"] {
+    --bg: #FFFFFF; --fg: #0E0E0C; --fg-2: #4B4A44;
+    --hair: rgba(14, 14, 12, 0.22); --hair-soft: rgba(14, 14, 12, 0.11);
+    --coast: rgba(14, 14, 12, 0.45);
+    --s3: #AE3E16; --up: #B2361A; --down: #2E7D4F; --pick: #1F6FB2;
+    color-scheme: light;
+  }
+  body { background: #fff; font-size: 10pt; }
+  .r-masthead, .r-actions, .r-colophon, .r-back { display: none !important; }
+  .r-main { padding: 0; }
+  .r-article { max-width: none; }
+  a { color: inherit; text-decoration: none; }
+
+  .r-cover {
+    display: flex; flex-direction: column; justify-content: space-between;
+    height: 247mm; break-after: page;
+  }
+  .r-cover .wordmark { font-size: 8pt; }
+  .r-cover .wordmark span { letter-spacing: 0.12em; }
+  .r-cover-main { margin-top: 30mm; }
+  .r-cover .title { font-size: 46pt; line-height: 0.98; margin: 6mm 0 8mm; }
+  .r-cover .standfirst { font-size: 13pt; max-width: 130mm; }
+  .r-cover-foot { font-size: 9.5pt; line-height: 1.7; border-top: 0.5pt solid #0E0E0C; padding-top: 4mm; margin: 0; }
+
+  /* The cover carries the title; the first page starts with the contents. */
+  .r-head { display: none; }
+  .r-contents { break-after: page; border-top: 0; }
+  .r-contents ol { columns: 1; font-size: 11pt; line-height: 2; }
+
+  .r-article p, .r-article li { font-size: 10pt; line-height: 1.55; }
+  .r-section { margin-top: 10mm; padding-top: 5mm; }
+  .r-halvar .r-section { break-before: page; border-top: 0; margin-top: 0; padding-top: 0; }
+  .r-h2 { font-size: 22pt; }
+  .r-fig, .r-quote, .r-judgements > li, .r-matrix, .r-risk, .r-figures > div, tr { break-inside: avoid; }
+  .r-h2 { break-inside: avoid; }
+  .r-num { display: inline; margin-right: 10pt; font-size: 9pt; vertical-align: 4pt; }
+  h2, h3, h4 { break-after: avoid; }
+  .r-table-wrap { overflow: visible; }
+  .r-figure { font-size: 26pt; }
+  .r-quote blockquote p { font-size: 15pt !important; }
+  .r-notes, .r-cite { break-inside: avoid; }
+}
