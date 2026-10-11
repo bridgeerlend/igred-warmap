@@ -68,6 +68,8 @@ body.home { --page-fg: var(--fg); --page-s3: var(--s3); --page-pick: var(--pick)
 }
 .scene-headline .w { display: inline-block; opacity: 0; transform: translateY(0.35em); transition: opacity 420ms ease, transform 520ms cubic-bezier(.2,.7,.2,1); }
 .scene-headline.is-in .w { opacity: 1; transform: none; }
+.scene-headline .w.name { font-style: italic; }
+.scene-headline .w.fig { color: #EE7637; font-style: italic; }
 .scene-outlet { margin: 16px 0 0; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; opacity: 0; transition: opacity 600ms ease 500ms; }
 .scene-outlet.is-in { opacity: 0.85; }
 .scene-date { font-family: var(--display); font-size: clamp(28px, 4vw, 56px); margin: 0; font-variant-numeric: tabular-nums; }
@@ -136,3 +138,22 @@ a.entry:hover .link-button { color: var(--pick); border-bottom-color: var(--pick
 
 /* Anchored sections land below the fixed top bar, not under it. */
 .products, .about { scroll-margin-top: 96px; }
+
+/* ---------- about, beside a way to write to us ---------------- */
+
+.about-grid { display: grid; grid-template-columns: 1fr; gap: clamp(36px, 5vw, 72px); }
+@media (min-width: 900px) { .about-grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: start; } }
+.feedback { display: grid; gap: 16px; border-top: 1px solid var(--hair); padding-top: 14px; }
+@media (min-width: 900px) { .feedback { border-top: 0; padding-top: 0; } }
+.feedback-h { margin: 0; font-family: var(--display); font-weight: 400; font-size: 24px; line-height: 1.1; }
+.feedback .field { display: grid; gap: 6px; }
+.feedback input, .feedback textarea {
+  width: 100%; font: inherit; font-size: 15px; color: var(--fg); background: none;
+  border: 0; border-bottom: 1px solid var(--hair); border-radius: 0; padding: 6px 0; resize: vertical;
+  -webkit-appearance: none; appearance: none;
+}
+.feedback textarea { border: 1px solid var(--hair); padding: 10px; min-height: 120px; }
+.feedback input:focus, .feedback textarea:focus { outline: none; border-color: var(--pick); }
+.feedback-actions { display: flex; gap: 22px; align-items: baseline; margin: 4px 0 0; flex-wrap: wrap; }
+.feedback-status { margin: 0; font-size: 13px; min-height: 1.2em; }
+.hp { position: absolute; left: -9999px; }

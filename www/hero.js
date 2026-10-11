@@ -239,7 +239,12 @@ export function startHero({ canvas, scene, data, world, strings, lang = 'en', fr
   starts.headlines = scenes.reduce((a, x) => a + x.seconds, 0);
   headlines.forEach((hl) => {
     add(2.2, () => {
-      const words = hl.headline.split(' ').map((w, j) => `<span class="w" style="transition-delay:${j * 45}ms">${esc(w)}</span>`).join(' ');
+      // Names in italic and figures in ember carry the sentence; the rest stays plain.
+      const words = hl.headline.split(' ').map((w, j) => {
+        const bare = w.replace(/^[‘'"“(]+|[’'"”),.:;!?]+$/g, '');
+        const cls = /\d/.test(bare) ? ' fig' : j > 0 && /^\p{Lu}\p{Ll}/u.test(bare) ? ' name' : '';
+        return `<span class="w${cls}" style="transition-delay:${j * 45}ms">${esc(w)}</span>`;
+      }).join(' ');
       const node = setScene(`<p class="scene-headline">${words}</p><p class="scene-outlet">${esc(hl.publisher)} · The IGRED Brief</p>`);
       setTimeout(() => { node.querySelector('.scene-headline')?.classList.add('is-in'); node.querySelector('.scene-outlet')?.classList.add('is-in'); }, 60);
       return node;

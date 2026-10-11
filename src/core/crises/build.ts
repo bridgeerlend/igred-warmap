@@ -341,6 +341,8 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
     const fresh = (name: string) => {
       const hit = cache.subjects[name];
       if (!hit) return false;
+      // Entries from before the quality rules carry no width; they are looked up again.
+      if (hit.data && typeof hit.data.width !== 'number') return false;
       return hoursSince(hit.at, now) < (hit.data ? 24 * 30 : 24 * 7);
     };
     const wanted = [...new Set(headlinePool.flatMap((h) => subjectsIn(h)))].filter((n) => !fresh(n)).slice(0, settings.subjectLookupsPerRun ?? 250);
@@ -364,8 +366,8 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
   const pictureFor = (headline: string): SubjectPicture | undefined => {
     const hits = subjectsIn(headline)
       .map((n) => cache.subjects[n]?.data)
-      .filter((x): x is SubjectImage => !!x)
-      .sort((a, b) => KIND_RANK[a.kind] - KIND_RANK[b.kind]);
+      .filter((x): x is SubjectImage => !!x && x.kind !== 'other' && (typeof x.width !== 'number' || x.width >= 640))
+      .sort((a, b) => KIND_RANK[a.kind] - KIND_RANK[b.kind] || Number(!!b.official) - Number(!!a.official));
     const hit = hits[0];
     if (!hit) return undefined;
     const key = hit.file.replace(/ /g, '_');

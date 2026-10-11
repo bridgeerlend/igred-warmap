@@ -28,6 +28,9 @@ const STRINGS = {
     open: 'Open', read: 'Read', coming: 'Coming',
     switchLang: 'NO', dark: 'Dark', light: 'Light',
     navMap: 'Map', navAbout: 'About',
+    feedbackHeading: 'Write to us', feedbackName: 'Name', feedbackEmail: 'E-mail, if you would like an answer',
+    feedbackMessage: 'Message', feedbackSend: 'Send', feedbackThanks: 'Thank you. Your message has reached us.',
+    feedbackFailed: 'That did not go through. Write to contact@igred.org instead.',
     countLede: 'armed incidents reported in the past seven days',
     weekCount: (n) => `${n} incidents this week`,
     playback: 'Thirty days of reported incidents',
@@ -49,6 +52,9 @@ const STRINGS = {
     open: 'Åpne', read: 'Les', coming: 'Kommer',
     switchLang: 'EN', dark: 'Mørk', light: 'Lys',
     navMap: 'Kart', navAbout: 'Om oss',
+    feedbackHeading: 'Skriv til oss', feedbackName: 'Navn', feedbackEmail: 'E-post, hvis du vil ha svar',
+    feedbackMessage: 'Melding', feedbackSend: 'Send', feedbackThanks: 'Takk. Meldingen har kommet fram til oss.',
+    feedbackFailed: 'Det gikk ikke. Skriv til contact@igred.org i stedet.',
     countLede: 'væpnede hendelser meldt de siste sju dagene',
     weekCount: (n) => `${n} hendelser denne uken`,
     playback: 'Tretti dager med meldte hendelser',
@@ -139,10 +145,46 @@ function watchTopbar() {
   }).observe($('hero'));
 }
 
+/** The Knowledge base entry becomes a link the moment www/knowledge.json has something in it. */
+async function enableKnowledgeBase() {
+  try {
+    const kb = await fetch('knowledge.json', { cache: 'no-cache' }).then((r) => r.json());
+    const filled = (kb.people ?? []).some((p) => Object.values(p.top ?? {}).some((l) => l.length)) || (kb.read ?? []).length > 0;
+    if (!filled) return;
+    const entry = document.querySelector('[data-entry="knowledge"]');
+    const link = document.createElement('a');
+    link.className = 'entry';
+    link.href = 'knowledge/';
+    link.innerHTML = entry.innerHTML.replace(/<p class="coming"[^>]*>.*?<\/p>/, '');
+    entry.replaceWith(link);
+  } catch {
+    // stays as coming
+  }
+}
+
+/** Sends the form to Netlify without leaving the page, and says plainly whether it arrived. */
+function setupFeedback() {
+  const form = $('feedback');
+  const status = $('feedback-status');
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const body = new URLSearchParams(new FormData(form)).toString();
+    try {
+      const response = await fetch('/', { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body });
+      if (!response.ok) throw new Error(String(response.status));
+      form.reset();
+      status.textContent = t().feedbackThanks;
+    } catch {
+      status.textContent = t().feedbackFailed;
+    }
+  });
+}
+
 async function start() {
   paintStrings();
   setupToggles();
   watchTopbar();
+  setupFeedback();
   try {
     [home, world] = await Promise.all([
       fetch(`${DATA}home.json`, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : Promise.reject(r.status))),
@@ -153,6 +195,7 @@ async function start() {
   }
   paintMapPreview();
   paintBriefPreview();
+  enableKnowledgeBase();
   // After the page has painted, so the film never competes with the first render.
   (window.requestIdleCallback ?? ((fn) => setTimeout(fn, 200)))(restartHero);
 }

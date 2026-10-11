@@ -171,13 +171,17 @@ export function clusterObservations(observations: Observation[]): ClusterResult 
 export function selectDisplayEvents(
   clusters: ConflictEvent[],
   activeConflictCountries: Set<string>,
+  corroborationOnly: Set<string> = new Set(),
 ): ConflictEvent[] {
   return clusters.filter((event) =>
     passesDisplayGate({
       category: event.category,
       countryFips: event.location.countryFips,
       activeConflictCountries,
-    }),
+    })
+    // A country the register lists mainly as a party abroad admits its domestic news; there,
+    // a single outlet's story is too often a protest coded as a clash.
+    && (!corroborationOnly.has(event.location.countryFips ?? '') || event.distinctPublishers >= 2),
   );
 }
 

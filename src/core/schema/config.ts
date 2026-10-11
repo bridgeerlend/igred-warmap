@@ -191,6 +191,8 @@ export const publishConfig = z.object({
   schemaVersion: z.literal(1),
   eventWindowDays: z.number().int().positive(),
   baselineRetainDays: z.number().int().positive(),
+  /** Countries on the register mainly as parties abroad: only corroborated incidents show. */
+  corroborationOnlyCountries: z.array(z.string().length(2)).default([]),
 });
 export type PublishConfig = z.infer<typeof publishConfig>;
 

@@ -164,6 +164,28 @@ function frameCrisis(c) {
 
 /* ---------- popup -------------------------------------------------------- */
 
+/**
+ * The article's own title, from its address: most outlets put a slug of the headline in the
+ * URL ("…/warplanes-strike-houthi-held-sanaa-amid-escalating-yemen-conflict"). It is the
+ * outlet's words, not ours, and it is labelled as coming from the link.
+ */
+export function titleFromUrl(url) {
+  let path;
+  try { path = new URL(url).pathname; } catch { return null; }
+  const segments = path.split('/').map((p) => decodeURIComponent(p).replace(/\.(s?html?|php|aspx?)$/i, ''));
+  const slug = segments
+    .filter((p) => /[a-z]/i.test(p) && (p.match(/[-_]/g) ?? []).length >= 3)
+    .sort((a, b) => b.length - a.length)[0];
+  if (!slug) return null;
+  const words = slug.replace(/[-_]+/g, ' ')
+    .replace(/\b[0-9a-f]{8,}\b/gi, '')      // hashes and ids
+    .replace(/^(\d{1,4}\s+){1,3}/, '')       // a leading date, "10 09 …"
+    .replace(/(\s+\d+)+$/, '')               // a trailing article number
+    .replace(/\s{2,}/g, ' ').trim();
+  if (words.split(' ').length < 4) return null;
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
 let popup = null;
 function showIncident(feature) {
   const t = prefs.t;
@@ -176,19 +198,51 @@ function showIncident(feature) {
   const repo = repoUrl();
   const template = JSON.stringify({ id: `evt_${inc.id(r)}`, note: '', source: '', verifiedAt: new Date().toISOString().slice(0, 10) }, null, 2);
   const verifyUrl = repo ? `${repo}/new/main?filename=${encodeURIComponent(`config/verified-events/evt_${inc.id(r)}.json`)}&value=${encodeURIComponent(template)}` : null;
+  const place = r[9].split(',')[0].trim();
+  const headline = r[10] ? titleFromUrl(r[10]) : null;
 
+  const sources = h('p.pop-src', null, h('span.meta', null, `${t.source} `),
+    r[10] ? h('a', { href: r[10], target: '_blank', rel: 'noopener' }, inc.publisher(r) || r[10]) : null);
+  const related = h('div.pop-related');
   const node = h('div.pop', null,
     h('p.meta', null, CATEGORY[prefs.lang][inc.category(r)] ?? ''),
     h('p.pop-place', null, r[9]),
     h('p.meta', null, [fmtShortDay(day), t.reportsN(r[8]), v ? t.verified : r[7] >= 2 ? t.corroborated(r[7]) : t.oneSource].join(' · ')),
+    headline ? h('p.pop-headline', null, h('a', { href: r[10], target: '_blank', rel: 'noopener' }, `“${headline}”`), h('span.meta', null, ` ${t.fromLink}`)) : null,
     v ? h('p.pop-note', null, v.note, ' ', h('a', { href: v.source, target: '_blank', rel: 'noopener' }, t.source)) : null,
-    r[10] ? h('p.pop-src', null, h('span.meta', null, `${t.source} `), h('a', { href: r[10], target: '_blank', rel: 'noopener' }, inc.publisher(r) || r[10])) : null,
+    sources,
+    related,
+    h('p.pop-more', null, h('a', { href: `https://news.google.com/search?q=${encodeURIComponent(`"${place}"`)}&hl=${prefs.lang === 'nb' ? 'no' : 'en-GB'}`, target: '_blank', rel: 'noopener' }, t.readMore(place))),
     h('p.pop-actions', null,
       crisis ? h('button.link-button', { type: 'button', onclick: () => { popup?.remove(); openCrisis(crisis.id); } }, t.openCrisis) : null,
       verifyUrl && !v ? h('a.pop-verify', { href: verifyUrl, target: '_blank', rel: 'noopener' }, t.verify) : null));
   popup?.remove();
-  popup = new window.maplibregl.Popup({ closeButton: true, maxWidth: '290px', offset: 10, className: 'igred-pop', focusAfterOpen: false })
+  popup = new window.maplibregl.Popup({ closeButton: true, maxWidth: '320px', offset: 10, className: 'igred-pop', focusAfterOpen: false })
     .setLngLat(feature.geometry.coordinates).setDOMContent(node).addTo(atlas.map);
+
+  // The crisis file holds every source behind its recent incidents and the week's reporting;
+  // with it the popup can list all the outlets and the stories that name the same place.
+  if (!crisis) return;
+  loadDetail(crisis.id).then((d) => {
+    const full = d.incidents.find((e) => e.id.replace(/^evt_/, '') === inc.id(r));
+    if (full && full.sources.length > 1) {
+      sources.replaceChildren(h('span.meta', null, `${t.sources} `),
+        ...full.sources.map((src, i) => [i ? ', ' : '', h('a', { href: src.url, target: '_blank', rel: 'noopener' }, src.publisher)]).flat());
+    }
+    const at = inc.at(r);
+    const needle = place.toLowerCase();
+    const near = (iso) => Math.abs(Date.parse(iso) - at) < 2.5 * DAY;
+    const stories = [
+      ...d.headlines.map((s) => ({ title: s.headline, url: s.url, publisher: s.publisher, at: s.lastSeenAt })),
+      ...d.news.map((a) => ({ title: a.title, url: a.url, publisher: a.publisher, at: a.publishedAt })),
+    ].filter((s) => s.title.toLowerCase().includes(needle) && near(s.at))
+      .filter((s, i, all) => all.findIndex((o) => o.url === s.url) === i)
+      .slice(0, 3);
+    if (stories.length) {
+      related.replaceChildren(h('p.meta', null, t.relatedReporting),
+        h('ul', null, stories.map((s) => h('li', null, h('a', { href: s.url, target: '_blank', rel: 'noopener' }, s.title), h('span.meta', null, ` ${s.publisher}`)))));
+    }
+  }).catch(() => {});
 }
 
 /* ---------- crisis and country ------------------------------------------ */

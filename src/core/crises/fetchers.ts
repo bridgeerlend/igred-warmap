@@ -298,6 +298,10 @@ export interface SubjectImage {
   thumb: string;
   file: string;
   page: string;
+  /** Width of the original file: small originals look poor at any size and are refused. */
+  width: number;
+  /** An official or formal portrait, by its file name — preferred when a story names several people. */
+  official: boolean;
 }
 
 /**
@@ -359,7 +363,7 @@ export async function subjectImage(name: string): Promise<SubjectImage | null | 
     const data = await fetchJson<{
       title?: string; type?: string; description?: string;
       content_urls?: { desktop?: { page?: string } };
-      originalimage?: { source?: string; width?: number };
+      originalimage?: { source?: string; width?: number; height?: number };
       thumbnail?: { source?: string };
     }>(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name.replace(/ /g, '_'))}`,
       { retries: 1, timeoutMs: 15_000, headers: { 'api-user-agent': USER_AGENT }, noRetryStatuses: [404] });
@@ -372,10 +376,16 @@ export async function subjectImage(name: string): Promise<SubjectImage | null | 
     const description = clean(data.description ?? '');
     const kind: SubjectImage['kind'] = PERSON.test(description) ? 'person' : PLACE.test(description) ? 'place' : 'other';
     const originalWidth = data.originalimage?.width ?? 0;
+    const fileName = decodeURIComponent(file).replace(/_/g, ' ');
+    // Pictures that read as a newspaper's would: a person or a place, a real resolution, and
+    // for a person one face rather than a meeting.
+    if (kind === 'other' || originalWidth < 640) return null;
+    if (kind === 'person' && /\b(with|and|meeting|meets|visit|visits|summit|delegation|group|talks|ceremony|crowd)\b/i.test(fileName)) return null;
+    const official = /official|portrait|presidential|headshot/i.test(fileName);
     const src = originalWidth > 0 && originalWidth <= 960 ? (data.originalimage?.source ?? thumb) : thumb.replace(/\/(\d+)px-/, '/960px-');
     // Wikimedia serves thumbnails only at its standard widths (250, 330, 500, 960…); 400 is refused.
     const small = originalWidth > 0 && originalWidth <= 330 ? (data.originalimage?.source ?? thumb) : thumb.replace(/\/(\d+)px-/, '/330px-');
-    return { title: data.title, description, kind, src: src.replace(/\?.*$/, ''), thumb: small.replace(/\?.*$/, ''), file: decodeURIComponent(file), page };
+    return { title: data.title, description, kind, src: src.replace(/\?.*$/, ''), thumb: small.replace(/\?.*$/, ''), file: decodeURIComponent(file), page, width: originalWidth, official };
   } catch (error) {
     // A 404 is a firm "no such page"; anything else is worth asking again another day.
     return /404/.test(String((error as Error).message)) ? null : undefined;

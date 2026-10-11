@@ -202,9 +202,10 @@ export async function ingest(): Promise<void> {
     })
     .filter((event, index, all) => all.findIndex((other) => other.id === event.id) === index);
 
+  const corroborationOnly = new Set(config.publish.corroborationOnlyCountries);
   const displayEvents = clustered
-    ? selectDisplayEvents([...clustered.clusters, ...buffer], knownConflictCountries)
-    : selectDisplayEvents(buffer, knownConflictCountries);
+    ? selectDisplayEvents([...clustered.clusters, ...buffer], knownConflictCountries, corroborationOnly)
+    : selectDisplayEvents(buffer, knownConflictCountries, corroborationOnly);
 
   /*
    * The retained window is re-gated every run, not just appended to. Without this an incident
@@ -213,7 +214,7 @@ export async function ingest(): Promise<void> {
    * has to reflect the register as it is now, not as it was when each incident arrived.
    */
   const events = mergeEventWindow(
-    selectDisplayEvents(previousEvents, knownConflictCountries),
+    selectDisplayEvents(previousEvents, knownConflictCountries, corroborationOnly),
     displayEvents,
     config.publish.eventWindowDays,
     new Date(now),
