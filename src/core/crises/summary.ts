@@ -39,7 +39,8 @@ export interface SummarySettings {
 
 export interface Summary {
   en: string;
-  nb: string;
+  /** Null when the Norwegian step failed or was refused: the page then shows the English. */
+  nb: string | null;
   model: string;
   writtenAt: string;
   sources: { title: string; url: string; publisher: string }[];
@@ -67,7 +68,7 @@ export interface SummaryInput {
 }
 
 /** Bumped when the brief to the model changes, so every crisis is rewritten once. */
-export const PROMPT_VERSION = 2;
+export const PROMPT_VERSION = 3;
 
 /** Norwegian writes 1 200 and 4,5; the guard compares digits, so thousands spaces are closed up. */
 export function normaliseNumbers(text: string): string {
@@ -92,36 +93,131 @@ function sentences(text: string): number {
   return text.split(/(?<=[.!?…])\s+(?=[\p{Lu}«“"])/u).filter((s) => s.trim().length > 0).length;
 }
 
-/** The whole gate, both languages: the guard's figures rule, then length and shape. */
+/* ---------- numbers written as words ---------------------------------- */
+
+type NumberMention = { kind: 'exact'; value: number; word: string } | { kind: 'range'; min: number; max: number; family: string; word: string };
+
+const EXACT_EN: Record<string, number> = {
+  two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12,
+  thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20,
+  thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90,
+};
+const EXACT_NB: Record<string, number> = {
+  to: 2, tre: 3, fire: 4, fem: 5, seks: 6, sju: 7, syv: 7, åtte: 8, ni: 9, ti: 10, elleve: 11, tolv: 12,
+  tretten: 13, fjorten: 14, femten: 15, seksten: 16, sytten: 17, atten: 18, nitten: 19, tjue: 20,
+  tretti: 30, førti: 40, femti: 50, seksti: 60, sytti: 70, åtti: 80, nitti: 90,
+};
+/** Vague quantities, longest first, each with the range of figures it stands for. */
+const VAGUE: [RegExp, number, number, string][] = [
+  [/\bhundreds of thousands\b|\bhundretusenvis\b/gi, 200_000, 999_999, 'hundreds-of-thousands'],
+  [/\btens of thousands\b|\btitusenvis\b/gi, 20_000, 99_999, 'tens-of-thousands'],
+  [/\bthousands\b|\btusenvis\b/gi, 2_000, 9_999_999, 'thousands'],
+  [/\bhundreds\b|\bhundrevis\b/gi, 200, 999, 'hundreds'],
+  [/\bdozens\b|\bdusinvis\b|\btitalls\b/gi, 24, 99, 'dozens'],
+];
+
+/** Every quantity a text states in words; "a dozen" and "et dusin" are twelve. */
+export function numberWords(text: string, lang: 'en' | 'nb'): NumberMention[] {
+  let rest = text.toLowerCase();
+  const out: NumberMention[] = [];
+  for (const [re, min, max, family] of VAGUE) {
+    rest = rest.replace(re, (word) => { out.push({ kind: 'range', min, max, family, word }); return ' '; });
+  }
+  rest = rest.replace(/\b(a|one|et|ett) (dozen|dusin)\b/g, (word) => { out.push({ kind: 'exact', value: 12, word }); return ' '; });
+  const table = lang === 'en' ? EXACT_EN : EXACT_NB;
+  for (const m of rest.matchAll(/[\p{L}]+(?:-[\p{L}]+)?/gu)) {
+    const w = m[0];
+    // "twenty-five", "thirty-two"
+    const [tens, unit] = w.split('-');
+    if (unit && table[tens!] && table[unit] && table[unit]! < 10) out.push({ kind: 'exact', value: table[tens!]! + table[unit]!, word: w });
+    else if (table[w] !== undefined) out.push({ kind: 'exact', value: table[w]!, word: w });
+  }
+  return out;
+}
+
+function digitsIn(text: string): number[] {
+  return [...normaliseNumbers(text).matchAll(/\d[\d.,]*/g)]
+    .map((m) => Number(m[0].replace(/[.,]+$/, '').replace(/,/g, '')))
+    .filter((n) => Number.isFinite(n));
+}
+
+/** A number written as a word must be in the sources, as a word or as a figure of that size. */
+function wordsSupported(text: string, sourceText: string): { ok: boolean; reason?: string } {
+  const figures = digitsIn(sourceText);
+  const sourceWords = [...numberWords(sourceText, 'en'), ...numberWords(sourceText, 'nb')];
+  for (const m of numberWords(text, 'en')) {
+    const ok = m.kind === 'exact'
+      ? figures.includes(m.value) || sourceWords.some((w) => w.kind === 'exact' && w.value === m.value)
+      : figures.some((n) => n >= m.min && n <= m.max)
+        || sourceWords.some((w) => (w.kind === 'range' && w.family === m.family) || (w.kind === 'exact' && w.value >= m.min && w.value <= m.max));
+    if (!ok) return { ok: false, reason: `"${m.word}" is not in the sources` };
+  }
+  return { ok: true };
+}
+
+/** What a text says in numbers, as a comparable set: figures, exact words, vague quantities. */
+function numberSignature(text: string, lang: 'en' | 'nb'): string[] {
+  const sig = new Set<string>(digitsIn(text).map((n) => `n:${n}`));
+  for (const m of numberWords(text, lang)) sig.add(m.kind === 'exact' ? `n:${m.value}` : `r:${m.family}`);
+  return [...sig].sort();
+}
+
+/** The status line's own figures, when they appear as counts of incidents, per week, or as a percentage. */
+function repeatsStatus(text: string, avoid: number[]): number | undefined {
+  const plain = normaliseNumbers(text).replace(/(\d),(?=\d{3}\b)/g, '$1');
+  return avoid.find((v) => v >= 2 && (
+    new RegExp(`\\b${v}\\s?(%|percent|per cent|prosent)`, 'i').test(plain)
+    || new RegExp(`\\b${v}\\b(?:\\s+\\S+){0,3}?\\s+(incidents?|hendelser?|weeks?|uke[nr]?)\\b`, 'i').test(plain)
+    || new RegExp(`\\b(incidents?|hendelser?)\\b(?:\\s+\\S+){0,3}?\\s+${v}\\b`, 'i').test(plain)));
+}
+
+const METHOD = /\b(outlets?|medier|several sources|multiple sources|flere kilder|reported by|meldt av|incident monitor|hendelsesmonitor)\b/i;
+
+/** The English text: every figure and every number in words from the sources, and the house rules. */
+export function checkEnglish(en: string, sourceText: string, maxWords: number, avoid: number[] = []): { ok: boolean; reason?: string } {
+  const source = normaliseNumbers(sourceText);
+  const plain = normaliseNumbers(en);
+  const guard = guardDraft(plain, source, maxWords);
+  if (!guard.ok) return guard;
+  const words = wordsSupported(en, sourceText);
+  if (!words.ok) return words;
+  const n = sentences(en);
+  if (n < 2 || n > 6) return { ok: false, reason: `${n} sentences` };
+  if (/INSUFFICIENT|as an ai|language model/i.test(en)) return { ok: false, reason: 'not a summary' };
+  const repeated = repeatsStatus(en, avoid);
+  if (repeated !== undefined) return { ok: false, reason: `repeats the status line's figure ${repeated}` };
+  // One figure with its source, never a span like "40-41"; a span of years is fine.
+  const span = /\b(\d{1,3}(?:[.,]\d+)?)\s?[-–]\s?(\d{1,3}(?:[.,]\d+)?)\b(?!\s?(?:km|kilomet))/.exec(plain);
+  if (span) return { ok: false, reason: `a range of figures (${span[0]})` };
+  if (METHOD.test(en)) return { ok: false, reason: 'talks about method, not events' };
+  for (const sentence of en.split(/(?<=[.!?])\s+/)) {
+    if (/UCDP|World Bank/i.test(sentence) && /\d/.test(sentence) && !/\b(19|20)\d{2}\b/.test(sentence)) {
+      return { ok: false, reason: 'a UCDP or World Bank figure without its year' };
+    }
+  }
+  return { ok: true };
+}
+
+/** The Norwegian text: exactly the English text's numbers, and the same house rules. */
+export function checkNorwegian(nb: string, en: string, maxWords: number): { ok: boolean; reason?: string } {
+  if (!nb.trim() || /INSUFFICIENT/i.test(nb)) return { ok: false, reason: 'empty' };
+  if (nb.split(/\s+/).length > maxWords * 1.5) return { ok: false, reason: 'too long' };
+  if (/https?:\/\/|www\./i.test(nb)) return { ok: false, reason: 'contains a link' };
+  const a = numberSignature(en, 'en').join(' ');
+  const b = numberSignature(nb, 'nb').join(' ');
+  if (a !== b) return { ok: false, reason: `numbers differ from the English (${b || 'none'} vs ${a || 'none'})` };
+  if (METHOD.test(nb)) return { ok: false, reason: 'talks about method, not events' };
+  return { ok: true };
+}
+
+/** Both languages, for callers that have both at once. */
 export function checkSummary(
   en: string, nb: string, sourceText: string, maxWords: number, avoid: number[] = [],
 ): { ok: boolean; reason?: string } {
-  const source = normaliseNumbers(sourceText);
-  for (const [lang, text] of [['en', en], ['nb', nb]] as const) {
-    const plain = normaliseNumbers(text);
-    const guard = guardDraft(plain, source, maxWords);
-    if (!guard.ok) return { ok: false, reason: `${lang}: ${guard.reason}` };
-    const n = sentences(text);
-    if (n < 2 || n > 6) return { ok: false, reason: `${lang}: ${n} sentences` };
-    if (/INSUFFICIENT|as an ai|language model/i.test(text)) return { ok: false, reason: `${lang}: not a summary` };
-    // The status line above already gives the counts and the change; the summary explains.
-    const figures = new Set([...plain.matchAll(/\d[\d.,]*/g)].map((m) => m[0].replace(/[.,]+$/, '').replace(/,/g, '')));
-    const repeated = avoid.find((v) => v >= 2 && figures.has(String(v)));
-    if (repeated !== undefined) return { ok: false, reason: `${lang}: repeats the status line's figure ${repeated}` };
-    // One figure with its source, never a span like "40-41"; a span of years is fine.
-    const span = /\b(\d{1,3}(?:[.,]\d+)?)\s?[-–]\s?(\d{1,3}(?:[.,]\d+)?)\b(?!\s?(?:km|kilomet))/.exec(plain);
-    if (span) return { ok: false, reason: `${lang}: a range of figures (${span[0]})` };
-    // No sentences about how the monitor works.
-    if (/\b(outlets?|medier|several sources|multiple sources|flere kilder|reported by|meldt av|incident monitor|hendelsesmonitor)\b/i.test(text)) {
-      return { ok: false, reason: `${lang}: talks about method, not events` };
-    }
-    // A UCDP or World Bank figure always says which year it is for.
-    for (const sentence of text.split(/(?<=[.!?])\s+/)) {
-      if (/UCDP|World Bank|Verdensbanken/i.test(sentence) && /\d/.test(sentence) && !/\b(19|20)\d{2}\b/.test(sentence)) {
-        return { ok: false, reason: `${lang}: a UCDP or World Bank figure without its year` };
-      }
-    }
-  }
+  const e = checkEnglish(en, sourceText, maxWords, avoid);
+  if (!e.ok) return { ok: false, reason: `en: ${e.reason}` };
+  const n = checkNorwegian(nb, en, maxWords);
+  if (!n.ok) return { ok: false, reason: `nb: ${n.reason}` };
   return { ok: true };
 }
 
@@ -143,9 +239,27 @@ function promptFor(input: SummaryInput, maxWords: number): string {
     '- Give one figure and name who reported it; never a range such as "40-41".',
     '- Write about events, not about reporting: no sentences about outlets, sources or how many reported something.',
     '- Do not speculate. Do not name the outlets in the headlines.',
-    'Then write the same text in natural Norwegian (bokmål), not a word-for-word translation.',
-    'If the material is too thin, reply {"en":"INSUFFICIENT","nb":"INSUFFICIENT"}.',
-    'Reply with JSON only: {"en": "...", "nb": "..."}',
+    'If the material is too thin, reply {"en":"INSUFFICIENT"}.',
+    'Reply with JSON only: {"en": "..."}',
+  ].join('\n');
+}
+
+/**
+ * The Norwegian is translated from the approved English in a call of its own, so the model
+ * can give the language its full attention and the guard can check it against one text.
+ */
+function translationPrompt(en: string): string {
+  return [
+    'Translate this English text into Norwegian bokmål for a sober news analysis.',
+    '',
+    en,
+    '',
+    'Rules:',
+    '- Natural, plain Norwegian as a Norwegian newspaper would write it; no anglicisms and no word-for-word renderings (write "droneangrep", not "dronstrike"; "glidebomber", not "glide-bombe").',
+    '- Use the established Norwegian form of place names where one exists (Jemen, Etiopia, Zaporizjzja, Kharkiv, Gaza, Khartoum, Darfur, Kordofan).',
+    '- Keep every number exactly as in the English: the same figures, and a number written as a word stays a word. Write thousands with a space (75 767).',
+    '- Add nothing and leave nothing out.',
+    'Reply with JSON only: {"nb": "..."}',
   ].join('\n');
 }
 
@@ -193,13 +307,12 @@ async function callProvider(provider: Provider, key: string, prompt: string, tim
   }
 }
 
-function parseReply(text: string): { en: string; nb: string } | undefined {
+function parseReply(text: string, key: 'en' | 'nb'): string | undefined {
   const json = /\{[\s\S]*\}/.exec(text)?.[0];
   if (!json) return undefined;
   try {
-    const parsed = JSON.parse(json) as { en?: unknown; nb?: unknown };
-    if (typeof parsed.en !== 'string' || typeof parsed.nb !== 'string') return undefined;
-    return { en: parsed.en.replace(/\s+/g, ' ').trim(), nb: parsed.nb.replace(/\s+/g, ' ').trim() };
+    const value = (JSON.parse(json) as Record<string, unknown>)[key];
+    return typeof value === 'string' ? value.replace(/\s+/g, ' ').trim() : undefined;
   } catch {
     return undefined;
   }
@@ -225,6 +338,33 @@ export async function runSummaries(
   const exhausted = new Set<string>();
   const lastCall = new Map<string, number>();
 
+  /**
+   * One question to the first provider still available. A provider that is out of quota or
+   * no longer has the model hands over to the next; a short per-minute limit is waited out.
+   */
+  async function ask(prompt: string, prefer?: Provider): Promise<{ reply: Reply; provider: Provider } | undefined> {
+    const order = prefer ? [prefer, ...providers.filter((p) => p !== prefer)] : providers;
+    for (const provider of order) {
+      if (exhausted.has(provider.id)) continue;
+      const wait = (lastCall.get(provider.id) ?? -Infinity) + (provider.minIntervalMs ?? 0) - Date.now();
+      if (wait > 0) await sleep(wait);
+      let reply = await callProvider(provider, env[provider.keyEnv]!, prompt, settings.timeoutMs);
+      lastCall.set(provider.id, Date.now());
+      if ('failure' in reply && reply.retryAfterMs !== undefined && reply.retryAfterMs <= 90_000) {
+        await sleep(reply.retryAfterMs);
+        reply = await callProvider(provider, env[provider.keyEnv]!, prompt, settings.timeoutMs);
+        lastCall.set(provider.id, Date.now());
+      }
+      if ('failure' in reply && reply.quota) {
+        exhausted.add(provider.id);
+        log.push(`summaries: ${provider.id} unavailable this run (${reply.failure})`);
+        continue;
+      }
+      return { reply, provider };
+    }
+    return undefined;
+  }
+
   let attempts = 0;
   for (const input of inputs) {
     if (attempts >= settings.maxPerRun) break;
@@ -236,32 +376,11 @@ export async function runSummaries(
     if (state.inputHash === hash && state.approved && !rewrite) continue;
     if (since < settings.minHoursBetween && !rewrite) continue;
 
-    const prompt = promptFor(input, settings.maxWords);
-    let reply: Reply | undefined;
-    let provider: Provider | undefined;
-    // A provider that is out of quota or no longer has the model hands over to the next one
-    // for this same crisis, rather than costing the crisis its turn.
-    for (provider of providers) {
-      if (exhausted.has(provider.id)) continue;
-      const wait = (lastCall.get(provider.id) ?? -Infinity) + (provider.minIntervalMs ?? 0) - Date.now();
-      if (wait > 0) await sleep(wait);
-      reply = await callProvider(provider, env[provider.keyEnv]!, prompt, settings.timeoutMs);
-      lastCall.set(provider.id, Date.now());
-      // A per-minute cap says how long to wait; a short wait is worth it, a long one is not.
-      if ('failure' in reply && reply.retryAfterMs !== undefined && reply.retryAfterMs <= 90_000) {
-        await sleep(reply.retryAfterMs);
-        reply = await callProvider(provider, env[provider.keyEnv]!, prompt, settings.timeoutMs);
-        lastCall.set(provider.id, Date.now());
-      }
-      if ('failure' in reply && reply.quota) {
-        exhausted.add(provider.id);
-        log.push(`summaries: ${provider.id} unavailable this run (${reply.failure})`);
-        continue;
-      }
-      break;
-    }
-    if (!reply || !provider || ('failure' in reply && reply.quota)) { log.push('summaries: every provider is out of free quota this run'); break; }
+    // 1. The English, from the sources.
+    const first = await ask(promptFor(input, settings.maxWords));
+    if (!first) { log.push('summaries: every provider is out of free quota this run'); break; }
     attempts += 1;
+    const { reply, provider } = first;
     if ('failure' in reply) {
       // A timeout or a server error: try this crisis again next run, not in three hours.
       state.lastOutcome = `${provider.id}: ${reply.failure}`;
@@ -272,17 +391,29 @@ export async function runSummaries(
     state.attemptedAt = new Date(now).toISOString();
     state.inputHash = hash;
     state.promptVersion = PROMPT_VERSION;
-    const parsed = parseReply(reply.text);
-    if (!parsed) { state.lastOutcome = `${provider.id}: unreadable reply`; log.push(`${input.id}: ${state.lastOutcome}`); continue; }
-    const check = checkSummary(parsed.en, parsed.nb, sourceTextOf(input), settings.maxWords, input.avoid ?? []);
-    if (!check.ok) { state.lastOutcome = `rejected — ${check.reason}`; log.push(`${input.id}: ${state.lastOutcome}`); continue; }
+    const en = parseReply(reply.text, 'en');
+    if (!en) { state.lastOutcome = `${provider.id}: unreadable reply`; log.push(`${input.id}: ${state.lastOutcome}`); continue; }
+    const check = checkEnglish(en, sourceTextOf(input), settings.maxWords, input.avoid ?? []);
+    if (!check.ok) { state.lastOutcome = `rejected — en: ${check.reason}`; log.push(`${input.id}: ${state.lastOutcome}`); continue; }
+
+    // 2. The Norwegian, translated from the approved English and held to the same numbers.
+    let nb: string | null = null;
+    const second = await ask(translationPrompt(en), provider);
+    if (second && !('failure' in second.reply)) {
+      const text = parseReply(second.reply.text, 'nb');
+      const nbCheck = text ? checkNorwegian(text, en, settings.maxWords) : { ok: false, reason: 'unreadable reply' };
+      if (text && nbCheck.ok) nb = text;
+      else log.push(`${input.id}: Norwegian refused (${nbCheck.reason}); the English stands alone`);
+    } else {
+      log.push(`${input.id}: Norwegian not written (${second && 'failure' in second.reply ? second.reply.failure : 'no provider'}); the English stands alone`);
+    }
 
     state.approved = {
-      en: parsed.en, nb: parsed.nb, model: `${provider.id}/${provider.model}`,
+      en, nb, model: `${provider.id}/${provider.model}`,
       writtenAt: new Date(now).toISOString(), sources: input.headlines,
     };
-    state.lastOutcome = 'approved';
-    log.push(`${input.id}: summary approved (${provider.id})`);
+    state.lastOutcome = nb ? 'approved' : 'approved, English only';
+    log.push(`${input.id}: summary ${state.lastOutcome} (${provider.id})`);
   }
   return log;
 }

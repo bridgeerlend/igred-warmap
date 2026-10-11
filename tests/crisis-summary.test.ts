@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { checkSummary, currentSummary, normaliseNumbers, runSummaries, type SummarySettings, type SummaryState } from '../src/core/crises/summary.js';
+import { checkEnglish, checkNorwegian, checkSummary, currentSummary, normaliseNumbers, runSummaries, type SummarySettings, type SummaryState } from '../src/core/crises/summary.js';
 
 const input = {
   id: 'sudan',
@@ -38,7 +38,7 @@ describe('the crisis summary guard', () => {
     const source = [...input.facts, ...input.headlines.map((h) => h.title)].join('\n');
     const result = checkSummary(good.en, good.nb.replace('12 mennesker', '14 mennesker'), source, 110);
     expect(result.ok).toBe(false);
-    expect(result.reason).toMatch(/^nb: figure "14"/);
+    expect(result.reason).toMatch(/^nb: numbers differ from the English/);
   });
 
   it('refuses what the status line already says, ranges, method talk and undated UCDP figures', () => {
@@ -50,7 +50,39 @@ describe('the crisis summary guard', () => {
     expect(checkSummary(ok.replace('41 people', '40-41 people'), nb, `${source} 40`, 110).reason).toMatch(/range of figures/);
     expect(checkSummary(`${ok} The strike was reported by several outlets.`, nb, source, 110).reason).toMatch(/method/);
     expect(checkSummary(`${ok} UCDP counted 4,680 battle-related deaths.`, nb, source, 110).reason).toMatch(/without its year/);
-    expect(checkSummary(`${ok} UCDP counted 4,680 battle-related deaths in 2024.`, nb, source, 110)).toEqual({ ok: true });
+    expect(checkSummary(`${ok} UCDP counted 4,680 battle-related deaths in 2024.`, `${nb} UCDP registrerte 4 680 kamprelaterte dødsfall i 2024.`, source, 110)).toEqual({ ok: true });
+    // A status figure as a count of something else, here the dead, is fine when the sources have it.
+    expect(checkSummary(ok.replace('killed 41 people', 'killed 27 people'), nb.replace('41', '27'), `${source}\n27 killed in El Fasher`, 110, [27]).ok).toBe(true);
+    expect(checkSummary(`${ok} Incidents rose by 23% this week.`, nb, `${source} 23`, 110, [23]).reason).toMatch(/repeats the status line's figure 23/);
+  });
+
+  it('holds numbers written as words to the sources, by size', () => {
+    const source = 'Drone strike kills 41 near border\nTwelve aid workers detained\nThousands flee El Fasher';
+    const base = 'Fighting continues in Darfur. Aid deliveries have stopped.';
+    const nbBase = 'Kampene fortsetter i Darfur. Nødhjelpen har stanset.';
+    expect(checkEnglish(`${base} Dozens were killed near the border.`, source, 110).ok).toBe(true);           // 41 is in the dozens
+    expect(checkEnglish(`${base} Twelve aid workers were detained.`, source, 110).ok).toBe(true);
+    expect(checkEnglish(`${base} Thousands have fled El Fasher.`, source, 110).ok).toBe(true);
+    expect(checkEnglish(`${base} Hundreds were wounded.`, source, 110).reason).toMatch(/"hundreds" is not in the sources/);
+    expect(checkEnglish(`${base} Fifteen soldiers died.`, source, 110).reason).toMatch(/"fifteen" is not in the sources/);
+    // The Norwegian must say the same numbers, in its own words.
+    expect(checkNorwegian(`${nbBase} Tolv hjelpearbeidere ble arrestert.`, `${base} Twelve aid workers were detained.`, 110).ok).toBe(true);
+    expect(checkNorwegian(`${nbBase} Dusinvis ble drept.`, `${base} Dozens were killed.`, 110).ok).toBe(true);
+    expect(checkNorwegian(`${nbBase} Hundrevis ble drept.`, `${base} Dozens were killed.`, 110).reason).toMatch(/numbers differ/);
+  });
+
+  it('shows the English with a note when the Norwegian is refused, rather than poor Norwegian', async () => {
+    let call = 0;
+    vi.stubGlobal('fetch', vi.fn(async () => {
+      call += 1;
+      const content = call === 1 ? JSON.stringify({ en: good.en }) : JSON.stringify({ nb: good.nb.replace('12', '14') });
+      return new Response(JSON.stringify({ choices: [{ message: { content } }] }), { status: 200 });
+    }));
+    const states: Record<string, SummaryState> = {};
+    const log = await runSummaries([input], states, settings, Date.now(), { TEST_KEY: 'k' });
+    expect(states.sudan!.approved!.en).toBe(good.en);
+    expect(states.sudan!.approved!.nb).toBeNull();
+    expect(log.join('\n')).toMatch(/Norwegian refused/);
   });
 
   it('reads Norwegian thousands spaces as the same figure', () => {
@@ -112,7 +144,8 @@ describe('the crisis summary run', () => {
       : new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(good) } }] }), { status: 200 }))));
     const states: Record<string, SummaryState> = {};
     await runSummaries([input], states, settings, Date.now(), { TEST_KEY: 'k' });
-    expect(calls).toBe(2);
+    // The English twice (the limit, then the answer), then the Norwegian.
+    expect(calls).toBe(3);
     expect(states.sudan!.approved).not.toBeNull();
   });
 

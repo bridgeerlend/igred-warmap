@@ -106,7 +106,8 @@ export const crisisDetail = z.object({
   summary: z
     .object({
       en: z.string(),
-      nb: z.string(),
+      /** Null when the Norwegian step failed or was refused; the page shows the English with a note. */
+      nb: z.string().nullable(),
       model: z.string(),
       writtenAt: iso,
       sources: z.array(z.object({ title: z.string(), url: z.url(), publisher: z.string() })).min(1),

@@ -20,7 +20,8 @@ concurrency:
 jobs:
   crises:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # Two model calls per crisis, paced for the free tier, on top of the news fetches.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:

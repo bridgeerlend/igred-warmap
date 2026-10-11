@@ -90,8 +90,11 @@ function overview(d) {
   const out = [];
 
   if (d.summary) {
+    // No Norwegian that passed the guard: the English, said plainly, rather than poor Norwegian.
+    const englishOnly = nb && !d.summary.nb;
     out.push(section(null,
-      h('div.cv-summary', null, ...(nb ? d.summary.nb : d.summary.en).split(/(?<=[.!?])\s+(?=\S)/).reduce((paras, s, i, all) => {
+      englishOnly ? h('p.meta.cv-english-only', null, t.englishOnly) : null,
+      h('div.cv-summary', englishOnly ? { lang: 'en' } : null, ...(nb && d.summary.nb ? d.summary.nb : d.summary.en).split(/(?<=[.!?])\s+(?=\S)/).reduce((paras, s, i, all) => {
         // Two short paragraphs read better than one block of five sentences.
         const cut = Math.ceil(all.length / 2);
         (paras[i < cut ? 0 : 1] ??= []).push(s);

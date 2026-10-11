@@ -201,8 +201,9 @@ describe('6 — no code path lets a model set a figure, an actor or control', ()
 
   it('the crisis summary is prose only, guarded in both languages, and never a field the map counts', () => {
     const summary = read('src/core/crises/summary.ts');
-    expect(summary).toMatch(/const plain = normaliseNumbers\(text\);\s*const guard = guardDraft\(plain, source, maxWords\);/);
-    expect(summary).toMatch(/\['en', en\], \['nb', nb\]/);
+    expect(summary).toMatch(/const plain = normaliseNumbers\(en\);\s*const guard = guardDraft\(plain, source, maxWords\);/);
+    expect(summary).toMatch(/export function checkNorwegian\(/);
+    expect(summary).toMatch(/numbers differ from the English/);
     expect(summary).not.toMatch(/intensity|severity|countryFips|confidence|writeArtifact|writeFileSync/);
     // The builder hands it only headlines it already links, and stores only its prose.
     const build = read('src/core/crises/build.ts');
@@ -863,6 +864,9 @@ describe('the crisis and country views', () => {
     expect(view).toMatch(/sourceLinks\(d\.summary\.sources/);
     // No summary: the status line stands alone.
     expect(view).toMatch(/if \(d\.summary\) \{/);
+    // Norwegian refused or missing: the English, with a note, never poor Norwegian.
+    expect(view).toMatch(/const englishOnly = nb && !d\.summary\.nb;/);
+    expect(read('site/common.js')).toMatch(/englishOnly: 'Kun på engelsk'/);
   });
 
   it('link stories to their Brief edition, and the Brief links back to the crisis', () => {
