@@ -28,6 +28,7 @@ const state = {
   features: [],        // one GeoJSON feature per incident, built once
   details: new Map(),
   playing: null,
+  types: null,         // chosen incident types, or null for all
 };
 
 const narrow = () => matchMedia('(max-width: 899px)').matches;
@@ -45,6 +46,8 @@ function readHash() {
   state.crisis = q.get('crisis');
   state.country = state.crisis ? null : q.get('country');
   state.tab = q.get('tab');
+  const types = q.get('types');
+  state.types = types ? types.split(',').filter(Boolean) : null;
   const v = q.get('v')?.split(',').map(Number);
   return v && v.length === 3 && v.every(Number.isFinite) ? { center: [v[0], v[1]], zoom: v[2] } : null;
 }
@@ -59,11 +62,13 @@ function writeHash() {
     if (state.asOf && state.inc && state.asOf !== state.inc.today) q.set('t', state.asOf);
     if (state.w !== 7) q.set('w', String(state.w));
     if (state.tab && state.tab !== 'overview' && state.crisis) q.set('tab', state.tab);
+    if (state.types) q.set('types', state.types.join(','));
     if (atlas) {
       const c = atlas.map.getCenter();
       q.set('v', `${c.lng.toFixed(2)},${c.lat.toFixed(2)},${atlas.map.getZoom().toFixed(2)}`);
     }
-    const next = q.toString();
+    // Commas left readable, so a shared link says what it shows: types=air,artillery.
+    const next = q.toString().replace(/%2C/gi, ',');
     if (next !== location.hash.slice(1)) history.replaceState(null, '', next ? `#${next}` : location.pathname);
   }, 150);
 }
@@ -139,7 +144,7 @@ function paintMap(ranked) {
     const t = rows[i][0] * 60000;
     if (t >= to) continue;
     if (t < from) break;
-    feats.push(state.features[i]);
+    if (state.inc.passes(rows[i])) feats.push(state.features[i]);
   }
   atlas.setEvents(feats);
   const max = Math.max(1, ...ranked.map((x) => x.score || x.n));
@@ -444,6 +449,49 @@ function stopPlay() {
 
 /* ---------- chrome ------------------------------------------------------- */
 
+/* ---------- the filter -------------------------------------------------- */
+
+/** Incident types with their count in the chosen window, all types counted whatever is ticked. */
+function renderFilter() {
+  const t = prefs.t;
+  const inc = state.inc;
+  // Data from before incident types existed: no filter rather than a broken one.
+  $('mapfilter').hidden = !inc.p.types;
+  if (!inc.p.types) return;
+  const [from, to] = inc.range(state.w, state.asOf);
+  const counts = new Map(inc.p.types.map((k) => [k, 0]));
+  for (const r of inc.rows) {
+    const at = r[0] * 60000;
+    if (at >= from && at < to) counts.set(inc.p.types[r[14]], (counts.get(inc.p.types[r[14]]) ?? 0) + 1);
+  }
+  const chosen = new Set(state.types ?? inc.p.types);
+  $('mapfilter-toggle').textContent = t.filter;
+  $('mapfilter-types').replaceChildren(...inc.p.types.map((k) => h('li', null, h('label.mapfilter-item', null,
+    h('input', { type: 'checkbox', checked: chosen.has(k), onchange: (ev) => {
+      if (ev.target.checked) chosen.add(k); else chosen.delete(k);
+      state.types = chosen.size === inc.p.types.length ? null : [...inc.p.types].filter((x) => chosen.has(x));
+      applyTypes();
+    } }),
+    h('span.mapfilter-name', null, t.types[k] ?? k),
+    h('span.num.meta', null, fmtNum(counts.get(k) ?? 0))))));
+}
+
+function applyTypes() {
+  state.inc.setTypes(state.types);
+  refresh({ keepSearch: true });
+}
+
+function setupFilter() {
+  const toggle = $('mapfilter-toggle');
+  // Open on a wide screen, folded behind its button on a phone.
+  const setOpen = (open) => {
+    $('mapfilter').classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+  };
+  setOpen(!narrow());
+  toggle.addEventListener('click', () => setOpen(!$('mapfilter').classList.contains('is-open')));
+}
+
 function renderLegend() {
   const t = prefs.t;
   $('legend').innerHTML =
@@ -492,6 +540,7 @@ function refresh({ keepSearch = false } = {}) {
   renderStandfirst(ranked);
   renderList(ranked);
   renderTimeline();
+  renderFilter();
   paintMap(ranked);
   if (!$('detail').hidden) rerenderDetail();
   checkFreshness();
@@ -511,6 +560,7 @@ function watch() {
       if (next.generatedAt === state.inc.generatedAt) return;
       const known = new Set(state.inc.rows.map((r) => r[13]));
       state.inc = new Incidents(next);
+      state.inc.setTypes(state.types);
       buildFeatures();
       refresh({ keepSearch: true });
       atlas?.pulse(next.events.filter((r) => !known.has(r[13])).slice(0, 60).map((r) => [r[1] / 100, r[2] / 100]));
@@ -557,6 +607,8 @@ async function start() {
     return;
   }
   if (state.asOf && !state.inc.days.includes(state.asOf)) state.asOf = null;
+  state.inc.setTypes(state.types);
+  setupFilter();
   buildFeatures();
   refresh();
 
@@ -595,6 +647,7 @@ async function start() {
   window.addEventListener('hashchange', () => {
     const before = location.hash;
     const v = readHash();
+    state.inc.setTypes(state.types);
     if (state.crisis) openCrisis(state.crisis, { frame: !v });
     else if (state.country) openCountry(state.country, { frame: !v });
     else if (!$('detail').hidden) closeDetail();

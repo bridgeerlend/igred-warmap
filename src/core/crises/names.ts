@@ -77,3 +77,24 @@ export function joinNames(names: string[], lang: 'en' | 'nb'): string {
   if (names.length <= 1) return names[0] ?? '';
   return `${names.slice(0, -1).join(', ')} ${and} ${names[names.length - 1]}`;
 }
+
+/**
+ * Incident types for the map's filter, from GDELT's CAMEO event codes. The most precise code
+ * wins: 1952 (drone strike) is an air strike before it is any use of force (19).
+ */
+export const INCIDENT_TYPES = ['air', 'artillery', 'clash', 'bomb', 'civilians', 'killings', 'other'] as const;
+export type IncidentType = (typeof INCIDENT_TYPES)[number];
+
+const TYPE_BY_CODE: [RegExp, IncidentType][] = [
+  [/^195\d?$/, 'air'],            // aerial weapons, precision-guided and remotely piloted (drones)
+  [/^194$/, 'artillery'],          // artillery and tanks
+  [/^183\d?$/, 'bomb'],           // suicide, vehicle, roadside and other bombings
+  [/^(181|185|186|1823)$/, 'killings'], // abduction and hostage-taking, assassination, killing by assault
+  [/^(175|182|1821|1822|184|20\d)$/, 'civilians'], // violent repression, assault, torture, human shields, mass violence
+  [/^(190|192|193)$/, 'clash'],    // conventional military force, occupation, small arms and light weapons
+];
+
+export function incidentType(cameoCode: string | undefined): IncidentType {
+  const code = String(cameoCode ?? '');
+  return TYPE_BY_CODE.find(([re]) => re.test(code))?.[1] ?? 'other';
+}

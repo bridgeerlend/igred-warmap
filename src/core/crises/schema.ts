@@ -178,6 +178,7 @@ export const crisisDetail = z.object({
       reports: z.number().int(),
       outlets: z.number().int(),
       id: z.string(),
+      type: z.string(),
       sources: z.array(z.object({ url: z.url(), publisher: z.string() })),
     }),
   ),
@@ -230,7 +231,7 @@ export const crisisIndex = z.object({
  */
 export const MAP_EVENT_FIELDS = [
   'minutesSinceEpoch', 'lon*100', 'lat*100', 'category', 'intensity', 'severity', 'crisis(-1)',
-  'outlets', 'reports', 'place', 'url', 'publisher', 'country', 'id',
+  'outlets', 'reports', 'place', 'url', 'publisher', 'country', 'id', 'type',
 ] as const;
 
 export const mapEvents = z.object({
@@ -244,9 +245,11 @@ export const mapEvents = z.object({
   countries: z.array(z.string()),
   /** Incidents an IGRED analyst has checked, keyed by event id (config/verified-events*). */
   verified: z.record(z.string(), z.object({ note: z.string(), source: z.url(), verifiedAt: z.string().optional() })),
+  /** Incident types for the filter; events refer to these by index. */
+  types: z.array(z.string()),
   events: z.array(z.tuple([
     z.number().int(), z.number().int(), z.number().int(), z.number().int(), z.number().int(), z.number().int(),
-    z.number().int(), z.number().int(), z.number().int(), z.string(), z.string(), z.number().int(), z.number().int(), z.string(),
+    z.number().int(), z.number().int(), z.number().int(), z.string(), z.string(), z.number().int(), z.number().int(), z.string(), z.number().int(),
   ])),
 });
 

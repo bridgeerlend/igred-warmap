@@ -12,7 +12,7 @@ import {
   type CrisisArticle, type CrisisDetail, type CrisisImage, type CrisisIndexEntry, type CrisisIndicator,
 } from './schema.js';
 import { currentSummary, runSummaries, type SummaryInput, type SummarySettings, type SummaryState } from './summary.js';
-import { CATEGORY, COUNTRY, countryName, joinNames } from './names.js';
+import { CATEGORY, COUNTRY, countryName, incidentType, INCIDENT_TYPES, joinNames } from './names.js';
 
 /* ---------- inputs ----------------------------------------------------- */
 
@@ -33,7 +33,7 @@ interface CrisesConfig {
 
 interface Provenance { url: string; publisher?: string }
 interface EventRec {
-  id: string; occurredAt: string; category: string; label: string; confidence: string;
+  id: string; occurredAt: string; category: string; label: string; confidence: string; cameoCode?: string;
   severity: number; intensity: number; reportCount: number; distinctPublishers: number;
   location: { lat: number; lon: number; name: string; countryFips: string };
   provenance: Provenance[];
@@ -580,7 +580,7 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
         const item: CrisisDetail['incidents'][number] = {
           at: e.occurredAt, category: e.category, place: placeOf(e.location.name),
           lat: e.location.lat, lon: e.location.lon, intensity: e.intensity, reports: e.reportCount,
-          outlets: e.distinctPublishers, id: e.id,
+          outlets: e.distinctPublishers, id: e.id, type: incidentType(e.cameoCode),
           sources: e.provenance.map((p) => ({ url: p.url, publisher: outletName(p.publisher, p.url) })),
         };
         return item;
@@ -778,7 +778,8 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
         e.distinctPublishers, e.reportCount,
         placeOf(e.location.name), p?.url ?? '', publishers.id(outletName(p?.publisher, p?.url)),
         countryCodes.id(e.location.countryFips), e.id.replace(/^evt_/, ''),
-      ] as [number, number, number, number, number, number, number, number, number, string, string, number, number, string];
+        INCIDENT_TYPES.indexOf(incidentType(e.cameoCode)),
+      ] as [number, number, number, number, number, number, number, number, number, string, string, number, number, string, number];
     })
     .sort((a, b) => b[0] - a[0]);
   const present = new Set(events.map((e) => e.id.replace(/^evt_/, '')));
@@ -787,7 +788,7 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
   // phone fetches before it can draw anything.
   const mapPayload = mapEvents.parse({
     artifactVersion: 2, generatedAt, fields: [...MAP_EVENT_FIELDS], categories, crises: defs.map((d) => d.id),
-    publishers: publishers.list, countries: countryCodes.list, verified: verifiedOut, events: compact,
+    publishers: publishers.list, countries: countryCodes.list, verified: verifiedOut, types: [...INCIDENT_TYPES], events: compact,
   });
   const mapFile = path.join(dataDir, 'map-events.json');
   writeFileSync(`${mapFile}.tmp`, JSON.stringify(mapPayload));

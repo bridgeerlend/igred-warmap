@@ -72,6 +72,15 @@
   <main class="plate" id="plate">
     <div class="map" id="map" role="region" aria-label="Map"></div>
 
+    <!-- The filter: incident types, and the layer of trade and energy routes beneath it. -->
+    <div class="mapfilter" id="mapfilter">
+      <button type="button" class="link-button mapfilter-toggle" id="mapfilter-toggle" aria-expanded="true" aria-controls="mapfilter-body">Filter</button>
+      <div class="mapfilter-body" id="mapfilter-body">
+        <ul class="mapfilter-types" id="mapfilter-types"></ul>
+        <div class="mapfilter-layers" id="mapfilter-layers"></div>
+      </div>
+    </div>
+
     <div class="legend meta" id="legend"></div>
     <div class="zoom">
       <button type="button" class="link-button" id="zoom-out" aria-label="Zoom out">&minus;</button>

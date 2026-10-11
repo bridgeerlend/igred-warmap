@@ -835,6 +835,30 @@ describe('the map', () => {
   });
 });
 
+describe('the incident-type filter', () => {
+  it('every incident carries a type from its CAMEO code, the most precise code first', () => {
+    const names = read('src/core/crises/names.ts');
+    expect(names).toMatch(/export const INCIDENT_TYPES = \['air', 'artillery', 'clash', 'bomb', 'civilians', 'killings', 'other'\]/);
+    const m = readJson('data/map-events.json');
+    expect(m.fields[14]).toBe('type');
+    expect(m.types).toEqual(['air', 'artillery', 'clash', 'bomb', 'civilians', 'killings', 'other']);
+    for (const row of m.events) expect(row[14]).toBeGreaterThanOrEqual(0);
+  });
+
+  it('applies to the map, the counts and the timeline, and lives in the address', () => {
+    const common = read('site/common.js');
+    expect(common).toMatch(/if \(t >= from && t < to && this\.passes\(r\) && filter\(r\)\) out\.push\(r\);/);
+    expect(common).toMatch(/if \(!this\.passes\(r\) \|\| !filter\(r\)\) continue;/);
+    const app = read('site/app.js');
+    expect(app).toMatch(/if \(state\.inc\.passes\(rows\[i\]\)\) feats\.push/);
+    expect(app).toMatch(/q\.set\('types', state\.types\.join\(','\)\)/);
+    expect(app).toMatch(/q\.get\('types'\)/);
+    // Folded behind its button on a phone, open on a wide screen.
+    expect(app).toMatch(/setOpen\(!narrow\(\)\)/);
+    expect(read('site/index.html')).toMatch(/id="mapfilter-toggle" aria-expanded="true" aria-controls="mapfilter-body"/);
+  });
+});
+
 describe('the crisis and country views', () => {
   it('link everything they report to its source', () => {
     const view = read('site/view.js');

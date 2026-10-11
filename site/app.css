@@ -312,3 +312,30 @@ body.mapapp { display: flex; flex-direction: column; min-height: 100svh; }
 .colophon-folded { padding-top: 9px; padding-bottom: 10px; }
 .colophon .colophon-method[hidden] { display: none; }
 .colophon .colophon-method { flex: 1 1 100%; order: 9; }
+
+/* ---------- the filter: a list over the map, not a box of pills -- */
+
+.mapfilter {
+  position: absolute; top: 14px; right: 14px; z-index: 4; max-width: 270px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent); border: 1px solid var(--hair-soft);
+  padding: 10px 14px 12px;
+}
+.mapfilter-toggle { display: block; margin-left: auto; }
+.mapfilter-body { display: none; margin-top: 10px; }
+.mapfilter.is-open .mapfilter-body { display: block; }
+.mapfilter-types { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.mapfilter-item { display: grid; grid-template-columns: auto 1fr auto; gap: 9px; align-items: center; font-size: 12.5px; cursor: pointer; }
+.mapfilter-item .meta { font-size: 10px; }
+/* A square tick in the reader's colour: a hairline when off, filled when on. */
+.mapfilter input[type="checkbox"] {
+  -webkit-appearance: none; appearance: none; width: 11px; height: 11px; margin: 0;
+  border: 1px solid var(--fg); border-radius: 0; background: none; cursor: pointer;
+}
+.mapfilter input[type="checkbox"]:checked { background: var(--pick); border-color: var(--pick); }
+.mapfilter input[type="checkbox"]:focus-visible { outline: 2px solid var(--pick); outline-offset: 2px; }
+.mapfilter-layers { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--hair-soft); }
+.mapfilter-layers:empty { display: none; }
+@media (max-width: 899px) {
+  .mapfilter { top: 10px; right: 10px; padding: 6px 10px; max-width: calc(100% - 20px); }
+  .mapfilter.is-open { padding: 10px 12px 12px; }
+}

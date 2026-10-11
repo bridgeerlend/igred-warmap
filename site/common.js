@@ -26,6 +26,8 @@ export const STRINGS = {
     where: (list) => `, most of them in ${list}`,
     and: 'and',
     allCrises: 'All crises',
+    filter: 'Filter', filterAll: 'All types',
+    types: { air: 'Air and drone strikes', artillery: 'Artillery and shelling', clash: 'Armed clashes', bomb: 'Bombings and suicide attacks', civilians: 'Attacks on civilians', killings: 'Killings and abductions', other: 'Other' },
     listNote: 'Ranked by incidents confirmed by several sources',
     sourcesToggle: 'Sources',
     overview: 'Overview', news: 'News', places: 'Places and sources',
@@ -113,6 +115,8 @@ export const STRINGS = {
     where: (list) => `, flest i ${list}`,
     and: 'og',
     allCrises: 'Alle kriser',
+    filter: 'Filter', filterAll: 'Alle typer',
+    types: { air: 'Luftangrep og droner', artillery: 'Artilleri og beskytning', clash: 'Væpnede sammenstøt', bomb: 'Bomber og selvmordsangrep', civilians: 'Angrep på sivile', killings: 'Drap og bortføringer', other: 'Annet' },
     listNote: 'Rangert etter hendelser bekreftet av flere kilder',
     sourcesToggle: 'Kilder',
     overview: 'Oversikt', news: 'Nyheter', places: 'Steder og kilder',
@@ -361,6 +365,11 @@ export class Incidents {
   publisher(r) { return this.p.publishers[r[11]]; }
   country(r) { return this.p.countries[r[12]]; }
   id(r) { return r[13]; }
+  type(r) { return this.p.types?.[r[14]] ?? 'other'; }
+
+  /** Types the reader has chosen; null is all of them. Every count on the page follows it. */
+  setTypes(types) { this.typeIdx = types && this.p.types ? new Set(types.map((t) => this.p.types.indexOf(t)).filter((i) => i >= 0)) : null; }
+  passes(r) { return !this.typeIdx || this.typeIdx.has(r[14]); }
   verified(r) { return this.p.verified?.[r[13]] ?? null; }
 
   /** [from, to) in ms for a window of `w` days ending at the end of day `asOf` (or now). */
@@ -373,7 +382,7 @@ export class Incidents {
     const out = [];
     for (const r of this.rows) {
       const t = r[0] * MIN;
-      if (t >= from && t < to && filter(r)) out.push(r);
+      if (t >= from && t < to && this.passes(r) && filter(r)) out.push(r);
     }
     return out;
   }
@@ -382,7 +391,7 @@ export class Incidents {
     const index = new Map(this.days.map((d, i) => [d, i]));
     const counts = this.days.map(() => 0);
     for (const r of this.rows) {
-      if (!filter(r)) continue;
+      if (!this.passes(r) || !filter(r)) continue;
       const i = index.get(new Date(r[0] * MIN).toISOString().slice(0, 10));
       if (i !== undefined) counts[i] += 1;
     }
