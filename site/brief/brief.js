@@ -15,6 +15,7 @@ const STRINGS = {
   en: {
     archive: 'Earlier editions',
     onMap: (name) => `${name} on the map`,
+    archive: 'Archive picture',
     searchLabel: 'Search the edition',
     searchPlaceholder: 'Search headlines, outlets, themes…',
     sortCoverage: 'By coverage',
@@ -44,6 +45,7 @@ const STRINGS = {
   nb: {
     archive: 'Tidligere utgaver',
     onMap: (name) => `${name} på kartet`,
+    archive: 'Arkivbilde',
     searchLabel: 'Søk i utgaven',
     searchPlaceholder: 'Søk i overskrifter, kilder, temaer …',
     sortCoverage: 'Etter dekning',
@@ -88,6 +90,7 @@ const state = {
   theme: null,
   sort: 'coverage',
   crises: [],
+  pictures: {},
   // Which banner is showing, by key rather than by rendered text, so switching language
   // re-renders it instead of leaving it in the language it was raised in.
   banner: null,
@@ -142,14 +145,18 @@ async function load() {
   }
 
   const date = requestedDate() ?? state.index[0].date;
-  const [edition, crises] = await Promise.all([
+  const [edition, crises, pictures] = await Promise.all([
     loadJson(`${base}${date}.json`),
     // Which crisis on the map a story belongs to, by country. Optional: the Brief reads
     // without it.
     loadJson(`${dataBaseUrl()}crises.json`).catch(() => null),
+    // Archive pictures of who or what a story is about, kept apart from the edition so the
+    // edition itself stays exactly as published.
+    loadJson(`${dataBaseUrl()}story-pictures.json`).catch(() => null),
   ]);
   state.edition = edition;
   state.crises = crises?.crises ?? [];
+  state.pictures = pictures?.stories ?? {};
 
   // Prose is optional by design: it lives in its own file and only exists once approved.
   try {
@@ -243,8 +250,17 @@ function renderStory(story, underThemeId) {
     ? `<a class="story-crisis" href="../#crisis=${encodeURIComponent(crisis.id)}">${escapeHtml(t().onMap(state.lang === 'nb' ? crisis.shortNb : crisis.short))}</a>`
     : '';
 
+  // An archive picture of who or what the story is about, from Wikimedia Commons, labelled
+  // as such so it is never taken for a picture of the event.
+  const pic = state.pictures[story.id];
+  const credit = pic ? `${t().archive}: ${pic.subject}${[pic.author, pic.license].filter(Boolean).length ? ` · ${[pic.author, pic.license].filter(Boolean).join(', ')}` : ''} · Wikimedia Commons` : '';
+  const picture = pic
+    ? `<a class="story-pic" href="${escapeHtml(pic.url)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(credit)}"><img src="${escapeHtml(pic.thumb)}" alt="${escapeHtml(pic.subject)}" loading="lazy" decoding="async" referrerpolicy="no-referrer"></a>`
+    : '';
+
   return (
-    `<li class="story" id="${escapeHtml(story.id)}">` +
+    `<li class="story${pic ? ' has-pic' : ''}" id="${escapeHtml(story.id)}">` +
+    picture +
     `<h3 class="story-headline"><a href="${escapeHtml(story.headlineFrom.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(story.headline)}</a></h3>` +
     `<p class="story-meta">` +
     `<span class="lead">${escapeHtml(story.headlineFrom.publisher)}</span>` +
@@ -257,6 +273,7 @@ function renderStory(story, underThemeId) {
       ? `<div class="story-summary">${escapeHtml(summary.text)}<span class="attribution">${escapeHtml(t().drafted)}</span></div>`
       : '') +
     `<ul class="sources">${sources}</ul>` +
+    (pic ? `<p class="story-pic-credit">${escapeHtml(credit)}</p>` : '') +
     `</li>`
   );
 }

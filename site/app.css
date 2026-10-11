@@ -283,3 +283,13 @@ body.mapapp { display: flex; flex-direction: column; min-height: 100svh; }
   .app { grid-template-columns: 460px minmax(0, 1fr); }
   .rail .title { font-size: 76px; }
 }
+
+/* ---------- archive pictures beside the news ----------------- */
+
+.cv-stories li.has-pic, .cv-news li.has-pic { flex-direction: row; align-items: flex-start; gap: 14px; }
+.cv-item-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto; }
+.cv-thumb-pic { flex: 0 0 auto; width: 72px; height: 72px; overflow: hidden; background: var(--hair-soft); }
+.cv-thumb-pic img, .cv-lead-pic img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 22%; }
+.cv-lead-pic { display: block; aspect-ratio: 16 / 9; overflow: hidden; margin-bottom: 10px; background: var(--hair-soft); }
+.cv-pic-credit { font-size: 9px; letter-spacing: 0.12em; opacity: 0.85; }
+.crisis-page .cv-thumb-pic { width: 96px; height: 96px; }

@@ -57,7 +57,10 @@ Crises are built by `npm run crises` (`src/core/crises/`), which runs after ever
 `.github/workflows/crises.yml` and writes only to `data/`: `crises.json`, one file per
 crisis, `map-events.json` (a compact incident file so phones need not fetch 14 MB),
 `countries.json` and `home.json` for igred.org. Pictures come from Wikimedia Commons only,
-credited; news organisations' pictures are never used.
+credited; news organisations' pictures are never used. News items and Brief stories carry an
+*archive picture* of who or what they are about (a person's portrait, a city): names are
+taken from the headline, looked up on Wikipedia, and kept only if the lead picture is a freely
+licensed Commons file. It is always labelled as an archive picture, never as the event.
 
 Each crisis carries three to five machine-written sentences in English and Norwegian,
 compressed from headlines already on the page and checked by `guardDraft` in both

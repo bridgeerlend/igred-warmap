@@ -3,11 +3,12 @@ import path from 'node:path';
 import { configDir, dataDir } from '../util/paths.js';
 import { writeArtifact } from '../pipeline/store.js';
 import {
-  clean, commonsCredits, gdeltDoc, googleNews, googleNewsUrl, wikipedia, worldBank,
+  clean, commonsCredits, gdeltDoc, googleNews, googleNewsUrl, subjectImage, subjectsIn, wikipedia, worldBank,
+  type SubjectImage,
   WORLD_BANK_INDICATORS, type WikiSummary, type WorldBankData,
 } from './fetchers.js';
 import {
-  countriesIndex, crisisDetail, homeSnapshot, wireFile, crisisIndex, mapEvents, MAP_EVENT_FIELDS,
+  countriesIndex, crisisDetail, homeSnapshot, storyPictures, wireFile, type SubjectPicture, crisisIndex, mapEvents, MAP_EVENT_FIELDS,
   type CrisisArticle, type CrisisDetail, type CrisisImage, type CrisisIndexEntry, type CrisisIndicator,
 } from './schema.js';
 import { currentSummary, runSummaries, type SummaryInput, type SummarySettings, type SummaryState } from './summary.js';
@@ -22,7 +23,7 @@ interface CrisisDef {
 interface CrisesConfig {
   settings: {
     autoCrisisMinReported7d: number; autoCrisisExclude?: string[]; newsPerCrisis: number; gdeltSpacingMs: number;
-    wikipediaRefreshHours: number; worldBankRefreshHours: number;
+    wikipediaRefreshHours: number; worldBankRefreshHours: number; subjectLookupsPerRun?: number;
     summary: SummarySettings;
   };
   crises: CrisisDef[];
@@ -59,6 +60,7 @@ interface Cache {
   gdelt: Record<string, { at: string; articles: CrisisArticle[] }>;
   gnews: Record<string, { at: string; articles: CrisisArticle[] }>;
   commons: Record<string, { author?: string; license?: string }>;
+  subjects: Record<string, { at: string; data: SubjectImage | null }>;
 }
 
 const readJson = <T>(file: string): T | undefined =>
@@ -235,7 +237,7 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
     }
   }
   const cache: Cache = {
-    wikipedia: {}, worldBank: null, gdelt: {}, gnews: {}, commons: {},
+    wikipedia: {}, worldBank: null, gdelt: {}, gnews: {}, commons: {}, subjects: {},
     ...(readJson<Partial<Cache>>(cacheFile) ?? {}),
   } as Cache;
   const summaryStates = readJson<Record<string, SummaryState>>(summariesFile) ?? {};
@@ -321,6 +323,62 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
       log(`commons credits: looked up ${missing.length}`);
     }
   }
+
+  /* ---- archive pictures: who or what the headlines are about ---- */
+  // Every headline the pages and the Brief will show, in the order they matter; names are
+  // looked up once and remembered (misses for a week, hits for a month).
+  const headlinePool: string[] = [];
+  for (const st of stories) headlinePool.push(st.headline);
+  for (const d of defs) {
+    for (const a of [...(cache.gnews[d.id]?.articles ?? []), ...(cache.gdelt[d.id]?.articles ?? [])].slice(0, 40)) headlinePool.push(a.title);
+  }
+  if (existsSync(editionsDir)) {
+    for (const file of readdirSync(editionsDir).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort().slice(-7)) {
+      for (const st of readJson<{ stories: { headline: string }[] }>(path.join(editionsDir, file))?.stories ?? []) headlinePool.push(st.headline);
+    }
+  }
+  if (!options.offline) {
+    const fresh = (name: string) => {
+      const hit = cache.subjects[name];
+      if (!hit) return false;
+      return hoursSince(hit.at, now) < (hit.data ? 24 * 30 : 24 * 7);
+    };
+    const wanted = [...new Set(headlinePool.flatMap((h) => subjectsIn(h)))].filter((n) => !fresh(n)).slice(0, settings.subjectLookupsPerRun ?? 250);
+    let found = 0;
+    for (const name of wanted) {
+      const data = await subjectImage(name);
+      if (data !== undefined) cache.subjects[name] = { at: generatedAt, data };
+      if (data) found += 1;
+      await sleep(120);
+    }
+    const files = [...new Set(Object.values(cache.subjects).map((x) => x.data?.file.replace(/ /g, '_')).filter((f): f is string => !!f))]
+      .filter((f) => !(f in cache.commons));
+    if (files.length) {
+      const credits = await commonsCredits(files);
+      for (const f of files) cache.commons[f] = credits[f] ?? {};
+    }
+    log(`archive pictures: looked up ${wanted.length} names, ${found} with a free picture`);
+  }
+  const KIND_RANK = { person: 0, place: 1, other: 2 } as const;
+  /** The picture for a headline: the first person it names, else the first place, else anything. */
+  const pictureFor = (headline: string): SubjectPicture | undefined => {
+    const hits = subjectsIn(headline)
+      .map((n) => cache.subjects[n]?.data)
+      .filter((x): x is SubjectImage => !!x)
+      .sort((a, b) => KIND_RANK[a.kind] - KIND_RANK[b.kind]);
+    const hit = hits[0];
+    if (!hit) return undefined;
+    const key = hit.file.replace(/ /g, '_');
+    const credit = cache.commons[key];
+    const pic: SubjectPicture = {
+      // Older cache entries asked for 400px thumbnails, which Wikimedia no longer serves.
+      src: hit.src, thumb: hit.thumb.replace(/\/400px-/, '/330px-'), url: `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(key)}`,
+      credit: 'Wikimedia Commons', subject: hit.title, kind: hit.kind,
+    };
+    if (credit?.author) pic.author = credit.author;
+    if (credit?.license) pic.license = credit.license;
+    return pic;
+  };
 
   /* ---- per crisis ---- */
   const details: CrisisDetail[] = [];
@@ -417,6 +475,7 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
       .sort((a, b) => b.distinctPublishers - a.distinctPublishers || b.lastSeenAt.localeCompare(a.lastSeenAt))
       .slice(0, 12);
     const headlines: CrisisDetail['headlines'] = storyHits.map((s) => ({
+      ...(pictureFor(s.headline) ? { picture: pictureFor(s.headline)! } : {}),
       storyId: s.id,
       ...(editionOf.has(s.id) ? { edition: editionOf.get(s.id)! } : {}),
       headline: s.headline,
@@ -450,7 +509,10 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
         return true;
       })
       .slice(0, settings.newsPerCrisis * 2);
-    const newsOut = news.slice(0, settings.newsPerCrisis);
+    const newsOut = news.slice(0, settings.newsPerCrisis).map((a) => {
+      const picture = pictureFor(a.title);
+      return picture ? { ...a, picture } : a;
+    });
 
     /* images: Wikimedia Commons only — the article's lead picture and its gallery, maps and
        places before portraits. News organisations' pictures are never used. */
@@ -761,6 +823,20 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
   if (JSON.stringify(previousCountries?.countries) !== JSON.stringify(countriesOut)) {
     writeArtifact(countriesFile, countriesIndex, { artifactVersion: 1, generatedAt, countries: countriesOut });
   }
+
+  /* archive pictures for the Brief's stories, by id; editions stay exactly as published */
+  const storyPics: Record<string, SubjectPicture> = {};
+  const briefStories: { id: string; headline: string }[] = [...stories];
+  if (existsSync(editionsDir)) {
+    for (const file of readdirSync(editionsDir).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort().slice(-7)) {
+      briefStories.push(...(readJson<{ stories: { id: string; headline: string }[] }>(path.join(editionsDir, file))?.stories ?? []));
+    }
+  }
+  for (const st of briefStories) {
+    const pic = pictureFor(st.headline);
+    if (pic) storyPics[st.id] = pic;
+  }
+  writeArtifact(path.join(dataDir, 'story-pictures.json'), storyPictures, { artifactVersion: 1, generatedAt, stories: storyPics });
 
   /* the front page's snapshot */
   const days = daysOf(nowRef);

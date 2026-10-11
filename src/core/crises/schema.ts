@@ -10,6 +10,23 @@ import { z } from 'zod';
 
 const iso = z.string().min(10);
 
+/**
+ * An archive picture of who or what a story is about — a person's portrait, a city — from
+ * Wikimedia Commons, freely licensed and credited. It is never a picture of the event, and
+ * the page says so.
+ */
+export const subjectPicture = z.object({
+  src: z.url(),
+  thumb: z.url(),
+  url: z.url(),
+  credit: z.literal('Wikimedia Commons'),
+  author: z.string().optional(),
+  license: z.string().optional(),
+  subject: z.string(),
+  kind: z.enum(['person', 'place', 'other']),
+});
+export type SubjectPicture = z.infer<typeof subjectPicture>;
+
 export const crisisArticle = z.object({
   title: z.string().min(1),
   url: z.url(),
@@ -19,6 +36,7 @@ export const crisisArticle = z.object({
   /** Where we found it: GDELT's article index, Google News, a curated feed, or the incident stream. */
   via: z.enum(['gdelt', 'gnews', 'feed']),
   tier: z.number().int().min(1).max(3).optional(),
+  picture: subjectPicture.optional(),
 });
 export type CrisisArticle = z.infer<typeof crisisArticle>;
 
@@ -138,6 +156,7 @@ export const crisisDetail = z.object({
       lastSeenAt: iso,
       articleCount: z.number().int(),
       outlets: z.array(z.string()),
+      picture: subjectPicture.optional(),
       articles: z.array(z.object({ title: z.string(), url: z.url(), publisher: z.string(), publishedAt: iso })),
     }),
   ),
@@ -285,4 +304,11 @@ export const wireFile = z.object({
   places: z.array(z.string()),
   /** [minutesSinceEpoch, url, publisher, place, gdelt(1: an aggregator's log time, not a publication time)] */
   items: z.array(z.tuple([z.number().int(), z.url(), z.number().int(), z.number().int(), z.number().int()])),
+});
+
+/** Archive pictures for the Brief's stories, by story id; the editions themselves stay as published. */
+export const storyPictures = z.object({
+  artifactVersion: z.literal(1),
+  generatedAt: iso,
+  stories: z.record(z.string(), subjectPicture),
 });

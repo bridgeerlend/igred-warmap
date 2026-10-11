@@ -419,9 +419,9 @@ describe('sources are named, never shown as logos', () => {
    * does not have. Naming the outlet in text is both safer and more editorially honest — so
    * this is pinned rather than left to whoever edits the page next.
    */
-  it('no product references an image of any kind', () => {
+  it('no product references an image of any kind, beyond the Commons archive pictures', () => {
     for (const page of [
-      'site/brief/index.html', 'site/brief/brief.js', 'site/brief/brief.css',
+      'site/brief/index.html',
       'site/stream/index.html', 'site/stream/stream.js', 'site/stream/stream.css',
       'www/index.html', 'www/home.js', 'www/home.css',
       'site/atlas.css',
@@ -445,6 +445,19 @@ describe('sources are named, never shown as logos', () => {
       expect(text).not.toMatch(/\.[a-z-]*logo[a-z-]*\s*[{,]/i);
       expect(text).not.toMatch(/url\([^)]*logo/i);
     }
+  });
+
+  it('the Brief shows only Commons archive pictures, labelled as archive pictures', () => {
+    const brief = read('site/brief/brief.js');
+    expect([...brief.matchAll(/<img src="\$\{escapeHtml\(([^)]+)\)\}"/g)].map((m) => m[1])).toEqual(['pic.thumb']);
+    expect(brief).toMatch(/story-pictures\.json/);
+    expect(brief).toMatch(/t\(\)\.archive/);
+    for (const pic of Object.values(readJson('data/story-pictures.json').stories) as { thumb: string; credit: string }[]) {
+      expect(pic.credit).toBe('Wikimedia Commons');
+      expect(pic.thumb).toMatch(/^https:\/\/(upload|thumb)\.wikimedia\.org\/wikipedia\/commons\//);
+    }
+    // Wikimedia serves thumbnails at its standard widths only; 400px is refused.
+    expect(read('src/core/crises/fetchers.ts')).toMatch(/'\/330px-'/);
   });
 
   it('the Brief prints the outlet name as the link text', () => {
@@ -515,6 +528,14 @@ describe('the crisis view links everything it reports', () => {
         expect(image.src).toMatch(/^https:\/\/(upload|thumb)\.wikimedia\.org\//);
       }
       for (const item of crisis.news) expect(item.image).toBeUndefined();
+      // Archive pictures of who a story is about: Commons only, credited, and named as such.
+      for (const item of [...crisis.news, ...crisis.headlines]) {
+        if (!item.picture) continue;
+        expect(item.picture.credit).toBe('Wikimedia Commons');
+        expect(item.picture.src).toMatch(/^https:\/\/(upload|thumb)\.wikimedia\.org\/wikipedia\/commons\//);
+        expect(item.picture.thumb).toMatch(/^https:\/\/(upload|thumb)\.wikimedia\.org\/wikipedia\/commons\//);
+        expect(item.picture.subject.length).toBeGreaterThan(0);
+      }
       for (const incident of crisis.incidents) expect(incident.image).toBeUndefined();
     }
   });
@@ -803,7 +824,7 @@ describe('the crisis and country views', () => {
       expect(text).not.toMatch(/(class|id)=["'][^"']*logo/i);
     }
     const sources = [...view.matchAll(/h\('img', \{ src: ([^,]+),/g)].map((m) => m[1]!.trim());
-    expect(sources).toEqual(['im.src', '`https://i.ytimg.com/vi/${encodeURIComponent(v.videoId)}/mqdefault.jpg`']);
+    expect(sources).toEqual(['im.src', "cls === 'cv-lead-pic' ? p.src : p.thumb", '`https://i.ytimg.com/vi/${encodeURIComponent(v.videoId)}/mqdefault.jpg`']);
     expect(view).toMatch(/youtube-nocookie\.com\/embed/);
   });
 
@@ -818,7 +839,7 @@ describe('the crisis and country views', () => {
   it('link stories to their Brief edition, and the Brief links back to the crisis', () => {
     expect(read('site/view.js')).toMatch(/\$\{BRIEF\}\?edition=\$\{s\.edition\}#\$\{s\.storyId\}/);
     const brief = read('site/brief/brief.js');
-    expect(brief).toMatch(/<li class="story" id="\$\{escapeHtml\(story\.id\)\}">/);
+    expect(brief).toMatch(/<li class="story\$\{pic \? ' has-pic' : ''\}" id="\$\{escapeHtml\(story\.id\)\}">/);
     expect(brief).toMatch(/href="\.\.\/#crisis=\$\{encodeURIComponent\(crisis\.id\)\}"/);
   });
 

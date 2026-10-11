@@ -287,3 +287,97 @@ export async function worldBank(iso3: string[]): Promise<WorldBankData | undefin
   }
   return anyOk ? out : undefined;
 }
+
+/* ---------- archive pictures of who or what a story is about --------------- */
+
+export interface SubjectImage {
+  title: string;
+  description: string;
+  kind: 'person' | 'place' | 'other';
+  src: string;
+  thumb: string;
+  file: string;
+  page: string;
+}
+
+/**
+ * A few names headlines use on their own that Wikipedia files under a fuller title, or
+ * treats as ambiguous. Short and stable: heads of state and leaders the crises keep
+ * returning to, not a list anyone has to maintain.
+ */
+const ALIASES: Record<string, string> = {
+  Trump: 'Donald Trump', Putin: 'Vladimir Putin', Zelensky: 'Volodymyr Zelenskyy', Zelenskyy: 'Volodymyr Zelenskyy',
+  Netanyahu: 'Benjamin Netanyahu', Xi: 'Xi Jinping', Modi: 'Narendra Modi', Erdogan: 'Recep Tayyip Erdoğan',
+  Erdoğan: 'Recep Tayyip Erdoğan', Khamenei: 'Ali Khamenei', Starmer: 'Keir Starmer', Macron: 'Emmanuel Macron',
+  Burhan: 'Abdel Fattah al-Burhan', Hemedti: 'Mohamed Hamdan Dagalo', Sisi: 'Abdel Fattah el-Sisi', Merz: 'Friedrich Merz',
+  Lavrov: 'Sergey Lavrov', Rubio: 'Marco Rubio', Guterres: 'António Guterres', Pezeshkian: 'Masoud Pezeshkian',
+  Sharaa: 'Ahmed al-Sharaa', Maduro: 'Nicolás Maduro', Sheinbaum: 'Claudia Sheinbaum', Tinubu: 'Bola Tinubu',
+};
+
+const LEADING = new Set([
+  'The', 'A', 'An', 'In', 'On', 'At', 'Of', 'For', 'To', 'From', 'With', 'After', 'Before', 'As', 'How', 'Why', 'What',
+  'Who', 'When', 'Where', 'Photos', 'Photo', 'Video', 'Watch', 'Live', 'Breaking', 'Exclusive', 'Analysis', 'Opinion',
+  'Explainer', 'Update', 'Former', 'President', 'Prime', 'Minister', 'Foreign', 'Defence', 'Defense', 'Secretary',
+  'General', 'Gen', 'Sen', 'Rep', 'Mr', 'Mrs', 'Ms', 'Dr', 'King', 'Queen', 'Prince', 'Pope', 'Supreme', 'Leader',
+  'Chief', 'Top', 'New', 'Ex', 'Says', 'Said', 'Report', 'Reports', 'Security', 'Council', 'Day', 'Year', 'One', 'Two',
+  'Three', 'Thousands', 'Hundreds', 'Dozens', 'Several', 'Many', 'More', 'Most', 'No', 'Not', 'Is', 'Are', 'Will',
+  'Can', 'It', 'Its', 'This', 'That', 'These', 'Those', 'He', 'She', 'They', 'We', 'Our', 'His', 'Her', 'Their',
+  'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
+  'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December',
+]);
+
+/** Proper names in a headline, longest first within each run of capitals. */
+export function subjectsIn(headline: string): string[] {
+  const text = headline.replace(/[‘’]/g, "'").replace(/[“”"]/g, ' ').replace(/'s\b/g, '');
+  const out: string[] = [];
+  const runs = text.match(/\p{Lu}[\p{L}'.-]*(?:\s+(?:al-|el-|bin|ibn|de|da|van|von|der|la)?\s*\p{Lu}[\p{L}'.-]*){0,3}/gu) ?? [];
+  for (const run of runs) {
+    let words = run.split(/\s+/).filter(Boolean);
+    while (words.length && LEADING.has(words[0]!.replace(/\.$/, ''))) words = words.slice(1);
+    if (!words.length) continue;
+    const name = words.join(' ').replace(/[.'-]+$/, '');
+    // Acronyms (UN, US, RSF) resolve to logos and flags, which are dropped anyway.
+    if (/^\p{Lu}{1,4}$/u.test(name) || name.length < 3) continue;
+    // A known leader anywhere in the run counts first: title-case headlines ("Trump Calls On
+    // Ukraine") run names and verbs together.
+    for (const w of words) if (ALIASES[w.replace(/[.'-]+$/, '')]) out.push(ALIASES[w.replace(/[.'-]+$/, '')]!);
+    if (words.length <= 3) out.push(ALIASES[name] ?? name);
+  }
+  return [...new Set(out)].slice(0, 5);
+}
+
+const PERSON = /\b(born|politician|president|prime minister|minister|leader|commander|general|militant|activist|journalist|king|queen|prince|emir|sheikh|diplomat|businessman|businesswoman|lawyer|judge|cleric|ayatollah|officer|warlord|rebel|secretary|monarch|chancellor|senator|official|spokesperson|envoy)\b/i;
+const PLACE = /\b(city|capital|town|village|province|region|governorate|oblast|district|airport|strait|river|island|desert|port|county|municipality|neighbourhood|neighborhood|camp|peninsula|mountain|country|sovereign state|territory|state in|area)\b/i;
+
+/**
+ * The Wikipedia lead picture of a person or place, only if it is a freely licensed file on
+ * Wikimedia Commons. English Wikipedia also hosts non-free pictures under fair use (film
+ * posters, logos, some portraits); those live under /wikipedia/en/ and are refused here.
+ */
+export async function subjectImage(name: string): Promise<SubjectImage | null | undefined> {
+  try {
+    const data = await fetchJson<{
+      title?: string; type?: string; description?: string;
+      content_urls?: { desktop?: { page?: string } };
+      originalimage?: { source?: string; width?: number };
+      thumbnail?: { source?: string };
+    }>(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name.replace(/ /g, '_'))}`,
+      { retries: 1, timeoutMs: 15_000, headers: { 'api-user-agent': USER_AGENT }, noRetryStatuses: [404] });
+    const thumb = data.thumbnail?.source;
+    const page = data.content_urls?.desktop?.page;
+    if (!data.title || data.type !== 'standard' || !thumb || !isHttpUrl(page)) return null;
+    if (!/\/wikipedia\/commons\//.test(thumb)) return null;
+    const file = /\/thumb\/[0-9a-f]\/[0-9a-f]{2}\/([^/]+)\//.exec(thumb)?.[1] ?? /\/commons\/[0-9a-f]\/[0-9a-f]{2}\/([^/?]+)/.exec(thumb)?.[1];
+    if (!file || /flag|logo|coat_of_arms|emblem|seal_of|icon|symbol|insignia|signature|locator|\.svg/i.test(file)) return null;
+    const description = clean(data.description ?? '');
+    const kind: SubjectImage['kind'] = PERSON.test(description) ? 'person' : PLACE.test(description) ? 'place' : 'other';
+    const originalWidth = data.originalimage?.width ?? 0;
+    const src = originalWidth > 0 && originalWidth <= 960 ? (data.originalimage?.source ?? thumb) : thumb.replace(/\/(\d+)px-/, '/960px-');
+    // Wikimedia serves thumbnails only at its standard widths (250, 330, 500, 960…); 400 is refused.
+    const small = originalWidth > 0 && originalWidth <= 330 ? (data.originalimage?.source ?? thumb) : thumb.replace(/\/(\d+)px-/, '/330px-');
+    return { title: data.title, description, kind, src: src.replace(/\?.*$/, ''), thumb: small.replace(/\?.*$/, ''), file: decodeURIComponent(file), page };
+  } catch (error) {
+    // A 404 is a firm "no such page"; anything else is worth asking again another day.
+    return /404/.test(String((error as Error).message)) ? null : undefined;
+  }
+}

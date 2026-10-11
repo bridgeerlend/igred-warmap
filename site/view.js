@@ -150,21 +150,52 @@ function figure(im, cls) {
     h('figcaption', null, h('span', null, im.caption), h('span.meta', null, credit ? `${credit} · Wikimedia Commons` : 'Wikimedia Commons')));
 }
 
+/** "Archive picture: Volodymyr Zelenskyy · Author, CC BY 4.0" — never mistaken for the event. */
+function pictureCredit(p) {
+  const who = [p.author, p.license].filter(Boolean).join(', ');
+  return `${prefs.t.archive}: ${p.subject}${who ? ` · ${who}` : ''} · Wikimedia Commons`;
+}
+
+function picture(p, cls) {
+  return h(`a.${cls}`, { href: p.url, target: '_blank', rel: 'noopener', title: pictureCredit(p), 'aria-label': pictureCredit(p) },
+    h('img', { src: cls === 'cv-lead-pic' ? p.src : p.thumb, alt: p.subject, loading: 'lazy', decoding: 'async', referrerpolicy: 'no-referrer' }));
+}
+
 function news(d) {
   const t = prefs.t;
   const out = [];
   if (d.headlines.length) {
-    out.push(section(t.topStories, h('ol.cv-stories', null, d.headlines.slice(0, 8).map((s) =>
-      h('li', null,
-        h('a.cv-story', { href: s.url, target: '_blank', rel: 'noopener' }, s.headline),
-        h('span.meta', null, `${s.publisher} · ${t.outletsN(s.outlets.length)}`,
-          s.edition ? [' · ', h('a', { href: `${BRIEF}?edition=${s.edition}#${s.storyId}` }, t.inBrief)] : null))))));
+    // The most covered story leads with its picture; the rest carry a small one beside them.
+    const leadIndex = d.headlines.slice(0, 8).findIndex((s) => s.picture);
+    out.push(section(t.topStories, h('ol.cv-stories', null, d.headlines.slice(0, 8).map((s, i) =>
+      h(`li${s.picture ? (i === leadIndex ? '.has-lead' : '.has-pic') : ''}`, null,
+        s.picture && i === leadIndex ? picture(s.picture, 'cv-lead-pic') : null,
+        h('div.cv-item-text', null,
+          h('a.cv-story', { href: s.url, target: '_blank', rel: 'noopener' }, s.headline),
+          h('span.meta', null, `${s.publisher} · ${t.outletsN(s.outlets.length)}`,
+            s.edition ? [' · ', h('a', { href: `${BRIEF}?edition=${s.edition}#${s.storyId}` }, t.inBrief)] : null),
+          s.picture ? h('span.meta.cv-pic-credit', null, pictureCredit(s.picture)) : null),
+        s.picture && i !== leadIndex ? picture(s.picture, 'cv-thumb-pic') : null)))));
   }
+  // The same face on every other line is wallpaper, not news: a subject already pictured in
+  // the last few items is left out until it has had a rest.
+  const recent = d.headlines.slice(0, 8).map((s) => s.picture?.subject).filter(Boolean);
+  const pictured = d.news.slice(0, 30).map((a) => {
+    const subject = a.picture?.subject;
+    const show = !!subject && !recent.slice(-3).includes(subject);
+    if (show) recent.push(subject);
+    return show ? a.picture : null;
+  });
   out.push(section(t.latest, d.news.length
-    ? h('ul.cv-news', null, d.news.slice(0, 30).map((a) =>
-      h('li', null,
-        h('a.cv-news-item', { href: a.url, target: '_blank', rel: 'noopener' }, a.title),
-        h('span.meta', null, `${a.publisher}, ${ago(a.publishedAt)}`))))
+    ? h('ul.cv-news', null, d.news.slice(0, 30).map((a, i) => {
+      const pic = pictured[i];
+      return h(`li${pic ? '.has-pic' : ''}`, null,
+        h('div.cv-item-text', null,
+          h('a.cv-news-item', { href: a.url, target: '_blank', rel: 'noopener' }, a.title),
+          h('span.meta', null, `${a.publisher}, ${ago(a.publishedAt)}`),
+          pic ? h('span.meta.cv-pic-credit', null, pictureCredit(pic)) : null),
+        pic ? picture(pic, 'cv-thumb-pic') : null);
+    }))
     : h('p.meta', null, t.noNews)));
 
   if (d.videos.length) {
