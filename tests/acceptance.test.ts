@@ -429,7 +429,7 @@ describe('sources are named, never shown as logos', () => {
     for (const page of [
       'site/brief/index.html',
       'site/stream/index.html', 'site/stream/stream.js', 'site/stream/stream.css',
-      'www/index.html', 'www/home.js', 'www/home.css',
+      'www/home.css',
       'site/atlas.css',
     ]) {
       // Comments are stripped first: this guard is about what the page loads, and it should
@@ -957,6 +957,21 @@ describe('the front page', () => {
     // No About page, and nothing pointing at one.
     expect(exists('www/about')).toBe(false);
     expect(read('www/index.html')).not.toMatch(/href="[^"#]*about/);
+  });
+
+  it('the entry covers use Commons pictures only, credited, and never an outlet\'s', () => {
+    const html = withoutOwnIcon(stripComments(read('www/index.html')));
+    for (const m of html.matchAll(/<img src="([^"]+)"/g)) expect(m[1]).toMatch(/^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\//);
+    expect(html).toMatch(/Diliff, CC BY-SA 4\.0 · Wikimedia Commons/);
+    const js = read('www/home.js');
+    expect([...js.matchAll(/<img src="\$\{esc\(([^)]+)\)\}"/g)].map((m) => m[1])).toEqual(['pic.src']);
+    for (const h of readJson('data/home.json').brief.headlines) {
+      if (h.picture) expect(h.picture.src).toMatch(/^https:\/\/(upload|thumb)\.wikimedia\.org\/wikipedia\/commons\//);
+    }
+    for (const file of ['www/index.html', 'www/home.js']) {
+      const text = withoutOwnIcon(stripComments(read(file)));
+      expect(text).not.toMatch(/logos?\.(svg|png|jpe?g|webp|gif)|(class|id)=["'][^"']*logo|clearbit|logo\.dev/i);
+    }
   });
 
   it('names the people behind it and how to reach them', () => {

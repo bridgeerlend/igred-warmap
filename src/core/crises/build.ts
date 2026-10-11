@@ -857,7 +857,13 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
     if (edition) {
       const lead = new Set(edition.leadStoryIds ?? []);
       const ordered = [...edition.stories.filter((st) => lead.has(st.id)), ...edition.stories.filter((st) => !lead.has(st.id))];
-      briefOut = { date: edition.date, headlines: ordered.slice(0, 6).map((st) => ({ headline: st.headline, publisher: outletName(st.headlineFrom.publisher, st.headlineFrom.url), url: st.headlineFrom.url })) };
+      briefOut = {
+        date: edition.date,
+        headlines: ordered.slice(0, 6).map((st) => {
+          const picture = pictureFor(st.headline);
+          return { headline: st.headline, publisher: outletName(st.headlineFrom.publisher, st.headlineFrom.url), url: st.headlineFrom.url, ...(picture ? { picture } : {}) };
+        }),
+      };
     }
   }
   writeArtifact(path.join(dataDir, 'home.json'), homeSnapshot, {

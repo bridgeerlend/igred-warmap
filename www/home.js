@@ -28,6 +28,7 @@ const STRINGS = {
     open: 'Open', read: 'Read', coming: 'Coming',
     switchLang: 'NO', dark: 'Dark', light: 'Light',
     navMap: 'Map', navAbout: 'About',
+    reportKicker: 'Half-yearly report', reportEdition: 'First edition', archive: 'Archive picture',
     feedbackHeading: 'Write to us', feedbackName: 'Name', feedbackEmail: 'E-mail, if you would like an answer',
     feedbackMessage: 'Message', feedbackSend: 'Send', feedbackThanks: 'Thank you. Your message has reached us.',
     feedbackFailed: 'That did not go through. Write to contact@igred.org instead.',
@@ -52,6 +53,7 @@ const STRINGS = {
     open: 'Åpne', read: 'Les', coming: 'Kommer',
     switchLang: 'EN', dark: 'Mørk', light: 'Lys',
     navMap: 'Kart', navAbout: 'Om oss',
+    reportKicker: 'Halvårlig rapport', reportEdition: 'Første utgave', archive: 'Arkivbilde',
     feedbackHeading: 'Skriv til oss', feedbackName: 'Navn', feedbackEmail: 'E-post, hvis du vil ha svar',
     feedbackMessage: 'Melding', feedbackSend: 'Send', feedbackThanks: 'Takk. Meldingen har kommet fram til oss.',
     feedbackFailed: 'Det gikk ikke. Skriv til contact@igred.org i stedet.',
@@ -104,13 +106,25 @@ function paintMapPreview() {
     <g>${dots}</g><g class="pv-rings">${rings}</g></svg>`;
 }
 
-/** The Brief entry's preview: today's lead headline, with its outlet named. */
+/**
+ * The Brief entry's cover: today's showcased story with its archive picture — the lead if it
+ * has one, otherwise the first of the top stories that does — and the headline over it.
+ */
 function paintBriefPreview() {
   const box = $('preview-brief');
-  const lead = home?.brief?.headlines?.[0];
-  if (!lead) { box.innerHTML = ''; return; }
+  const credit = $('preview-brief-credit');
+  const headlines = home?.brief?.headlines ?? [];
+  const lead = headlines.find((x) => x.picture) ?? headlines[0];
+  if (!lead) { box.innerHTML = ''; credit.textContent = ''; return; }
   const date = new Date(`${home.brief.date}T00:00:00Z`).toLocaleDateString(lang === 'nb' ? 'nb-NO' : 'en-GB', { day: 'numeric', month: 'long', timeZone: 'UTC' });
-  box.innerHTML = `<p class="meta">${esc(t().briefToday(date))}</p><p class="preview-headline">${esc(lead.headline)}</p><p class="meta">${esc(lead.publisher)}</p>`;
+  const pic = lead.picture;
+  box.classList.toggle('has-picture', !!pic);
+  box.innerHTML = (pic ? `<img src="${esc(pic.src)}" alt="${esc(pic.subject)}" loading="lazy" decoding="async" referrerpolicy="no-referrer">` : '') +
+    `<div class="cover-band"><p class="meta">${esc(t().briefToday(date))}</p><p class="preview-headline">${esc(lead.headline)}</p><p class="meta">${esc(lead.publisher)}</p></div>`;
+  // Plain text: the whole entry is already a link, and links cannot nest.
+  credit.textContent = pic
+    ? `${t().archive}: ${pic.subject}${[pic.author, pic.license].filter(Boolean).length ? ` · ${[pic.author, pic.license].filter(Boolean).join(', ')}` : ''} · Wikimedia Commons`
+    : '';
 }
 
 function setupToggles() {
@@ -155,7 +169,7 @@ async function enableKnowledgeBase() {
     const link = document.createElement('a');
     link.className = 'entry';
     link.href = 'knowledge/';
-    link.innerHTML = entry.innerHTML.replace(/<p class="coming"[^>]*>[\s\S]*?<\/p>/, '');
+    link.innerHTML = entry.innerHTML.replace(/<span class="coming"[^>]*>[\s\S]*?<\/span>/g, '');
     entry.replaceWith(link);
   } catch {
     // stays as coming

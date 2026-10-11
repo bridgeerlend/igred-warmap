@@ -289,7 +289,7 @@ export const homeSnapshot = z.object({
   points: z.array(z.tuple([z.number().int(), z.number().int(), z.number().int(), z.number().int(), z.number().int()])),
   brief: z.object({
     date: z.string(),
-    headlines: z.array(z.object({ headline: z.string(), publisher: z.string(), url: z.url() })),
+    headlines: z.array(z.object({ headline: z.string(), publisher: z.string(), url: z.url(), picture: subjectPicture.optional() })),
   }).nullable(),
 });
 
