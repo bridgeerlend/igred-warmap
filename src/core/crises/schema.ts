@@ -120,6 +120,8 @@ export const crisisDetail = z.object({
    * `other` is what the register itself records for non-state and one-sided violence. The
    * register carries no figure for state-based wars, so the two are never summed.
    */
+  /** The nearest chokepoint or energy route, when one is close enough to matter (config/economy.json). */
+  nearestRoute: z.object({ id: z.string(), distanceKm: z.number().int() }).nullable(),
   ucdpFatalities: z.object({
     battle: z.object({ total: z.number().int(), years: z.string(), url: z.url() }).nullable(),
     other: z.object({ total: z.number().int(), years: z.string(), conflicts: z.number().int() }).nullable(),
@@ -316,4 +318,20 @@ export const storyPictures = z.object({
   artifactVersion: z.literal(1),
   generatedAt: iso,
   stories: z.record(z.string(), subjectPicture),
+});
+
+/** The trade and energy layer: config/economy.json, with the week's incidents near each point. */
+export const economyLayer = z.object({
+  artifactVersion: z.literal(1),
+  generatedAt: iso,
+  radiusKm: z.number(),
+  points: z.array(z.object({
+    id: z.string(), name: z.string(), nameNb: z.string(), kind: z.enum(['chokepoint', 'pipeline', 'port']),
+    lon: z.number(), lat: z.number(),
+    carries: z.object({ en: z.string(), nb: z.string() }),
+    figure: z.object({ value: z.number(), text: z.object({ en: z.string(), nb: z.string() }), year: z.number().int(), source: z.string(), url: z.url() }),
+    /** Incidents within radiusKm in the past seven days, and how many of them two or more outlets carried. */
+    near7d: z.number().int(),
+    nearCorroborated7d: z.number().int(),
+  })),
 });

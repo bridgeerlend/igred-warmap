@@ -89,6 +89,7 @@ export async function createMap(container, options = {}) {
         countries: { type: 'geojson', data: world },
         events: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
         pulse: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
+        economy: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
       },
       layers: [
         { id: 'sea', type: 'background', paint: { 'background-color': p.bg } },
@@ -110,6 +111,15 @@ export async function createMap(container, options = {}) {
         {
           id: 'ev-verified', type: 'circle', source: 'events', filter: ['==', ['get', 'v'], 1],
           paint: { 'circle-radius': radius(1.8), 'circle-color': p.verified, 'circle-stroke-color': p.verified, 'circle-stroke-width': 1, 'circle-stroke-opacity': 0.5 },
+        },
+        // Trade and energy: thin rings in the reader's blue, never mistaken for an incident.
+        {
+          id: 'econ', type: 'circle', source: 'economy', layout: { visibility: 'none' },
+          paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 1, 6, 6, 11], 'circle-color': p.bg, 'circle-opacity': 0, 'circle-stroke-color': p.pick, 'circle-stroke-width': 1.3 },
+        },
+        {
+          id: 'econ-core', type: 'circle', source: 'economy', layout: { visibility: 'none' },
+          paint: { 'circle-radius': 1.6, 'circle-color': p.pick },
         },
         { id: 'pulse', type: 'circle', source: 'pulse', paint: { 'circle-radius': 4, 'circle-color': 'rgba(0,0,0,0)', 'circle-stroke-color': p.s[2], 'circle-stroke-width': 1, 'circle-stroke-opacity': 0 } },
       ],
@@ -156,9 +166,18 @@ export async function createMap(container, options = {}) {
       map.setPaintProperty('ev-verified', 'circle-color', q.verified);
       map.setPaintProperty('ev-verified', 'circle-stroke-color', q.verified);
       map.setPaintProperty('pulse', 'circle-stroke-color', q.s[2]);
+      map.setPaintProperty('econ', 'circle-stroke-color', q.pick);
+      map.setPaintProperty('econ-core', 'circle-color', q.pick);
       if (map.hasImage('stipple')) map.removeImage('stipple');
       const { image, ratio } = stippleImage(q);
       map.addImage('stipple', image, { pixelRatio: ratio });
+    },
+
+    setEconomy(points, visible) {
+      map.getSource('economy').setData({ type: 'FeatureCollection', features: (points ?? []).map((pt, i) => ({
+        type: 'Feature', geometry: { type: 'Point', coordinates: [pt.lon, pt.lat] }, properties: { i },
+      })) });
+      for (const id of ['econ', 'econ-core']) map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
     },
 
     setEvents(features) {
@@ -257,6 +276,10 @@ export async function createMap(container, options = {}) {
     onEventClick(handler) {
       map.on('click', (ev) => {
         const pad = 6;
+        const box = [[ev.point.x - pad, ev.point.y - pad], [ev.point.x + pad, ev.point.y + pad]];
+        const route = map.getLayer('econ') && map.getLayoutProperty('econ', 'visibility') === 'visible'
+          ? map.queryRenderedFeatures(box, { layers: ['econ'] })[0] : null;
+        if (route) { handler({ kind: 'route', feature: route }); return; }
         const hits = map.queryRenderedFeatures([[ev.point.x - pad, ev.point.y - pad], [ev.point.x + pad, ev.point.y + pad]], { layers: EVENT_LAYERS });
         if (hits.length) {
           // The brightest incident under the pointer, not merely the topmost.
@@ -267,7 +290,7 @@ export async function createMap(container, options = {}) {
         const land = map.queryRenderedFeatures(ev.point, { layers: ['land-hit'] })[0];
         if (land) handler({ kind: 'country', fips: land.properties.fips, name: land.properties.name });
       });
-      for (const id of EVENT_LAYERS) {
+      for (const id of [...EVENT_LAYERS, 'econ']) {
         map.on('mouseenter', id, () => { map.getCanvas().style.cursor = 'pointer'; });
         map.on('mouseleave', id, () => { map.getCanvas().style.cursor = ''; });
       }

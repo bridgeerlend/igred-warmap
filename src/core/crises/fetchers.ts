@@ -252,6 +252,9 @@ export async function wikipedia(title: string): Promise<{ en?: WikiSummary; nb?:
 
 export const WORLD_BANK_INDICATORS = [
   { id: 'SP.POP.TOTL', label: 'Population', labelNb: 'Befolkning', unit: 'people' },
+  { id: 'NY.GDP.MKTP.CD', label: 'GDP (US$)', labelNb: 'BNP (USD)', unit: 'usd' },
+  { id: 'NE.EXP.GNFS.ZS', label: 'Exports (share of GDP)', labelNb: 'Eksport (andel av BNP)', unit: 'pct' },
+  { id: 'TM.VAL.FOOD.ZS.UN', label: 'Food imports (share of merchandise imports)', labelNb: 'Matimport (andel av vareimporten)', unit: 'pct' },
   { id: 'NY.GDP.PCAP.CD', label: 'GDP per person (US$)', labelNb: 'BNP per innbygger (USD)', unit: 'usd' },
   { id: 'NY.GDP.MKTP.KD.ZG', label: 'GDP growth', labelNb: 'BNP-vekst', unit: 'pct' },
   { id: 'FP.CPI.TOTL.ZG', label: 'Inflation', labelNb: 'Inflasjon', unit: 'pct' },

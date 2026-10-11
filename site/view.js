@@ -77,14 +77,14 @@ export function renderCrisis(container, ctx, entry, detail) {
       daily: inc.daily(own),
     }),
     ...(detail ? tabs(ctx, [
-      { id: 'overview', label: t.overview, render: () => overview(detail) },
+      { id: 'overview', label: t.overview, render: () => overview(detail, ctx) },
       { id: 'news', label: t.news, render: () => news(detail) },
       { id: 'places', label: t.places, render: () => places(ctx, detail) },
     ]) : [h('p.meta.cv-loading', null, '…')]),
   );
 }
 
-function overview(d) {
+function overview(d, ctx) {
   const t = prefs.t;
   const nb = prefs.lang === 'nb';
   const out = [];
@@ -132,9 +132,31 @@ function overview(d) {
           typeof c.fatalities === 'number' ? t.deaths(fmtNum(c.fatalities), c.fatalitiesAsOf?.slice(0, 4)) : null].filter(Boolean).join(' · ')))))));
   }
 
-  if (d.indicators.length) {
-    const multi = d.indicators.some((ind) => ind.values.length > 1);
-    out.push(section(t.figures, h('table.cv-table', null, h('tbody', null, d.indicators.flatMap((ind) =>
+  // What is at stake: the economy and the people, each figure with its source and year,
+  // and the nearest trade or energy route when one is close.
+  const STAKE = ['NY.GDP.MKTP.CD', 'NY.GDP.PCAP.CD', 'NE.EXP.GNFS.ZS', 'TM.VAL.FOOD.ZS.UN', 'SM.POP.REFG.OR', 'VC.IDP.TOCV'];
+  const SOURCE = { 'SM.POP.REFG.OR': 'UNHCR, via the World Bank', 'VC.IDP.TOCV': 'IDMC, via the World Bank' };
+  const stakeRows = STAKE.map((id) => d.indicators.find((ind) => ind.id === id)).filter(Boolean);
+  const route = d.nearestRoute && ctx?.economy?.points.find((pt) => pt.id === d.nearestRoute.id);
+  if (stakeRows.length || route) {
+    const multi = stakeRows.some((ind) => ind.values.length > 1);
+    out.push(section(t.stake,
+      stakeRows.length ? h('table.cv-table', null, h('tbody', null, stakeRows.flatMap((ind) =>
+        ind.values.map((v, i) => h('tr', null,
+          h('th', { scope: 'row' }, i === 0 ? (nb ? ind.labelNb : ind.label) : ''),
+          multi ? h('td.meta', null, v.country) : null,
+          h('td.num', null, fmtBig(v.value, ind.unit)),
+          h('td.meta', null, v.year, ' · ', h('a', { href: ind.url, target: '_blank', rel: 'noopener' }, SOURCE[ind.id] ?? 'World Bank'))))))) : null,
+      route ? h('p.cv-route', null, h('span.meta', null, `${nb ? 'Nærmeste rute' : 'Nearest route'} `),
+        t.nearestRoute(nb ? route.nameNb : route.name, fmtNum(d.nearestRoute.distanceKm)), '. ',
+        h('b', null, nb ? route.figure.text.nb : route.figure.text.en), ` (${route.figure.year}, `,
+        h('a', { href: route.figure.url, target: '_blank', rel: 'noopener' }, route.figure.source), ').') : null));
+  }
+
+  const rest = d.indicators.filter((ind) => !STAKE.includes(ind.id));
+  if (rest.length) {
+    const multi = rest.some((ind) => ind.values.length > 1);
+    out.push(section(t.figures, h('table.cv-table', null, h('tbody', null, rest.flatMap((ind) =>
       ind.values.map((v, i) => h('tr', null,
         h('th', { scope: 'row' }, i === 0 ? h('a', { href: ind.url, target: '_blank', rel: 'noopener' }, nb ? ind.labelNb : ind.label) : ''),
         multi ? h('td.meta', null, v.country) : null,

@@ -29,6 +29,8 @@ const state = {
   details: new Map(),
   playing: null,
   types: null,         // chosen incident types, or null for all
+  economy: null,       // data/economy.json
+  trade: false,        // the trade and energy layer
 };
 
 const narrow = () => matchMedia('(max-width: 899px)').matches;
@@ -48,6 +50,7 @@ function readHash() {
   state.tab = q.get('tab');
   const types = q.get('types');
   state.types = types ? types.split(',').filter(Boolean) : null;
+  state.trade = (q.get('layers') ?? '').split(',').includes('trade');
   const v = q.get('v')?.split(',').map(Number);
   return v && v.length === 3 && v.every(Number.isFinite) ? { center: [v[0], v[1]], zoom: v[2] } : null;
 }
@@ -63,6 +66,7 @@ function writeHash() {
     if (state.w !== 7) q.set('w', String(state.w));
     if (state.tab && state.tab !== 'overview' && state.crisis) q.set('tab', state.tab);
     if (state.types) q.set('types', state.types.join(','));
+    if (state.trade) q.set('layers', 'trade');
     if (atlas) {
       const c = atlas.map.getCenter();
       q.set('v', `${c.lng.toFixed(2)},${c.lat.toFixed(2)},${atlas.map.getZoom().toFixed(2)}`);
@@ -256,7 +260,7 @@ function showIncident(feature) {
 
 function detailCtx() {
   return {
-    inc: state.inc, w: state.w, asOf: state.asOf,
+    inc: state.inc, w: state.w, asOf: state.asOf, economy: state.economy,
     get cvTab() { return state.tab; },
     set cvTab(v) { state.tab = v; writeHash(); },
     onBack: narrow() ? null : closeDetail,
@@ -474,6 +478,27 @@ function renderFilter() {
     } }),
     h('span.mapfilter-name', null, t.types[k] ?? k),
     h('span.num.meta', null, fmtNum(counts.get(k) ?? 0))))));
+  $('mapfilter-layers').replaceChildren(...(state.economy ? [h('label.mapfilter-item', null,
+    h('input', { type: 'checkbox', checked: state.trade, onchange: (ev) => { state.trade = ev.target.checked; atlas?.setEconomy(state.economy.points, state.trade); writeHash(); } }),
+    h('span.mapfilter-name', null, t.tradeLayer),
+    h('span.mapfilter-ring', { 'aria-hidden': 'true' }))] : []));
+}
+
+/** A chokepoint or route: what goes through it, one sourced figure, and the week's incidents nearby. */
+function showRoute(feature) {
+  const t = prefs.t;
+  const nb = prefs.lang === 'nb';
+  const pt = state.economy.points[feature.properties.i];
+  const node = h('div.pop', null,
+    h('p.meta', null, t.routeKind[pt.kind] ?? ''),
+    h('p.pop-place', null, nb ? pt.nameNb : pt.name),
+    h('p', null, nb ? pt.carries.nb : pt.carries.en),
+    h('p.pop-src', null, h('b', null, nb ? pt.figure.text.nb : pt.figure.text.en), ` (${pt.figure.year}) · `,
+      h('a', { href: pt.figure.url, target: '_blank', rel: 'noopener' }, pt.figure.source)),
+    h('p.meta.pop-near', null, pt.near7d ? t.nearIncidents(fmtNum(pt.near7d), fmtNum(pt.nearCorroborated7d), state.economy.radiusKm) : t.noNearIncidents(state.economy.radiusKm)));
+  popup?.remove();
+  popup = new window.maplibregl.Popup({ closeButton: true, maxWidth: '320px', offset: 12, className: 'igred-pop', focusAfterOpen: false })
+    .setLngLat(feature.geometry.coordinates).setDOMContent(node).addTo(atlas.map);
 }
 
 function applyTypes() {
@@ -594,9 +619,11 @@ async function start() {
   });
 
   try {
-    const [index, events, countries] = await Promise.all([
+    const [index, events, countries, economy] = await Promise.all([
       getJson('crises.json'), getJson('map-events.json'), getJson('countries.json').catch(() => null),
+      getJson('economy.json').catch(() => null),
     ]);
+    state.economy = economy;
     state.index = index;
     state.inc = new Incidents(events);
     state.countries = countries;
@@ -630,10 +657,12 @@ async function start() {
   atlas = await mapReady;
   atlas.setMarkers(state.index.crises.map((c) => ({ id: c.id, label: shortName(c), center: c.center })), openCrisis);
   atlas.onEventClick((hit) => {
-    if (hit.kind === 'event') showIncident(hit.feature);
+    if (hit.kind === 'route') showRoute(hit.feature);
+    else if (hit.kind === 'event') showIncident(hit.feature);
     else if (hit.kind === 'country') openCountry(hit.fips, { frame: false });
   });
   atlas.map.on('moveend', writeHash);
+  if (state.economy) atlas.setEconomy(state.economy.points, state.trade);
   $('zoom-in').addEventListener('click', () => atlas.map.zoomIn());
   $('zoom-out').addEventListener('click', () => atlas.map.zoomOut());
   $('zoom-reset').addEventListener('click', () => atlas.fit(WORLD, padding()));

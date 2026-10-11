@@ -859,6 +859,38 @@ describe('the incident-type filter', () => {
   });
 });
 
+describe('the trade and energy layer', () => {
+  it('every point has a figure with its year, its source and a link; none is estimated', () => {
+    const cfg = readJson('config/economy.json');
+    const ids = cfg.points.map((p: { id: string }) => p.id);
+    for (const id of ['hormuz', 'bab-el-mandeb', 'suez', 'turkish-straits', 'malacca', 'panama']) expect(ids).toContain(id);
+    for (const p of cfg.points) {
+      expect(p.figure.url).toMatch(/^https:\/\/www\.eia\.gov\//);
+      expect(p.figure.year).toBeGreaterThan(2000);
+      expect(p.figure.source.length).toBeGreaterThan(3);
+      // The figure in the sentence is the figure in the field.
+      expect(p.figure.text.en).toContain(String(p.figure.value).replace(/\.0$/, ''));
+      expect(p.carries.en.length).toBeGreaterThan(10);
+      expect(p.carries.nb.length).toBeGreaterThan(10);
+    }
+    const layer = readJson('data/economy.json');
+    expect(layer.radiusKm).toBe(300);
+    for (const p of layer.points) expect(p.near7d).toBeGreaterThanOrEqual(p.nearCorroborated7d);
+  });
+
+  it('is drawn as thin rings in the reader\'s blue, off until chosen, and says what is at stake in each crisis', () => {
+    const core = read('site/mapcore.js');
+    expect(core).toMatch(/id: 'econ', type: 'circle', source: 'economy', layout: \{ visibility: 'none' \}/);
+    expect(core).toMatch(/'circle-opacity': 0, 'circle-stroke-color': p\.pick, 'circle-stroke-width': 1\.3/);
+    expect(read('site/common.js')).toMatch(/tradeLayer: 'Handel og energi'/);
+    expect(read('site/app.js')).toMatch(/if \(state\.trade\) q\.set\('layers', 'trade'\)/);
+    const view = read('site/view.js');
+    expect(view).toMatch(/const STAKE = \['NY\.GDP\.MKTP\.CD', 'NY\.GDP\.PCAP\.CD', 'NE\.EXP\.GNFS\.ZS', 'TM\.VAL\.FOOD\.ZS\.UN', 'SM\.POP\.REFG\.OR', 'VC\.IDP\.TOCV'\]/);
+    expect(view).toMatch(/h\('td\.meta', null, v\.year, ' · ', h\('a', \{ href: ind\.url/);
+    expect(readJson('data/crises/yemen.json').nearestRoute.id).toBe('bab-el-mandeb');
+  });
+});
+
 describe('the crisis and country views', () => {
   it('link everything they report to its source', () => {
     const view = read('site/view.js');

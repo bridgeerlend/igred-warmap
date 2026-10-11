@@ -8,7 +8,7 @@ import {
   WORLD_BANK_INDICATORS, type WikiSummary, type WorldBankData,
 } from './fetchers.js';
 import {
-  countriesIndex, crisisDetail, homeSnapshot, storyPictures, wireFile, type SubjectPicture, crisisIndex, mapEvents, MAP_EVENT_FIELDS,
+  countriesIndex, crisisDetail, economyLayer, homeSnapshot, storyPictures, wireFile, type SubjectPicture, crisisIndex, mapEvents, MAP_EVENT_FIELDS,
   type CrisisArticle, type CrisisDetail, type CrisisImage, type CrisisIndexEntry, type CrisisIndicator,
 } from './schema.js';
 import { currentSummary, runSummaries, type SummaryInput, type SummarySettings, type SummaryState } from './summary.js';
@@ -119,6 +119,19 @@ export function readVerified(): Record<string, { note: string; source: string; v
 /* ---------- helpers ---------------------------------------------------- */
 
 const DAY = 86_400_000;
+
+/** Great-circle distance in kilometres. */
+function kmBetween(lon1: number, lat1: number, lon2: number, lat2: number): number {
+  const r = (d: number) => (d * Math.PI) / 180;
+  const a = Math.sin(r(lat2 - lat1) / 2) ** 2 + Math.cos(r(lat1)) * Math.cos(r(lat2)) * Math.sin(r(lon2 - lon1) / 2) ** 2;
+  return 6371 * 2 * Math.asin(Math.sqrt(a));
+}
+
+interface EconomyPoint {
+  id: string; name: string; nameNb: string; kind: 'chokepoint' | 'pipeline' | 'port'; lon: number; lat: number;
+  carries: { en: string; nb: string };
+  figure: { value: number; text: { en: string; nb: string }; year: number; source: string; url: string };
+}
 
 /** The thirty days ending today (UTC), oldest first. */
 function daysOf(nowRef: number): string[] {
@@ -247,6 +260,7 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
     ...(readJson<Partial<Cache>>(cacheFile) ?? {}),
   } as Cache;
   const summaryStates = readJson<Record<string, SummaryState>>(summariesFile) ?? {};
+  const economy = readJson<{ points: EconomyPoint[] }>(path.join(configDir, 'economy.json'))?.points ?? [];
   const preferredNames = (settings.summary.preferredOutlets?.names ?? []).map((n) => n.toLowerCase());
   const preferredDomains = settings.summary.preferredOutlets?.domains ?? [];
   /** An established agency or newsroom, by name or by the domain it publishes from. */
@@ -295,7 +309,8 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
 
   /* ---- outside sources, refreshed on their own clocks ---- */
   if (!options.offline) {
-    if (hoursSince(cache.worldBank?.at, now) > settings.worldBankRefreshHours) {
+    const wbMissing = WORLD_BANK_INDICATORS.some((ind) => !cache.worldBank?.data?.[ind.id]);
+    if (wbMissing || hoursSince(cache.worldBank?.at, now) > settings.worldBankRefreshHours) {
       const iso3 = [...new Set(defs.flatMap((d) => d.iso3))];
       const wb = await worldBank(iso3);
       if (wb) cache.worldBank = { at: generatedAt, data: wb };
@@ -687,6 +702,13 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
       bbox,
       stats,
       status,
+      nearestRoute: (() => {
+        // The closest chokepoint or route to where the crisis's incidents are, if within 1,500 km.
+        const best = economy
+          .map((pt) => ({ id: pt.id, distanceKm: Math.round(kmBetween(center[0], center[1], pt.lon, pt.lat)) }))
+          .sort((a, b) => a.distanceKm - b.distanceKm)[0];
+        return best && best.distanceKm <= 1500 ? best : null;
+      })(),
       summary: null,
       ucdpFatalities,
       background,
@@ -814,6 +836,17 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
   const wirePath = path.join(dataDir, 'wire.json');
   writeFileSync(`${wirePath}.tmp`, JSON.stringify(wirePayload));
   renameSync(`${wirePath}.tmp`, wirePath);
+
+  /* the trade and energy layer, with the week's incidents near each point */
+  const RADIUS_KM = 300;
+  const week = events.filter((e) => nowRef - Date.parse(e.occurredAt) < 7 * DAY);
+  writeArtifact(path.join(dataDir, 'economy.json'), economyLayer, {
+    artifactVersion: 1, generatedAt, radiusKm: RADIUS_KM,
+    points: economy.map((pt) => {
+      const near = week.filter((e) => kmBetween(pt.lon, pt.lat, e.location.lon, e.location.lat) <= RADIUS_KM);
+      return { ...pt, near7d: near.length, nearCorroborated7d: near.filter((e) => e.distinctPublishers >= 2).length };
+    }),
+  });
 
   /* every country the map can open: its active conflicts on the register */
   const countriesOut: Record<string, { name: string; nameNb: string; crisis: string | null; conflicts: { name: string; type: string; startYear?: string; fatalities?: number; fatalitiesAsOf?: string }[] }> = {};
