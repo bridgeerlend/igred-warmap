@@ -1187,6 +1187,21 @@ describe('the front page', () => {
 });
 
 describe('reports on igred.org', () => {
+  it('igred.org links to the reports and the method from its top menu', () => {
+    for (const [file, up] of [['www/index.html', ''], ['www/knowledge/index.html', '../']] as const) {
+      const html = read(file);
+      expect(html).toContain(`<a class="link-button" href="${up}reports/" data-i18n="navReports">Reports</a>`);
+      expect(html).toContain('<a class="link-button" href="https://map.igred.org/metode/" data-i18n="navMethod">Method</a>');
+    }
+    expect(read('www/home.js')).toMatch(/navReports: 'Rapporter', navMethod: 'Metode'/);
+  });
+
+  it('a build without Chromium still succeeds, without the PDF button', () => {
+    const netlify = read('netlify.toml');
+    expect(netlify).toMatch(/\(npx playwright install chromium --only-shell \|\| echo [^)]*\) && npx tsx scripts\/build-reports\.ts --pdf/);
+    expect(read('scripts/build-reports.ts')).toMatch(/await browser\?\.close\(\);\s*server\.close\(\);/);
+  });
+
   const build = () => execFileSync('npx', ['tsx', 'scripts/build-reports.ts'], { cwd: repoRoot, encoding: 'utf-8' });
 
   it('builds the list and one page per report, half-year reports first and larger', () => {

@@ -44,3 +44,9 @@
 .kb-dialog .actions { display: flex; justify-content: space-between; align-items: baseline; margin-top: 18px; gap: 16px; flex-wrap: wrap; }
 .kb-credit { font-size: 10px; }
 .kb-book.is-typeset .t2 { display: none; }
+
+/* Six or seven items in the top menu: on a phone they sit closer and may take two lines. */
+@media (max-width: 460px) {
+  .masthead .controls { gap: 6px 11px; flex-wrap: wrap; justify-content: flex-end; }
+  .masthead .controls .link-button { letter-spacing: 0.1em; }
+}

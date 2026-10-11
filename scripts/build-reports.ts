@@ -97,7 +97,7 @@ const LIKELIHOOD: Likelihood[] = ['very-unlikely', 'unlikely', 'even', 'likely',
 
 const T = {
   nb: {
-    halvar: 'Halvårsrapport', analyse: 'Analyse', reports: 'Rapporter', map: 'Kart', brief: 'Brief',
+    halvar: 'Halvårsrapport', analyse: 'Analyse', reports: 'Rapporter', map: 'Kart', brief: 'Brief', methodNav: 'Metode',
     light: 'Lys', dark: 'Mørk', version: 'Versjon', by: 'Av', and: 'og', pdf: 'Last ned PDF',
     cite: 'Slik siterer du', contents: 'Innhold', assessments: 'Hovedvurderinger', risks: 'Risikoregister',
     regions: 'Regioner', economy: 'Økonomisk utvikling', essay: 'Temaessay', misses: 'Hva vi bommet på',
@@ -120,7 +120,7 @@ const T = {
     months: ['januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember'],
   },
   en: {
-    halvar: 'Half-year report', analyse: 'Analysis', reports: 'Reports', map: 'Map', brief: 'Brief',
+    halvar: 'Half-year report', analyse: 'Analysis', reports: 'Reports', map: 'Map', brief: 'Brief', methodNav: 'Method',
     light: 'Light', dark: 'Dark', version: 'Version', by: 'By', and: 'and', pdf: 'Download PDF',
     cite: 'How to cite', contents: 'Contents', assessments: 'Key judgements', risks: 'Risk register',
     regions: 'Regions', economy: 'Economic developments', essay: 'Essay', misses: 'What we got wrong',
@@ -484,6 +484,7 @@ function masthead(up: string, w: Words, current: boolean): string {
     <a class="link-button" href="https://map.igred.org/">${esc(w.map)}</a>
     <a class="link-button" href="https://map.igred.org/brief/">${esc(w.brief)}</a>
     <a class="link-button" href="${up}reports/"${current ? ' aria-current="true"' : ''}>${esc(w.reports)}</a>
+    <a class="link-button" href="https://map.igred.org/metode/">${esc(w.methodNav)}</a>
     <button type="button" class="link-button" id="theme" data-light="${esc(w.light)}" data-dark="${esc(w.dark)}">${esc(w.light)}</button>
   </nav>
 </header>`;
@@ -637,8 +638,9 @@ async function printPdfs(reports: Report[]): Promise<void> {
   });
   await new Promise<void>((resolve) => server.listen(0, resolve));
   const port = (server.address() as { port: number }).port;
-  const browser = await chromium.launch();
+  let browser: Awaited<ReturnType<typeof chromium.launch>> | null = null;
   try {
+    browser = await chromium.launch();
     for (const r of reports) {
       const page = await browser.newPage();
       await page.goto(`http://localhost:${port}/reports/${r.slug}/`, { waitUntil: 'networkidle' });
@@ -649,7 +651,8 @@ async function printPdfs(reports: Report[]): Promise<void> {
       console.log(`  pdf: reports/${r.slug}/igred-${r.slug}.pdf`);
     }
   } finally {
-    await browser.close();
+    // Closed whatever happened, or the build would never exit.
+    await browser?.close();
     server.close();
   }
 }
@@ -673,4 +676,16 @@ for (const r of reports) {
 }
 writeFileSync(path.join(OUT, 'index.html'), listPage(reports));
 console.log(`reports: ${reports.length} built (${reports.filter((r) => r.type === 'halvar').length} half-year, ${reports.filter((r) => r.type === 'analyse').length} analyses)`);
-if (PDF) await printPdfs(reports);
+if (PDF) {
+  try {
+    await printPdfs(reports);
+  } catch (error) {
+    console.log(`reports: no PDFs this build (${(error as Error).message.split('\n')[0]})`);
+  }
+  // A report without its PDF loses the button rather than offering a broken link.
+  for (const r of reports) {
+    if (existsSync(path.join(OUT, r.slug, `igred-${r.slug}.pdf`))) continue;
+    const file = path.join(OUT, r.slug, 'index.html');
+    writeFileSync(file, readFileSync(file, 'utf-8').replace(/<a class="link-button" href="igred-[^"]+\.pdf" download>[^<]*<\/a> /, ''));
+  }
+}

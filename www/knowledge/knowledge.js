@@ -13,14 +13,14 @@ const STRINGS = {
     argues: 'What it argues', holds: 'Where it holds', empty: 'The list is being written.',
     catalogue: 'Open Library', close: 'Close', credit: 'Covers and catalogue pages: Open Library.',
     kind: { book: 'Book', article: 'Article', research: 'Research' },
-    navMap: 'Map', switchLang: 'NO', dark: 'Dark', light: 'Light',
+    navMap: 'Map', navReports: 'Reports', navMethod: 'Method', switchLang: 'NO', dark: 'Dark', light: 'Light',
   },
   nb: {
     intro: 'Bøker, artikler og forskning verdt å lese, hver med vår egen vurdering av hva den hevder og hvor den holder.',
     argues: 'Hva den hevder', holds: 'Hvor den holder', empty: 'Listen skrives nå.',
     catalogue: 'Open Library', close: 'Lukk', credit: 'Omslag og katalogsider: Open Library.',
     kind: { book: 'Bok', article: 'Artikkel', research: 'Forskning' },
-    navMap: 'Kart', switchLang: 'EN', dark: 'Mørk', light: 'Lys',
+    navMap: 'Kart', navReports: 'Rapporter', navMethod: 'Metode', switchLang: 'EN', dark: 'Mørk', light: 'Lys',
   },
 };
 let lang = safeGet('igred-lang') === 'nb' ? 'nb' : 'en';

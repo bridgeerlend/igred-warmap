@@ -8,13 +8,18 @@
   # www/ is plain HTML, CSS and ES modules. The one build step is the reports: Markdown from
   # the editor in www/content/reports/ becomes www/reports/ and a PDF of each report, printed
   # by Playwright from the same page. Nothing else is generated.
-  command = "npx playwright install chromium --only-shell && npx tsx scripts/build-reports.ts --pdf"
+  # If Chromium cannot be installed the reports still build, without a PDF and without the
+  # button: a failed build would cost the same credits as a good one.
+  command = "(npx playwright install chromium --only-shell || echo 'Chromium not installed: reports without PDF') && npx tsx scripts/build-reports.ts --pdf"
 
   # Netlify builds on every push by default, and the pipeline commits data every hour. The
   # script skips those, and skips every draft branch the editor makes (cms/...), every deploy
   # preview and every branch deploy: only a change to what igred.org is made from, on main,
   # builds. Exit 0 means "skip this build".
   ignore = "sh scripts/netlify-ignore.sh"
+
+[build.environment]
+  NODE_VERSION = "22"
 
 # Drafts are branches with pull requests (Decap's editorial workflow). They are never built:
 # the ignore script skips them, and these contexts are told the same in case it is bypassed.
