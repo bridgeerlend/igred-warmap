@@ -23,6 +23,7 @@ export interface SourceConfig {
   page: string;
   file?: string;
   license?: string;
+  licenseUrl?: string;
   edition?: string;
   skip?: string;
 }
@@ -34,6 +35,7 @@ export interface ManifestEntry {
   url?: string;
   file?: string;
   license?: string;
+  licenseUrl?: string;
   edition?: string;
   indicator?: string;
   status: 'ok' | 'skipped' | 'failed';
@@ -68,10 +70,11 @@ export async function ensureSources(configs: SourceConfig[], log: (line: string)
   mkdirSync(SOURCES_DIR, { recursive: true });
   const manifest = readManifest();
   for (const c of configs) {
-    const base = { id: c.id, name: c.name, page: c.page, ...(c.url ? { url: c.url } : {}), ...(c.file ? { file: c.file } : {}), ...(c.license ? { license: c.license } : {}), ...(c.edition ? { edition: c.edition } : {}), ...(c.indicator ? { indicator: c.indicator } : {}) };
+    const base = { id: c.id, name: c.name, page: c.page, ...(c.url ? { url: c.url } : {}), ...(c.file ? { file: c.file } : {}), ...(c.license ? { license: c.license } : {}), ...(c.licenseUrl ? { licenseUrl: c.licenseUrl } : {}), ...(c.edition ? { edition: c.edition } : {}), ...(c.indicator ? { indicator: c.indicator } : {}) };
     if (c.skip) { manifest[c.id] = { ...base, status: 'skipped', reason: c.skip }; continue; }
     const target = path.join(SOURCES_DIR, c.file!);
-    if (existsSync(target) && manifest[c.id]?.status === 'ok' && manifest[c.id]?.edition === c.edition) continue;
+    // Already here: only the description (licence, link) is brought up to date with the config.
+    if (existsSync(target) && manifest[c.id]?.status === 'ok' && manifest[c.id]?.edition === c.edition) { manifest[c.id] = { ...manifest[c.id]!, ...base }; continue; }
     try {
       let body = await fetchText(c.url!, { retries: 2, timeoutMs: 90_000 });
       if (c.id === 'fh') body = freedomHouseCsv(body);

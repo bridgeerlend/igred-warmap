@@ -112,12 +112,15 @@ describe('the election page and its data', () => {
 
   it('records each yearly dataset with its licence, and says which could not be downloaded and why', () => {
     const manifest = JSON.parse(read('data/elections/sources/manifest.json')).sources;
-    for (const id of ['vdem', 'pei', 'rsf', 'fh', 'geonames']) {
+    for (const id of ['vdem', 'pei', 'fh', 'geonames']) {
       expect(manifest[id].status).toBe('ok');
       expect(manifest[id].license).toBeTruthy();
       expect(manifest[id].edition).toBeTruthy();
     }
-    for (const id of ['nelda', 'ecav', 'idea']) {
+    // RSF's licence forbids adapting the Index, which a composite score does.
+    expect(manifest.rsf.reason).toMatch(/no derivatives/);
+    expect(read('src/core/elections/build.ts')).not.toMatch(/rsf-2026/);
+    for (const id of ['nelda', 'ecav', 'idea', 'rsf']) {
       expect(manifest[id].status).toBe('skipped');
       expect(manifest[id].reason.length).toBeGreaterThan(20);
     }

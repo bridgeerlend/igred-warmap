@@ -22,7 +22,7 @@ const S = {
     missing: 'No data', weight: (w) => `weight ${w}`,
     method: 'How the score is made',
     methodIntro: 'Each indicator is a risk from 0 to 100, and the score is their weighted mean. An indicator without data for a country is left out and the others weigh more; with less than half of the weight there is no score. Below {e} is low, from {e} elevated, from {h} high.',
-    sourcesH: 'Sources', skipped: 'Not used', skipNote: 'could not be downloaded automatically:',
+    sourcesH: 'Sources', skipped: 'Not used',
     lead: 'The figures are the sources\' own. The scales that turn them into risk are in config/elections.json.',
     ind: {
       quality: 'Election quality', unrest: 'Unrest at the last election', press: 'Press freedom and rights',
@@ -64,7 +64,7 @@ const S = {
     missing: 'Ingen data', weight: (w) => `vekt ${w}`,
     method: 'Slik regnes scoren',
     methodIntro: 'Hver indikator er en risiko fra 0 til 100, og scoren er det vektede snittet. En indikator uten data for landet utelates, og de andre veier mer; med under halvparten av vekten blir det ingen score. Under {e} er lav, fra {e} forhøyet, fra {h} høy.',
-    sourcesH: 'Kilder', skipped: 'Ikke brukt', skipNote: 'kunne ikke lastes ned automatisk:',
+    sourcesH: 'Kilder', skipped: 'Ikke brukt',
     lead: 'Tallene er kildenes egne. Skalaene som gjør dem om til risiko står i config/elections.json.',
     ind: {
       quality: 'Valgkvalitet', unrest: 'Uro ved forrige valg', press: 'Pressefrihet og rettigheter',
@@ -171,12 +171,13 @@ function methodBody() {
     h('p', null, s.lead),
     h('p.meta', null, s.sourcesH),
     h('ul', null,
-      ...used.map((x) => h('li', null, h('a', { href: x.page, target: '_blank', rel: 'noopener' }, x.name), `, ${x.edition}. ${x.license ?? ''}`)),
+      ...used.map((x) => h('li', null, h('a', { href: x.page, target: '_blank', rel: 'noopener' }, x.name), `, ${x.edition}. `,
+        x.licenseUrl ? h('a', { href: x.licenseUrl, target: '_blank', rel: 'noopener' }, x.license) : (x.license ?? ''))),
       h('li', null, h('a', { href: data.worldBank.url, target: '_blank', rel: 'noopener' }, 'World Bank'), ', API.'),
       h('li', null, 'GDELT, ', h('a', { href: '../metode/' }, prefs.lang === 'nb' ? 'slik IGRED teller den' : 'as IGRED counts it'), '.'),
       ...data.calendar.pages.map((p) => h('li', null, h('a', { href: p.url, target: '_blank', rel: 'noopener' }, `Wikipedia: ${p.title}`)))),
     skipped.length ? h('p.meta', null, s.skipped) : null,
-    skipped.length ? h('ul', null, ...skipped.map((x) => h('li', null, h('a', { href: x.page, target: '_blank', rel: 'noopener' }, x.name), ` ${s.skipNote} ${x.reason}`))) : null,
+    skipped.length ? h('ul', null, ...skipped.map((x) => h('li', null, h('a', { href: x.page, target: '_blank', rel: 'noopener' }, x.name), `: ${x.reason}`))) : null,
   ];
 }
 

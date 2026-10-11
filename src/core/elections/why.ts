@@ -52,6 +52,7 @@ function translatePrompt(items: { id: string; en: string }[]): string {
     'Translate each sentence into Norwegian bokmål for a sober news analysis, as a Norwegian reporter would write it.',
     '- Keep every number exactly as in the English. Add nothing and leave nothing out. No dashes (— or –).',
     '- Country names in their Norwegian form (Brasil, Tsjekkia, Elfenbenskysten). "Parliamentary election" is "parlamentsvalg", "presidential election" "presidentvalg", "referendum" "folkeavstemning".',
+    '- Armed groups and parties by their established Norwegian names where they exist ("den sudanske hæren (SAF)", "RSF-militsen", "houthiene").',
     '',
     ...items.map((i) => `${i.id}: ${i.en}`),
     '',

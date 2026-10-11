@@ -316,11 +316,16 @@ export function checkNorwegian(nb: string, en: string, maxWords: number): { ok: 
   if (COMMENTARY.test(nb)) return { ok: false, reason: `commentary instead of facts ("${COMMENTARY.exec(nb)![0]}")` };
   const stiff = STIFF_NB.exec(nb);
   if (stiff) return { ok: false, reason: `stiff Norwegian ("${stiff[0]}"), write it as a Norwegian reporter would` };
+  const english = ENGLISH_GROUP_NB.exec(nb);
+  if (english) return { ok: false, reason: `the English name "${english[0]}" where a Norwegian one exists (see the examples)` };
   return { ok: true };
 }
 
 /** Translated-sounding Norwegian the examples in the prompt already rule out. */
 const STIFF_NB = /\bproxy[\s\S]?aggres+jon|\bkamprelatert\w* handling\w*|\blanserte \w*angrep|\blovet (?:et stort svar|en stor respons)|\binterkommunal\w*|\bfordrivelsesleir\w*|\bintensifisert\b/i;
+
+/** Armed groups whose Norwegian names the prompt gives: the English name in a Norwegian text is refused. */
+const ENGLISH_GROUP_NB = /\b(Sudanese Armed Forces|Rapid Support Forces|Islamic State|Houthis)\b/;
 
 /** Both languages, for callers that have both at once. */
 export function checkSummary(
@@ -379,6 +384,10 @@ function translationPrompt(en: string): string {
     '  "vold mellom folkegrupper", not "interkommunal vold"; "fordrevne" and "leirer for internt fordrevne", not "fordrivelsesleirer";',
     '  "skjøt missiler mot", not "lanserte missilangrep"; "kamper", not "kamprelaterte handlinger";',
     '  "angrep gjennom stedfortredere", not "proxy-aggresjon"; "varslet gjengjeldelse", not "lovet et stort svar".',
+    '- Armed groups by their established Norwegian names where they have one, never the English name:',
+    '  "Sudanese Armed Forces" is "den sudanske hæren (SAF)", later "regjeringshæren" or "hæren";',
+    '  "Rapid Support Forces" is "RSF-militsen" at first mention, later "RSF";',
+    '  "Houthis" is "houthiene"; "Islamic State" is "IS" or "Den islamske staten"; "M23 rebels" is "M23-opprørerne".',
     '- No dashes (— or –): use a comma or a full stop.',
     '- Use the established Norwegian form of place names where one exists (Jemen, Etiopia, Zaporizjzja, Kharkiv, Gaza, Khartoum, Darfur, Kordofan).',
     '- Keep every number exactly as in the English: the same figures, and a number written as a word stays a word. Write thousands with a space (75 767).',
@@ -518,8 +527,11 @@ export async function runSummaries(
       const had = new Set((current.sources ?? []).map((s) => s.url));
       const fresh = input.headlines.filter((h) => !had.has(h.url)).length;
       const age = (now - Date.parse(current.writtenAt)) / 3_600_000;
-      if (fresh < settings.minNewSources && age <= settings.rewriteAfterHours) continue;
-      if (since < settings.minHoursBetween) continue;
+      // A Norwegian text approved before a rule was added is held to it now: if it would be
+      // refused today, the crisis is written again without waiting for news or the clock.
+      const outdated = !!current.nb && !checkNorwegian(current.nb, current.en, settings.maxWords).ok;
+      if (!outdated && fresh < settings.minNewSources && age <= settings.rewriteAfterHours) continue;
+      if (!outdated && since < settings.minHoursBetween) continue;
     } else if (since < settings.minHoursBetween && !rewrite) continue;
 
     // 1. The English, from the sources; refused once, it is asked for again with the reason.
