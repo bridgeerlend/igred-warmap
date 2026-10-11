@@ -867,6 +867,14 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
   const keepCsv = new Set(['all.csv', ...defs.map((d) => `${d.id}.csv`)]);
   for (const file of readdirSync(csvDir)) if (file.endsWith('.csv') && !keepCsv.has(file)) unlinkSync(path.join(csvDir, file));
 
+  /* the corrections log, published beside the data so a new entry needs no site build */
+  const corrections = readJson<{ corrections: unknown[] }>(path.join(configDir, 'corrections.json'));
+  if (corrections) {
+    const out = path.join(dataDir, 'corrections.json');
+    writeFileSync(`${out}.tmp`, `${JSON.stringify({ corrections: corrections.corrections }, null, 2)}\n`);
+    renameSync(`${out}.tmp`, out);
+  }
+
   /* follow a crisis: RSS feeds of approved summaries and corroborated incidents */
   const feedDir = path.join(dataDir, 'feed');
   mkdirSync(feedDir, { recursive: true });

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="../favicon.ico" sizes="32x32">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<title>Method and corrections · IGRED Global Conflict Monitor</title>
+<meta name="description" content="How the IGRED Global Conflict Monitor counts incidents, ranks crises, uses AI and checks it, what it does not know, and what it has corrected.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0B0B0A">
+<link rel="canonical" href="https://map.igred.org/metode/">
+<script>try{if(localStorage.getItem('igred-theme-v2')==='light')document.documentElement.dataset.theme='light'}catch(e){}</script>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<link rel="stylesheet" href="../atlas.css">
+<link rel="stylesheet" href="metode.css">
+</head>
+<body>
+<header class="masthead is-sticky method-masthead">
+  <a class="wordmark wordmark-link" href="https://igred.org/"><strong>IGRED</strong></a>
+  <nav class="controls">
+    <a class="link-button" href="../" data-i18n="map">Map</a>
+    <a class="link-button" href="../brief/" data-i18n="brief">Brief</a>
+    <a class="link-button" href="../stream/" data-i18n="wire">Wire</a>
+    <button type="button" class="link-button" id="lang">NO</button>
+    <button type="button" class="link-button" id="theme">Light</button>
+  </nav>
+</header>
+
+<main class="method">
+  <!-- Both languages are in the page; the switch shows one. Written by hand, not by a model. -->
+  <article lang="en" data-lang="en">
+    <h1 class="title"><span>Method and</span><span class="italic">corrections</span></h1>
+    <p class="standfirst">How the Global Conflict Monitor counts, ranks and writes, what it does not know, and what it has had to correct.</p>
+
+    <section id="incidents">
+      <h2>How incidents are counted</h2>
+      <p>Incidents come from the GDELT 2.0 event stream, which reads news reports from around the world every fifteen minutes and codes what they describe — an air strike, an armed clash, an abduction — with a place and a date. We keep only violent event types, group reports of the same event on the same day and place into one incident, and show an incident only where the UCDP register lists an active armed conflict in that country. Every incident keeps a link to each report behind it.</p>
+      <p>An incident is a report of an event, not a verified event. The counts on the map are counts of what was reported, not of casualties.</p>
+    </section>
+
+    <section id="sources">
+      <h2>One source and several sources</h2>
+      <p>An incident carried by a single outlet is drawn as a hollow ring. One carried by two or more independent outlets is filled. A single report can be right, but it is more often a misreading — a protest coded as a clash, an old event retold, a place guessed from a headline — so single-source incidents are shown, but never counted in the ranking. In countries the register lists mainly as parties to wars abroad, such as France, Belgium, the United States and the United Kingdom, only incidents with two or more outlets appear at all.</p>
+    </section>
+
+    <section id="ranking">
+      <h2>How crises are ranked</h2>
+      <p>The list ranks crises by incidents confirmed by several sources, weighted by the severity of the event type, in the chosen window. It does not rank by raw counts: raw counts follow media attention, and English-language coverage makes some countries look far more violent than others where far more people are dying. Beside the counts, each crisis shows UCDP's own count of battle-related deaths with its year, as a measure of a different kind.</p>
+    </section>
+
+    <section id="ai">
+      <h2>What the AI does, and does not do</h2>
+      <p>Each crisis carries three to five machine-written sentences on what is happening. A language model writes them from the headlines already linked on the crisis page, preferring established agencies and newsrooms, plus UCDP and World Bank figures with their years. The English is written first; the Norwegian is translated from the approved English in a separate step.</p>
+      <p>The model does not find, count or place incidents, decide which conflicts exist, rank crises or choose sources. It does not invent figures, names or events: if it does, the text is refused (below). The text is marked as machine-written, and the sources it was written from are listed under it.</p>
+    </section>
+
+    <section id="guard">
+      <h2>How the fact guard works</h2>
+      <p>Every summary is checked in code before it is shown, and refused if it fails any test:</p>
+      <ul>
+        <li>every figure, and every number written as a word ("twelve", "dozens"), must be in the sources, as the same figure or one of that size;</li>
+        <li>every name must be in the sources;</li>
+        <li>a named person must be stated as killed or wounded as the sources say, never "killed or injured";</li>
+        <li>no counts of incidents or percentage changes, which the page states itself, and no ranges such as "40–41";</li>
+        <li>a UCDP or World Bank figure must give its year;</li>
+        <li>no sentences about outlets or method, and no commentary ("highlighting", "marks a new phase");</li>
+        <li>the Norwegian must contain exactly the English text's numbers.</li>
+      </ul>
+      <p>A refused draft is asked for once more with the reason. If it fails again, the page shows the status line alone. If only the Norwegian fails, the English is shown with a note saying so. The guard cannot check that a sentence is true — only that what it states is in the sources. When something wrong gets through, it is corrected and logged below.</p>
+    </section>
+
+    <section id="verified">
+      <h2>What IGRED-verified means</h2>
+      <p>An incident drawn in magenta has been checked by an IGRED analyst against a source we name, with a short note on what was confirmed. It is the only colour on the map that means a person has looked.</p>
+    </section>
+
+    <section id="data">
+      <h2>Data sources and licences</h2>
+      <dl class="method-sources">
+        <dt>GDELT 2.0</dt><dd>The event stream behind every incident. Free and open, with attribution. <a href="https://www.gdeltproject.org/about.html#termsofuse" target="_blank" rel="noopener">Terms</a></dd>
+        <dt>UCDP, Uppsala University</dt><dd>A data source, not a partner: the register of armed conflicts that decides where incidents are shown, and battle-related deaths. CC BY 4.0. <a href="https://ucdp.uu.se/downloads/" target="_blank" rel="noopener">Data and licence</a></dd>
+        <dt>World Bank</dt><dd>Country figures, including refugees (from UNHCR) and internally displaced people (from IDMC). CC BY 4.0. <a href="https://www.worldbank.org/en/about/legal/terms-of-use-for-datasets" target="_blank" rel="noopener">Terms</a></dd>
+        <dt>EIA</dt><dd>Oil flows through chokepoints and pipeline capacities in the trade and energy layer. US government work. <a href="https://www.eia.gov/international/analysis/special-topics/World_Oil_Transit_Chokepoints" target="_blank" rel="noopener">World Oil Transit Chokepoints</a></dd>
+        <dt>News</dt><dd>Headlines from Google News, GDELT's article index and a list of curated feeds, always linked to the publisher. Outlets are named, never shown as logos.</dd>
+        <dt>Wikipedia and Wikimedia Commons</dt><dd>Background text (CC BY-SA 4.0) and pictures, each with its author and licence.</dd>
+        <dt>Natural Earth</dt><dd>Borders and coastlines. Public domain.</dd>
+        <dt>Our own data</dt><dd>The incidents, rankings and downloads as we publish them. CC BY 4.0.</dd>
+      </dl>
+    </section>
+
+    <section id="weaknesses">
+      <h2>Known weaknesses</h2>
+      <ul>
+        <li><b>Double counting.</b> GDELT can code the same event more than once when reports differ on the date or the place. Grouping by day and place removes most, not all.</li>
+        <li><b>Country-level places.</b> When a report names only a country, the incident sits at the country's centre. Such points say little about where the fighting is.</li>
+        <li><b>Uneven coverage.</b> Media attention varies widely between countries. Wars covered mainly in Arabic, French or local languages are undercounted next to those covered in English.</li>
+        <li><b>Coding errors.</b> Protests, police operations and old events are sometimes coded as armed incidents. Single-source incidents are the most affected.</li>
+        <li><b>The register lags.</b> UCDP updates once a year. A new conflict reaches the map through our own detection and a human decision, not automatically.</li>
+      </ul>
+    </section>
+
+    <section id="corrections">
+      <h2>Corrections</h2>
+      <ol class="corrections" data-corrections></ol>
+    </section>
+  </article>
+
+  <article lang="nb" data-lang="nb" hidden>
+    <h1 class="title"><span>Metode og</span><span class="italic">rettelser</span></h1>
+    <p class="standfirst">Hvordan Global Conflict Monitor teller, rangerer og skriver, hva den ikke vet, og hva den har måttet rette.</p>
+
+    <section>
+      <h2>Hvordan hendelser telles</h2>
+      <p>Hendelsene kommer fra hendelsesstrømmen GDELT 2.0, som leser nyheter fra hele verden hvert kvarter og koder hva de beskriver – et luftangrep, et væpnet sammenstøt, en bortføring – med sted og dato. Vi beholder bare voldelige hendelsestyper, slår sammen meldinger om samme hendelse på samme dag og sted, og viser en hendelse bare der UCDP-registeret fører en aktiv væpnet konflikt i landet. Hver hendelse har lenke til hver melding bak den.</p>
+      <p>En hendelse er en melding om noe som har skjedd, ikke en bekreftet hendelse. Tallene på kartet teller det som er meldt, ikke drepte.</p>
+    </section>
+
+    <section>
+      <h2>Én kilde og flere kilder</h2>
+      <p>En hendelse som bare ett medium har meldt, tegnes som en hul ring. En som to eller flere uavhengige medier har meldt, er fylt. Én melding kan stemme, men er oftere en feillesing – en demonstrasjon kodet som et sammenstøt, en gammel hendelse fortalt på nytt, et sted gjettet ut fra en overskrift. Hendelser med én kilde vises derfor, men teller aldri i rangeringen. I land som registeret hovedsakelig fører som part i kriger i utlandet, som Frankrike, Belgia, USA og Storbritannia, vises bare hendelser med to eller flere medier.</p>
+    </section>
+
+    <section>
+      <h2>Hvordan krisene rangeres</h2>
+      <p>Listen rangerer krisene etter hendelser bekreftet av flere kilder, vektet etter hvor alvorlig hendelsestypen er, i det valgte tidsvinduet. Den rangerer ikke etter rå antall: rå antall følger medienes oppmerksomhet, og engelskspråklig dekning får noen land til å se langt voldeligere ut enn andre der langt flere dør. Ved siden av tallene viser hver krise UCDPs egen telling av drepte i kamper, med årstall, som et mål av et annet slag.</p>
+    </section>
+
+    <section>
+      <h2>Hva AI-en gjør, og ikke gjør</h2>
+      <p>Hver krise har tre til fem maskinskrevne setninger om hva som skjer. En språkmodell skriver dem fra overskriftene som allerede er lenket på krisesiden, med etablerte nyhetsbyråer og redaksjoner først, og fra tall fra UCDP og Verdensbanken med årstall. Den engelske teksten skrives først; den norske oversettes fra den godkjente engelske i et eget steg.</p>
+      <p>Modellen finner, teller eller plasserer ikke hendelser, avgjør ikke hvilke konflikter som finnes, rangerer ikke kriser og velger ikke kilder. Den finner ikke på tall, navn eller hendelser: gjør den det, avvises teksten (se under). Teksten er merket som maskinskrevet, og kildene den bygger på, står under den.</p>
+    </section>
+
+    <section>
+      <h2>Hvordan faktavakten virker</h2>
+      <p>Hvert sammendrag kontrolleres i kode før det vises, og avvises hvis det feiler en av testene:</p>
+      <ul>
+        <li>hvert tall, og hvert tall skrevet med bokstaver («tolv», «dusinvis»), må stå i kildene, som samme tall eller et tall av samme størrelse;</li>
+        <li>hvert navn må stå i kildene;</li>
+        <li>en navngitt person skal oppgis som drept eller såret slik kildene sier, aldri «drept eller såret»;</li>
+        <li>ingen antall hendelser eller prosentendringer, som siden selv oppgir, og ingen tallspenn som «40–41»;</li>
+        <li>et tall fra UCDP eller Verdensbanken skal ha årstall;</li>
+        <li>ingen setninger om medier eller metode, og ingen kommentarer («understreker», «markerer en ny fase»);</li>
+        <li>den norske teksten skal ha nøyaktig de samme tallene som den engelske.</li>
+      </ul>
+      <p>Et avvist utkast blir bedt om én gang til, med begrunnelsen. Avvises det igjen, viser siden statuslinjen alene. Feiler bare den norske teksten, vises den engelske med en merknad om det. Faktavakten kan ikke sjekke at en setning er sann – bare at det den sier, står i kildene. Når noe feil slipper gjennom, rettes det og føres i loggen under.</p>
+    </section>
+
+    <section>
+      <h2>Hva IGRED-verifisert betyr</h2>
+      <p>En hendelse tegnet i magenta er kontrollert av en analytiker i IGRED mot en kilde vi navngir, med en kort merknad om hva som ble bekreftet. Det er den eneste fargen på kartet som betyr at et menneske har sett på den.</p>
+    </section>
+
+    <section>
+      <h2>Datakilder og lisenser</h2>
+      <dl class="method-sources">
+        <dt>GDELT 2.0</dt><dd>Hendelsesstrømmen bak hver hendelse. Fri og åpen, med kreditering. <a href="https://www.gdeltproject.org/about.html#termsofuse" target="_blank" rel="noopener">Vilkår</a></dd>
+        <dt>UCDP, Uppsala universitet</dt><dd>En datakilde, ikke en samarbeidspartner: registeret over væpnede konflikter som avgjør hvor hendelser vises, og drepte i kamper. CC BY 4.0. <a href="https://ucdp.uu.se/downloads/" target="_blank" rel="noopener">Data og lisens</a></dd>
+        <dt>Verdensbanken</dt><dd>Landtall, blant annet flyktninger (fra UNHCR) og internt fordrevne (fra IDMC). CC BY 4.0. <a href="https://www.worldbank.org/en/about/legal/terms-of-use-for-datasets" target="_blank" rel="noopener">Vilkår</a></dd>
+        <dt>EIA</dt><dd>Oljestrømmer gjennom flaskehalser og kapasitet i rørledninger i laget for handel og energi. Amerikansk statlig verk. <a href="https://www.eia.gov/international/analysis/special-topics/World_Oil_Transit_Chokepoints" target="_blank" rel="noopener">World Oil Transit Chokepoints</a></dd>
+        <dt>Nyheter</dt><dd>Overskrifter fra Google News, GDELTs artikkelindeks og en liste over utvalgte feeder, alltid lenket til utgiveren. Mediene navngis, de vises aldri som logoer.</dd>
+        <dt>Wikipedia og Wikimedia Commons</dt><dd>Bakgrunnstekst (CC BY-SA 4.0) og bilder, hvert med fotograf og lisens.</dd>
+        <dt>Natural Earth</dt><dd>Grenser og kystlinjer. Offentlig eiendom.</dd>
+        <dt>Våre egne data</dt><dd>Hendelsene, rangeringene og nedlastingene slik vi publiserer dem. CC BY 4.0.</dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>Kjente svakheter</h2>
+      <ul>
+        <li><b>Dobbelttelling.</b> GDELT kan kode samme hendelse flere ganger når meldingene er uenige om dato eller sted. Sammenslåing per dag og sted fjerner det meste, ikke alt.</li>
+        <li><b>Steder på landnivå.</b> Når en melding bare nevner et land, legges hendelsen i landets midtpunkt. Slike punkter sier lite om hvor kampene er.</li>
+        <li><b>Ujevn dekning.</b> Medienes oppmerksomhet varierer mye mellom land. Kriger som mest dekkes på arabisk, fransk eller lokale språk, telles for lavt sammenlignet med dem som dekkes på engelsk.</li>
+        <li><b>Kodefeil.</b> Demonstrasjoner, politiaksjoner og gamle hendelser kodes iblant som væpnede hendelser. Hendelser med én kilde er mest utsatt.</li>
+        <li><b>Registeret henger etter.</b> UCDP oppdateres én gang i året. En ny konflikt kommer på kartet gjennom vår egen deteksjon og en menneskelig beslutning, ikke automatisk.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Rettelser</h2>
+      <ol class="corrections" data-corrections></ol>
+    </section>
+  </article>
+</main>
+
+<footer class="colophon">
+  <p class="meta"><a href="mailto:contact@igred.org">contact@igred.org</a></p>
+</footer>
+
+<script type="module" src="metode.js"></script>
+</body>
+</html>

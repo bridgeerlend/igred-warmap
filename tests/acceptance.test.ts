@@ -929,6 +929,33 @@ describe('a crisis can be followed', () => {
   });
 });
 
+describe('method and corrections', () => {
+  it('one page in both languages explains counting, sources, ranking, the AI and its guard, verification, licences and weaknesses', () => {
+    const html = read('site/metode/index.html');
+    for (const id of ['incidents', 'sources', 'ranking', 'ai', 'guard', 'verified', 'data', 'weaknesses', 'corrections']) expect(html).toContain(`id="${id}"`);
+    expect(html).toMatch(/<article lang="en" data-lang="en">/);
+    expect(html).toMatch(/<article lang="nb" data-lang="nb" hidden>/);
+    expect(html).toMatch(/Double counting/);
+    expect(html).toMatch(/Dobbelttelling/);
+    // UCDP is a source, not a partner.
+    expect(html).toMatch(/UCDP, Uppsala University<\/dt><dd>A data source, not a partner/);
+    expect(html).not.toMatch(/partnership|in partnership|samarbeid med UCDP/i);
+  });
+
+  it('the corrections log is kept in config and published as data, starting with the DR Congo summary', () => {
+    const cfg = readJson('config/corrections.json');
+    expect(cfg.corrections[0]).toMatchObject({ date: '2026-10-11', crisis: 'drc' });
+    expect(cfg.corrections[0].wrong.nb).toMatch(/Erik Prince/);
+    expect(readJson('data/corrections.json').corrections).toEqual(cfg.corrections);
+    expect(read('site/metode/metode.js')).toMatch(/getJson\('corrections\.json'\)/);
+  });
+
+  it('is linked from the footer and from the note under each summary', () => {
+    expect(read('site/index.html')).toMatch(/<a class="link-button quiet" href="metode\/" id="method-link">/);
+    expect(read('site/view.js')).toMatch(/h\('a', \{ href: `\$\{METHOD_URL\}#guard` \}, t\.howItWorks\)/);
+  });
+});
+
 describe('the crisis and country views', () => {
   it('link everything they report to its source', () => {
     const view = read('site/view.js');

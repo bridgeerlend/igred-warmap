@@ -13,6 +13,7 @@ import {
 import { CONFIG } from './config.js';
 
 const BRIEF = CONFIG.briefBaseUrl;
+const METHOD_URL = 'https://map.igred.org/metode/';
 
 /** Which bars of the thirty-day chart the chosen window covers. */
 function windowBars(inc, w, asOf) {
@@ -130,7 +131,7 @@ function overview(d, ctx) {
         (paras[i < cut ? 0 : 1] ??= []).push(s);
         return paras;
       }, []).map((p) => h('p', null, p.join(' ')))),
-      h('p.meta.cv-machine', null, t.summaryLabel),
+      h('p.meta.cv-machine', null, t.summaryLabel, ' ', h('a', { href: `${METHOD_URL}#guard` }, t.howItWorks)),
       h('p.cv-sources', null, h('span.meta', null, `${t.summarySources} `), sourceLinks(d.summary.sources))));
   }
 

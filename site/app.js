@@ -548,6 +548,7 @@ function renderStatic() {
   $('ranking').textContent = t.ranking;
   $('list-note').textContent = t.listNote;
   $('download-all').textContent = t.downloadAll;
+  $('method-link').textContent = t.methodLink;
   $('licence').textContent = t.licence;
   $('sources-toggle').textContent = t.sourcesToggle;
   if (state.inc) $('updated').textContent = `${t.updated} ${fmtStamp(state.inc.generatedAt)}`;
