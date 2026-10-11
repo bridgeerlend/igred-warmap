@@ -238,7 +238,9 @@ export function namesSupported(text: string, sourceText: string): { ok: boolean;
   // "United Nations" is the UN the headlines name.
   const un = /\bUN\b|united nations/i.test(sourceText);
   const known = (w: string) => (un && /^(United|Nations)$/.test(w)) || source.includes(w.toLowerCase())
-    || [...sourceWords].some((sw) => sw.length >= 4 && w.length >= 4 && stem(sw) === stem(w));
+    || [...sourceWords].some((sw) => sw.length >= 4 && w.length >= 4 && (stem(sw) === stem(w)
+      // A people named from its country: Iraqis from Iraq, Sudanese from Sudan.
+      || (w.toLowerCase().startsWith(sw) && /^(?:i|is|ese|ian|ians|an|ans|i?s)$/.test(w.toLowerCase().slice(sw.length)))));
   const clean = (raw: string) => raw.replace(/['’]s$/, '').replace(/[.'’-]+$/, '');
   for (const sentence of text.split(/(?<=[.!?])\s+/)) {
     const words = (sentence.match(/[\p{L}][\p{L}'’.-]*/gu) ?? []).map(clean);

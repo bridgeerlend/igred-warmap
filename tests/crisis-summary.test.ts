@@ -119,6 +119,8 @@ describe('the crisis summary guard', () => {
     expect(checkEnglish(`${base} The African Union called for talks.`, source, 110).ok).toBe(true);
     expect(checkEnglish(`${base} The UN Security Council met.`, source, 110).ok).toBe(true);
     expect(checkEnglish(`${base} The East African Community called for talks.`, source, 110).reason).toMatch(/the name "East African Community"/);
+    // A people named from a country in the sources.
+    expect(checkEnglish('Gunmen killed Iraqis near Mosul. Fighting continued in Iraq.', 'Gunmen attack near Mosul, Iraq\nFighting in Iraq', 110).ok).toBe(true);
   });
 
   it('reads Norwegian thousands spaces as the same figure', () => {
