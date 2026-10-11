@@ -44,6 +44,8 @@ export interface Summary {
   model: string;
   writtenAt: string;
   sources: { title: string; url: string; publisher: string }[];
+  /** Which brief to the model it was written under; text from an older brief is not shown. */
+  promptVersion?: number;
 }
 
 export interface SummaryState {
@@ -70,7 +72,7 @@ export interface SummaryInput {
 }
 
 /** Bumped when the brief to the model changes, so every crisis is rewritten once. */
-export const PROMPT_VERSION = 4;
+export const PROMPT_VERSION = 5;
 
 /** Norwegian writes 1 200 and 4,5; the guard compares digits, so thousands spaces are closed up. */
 export function normaliseNumbers(text: string): string {
@@ -188,10 +190,15 @@ const STARTERS = new Set(['the', 'a', 'an', 'in', 'on', 'at', 'after', 'before',
   'talks', 'tensions', 'protests', 'several', 'many', 'dozens', 'hundreds', 'thousands', 'over', 'more', 'most', 'some', 'both',
   'another', 'other', 'elsewhere', 'separately', 'also', 'since', 'despite', 'following', 'according', 'across', 'near', 'during',
   'with', 'without', 'civilians', 'residents', 'people', 'shelling', 'strikes', 'airstrikes', 'militants', 'insurgents', 'security',
-  'police', 'gunmen', 'there', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'twelve', 'one', 'at', 'by',
+  'police', 'gunmen', 'there', 'former', 'earlier', 'later', 'last', 'latest', 'first', 'second', 'overall', 'further',
+  'additionally', 'however', 'yet', 'still', 'nearly', 'almost', 'roughly', 'about', 'around', 'regional', 'foreign', 'western',
+  'eastern', 'northern', 'southern', 'central', 'defense', 'defence', 'officials', 'witnesses', 'analysts', 'observers', 'critics', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'twelve', 'one', 'at', 'by',
   'from', 'for', 'to', 'of', 'no', 'not', 'all', 'each', 'new', 'heavy', 'deadly', 'renewed', 'state', 'local', 'international']);
 
-const NOT_NAMES = new Set(['UCDP', 'UN', 'US', 'USA', 'EU', 'UK', 'World', 'Bank', 'January', 'February', 'March', 'April', 'May', 'June',
+const NOT_NAMES = new Set(['UCDP', 'UN', 'US', 'USA', 'EU', 'UK', 'World', 'Bank',
+  // Generic institutional words, capitalised in titles but not themselves names.
+  'Defense', 'Defence', 'Ministry', 'Minister', 'Prime', 'President', 'Army', 'Navy', 'Air', 'Force', 'Forces', 'Council',
+  'Security', 'Court', 'Parliament', 'Government', 'General', 'Interior', 'Foreign', 'Affairs', 'Office', 'Commission', 'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']);
 
 /**
@@ -203,7 +210,9 @@ export function namesSupported(text: string, sourceText: string): { ok: boolean;
   const source = sourceText.toLowerCase();
   const sourceWords = new Set(source.match(/[\p{L}]+/gu) ?? []);
   const stem = (w: string) => w.toLowerCase().slice(0, Math.min(6, w.length));
-  const known = (w: string) => source.includes(w.toLowerCase()) || [...sourceWords].some((sw) => sw.length >= 4 && w.length >= 4 && stem(sw) === stem(w));
+  // "United Nations" is the UN the headlines name.
+  const un = /\bUN\b|united nations/i.test(sourceText);
+  const known = (w: string) => (un && /^(United|Nations)$/.test(w)) || source.includes(w.toLowerCase()) || [...sourceWords].some((sw) => sw.length >= 4 && w.length >= 4 && stem(sw) === stem(w));
   for (const sentence of text.split(/(?<=[.!?])\s+/)) {
     const words = sentence.match(/[\p{L}][\p{L}'’.-]*/gu) ?? [];
     words.forEach((raw, i) => {
@@ -436,7 +445,7 @@ export async function runSummaries(
     if (state.inputHash === hash && state.approved && !rewrite) continue;
     if (since < settings.minHoursBetween && !rewrite) continue;
 
-    // 1. The English, from the sources.
+    // 1. The English, from the sources; refused once, it is asked for again with the reason.
     const first = await ask(promptFor(input, settings.maxWords));
     if (!first) { log.push('summaries: every provider is out of free quota this run'); break; }
     attempts += 1;
@@ -451,10 +460,16 @@ export async function runSummaries(
     state.attemptedAt = new Date(now).toISOString();
     state.inputHash = hash;
     state.promptVersion = PROMPT_VERSION;
-    const en = parseReply(reply.text, 'en');
-    if (!en) { state.lastOutcome = `${provider.id}: unreadable reply`; log.push(`${input.id}: ${state.lastOutcome}`); continue; }
-    const check = checkEnglish(en, sourceTextOf(input), settings.maxWords, input.avoid ?? [], input.notAbout ?? []);
-    if (!check.ok) { state.lastOutcome = `rejected — en: ${check.reason}`; log.push(`${input.id}: ${state.lastOutcome}`); continue; }
+    let en = parseReply(reply.text, 'en');
+    let check = en ? checkEnglish(en, sourceTextOf(input), settings.maxWords, input.avoid ?? [], input.notAbout ?? []) : { ok: false, reason: 'unreadable reply' };
+    if (!check.ok) {
+      const again = await ask(`${promptFor(input, settings.maxWords)}\n\nYour previous draft was refused: ${check.reason}. Write it again, keeping every rule above.`, provider);
+      if (again && !('failure' in again.reply)) {
+        en = parseReply(again.reply.text, 'en');
+        check = en ? checkEnglish(en, sourceTextOf(input), settings.maxWords, input.avoid ?? [], input.notAbout ?? []) : { ok: false, reason: 'unreadable reply' };
+      }
+    }
+    if (!en || !check.ok) { state.lastOutcome = `rejected — en: ${check.reason}`; log.push(`${input.id}: ${state.lastOutcome}`); continue; }
 
     // 2. The Norwegian, translated from the approved English and held to the same numbers.
     let nb: string | null = null;
@@ -470,7 +485,7 @@ export async function runSummaries(
 
     state.approved = {
       en, nb, model: `${provider.id}/${provider.model}`,
-      writtenAt: new Date(now).toISOString(), sources: input.headlines,
+      writtenAt: new Date(now).toISOString(), sources: input.headlines, promptVersion: PROMPT_VERSION,
     };
     state.lastOutcome = nb ? 'approved' : 'approved, English only';
     log.push(`${input.id}: summary ${state.lastOutcome} (${provider.id})`);
@@ -482,5 +497,8 @@ export async function runSummaries(
 export function currentSummary(state: SummaryState | undefined, maxAgeHours: number, now: number): Summary | null {
   const s = state?.approved;
   if (!s) return null;
+  // Text written to an older brief is not shown once the current brief has had its turn:
+  // a refusal under the new rules means the old text broke them too.
+  if (state?.promptVersion === PROMPT_VERSION && s.promptVersion !== PROMPT_VERSION) return null;
   return (now - Date.parse(s.writtenAt)) / 3_600_000 <= maxAgeHours ? s : null;
 }

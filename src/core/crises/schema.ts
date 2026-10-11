@@ -111,6 +111,7 @@ export const crisisDetail = z.object({
       model: z.string(),
       writtenAt: iso,
       sources: z.array(z.object({ title: z.string(), url: z.url(), publisher: z.string() })).min(1),
+      promptVersion: z.number().int().optional(),
     })
     .nullable(),
   /**

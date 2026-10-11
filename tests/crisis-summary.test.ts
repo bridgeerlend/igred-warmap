@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { checkEnglish, checkNorwegian, checkSummary, currentSummary, normaliseNumbers, runSummaries, type SummarySettings, type SummaryState } from '../src/core/crises/summary.js';
+import { PROMPT_VERSION, checkEnglish, checkNorwegian, checkSummary, currentSummary, normaliseNumbers, runSummaries, type SummarySettings, type SummaryState } from '../src/core/crises/summary.js';
 
 const input = {
   id: 'sudan',
@@ -160,6 +160,30 @@ describe('the crisis summary run', () => {
     // The English twice (the limit, then the answer), then the Norwegian.
     expect(calls).toBe(3);
     expect(states.sudan!.approved).not.toBeNull();
+  });
+
+  it('asks once more with the reason when a draft is refused', async () => {
+    let call = 0;
+    vi.stubGlobal('fetch', vi.fn(async (_url: string, init: { body: string }) => {
+      call += 1;
+      const prompt = JSON.parse(init.body).messages[0].content as string;
+      const en = prompt.includes('previous draft was refused') ? good.en : `${good.en} This underscores the danger.`;
+      const content = prompt.startsWith('Translate') ? JSON.stringify({ nb: good.nb }) : JSON.stringify({ en });
+      return new Response(JSON.stringify({ choices: [{ message: { content } }] }), { status: 200 });
+    }));
+    const states: Record<string, SummaryState> = {};
+    await runSummaries([input], states, settings, Date.now(), { TEST_KEY: 'k' });
+    expect(call).toBe(3);
+    expect(states.sudan!.approved!.en).toBe(good.en);
+  });
+
+  it('does not show text written to an older brief once the current one has refused the crisis', () => {
+    const old = { en: 'old', nb: 'gammel', model: 'm', writtenAt: new Date().toISOString(), sources: input.headlines, promptVersion: 1 };
+    // The current brief has not run yet: the old text stands.
+    expect(currentSummary({ approved: old, promptVersion: 1 }, 72, Date.now())).not.toBeNull();
+    // The current brief ran and refused: the old text goes, and the status line stands alone.
+    expect(currentSummary({ approved: old, promptVersion: PROMPT_VERSION }, 72, Date.now())).toBeNull();
+    expect(currentSummary({ approved: { ...old, promptVersion: PROMPT_VERSION }, promptVersion: PROMPT_VERSION }, 72, Date.now())).not.toBeNull();
   });
 
   it('a failed call does not hold the crisis back for three hours', async () => {
