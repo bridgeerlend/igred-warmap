@@ -41,6 +41,7 @@ const STRINGS = {
     errorTitle: 'The edition could not be loaded.',
     errorBody: (url) => `Tried <code>${url}</code>. Nothing is shown rather than something unverified.`,
     noProse: 'This edition carries no drafted prose.',
+    skip: 'Skip to the briefing',
     noProseBody: 'Either none was drafted, or none was approved. The stories below are unaffected. They were never dependent on it.',
   },
   nb: {
@@ -71,6 +72,7 @@ const STRINGS = {
     errorTitle: 'Utgaven kunne ikke lastes.',
     errorBody: (url) => `Forsøkte <code>${url}</code>. Ingenting vises heller enn noe ubekreftet.`,
     noProse: 'Denne utgaven har ingen utskrevne avsnitt.',
+    skip: 'Hopp til orienteringen',
     noProseBody: 'Enten ble ingen skrevet, eller ingen godkjent. Sakene under er upåvirket. De var aldri avhengige av det.',
   },
 };
@@ -422,7 +424,7 @@ function renderColophon() {
 
   $('colophon-text').innerHTML =
     `${escapeHtml(t().colophon)} <a href="mailto:${escapeHtml(CONFIG.contactEmail)}">${escapeHtml(CONFIG.contactEmail)}</a>.` +
-    (repo ? ` <a href="${escapeHtml(repo)}" target="_blank" rel="noopener">Source</a>.` : '');
+    (repo ? ` <a href="${escapeHtml(repo)}" target="_blank" rel="noopener">${state.lang === 'nb' ? 'Kildekode' : 'Source'}</a>.` : '');
 }
 
 function applyStaticStrings() {
@@ -435,6 +437,7 @@ function applyStaticStrings() {
   document.documentElement.lang = state.lang;
   $('lang').textContent = state.lang === 'en' ? 'NO' : 'EN';
   $('lang').setAttribute('aria-label', state.lang === 'en' ? 'Bytt til norsk' : 'Switch to English');
+  $('theme').textContent = document.documentElement.dataset.theme === 'dark' ? (state.lang === 'nb' ? 'Lys' : 'Light') : (state.lang === 'nb' ? 'Mørk' : 'Dark');
 }
 
 function render() {

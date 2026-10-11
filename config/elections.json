@@ -1,6 +1,9 @@
 {
   "$note": "The election page (map.igred.org/valg) and the map layer. The calendar comes from Wikipedia's national electoral calendars, refreshed weekly; the score is recomputed daily from the files in data/elections/sources/ and our own GDELT counts. Every number on the page names its source and year.",
-  "calendarPages": ["2026_national_electoral_calendar", "2027_national_electoral_calendar"],
+  "calendarPages": [
+    "2026_national_electoral_calendar",
+    "2027_national_electoral_calendar"
+  ],
   "horizonDays": 365,
   "keepHeldDays": 60,
   "calendarRefreshDays": 7,
@@ -43,50 +46,96 @@
   },
   "sources": [
     {
-      "id": "vdem", "indicator": "quality", "name": "V-Dem, clean elections index (v2xel_frefair)",
+      "id": "vdem",
+      "indicator": "quality",
+      "name": "V-Dem, clean elections index (v2xel_frefair)",
       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index.csv?useColumnShortNames=true",
       "page": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
-      "file": "vdem-v2xel-frefair.csv", "license": "CC BY 4.0 (V-Dem, processed by Our World in Data)", "edition": "V-Dem (2026), processed by Our World in Data on 17 March 2026"
+      "file": "vdem-v2xel-frefair.csv",
+      "license": "CC BY 4.0 (V-Dem, processed by Our World in Data)",
+      "edition": "V-Dem (2026), processed by Our World in Data on 17 March 2026",
+      "nameNb": "V-Dem, indeks for rene valg (v2xel_frefair)",
+      "editionNb": "V-Dem (2026), bearbeidet av Our World in Data 17. mars 2026",
+      "licenseNb": "CC BY 4.0 (V-Dem, bearbeidet av Our World in Data)"
     },
     {
-      "id": "pei", "indicator": "quality", "name": "Electoral Integrity Project, Perceptions of Electoral Integrity (PEI 11.0)",
+      "id": "pei",
+      "indicator": "quality",
+      "name": "Electoral Integrity Project, Perceptions of Electoral Integrity (PEI 11.0)",
       "url": "https://dataverse.harvard.edu/api/access/datafile/11632678",
       "page": "https://doi.org/10.7910/DVN/EDY2V0",
-      "file": "pei-11-election.tab", "license": "CC BY 4.0", "edition": "PEI 11.0 (2025)"
+      "file": "pei-11-election.tab",
+      "license": "CC BY 4.0",
+      "edition": "PEI 11.0 (2025)",
+      "nameNb": "Electoral Integrity Project, eksperters vurdering av valgintegritet (PEI 11.0)",
+      "licenseNb": "CC BY 4.0"
     },
     {
-      "id": "nelda", "indicator": "unrest", "name": "NELDA, National Elections across Democracy and Autocracy",
-      "page": "https://nelda.co/", "skip": "Downloads only after registering a name and an email address in a Google form."
+      "id": "nelda",
+      "indicator": "unrest",
+      "name": "NELDA, National Elections across Democracy and Autocracy",
+      "page": "https://nelda.co/",
+      "skip": "Downloads only after registering a name and an email address in a Google form.",
+      "nameNb": "NELDA, nasjonale valg i demokratier og autokratier",
+      "skipNb": "Kan bare lastes ned etter at man har registrert navn og e-postadresse i et Google-skjema."
     },
     {
-      "id": "ecav", "indicator": "unrest", "name": "ECAV, Electoral Contention and Violence",
-      "page": "https://ecavdata.org/data-access/", "skip": "Downloads only after registering a name and an email address in a Qualtrics survey."
+      "id": "ecav",
+      "indicator": "unrest",
+      "name": "ECAV, Electoral Contention and Violence",
+      "page": "https://ecavdata.org/data-access/",
+      "skip": "Downloads only after registering a name and an email address in a Qualtrics survey.",
+      "nameNb": "ECAV, strid og vold rundt valg",
+      "skipNb": "Kan bare lastes ned etter at man har registrert navn og e-postadresse i en Qualtrics-undersøkelse."
     },
     {
-      "id": "rsf", "indicator": "press", "background": true, "name": "RSF, World Press Freedom Index 2026",
+      "id": "rsf",
+      "indicator": "press",
+      "background": true,
+      "name": "RSF, World Press Freedom Index 2026",
       "url": "https://rsf.org/sites/default/files/import_classement/2026.csv",
       "page": "https://rsf.org/en/index",
       "file": "rsf-2026.csv",
       "license": "CC BY-NC-ND: shown unchanged with RSF's credit, outside the score, since the terms do not allow adapting the Index",
       "licenseUrl": "https://rsf.org/en/methodology-used-compiling-world-press-freedom-index-2026",
       "credit": "Reporters Without Borders / RSForg",
-      "edition": "2026"
+      "edition": "2026",
+      "nameNb": "RSF, World Press Freedom Index 2026",
+      "licenseNb": "CC BY-NC-ND: vist uendret med RSFs kreditering, utenfor scoren, fordi vilkårene ikke tillater at indeksen bearbeides"
     },
     {
-      "id": "fh", "indicator": "press", "name": "Freedom House, Freedom in the World 2026 (global freedom score)",
+      "id": "fh",
+      "indicator": "press",
+      "name": "Freedom House, Freedom in the World 2026 (global freedom score)",
       "url": "https://freedomhouse.org/country/scores",
       "page": "https://freedomhouse.org/country/scores",
-      "file": "freedom-house-2026.csv", "license": "Noncommercial use permitted with citation (Freedom House content permissions)", "licenseUrl": "https://freedomhouse.org/about-us/content-permissions", "edition": "2026"
+      "file": "freedom-house-2026.csv",
+      "license": "Noncommercial use permitted with citation (Freedom House content permissions)",
+      "licenseUrl": "https://freedomhouse.org/about-us/content-permissions",
+      "edition": "2026",
+      "nameNb": "Freedom House, Freedom in the World 2026 (samlet frihetsscore)",
+      "licenseNb": "Ikke-kommersiell bruk tillatt med kildehenvisning (Freedom House, vilkår for gjenbruk)"
     },
     {
-      "id": "idea", "indicator": "close", "name": "International IDEA, Voter Turnout Database",
-      "page": "https://www.idea.int/data-tools/data/voter-turnout-database", "skip": "No file to download without the site's interactive export; turnout and margin come from the previous election's Wikipedia article instead."
+      "id": "idea",
+      "indicator": "close",
+      "name": "International IDEA, Voter Turnout Database",
+      "page": "https://www.idea.int/data-tools/data/voter-turnout-database",
+      "skip": "No file to download without the site's interactive export; turnout and margin come from the previous election's Wikipedia article instead.",
+      "nameNb": "International IDEA, database over valgdeltakelse",
+      "skipNb": "Ingen fil å laste ned uten nettstedets interaktive eksport; valgdeltakelse og margin hentes i stedet fra Wikipedia-artikkelen om forrige valg."
     },
     {
-      "id": "geonames", "name": "GeoNames, country codes",
+      "id": "geonames",
+      "name": "GeoNames, country codes",
       "url": "https://download.geonames.org/export/dump/countryInfo.txt",
       "page": "https://www.geonames.org/",
-      "file": "geonames-countryInfo.txt", "license": "CC BY 4.0", "edition": "current"
+      "file": "geonames-countryInfo.txt",
+      "license": "CC BY 4.0",
+      "edition": "current",
+      "nameNb": "GeoNames, landkoder",
+      "editionNb": "gjeldende",
+      "licenseNb": "CC BY 4.0"
     }
   ]
 }

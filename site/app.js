@@ -291,6 +291,7 @@ function showDetail() {
 }
 
 async function openCrisis(id, { frame = true } = {}) {
+  setFilterOpen(false);
   const entry = state.index.crises.find((c) => c.id === id);
   if (!entry) return;
   if (state.crisis !== id) state.tab = state.tab && state.crisis === null ? state.tab : null;
@@ -541,15 +542,19 @@ function applyTypes() {
   refresh({ keepSearch: true });
 }
 
+/** Opens or folds the filter panel; set up by setupFilter. */
+let setFilterOpen = () => {};
+
 function setupFilter() {
   const toggle = $('mapfilter-toggle');
-  // Open on a wide screen, folded behind its button on a phone.
-  const setOpen = (open) => {
+  setFilterOpen = (open) => {
     $('mapfilter').classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', String(open));
   };
-  setOpen(!narrow());
-  toggle.addEventListener('click', () => setOpen(!$('mapfilter').classList.contains('is-open')));
+  // Open only on a wide window with nothing chosen; folded behind its button otherwise, so it
+  // never covers a crisis or a narrow map.
+  setFilterOpen(innerWidth >= 1300 && !state.crisis && !state.country);
+  toggle.addEventListener('click', () => setFilterOpen(!$('mapfilter').classList.contains('is-open')));
 }
 
 function renderLegend() {

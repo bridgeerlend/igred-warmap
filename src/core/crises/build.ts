@@ -12,6 +12,7 @@ import {
   type CrisisArticle, type CrisisDetail, type CrisisImage, type CrisisIndexEntry, type CrisisIndicator,
 } from './schema.js';
 import { BRAND } from '../brand.js';
+import { placeName } from '../../../site/places-nb.js';
 import { PROMPT_VERSION, currentSummary, runSummaries, type SummaryInput, type SummarySettings, type SummaryState } from './summary.js';
 import { CATEGORY, COUNTRY, countryName, incidentType, INCIDENT_TYPES, joinNames } from './names.js';
 
@@ -58,7 +59,7 @@ interface MediaRec {
 }
 
 interface Cache {
-  wikipedia: Record<string, { at: string; data: { en?: WikiSummary; nb?: WikiSummary } | null }>;
+  wikipedia: Record<string, { at: string; data: { en?: WikiSummary; nb?: WikiSummary } | null; nbChecked?: boolean }>;
   worldBank: { at: string; data: WorldBankData } | null;
   gdelt: Record<string, { at: string; articles: CrisisArticle[] }>;
   gnews: Record<string, { at: string; articles: CrisisArticle[] }>;
@@ -236,7 +237,7 @@ export function statusLine(
       ? (en ? `, ${pct}% more than the week before` : `, ${pct} prosent flere enn uken før`)
       : (en ? `, ${pct}% fewer than the week before` : `, ${pct} prosent færre enn uken før`);
   }
-  const spots = stats.hotspots.slice(0, 3).map((h) => h.name.split(',')[0]!);
+  const spots = stats.hotspots.slice(0, 3).map((h) => placeName(h.name.split(',')[0]!, lang));
   const where = spots.length ? (en ? `, most of them in ${joinNames(spots, lang)}` : `, flest i ${joinNames(spots, lang)}`) : '';
   return en
     ? `${fmtInt(n7, lang)} armed ${n7 === 1 ? 'incident' : 'incidents'} reported in the past seven days${change}${where}.`
@@ -331,9 +332,10 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
     for (const d of defs) {
       if (!d.wikipedia) continue;
       const hit = cache.wikipedia[d.id];
-      if (hit && hit.data && hoursSince(hit.at, now) < settings.wikipediaRefreshHours) continue;
+      // Entries fetched before the Norwegian lookup was fixed (no "nbChecked") are fetched once more.
+      if (hit && hit.data && hit.nbChecked && hoursSince(hit.at, now) < settings.wikipediaRefreshHours) continue;
       const w = await wikipedia(d.wikipedia);
-      if (w) cache.wikipedia[d.id] = { at: generatedAt, data: w };
+      if (w) cache.wikipedia[d.id] = { at: generatedAt, data: w, nbChecked: true };
       await sleep(600);
     }
     // GDELT's article index throttles hard and sometimes stops answering for a while. After

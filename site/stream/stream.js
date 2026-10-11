@@ -17,7 +17,7 @@ const PAGE = 60;
 
 const STRINGS = {
   en: {
-    wordmark: 'The Wire',
+    wordmark: 'The Wire', skip: 'Skip to the wire',
     titleLine1: 'The', titleLine2: 'Wire',
     standfirst: (n, outlets) =>
       `<b>${n}</b> ${n === 1 ? 'dispatch' : 'dispatches'} from <b>${outlets}</b> ${outlets === 1 ? 'outlet' : 'outlets'}, newest first. Every line is something an outlet published, with a link to it. <span class="quiet">Nothing here is written by us.</span>`,
@@ -37,7 +37,7 @@ const STRINGS = {
     firstSeen: 'first logged',
   },
   nb: {
-    wordmark: 'The Wire',
+    wordmark: 'The Wire', skip: 'Hopp til strømmen',
     titleLine1: 'The', titleLine2: 'Wire',
     standfirst: (n, outlets) =>
       `<b>${n}</b> ${n === 1 ? 'melding' : 'meldinger'} fra <b>${outlets}</b> ${outlets === 1 ? 'kilde' : 'kilder'}, nyeste først. Hver linje er noe en redaksjon har publisert, med lenke til det. <span class="quiet">Ingenting her er skrevet av oss.</span>`,
@@ -228,7 +228,7 @@ function renderColophon() {
   const repo = repoUrl();
   $('colophon-text').innerHTML =
     `${escapeHtml(t().colophon)} <a href="mailto:${escapeHtml(CONFIG.contactEmail)}">${escapeHtml(CONFIG.contactEmail)}</a>.` +
-    (repo ? ` <a href="${escapeHtml(repo)}" target="_blank" rel="noopener">Source</a>.` : '');
+    (repo ? ` <a href="${escapeHtml(repo)}" target="_blank" rel="noopener">${state.lang === 'nb' ? 'Kildekode' : 'Source'}</a>.` : '');
   const updated = state.generatedAt
     ? `${new Date(state.generatedAt).toISOString().slice(0, 16).replace('T', ' ')} UTC`
     : '·';
@@ -250,6 +250,7 @@ function applyStaticStrings() {
   document.documentElement.lang = state.lang;
   $('lang').textContent = state.lang === 'en' ? 'NO' : 'EN';
   $('lang').setAttribute('aria-label', state.lang === 'en' ? 'Bytt til norsk' : 'Switch to English');
+  $('theme').textContent = document.documentElement.dataset.theme === 'dark' ? (state.lang === 'nb' ? 'Lys' : 'Light') : (state.lang === 'nb' ? 'Mørk' : 'Dark');
 }
 
 function refresh() {

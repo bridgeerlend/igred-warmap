@@ -149,8 +149,8 @@ function overview(d, ctx) {
     const useNb = nb && d.background.extractNb;
     const bgUrl = useNb ? d.background.urlNb : d.background.url;
     out.push(section(t.background,
-      h('p.cv-bg', null, useNb ? d.background.extractNb : d.background.extract),
-      h('p.meta', null, t.fromWikipedia(useNb ? d.background.titleNb : d.background.title), ' · ',
+      h('p.cv-bg', { lang: useNb || !nb ? null : 'en' }, useNb ? d.background.extractNb : d.background.extract),
+      h('p.meta', null, t.fromWikipedia(useNb ? d.background.titleNb : d.background.title), nb && !useNb ? ` · ${t.englishOnly}` : '', ' · ',
         h('a', { href: bgUrl, target: '_blank', rel: 'noopener' }, t.readMore))));
   }
 

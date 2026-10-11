@@ -397,8 +397,8 @@ describe('the wire is a stream of sourced dispatches and nothing else', () => {
     }
     expect(read('site/stream/index.html')).toMatch(/href="\.\.\/atlas\.css"/);
     // Reachable from both products, and both reachable from it.
-    expect(read('site/index.html')).toMatch(/href="stream\/"/);
-    expect(read('site/brief/index.html')).toMatch(/href="\.\.\/stream\/"/);
+    expect(read('site/index.html')).toMatch(/href="https:\/\/map\.igred\.org\/stream\/"/);
+    expect(read('site/brief/index.html')).toMatch(/href="https:\/\/map\.igred\.org\/stream\/"/);
   });
 
   it('reads only the compact copy of the incident sources and the Brief’s stories, never the 14 MB stream', () => {
@@ -869,7 +869,9 @@ describe('the incident-type filter', () => {
     expect(app).toMatch(/q\.set\('types', state\.types\.join\(','\)\)/);
     expect(app).toMatch(/q\.get\('types'\)/);
     // Folded behind its button on a phone, open on a wide screen.
-    expect(app).toMatch(/setOpen\(!narrow\(\)\)/);
+    // Folded by default below 1300 px and whenever a crisis or a country is open.
+    expect(app).toMatch(/setFilterOpen\(innerWidth >= 1300 && !state\.crisis && !state\.country\)/);
+    expect(app).toMatch(/async function openCrisis\([^)]*\) \{\n  setFilterOpen\(false\);/);
     expect(read('site/index.html')).toMatch(/id="mapfilter-toggle" aria-expanded="true" aria-controls="mapfilter-body"/);
   });
 });
@@ -945,11 +947,25 @@ describe('the quota goes where the news is', () => {
 });
 
 describe('the method is one click away', () => {
-  it('Method sits in the top menu between Wire and the language switch, marked on its own page', () => {
-    const between = /data-i18n="wire">Wire<\/a>\s*<a class="link-button" href="[^"]*metode\/"? ?[^>]*data-i18n="methodNav"[^>]*>Method<\/a>\s*<button type="button" class="link-button" id="lang">/;
-    for (const file of ['site/index.html', 'site/crisis/sudan/index.html', 'site/crisis/index.html']) expect(read(file)).toMatch(between);
-    expect(read('site/metode/index.html')).toMatch(/href="\.\/" data-i18n="methodNav" aria-current="true">Method<\/a>\s*<button type="button" class="link-button" id="lang">/);
-    expect(read('site/common.js')).toMatch(/methodNav: 'Method'[\s\S]*methodNav: 'Metode'/);
+  it('one menu on every page: Map, Brief, Wire, Reports, Elections, Method, language, light; folded behind Menu where narrow', () => {
+    const order = ['Map', 'Brief', 'Wire', 'Reports', 'Elections', 'Method'];
+    const pages: [string, string][] = [['site/index.html', 'Map'], ['site/crisis/sudan/index.html', 'Map'], ['site/metode/index.html', 'Method'],
+      ['site/valg/index.html', 'Elections'], ['site/brief/index.html', 'Brief'], ['site/stream/index.html', 'Wire']];
+    for (const [file, active] of pages) {
+      const html = read(file);
+      const nav = /<nav class="controls site-nav"[\s\S]*?<\/nav>/.exec(html)?.[0] ?? '';
+      expect([...nav.matchAll(/data-en="([^"]+)" data-nb="[^"]+"(?: aria-current="true")?>/g)].map((m) => m[1]), file).toEqual(['Menu', ...order]);
+      expect(nav, file).toMatch(/id="lang">[^<]*<\/button>\s*<button type="button" class="link-button" id="theme">/);
+      expect([...nav.matchAll(/data-en="([^"]+)"[^>]*aria-current="true"/g)].map((m) => m[1]), file).toEqual([active]);
+      expect(nav, file).not.toMatch(/About|Om oss/);
+      expect(html, file).toMatch(/class="[^"]*has-nav[^"]*"/);
+      expect(html, file).toMatch(/<link rel="stylesheet" href="(\.\.\/)*nav\.css">/);
+      expect(html, file).toMatch(/<script type="module" src="(\.\.\/)*nav\.js"><\/script>/);
+    }
+    const css = read('site/nav.css');
+    expect(css).toMatch(/@container \(max-width: 1100px\) \{/);
+    expect(css).toMatch(/@container \(max-width: 340px\) \{\s*\.has-nav \.brand strong \{ white-space: normal; \}/);
+    expect(read('site/nav.js')).toMatch(/attributeFilter: \['lang'\]/);
   });
 });
 

@@ -18,4 +18,6 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # The language test loads every page in a real browser.
+      - run: npx playwright install chromium --only-shell
       - run: npm run verify

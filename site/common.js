@@ -5,6 +5,7 @@
  */
 import { dataBaseUrl } from './config.js';
 import { BRAND } from './brand.js';
+import { placeName } from './places-nb.js';
 
 export { BRAND };
 /** The map's name over two lines: the first word, then the rest in italic. */
@@ -56,7 +57,7 @@ export const STRINGS = {
     sourcesToggle: 'Sources',
     overview: 'Overview', news: 'News', places: 'Places and sources',
     summaryLabel: 'Machine-written from the linked sources below, checked for figures not in them.',
-    englishOnly: 'English only',
+    englishOnly: 'English only', skip: 'Skip to the list of crises',
     summarySources: 'Written from',
     background: 'Background',
     fromWikipedia: (t) => `Wikipedia, “${t}”, CC BY-SA 4.0`,
@@ -164,7 +165,7 @@ export const STRINGS = {
     sourcesToggle: 'Kilder',
     overview: 'Oversikt', news: 'Nyheter', places: 'Steder og kilder',
     summaryLabel: 'Maskinskrevet fra de lenkede kildene under, kontrollert for tall som ikke står i dem.',
-    englishOnly: 'Kun på engelsk',
+    englishOnly: 'Kun på engelsk', skip: 'Hopp til listen over kriser',
     summarySources: 'Skrevet fra',
     background: 'Bakgrunn',
     fromWikipedia: (t) => `Wikipedia, «${t}», CC BY-SA 4.0`,
@@ -473,7 +474,7 @@ export function statusSentence(inc, rows, prevRows, w, asOf, exclude) {
   if (rows.length === 0) return t.statusNone(span);
   const pct = w === 30 ? null : changeOf(rows.length, prevRows.length);
   const change = pct === null ? '' : pct > 0 ? t.more(pct, t.prevSpan(w)) : t.fewer(Math.abs(pct), t.prevSpan(w));
-  const places = topPlaces(rows, exclude).map(([name]) => esc(name));
+  const places = topPlaces(rows, exclude).map(([name]) => esc(placeName(name, prefs.lang)));
   return t.status(fmtNum(rows.length), span, change, places.length ? t.where(joinNames(places)) : '');
 }
 

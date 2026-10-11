@@ -168,6 +168,9 @@ function toggle(id) {
   render();
 }
 
+/** A source's name, edition, licence or reason in the page's language, the English where there is no Norwegian. */
+const loc = (x, field) => (prefs.lang === 'nb' && x[`${field}Nb`]) || x[field];
+
 function methodBody() {
   const s = t();
   const m = data.method;
@@ -181,16 +184,16 @@ function methodBody() {
     h('p', null, s.lead),
     h('p.meta', null, s.sourcesH),
     h('ul', null,
-      ...used.map((x) => h('li', null, h('a', { href: x.page, target: '_blank', rel: 'noopener' }, x.name), `, ${x.edition}. `,
-        x.licenseUrl ? h('a', { href: x.licenseUrl, target: '_blank', rel: 'noopener' }, x.license) : (x.license ?? ''))),
-      h('li', null, h('a', { href: data.worldBank.url, target: '_blank', rel: 'noopener' }, 'World Bank'), ', API.'),
+      ...used.map((x) => h('li', null, h('a', { href: x.page, target: '_blank', rel: 'noopener' }, loc(x, 'name')), `, ${loc(x, 'edition')}. `,
+        x.licenseUrl ? h('a', { href: x.licenseUrl, target: '_blank', rel: 'noopener' }, loc(x, 'license')) : (loc(x, 'license') ?? ''))),
+      h('li', null, h('a', { href: data.worldBank.url, target: '_blank', rel: 'noopener' }, prefs.lang === 'nb' ? 'Verdensbanken' : 'World Bank'), ', API.'),
       h('li', null, 'GDELT, ', h('a', { href: '../metode/' }, prefs.lang === 'nb' ? `slik ${BRAND.short} teller den` : `as ${BRAND.short} counts it`), '.'),
       ...data.calendar.pages.map((p) => h('li', null, h('a', { href: p.url, target: '_blank', rel: 'noopener' }, `Wikipedia: ${p.title}`)))),
     beside.length ? h('p.meta', null, s.background) : null,
-    beside.length ? h('ul', null, ...beside.map((x) => h('li', null, h('a', { href: x.page, target: '_blank', rel: 'noopener' }, x.name), `, ${x.edition}. ${x.credit ?? ''}. `,
-      x.licenseUrl ? h('a', { href: x.licenseUrl, target: '_blank', rel: 'noopener' }, x.license) : (x.license ?? '')))) : null,
+    beside.length ? h('ul', null, ...beside.map((x) => h('li', null, h('a', { href: x.page, target: '_blank', rel: 'noopener' }, loc(x, 'name')), `, ${loc(x, 'edition')}. ${x.credit ?? ''}. `,
+      x.licenseUrl ? h('a', { href: x.licenseUrl, target: '_blank', rel: 'noopener' }, loc(x, 'license')) : (loc(x, 'license') ?? '')))) : null,
     skipped.length ? h('p.meta', null, s.skipped) : null,
-    skipped.length ? h('ul', null, ...skipped.map((x) => h('li', null, h('a', { href: x.page, target: '_blank', rel: 'noopener' }, x.name), `: ${x.reason}`))) : null,
+    skipped.length ? h('ul', null, ...skipped.map((x) => h('li', null, h('a', { href: x.page, target: '_blank', rel: 'noopener' }, loc(x, 'name')), `: ${loc(x, 'reason')}`))) : null,
   ];
 }
 

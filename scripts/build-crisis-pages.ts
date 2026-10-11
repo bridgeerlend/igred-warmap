@@ -14,6 +14,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync
 import path from 'node:path';
 import { repoRoot } from '../src/core/util/paths.js';
 import { BRAND, brandLink } from '../src/core/brand.js';
+import { navHtml } from '../src/core/nav.js';
 
 interface Crisis { id: string; name: string; nameNb: string; short?: string; region: string }
 
@@ -65,22 +66,16 @@ ${image ? `<meta property="og:image" content="${esc(image)}">\n<meta name="twitt
 <link rel="preload" href="${up}fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${up}fonts/fonts.css">
 <link rel="stylesheet" href="${up}atlas.css">
+<link rel="stylesheet" href="${up}nav.css">
 <link rel="stylesheet" href="${up}vendor/maplibre-gl.css">
 <link rel="stylesheet" href="${up}app.css">
 <link rel="stylesheet" href="${up}crisis.css">
 </head>
 <body class="crisis-page"${c ? ` data-crisis="${c.id}"` : ''}>
 <div class="banner" id="banner" hidden></div>
-<header class="masthead page-masthead is-sticky">
+<header class="masthead page-masthead is-sticky has-nav">
   ${brandLink('https://igred.org/')}
-  <nav class="controls">
-    <a class="link-button" href="${up}" data-i18n="map">Map</a>
-    <a class="link-button" href="${up}brief/" data-i18n="brief">Brief</a>
-    <a class="link-button" href="${up}stream/" data-i18n="wire">Wire</a>
-    <a class="link-button" href="${up}metode/" data-i18n="methodNav">Method</a>
-    <button type="button" class="link-button" id="lang">NO</button>
-    <button type="button" class="link-button" id="theme">Light</button>
-  </nav>
+  ${navHtml('map')}
 </header>
 <div class="page-map"><div class="map" id="map" role="region" aria-label="Map"></div></div>
 <main class="page-body">
@@ -95,6 +90,7 @@ ${image ? `<meta property="og:image" content="${esc(image)}">\n<meta name="twitt
 <script src="${up}vendor/maplibre-gl.js"></script>
 <script src="${up}vendor/topojson-client.min.js"></script>
 <script type="module" src="${up}crisis.js"></script>
+<script type="module" src="${up}nav.js"></script>
 </body>
 </html>
 `;

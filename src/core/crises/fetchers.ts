@@ -234,7 +234,8 @@ export async function wikipedia(title: string): Promise<{ en?: WikiSummary; nb?:
     let nb: WikiSummary | undefined;
     try {
       const links = await fetchJson<{ query?: { pages?: Record<string, { langlinks?: { '*': string }[] }> } }>(
-        `https://en.wikipedia.org/w/api.php?action=query&prop=langlinks&lllang=nb&redirects=1&format=json&titles=${encodeURIComponent(en.title)}`,
+        // Norwegian Bokmål is "no" on Wikipedia (no.wikipedia.org), not "nb".
+        `https://en.wikipedia.org/w/api.php?action=query&prop=langlinks&lllang=no&redirects=1&format=json&titles=${encodeURIComponent(en.title)}`,
         { retries: 1, timeoutMs: 15_000 },
       );
       const nbTitle = Object.values(links.query?.pages ?? {})[0]?.langlinks?.[0]?.['*'];

@@ -7,6 +7,7 @@
  *   - rewrites the static pages (titles, Open Graph, the header mark, the text that names us)
  *     from the brand last applied to the current one;
  *   - redraws the header mark everywhere and the icons when the favicon changed;
+ *   - stamps the one menu (src/core/nav.ts) into each static page, with its stylesheet and script;
  *   - regenerates the crisis pages.
  *
  * A rename is an edit to config/brand.json and `npm run brand`. `--check` changes nothing and
@@ -16,6 +17,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { BRAND, faviconSvg, markSvg, type Brand } from '../src/core/brand.js';
+import { navHtml, type NavKey } from '../src/core/nav.js';
 import { repoRoot } from '../src/core/util/paths.js';
 
 const check = process.argv.includes('--check');
@@ -71,10 +73,34 @@ const write = (p: string, body: string) => {
 };
 
 for (const p of ['site/brand.js', 'www/brand.js']) write(p, moduleSource(BRAND));
+/** The static pages that carry the menu, and which item each one is. */
+const NAV_PAGES: Record<string, NavKey | null> = {
+  'site/index.html': 'map',
+  'site/brief/index.html': 'brief',
+  'site/stream/index.html': 'wire',
+  'site/valg/index.html': 'elections',
+  'site/metode/index.html': 'method',
+};
+
+function stampNav(body: string, active: NavKey | null): string {
+  // The menu: whatever stands after the mark in the header, a <nav> or a <div class="controls">.
+  const re = /^([ \t]*)(<nav class="controls[^"]*"[^>]*>[\s\S]*?<\/nav>|<div class="controls">[\s\S]*?<\/div>)/m;
+  const m = re.exec(body);
+  if (!m) throw new Error('no menu to replace');
+  body = body.replace(m[2]!, navHtml(active, m[1]!));
+  // The header that holds it is measured for the fold.
+  body = body.replace(/<(header|div) class="((?:masthead|topbar)[^"]*?)"/, (all, tag: string, cls: string) => (cls.includes('has-nav') ? all : `<${tag} class="${cls} has-nav"`));
+  const up = /href="((?:\.\.\/)*)atlas\.css"/.exec(body)?.[1] ?? '';
+  if (!body.includes(`${up}nav.css"`)) body = body.replace(`href="${up}atlas.css">`, `href="${up}atlas.css">\n<link rel="stylesheet" href="${up}nav.css">`);
+  if (!body.includes(`${up}nav.js"`)) body = body.replace('</body>', `<script type="module" src="${up}nav.js"></script>\n</body>`);
+  return body;
+}
+
 for (const p of staticFiles()) {
   let body = readFileSync(rel(p), 'utf-8');
   for (const [re, to] of subs) body = body.replace(re, to);
   body = body.replace(/<svg class="brand-mark"[\s\S]*?<\/svg>/g, mark);
+  if (p in NAV_PAGES) body = stampNav(body, NAV_PAGES[p]!);
   write(p, body);
 }
 const iconsBehind = readFileSync(rel('site/favicon.svg'), 'utf-8') !== faviconSvg() || readFileSync(rel('www/favicon.svg'), 'utf-8') !== faviconSvg();
