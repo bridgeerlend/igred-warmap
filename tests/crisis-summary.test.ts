@@ -13,7 +13,7 @@ const input = {
 };
 
 const settings: SummarySettings = {
-  enabled: true, minHoursBetween: 3, maxAgeHours: 72, maxPerRun: 30, maxWords: 110, timeoutMs: 5000,
+  enabled: true, minHoursBetween: 3, minNewSources: 3, rewriteAfterHours: 12, maxAgeHours: 72, maxPerRun: 30, maxWords: 110, timeoutMs: 5000,
   providers: [{ id: 'free', url: 'https://llm.example/v1/chat/completions', model: 'm', keyEnv: 'TEST_KEY' }],
 };
 
@@ -150,6 +150,44 @@ describe('the crisis summary run', () => {
     const log = await runSummaries([input, { ...input, id: 'yemen' }], states, settings, Date.now(), { TEST_KEY: 'k' });
     expect(log.join('\n')).toMatch(/HTTP 429/);
     expect(log.join('\n')).toMatch(/out of free quota/);
+  });
+
+  it('rewrites an approved text only after three new sources, or after twelve hours', async () => {
+    const fetch = reply({ choices: [{ message: { content: JSON.stringify(good) } }] });
+    vi.stubGlobal('fetch', fetch);
+    const now = Date.parse('2026-10-10T12:00:00Z');
+    const approved = (hoursOld: number) => ({ en: 'old', nb: 'gammel', model: 'x', writtenAt: new Date(now - hoursOld * 3_600_000).toISOString(), sources: input.headlines, promptVersion: PROMPT_VERSION });
+    const state = (hoursOld: number): Record<string, SummaryState> => ({ sudan: { approved: approved(hoursOld), promptVersion: PROMPT_VERSION, attemptedAt: new Date(now - hoursOld * 3_600_000).toISOString() } });
+    const more = (n: number) => ({ ...input, headlines: [...input.headlines, ...Array.from({ length: n }, (_, i) => ({ title: `Fighting near El Fasher ${i}`, url: `https://example.org/new${i}`, publisher: `New ${i}` }))] });
+
+    let states = state(5);
+    await runSummaries([more(2)], states, settings, now, { TEST_KEY: 'k' });
+    expect(states.sudan!.approved!.en).toBe('old');
+    expect(fetch).not.toHaveBeenCalled();
+
+    states = state(5);
+    await runSummaries([more(3)], states, settings, now, { TEST_KEY: 'k' });
+    expect(states.sudan!.approved!.en).toBe(good.en);
+
+    states = state(13);
+    await runSummaries([input], states, settings, now, { TEST_KEY: 'k' });
+    expect(states.sudan!.approved!.en).toBe(good.en);
+  });
+
+  it('on a spent quota goes on to the next provider, and logs the whole message with its reset', async () => {
+    const message = '{"error":{"message":"Rate limit reached for model `openai/gpt-oss-120b` on tokens per day (TPD): Limit 200000, Used 199500, Requested 2400. Please try again in 7m12s."}}';
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => (url.includes('groq')
+      ? new Response(message, { status: 429, headers: { 'x-ratelimit-reset-tokens': '7m12s' } })
+      : url.includes('mistral')
+        ? new Response('{"message":"Requests rate limit exceeded: quota"}', { status: 400 })
+        : new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(good) } }] }), { status: 200 }))));
+    const chain: SummarySettings = { ...settings, providers: ['groq', 'mistral', 'gemini'].map((id) => ({ id, url: `https://${id}.example/v1`, model: 'm', keyEnv: 'TEST_KEY' })) };
+    const states: Record<string, SummaryState> = {};
+    const log = (await runSummaries([input], states, chain, Date.now(), { TEST_KEY: 'k' })).join('\n');
+    expect(log).toContain('Please try again in 7m12s.');
+    expect(log).toContain('x-ratelimit-reset-tokens: 7m12s');
+    expect(log).toMatch(/mistral unavailable this run \(HTTP 400/);
+    expect(states.sudan!.approved!.model).toBe('gemini/m');
   });
 
   it('moves to the next provider when a model is retired, without costing the crisis its turn', async () => {

@@ -16,6 +16,9 @@
       "$note": "Three to five machine-written sentences per crisis, from headlines already on the page, checked by guardDraft in both languages. GitHub Models was retired on 30 July 2026, so any OpenAI-compatible free tier works: add its key as a repository secret and it is used. A provider whose key is absent is never called; no key at all leaves the status line alone. Only free tiers belong here: this must never cost money and never stop the run.",
       "enabled": true,
       "minHoursBetween": 3,
+      "$rewriteNote": "An approved text is rewritten only when at least minNewSources new sources have come in since it was written, or when it is older than rewriteAfterHours. A crisis with no approved text goes first.",
+      "minNewSources": 3,
+      "rewriteAfterHours": 12,
       "maxAgeHours": 72,
       "maxPerRun": 30,
       "maxWords": 110,
@@ -27,9 +30,9 @@
       },
       "timeoutMs": 45000,
       "providers": [
-        { "id": "gemini", "url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", "model": "gemini-2.5-flash-lite", "keyEnv": "GEMINI_API_KEY" },
         { "id": "groq", "url": "https://api.groq.com/openai/v1/chat/completions", "model": "openai/gpt-oss-120b", "keyEnv": "GROQ_API_KEY", "params": { "reasoning_effort": "low" }, "minIntervalMs": 15000, "$paceNote": "The free tier allows about 8,000 tokens a minute for this model and one summary costs 2,000 to 3,000, so calls are spaced and a short 429 is waited out. Each crisis takes two calls: the English, then the Norwegian translated from it.", "$modelNote": "llama-3.3-70b-versatile was retired by Groq on 16 August 2026. gpt-oss-120b reasons before it answers, so it gets a low effort and a large token budget." },
-        { "id": "mistral", "url": "https://api.mistral.ai/v1/chat/completions", "model": "mistral-small-latest", "keyEnv": "MISTRAL_API_KEY" }
+        { "id": "mistral", "url": "https://api.mistral.ai/v1/chat/completions", "model": "mistral-small-latest", "keyEnv": "MISTRAL_API_KEY" },
+        { "id": "gemini", "url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", "model": "gemini-2.5-flash-lite", "keyEnv": "GEMINI_API_KEY" }
       ]
     }
   },

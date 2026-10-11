@@ -28,6 +28,10 @@ export interface Provider {
 export interface SummarySettings {
   enabled: boolean;
   minHoursBetween: number;
+  /** An approved text is rewritten only when this many new sources have come in since it… */
+  minNewSources: number;
+  /** …or when it is this many hours old. */
+  rewriteAfterHours: number;
   maxAgeHours: number;
   maxPerRun: number;
   maxWords: number;
@@ -331,7 +335,7 @@ function promptFor(input: SummaryInput, maxWords: number): string {
     ...input.headlines.map((h) => `- ${h.publisher}: ${h.title}`),
     ...(input.facts.length ? ['', 'Reference figures, each with the year it applies to:', ...input.facts.map((f) => `- ${f}`)] : []),
     ...(input.previous ? ['', `What we wrote on ${input.previous.writtenAt.slice(0, 10)}:`, input.previous.text] : []),
-    ...(input.background ? ['', 'Background (Wikipedia):', input.background.slice(0, 1200)] : []),
+    ...(input.background ? ['', 'Background (Wikipedia):', input.background] : []),
     '',
     `Write 3 to 5 sentences (at most ${maxWords} words) for an analyst: what is happening in this crisis now, where, and why, and what is new compared with what we wrote before.`,
     'Rules:',
@@ -405,9 +409,14 @@ async function callProvider(provider: Provider, key: string, prompt: string, tim
       // 404 is a retired or unknown model: no crisis will fare better with this provider, so
       // like a spent quota it moves the run on to the next one.
       const retry = Number(response.headers.get('retry-after'));
+      // The whole message, and when the provider says the limit resets, so the log answers
+      // "until when" without a second look.
+      const resets = ['retry-after', 'x-ratelimit-reset-requests', 'x-ratelimit-reset-tokens']
+        .map((h) => (response.headers.get(h) ? `${h}: ${response.headers.get(h)}` : ''))
+        .filter(Boolean).join(', ');
       return {
-        failure: `HTTP ${response.status} ${body.slice(0, 120)}`,
-        quota: [402, 403, 404, 429].includes(response.status),
+        failure: `HTTP ${response.status} ${body.replace(/\s+/g, ' ').trim()}${resets ? ` (${resets})` : ''}`,
+        quota: [402, 403, 404, 429].includes(response.status) || /quota|rate limit|resource_exhausted/i.test(body),
         ...(response.status === 429 && Number.isFinite(retry) && retry > 0 ? { retryAfterMs: retry * 1000 } : {}),
       };
     }
@@ -415,7 +424,7 @@ async function callProvider(provider: Provider, key: string, prompt: string, tim
     const text = payload.choices?.[0]?.message?.content?.trim();
     return text ? { text } : { failure: 'empty answer' };
   } catch (error) {
-    return { failure: (error as Error).name === 'AbortError' ? 'timed out' : (error as Error).message.slice(0, 120) };
+    return { failure: (error as Error).name === 'AbortError' ? 'timed out' : (error as Error).message };
   } finally {
     clearTimeout(timer);
   }
@@ -487,8 +496,16 @@ export async function runSummaries(
     const since = state.attemptedAt ? (now - Date.parse(state.attemptedAt)) / 3_600_000 : Infinity;
     if (input.headlines.length < 3) continue;
     const rewrite = state.promptVersion !== PROMPT_VERSION;
-    if (state.inputHash === hash && state.approved && !rewrite) continue;
-    if (since < settings.minHoursBetween && !rewrite) continue;
+    const current = state.approved?.promptVersion === PROMPT_VERSION ? state.approved : null;
+    if (current) {
+      // Approved under the current brief: rewritten only when the reporting has moved on by
+      // enough new sources, or the text has grown old. That is where the free quota goes.
+      const had = new Set((current.sources ?? []).map((s) => s.url));
+      const fresh = input.headlines.filter((h) => !had.has(h.url)).length;
+      const age = (now - Date.parse(current.writtenAt)) / 3_600_000;
+      if (fresh < settings.minNewSources && age <= settings.rewriteAfterHours) continue;
+      if (since < settings.minHoursBetween) continue;
+    } else if (since < settings.minHoursBetween && !rewrite) continue;
 
     // 1. The English, from the sources; refused once, it is asked for again with the reason.
     const first = await ask(promptFor(input, settings.maxWords));

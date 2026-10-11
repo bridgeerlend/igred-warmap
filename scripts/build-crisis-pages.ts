@@ -30,7 +30,7 @@ function page(c: Crisis | null, depth: number): string {
   const up = '../'.repeat(depth);
   const title = c ? `${c.name} · IGRED Global Conflict Monitor` : 'Crisis · IGRED Global Conflict Monitor';
   const description = c
-    ? `${c.name}: the latest reporting, every incident with its sources, the UCDP register and the background. Updated every hour.`
+    ? `${c.name}: the latest reporting, every incident with its sources, the UCDP register and the background. Updated several times a day.`
     : 'One crisis: the latest reporting, every incident with its sources, the UCDP register and the background.';
   const url = c ? `${SITE}/crisis/${c.id}/` : `${SITE}/crisis/`;
   // The Commons picture the pipeline chose for this crisis when the page was generated. It is

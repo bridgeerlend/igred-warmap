@@ -909,6 +909,20 @@ describe('the data can be downloaded', () => {
   });
 });
 
+describe('the quota goes where the news is', () => {
+  it('rewrites on three new sources or twelve hours, from at most 15 sources and the lead, and says how often it updates', () => {
+    const s = readJson('config/crises.json').settings.summary;
+    expect(s.minNewSources).toBe(3);
+    expect(s.rewriteAfterHours).toBe(12);
+    expect(s.providers.map((p: { id: string }) => p.id)).toEqual(['groq', 'mistral', 'gemini']);
+    expect(read('src/core/crises/build.ts')).toMatch(/const MAX_SUMMARY_SOURCES = 15;/);
+    expect(read('.github/workflows/ingest.yml')).toMatch(/- cron: '23 \* \* \* \*'/);
+    expect(read('site/crisis/sudan/index.html')).toMatch(/Updated several times a day\./);
+    expect(read('site/metode/index.html')).toMatch(/updated several times a day[\s\S]*oppdateres flere ganger i døgnet/);
+    for (const file of SITE_FILES) expect(read(file)).not.toMatch(/every hour|hver time/i);
+  });
+});
+
 describe('the method is one click away', () => {
   it('Method sits in the top menu between Wire and the language switch, marked on its own page', () => {
     const between = /data-i18n="wire">Wire<\/a>\s*<a class="link-button" href="[^"]*metode\/"? ?[^>]*data-i18n="methodNav"[^>]*>Method<\/a>\s*<button type="button" class="link-button" id="lang">/;
