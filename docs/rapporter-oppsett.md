@@ -7,7 +7,7 @@ Utkast ligger som grener (`cms/...`) og bygger aldri produksjonssiden.
 ## For Erlend: GitHub OAuth-appen (én gang, etter 14. oktober)
 
 1. **Lag OAuth-appen.** GitHub → Settings → Developer settings → OAuth Apps → New OAuth App.
-   - Application name: `IGRED redaksjon`
+   - Application name: `Varde redaksjon`
    - Homepage URL: `https://igred.org`
    - Authorization callback URL: `https://api.netlify.com/auth/done`
    Trykk Register application.
@@ -31,7 +31,7 @@ Utkast ligger som grener (`cms/...`) og bygger aldri produksjonssiden.
 1. Du trenger en GitHub-konto. Godta invitasjonen til `bridgeerlend/igred-warmap` som kommer
    på e-post (eller på github.com/notifications).
 2. Gå til **igred.org/admin** og trykk **Logg inn med GitHub**. Godkjenn appen
-   «IGRED redaksjon» første gang.
+   «Varde redaksjon» første gang.
 3. Velg **Analyser** eller **Halvårsrapporter** til venstre, og trykk **+ Analyse**
    (eller **+ Halvårsrapport**).
 4. Skriv i feltene. Du kan lime inn fra Word og Google Docs; overskrifter, fet, kursiv,

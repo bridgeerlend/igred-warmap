@@ -26,6 +26,9 @@ export interface SourceConfig {
   licenseUrl?: string;
   edition?: string;
   skip?: string;
+  /** Shown beside the score, never in it. */
+  background?: boolean;
+  credit?: string;
 }
 
 export interface ManifestEntry {
@@ -38,6 +41,8 @@ export interface ManifestEntry {
   licenseUrl?: string;
   edition?: string;
   indicator?: string;
+  background?: boolean;
+  credit?: string;
   status: 'ok' | 'skipped' | 'failed';
   reason?: string;
   downloadedAt?: string;
@@ -70,7 +75,7 @@ export async function ensureSources(configs: SourceConfig[], log: (line: string)
   mkdirSync(SOURCES_DIR, { recursive: true });
   const manifest = readManifest();
   for (const c of configs) {
-    const base = { id: c.id, name: c.name, page: c.page, ...(c.url ? { url: c.url } : {}), ...(c.file ? { file: c.file } : {}), ...(c.license ? { license: c.license } : {}), ...(c.licenseUrl ? { licenseUrl: c.licenseUrl } : {}), ...(c.edition ? { edition: c.edition } : {}), ...(c.indicator ? { indicator: c.indicator } : {}) };
+    const base = { id: c.id, name: c.name, page: c.page, ...(c.url ? { url: c.url } : {}), ...(c.file ? { file: c.file } : {}), ...(c.license ? { license: c.license } : {}), ...(c.licenseUrl ? { licenseUrl: c.licenseUrl } : {}), ...(c.background ? { background: true } : {}), ...(c.credit ? { credit: c.credit } : {}), ...(c.edition ? { edition: c.edition } : {}), ...(c.indicator ? { indicator: c.indicator } : {}) };
     if (c.skip) { manifest[c.id] = { ...base, status: 'skipped', reason: c.skip }; continue; }
     const target = path.join(SOURCES_DIR, c.file!);
     // Already here: only the description (licence, link) is brought up to date with the config.

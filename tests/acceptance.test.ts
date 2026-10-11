@@ -19,7 +19,7 @@ const exists = (relative: string) => existsSync(path.join(repoRoot, relative));
  * IGRED's own icon, served from the site itself, is the one picture every page may name in
  * its head. Removed before the checks that keep outlets' logos and favicons off the pages.
  */
-const ICON_LINK = /<link rel="(icon|apple-touch-icon|manifest)" href="(\.\.\/)*(favicon\.(ico|svg)|favicon-32\.png|apple-touch-icon\.png|site\.webmanifest)"[^>]*>/g;
+const ICON_LINK = /<link rel="(icon|apple-touch-icon|manifest)" href="(\.\.\/)*(favicon\.(ico|svg)|favicon-(16|32)\.png|apple-touch-icon\.png|site\.webmanifest)"[^>]*>/g;
 const withoutOwnIcon = (text: string) => text.replace(ICON_LINK, ' ');
 
 const config = loadConfig();
@@ -1075,7 +1075,7 @@ describe('a crisis has its own page', () => {
     for (const crisis of readJson('config/crises.json').crises as { id: string; name: string }[]) {
       const html = read(`site/crisis/${crisis.id}/index.html`);
       const name = crisis.name.replace(/&/g, '&amp;');
-      expect(html).toContain(`<title>${name} · IGRED Global Conflict Monitor</title>`);
+      expect(html).toContain(`<title>${name} · Varde Monitor</title>`);
       expect(html).toMatch(/<meta name="description" content="[^"]{40,}">/);
       expect(html).toContain(`<meta property="og:title" content="${name}">`);
       expect(html).toMatch(/<meta property="og:description" content="[^"]+">/);
@@ -1090,7 +1090,7 @@ describe('a crisis has its own page', () => {
 describe('the wordmark links home', () => {
   it('from every product page, but not from the home page to itself', () => {
     for (const page of ['site/index.html', 'site/brief/index.html', 'site/stream/index.html', 'site/crisis/index.html']) {
-      expect(read(page)).toMatch(/<a class="wordmark wordmark-link" href="https:\/\/igred\.org\/">/);
+      expect(read(page)).toMatch(/<a class="wordmark wordmark-link brand" href="https:\/\/igred\.org\/" aria-label="Varde Research"><svg class="brand-mark"/);
     }
     expect(read('www/index.html')).not.toMatch(/href="https:\/\/igred\.org\/"/);
   });
@@ -1110,11 +1110,21 @@ describe('the icon', () => {
       }
       expect(readJson(`${host}/site.webmanifest`).icons.map((i: { sizes: string }) => i.sizes)).toEqual(['192x192', '512x512', 'any']);
     }
-    // The letter is outlined, so the icon does not depend on a font being present.
+    for (const host of ['site', 'www']) for (const file of ['favicon-16.png']) expect(exists(`${host}/${file}`), `${host}/${file}`).toBe(true);
+    // The Varde Research cairn: an ember top stone and three light ones, the same on both hosts.
     const svg = read('site/favicon.svg');
     expect(svg).not.toMatch(/<text\b|font-family/);
-    expect(svg).toMatch(/<path fill="#F4F2EC" d="M/);
+    expect(svg).toMatch(/fill="#E4542A"/);
+    expect(svg.match(/fill="#F4F2EC"/g)?.length).toBe(3);
     expect(read('www/favicon.svg')).toBe(svg);
+    // The mark in the page header: the light stones follow the theme, the ember one never does.
+    for (const page of ['site/index.html', 'www/index.html', 'www/knowledge/index.html', 'site/crisis/sudan/index.html']) {
+      const mark = /<svg class="brand-mark"[\s\S]*?<\/svg>/.exec(read(page))?.[0] ?? '';
+      expect(mark.match(/fill="currentColor"/g)?.length, page).toBe(3);
+      expect(mark).toContain('fill="#E4542A"');
+    }
+    expect(read('site/atlas.css')).toMatch(/\.brand-mark \{ width: 36px; height: 36px; flex: none; color: #F4F2EC; \}/);
+    expect(read('site/atlas.css')).toMatch(/:root\[data-theme="light"\] \.brand-mark \{ color: #0B0B0A; \}/);
   });
 });
 
@@ -1129,13 +1139,14 @@ describe('the front page', () => {
     expect(read('www/hero.js')).toMatch(/if \(reduced\) \{ still\(\); return/);
   });
 
-  it('has four equal entries: two live, two coming and not clickable', () => {
+  it('has four equal entries: three live, the knowledge base coming and not clickable', () => {
     const html = read('www/index.html');
-    expect(html.match(/class="entry"/g)?.length).toBe(2);
-    expect(html.match(/class="entry is-coming" aria-disabled="true"/g)?.length).toBe(2);
+    expect(html.match(/class="entry"/g)?.length).toBe(3);
+    expect(html.match(/class="entry is-coming" aria-disabled="true"/g)?.length).toBe(1);
+    expect(html).toMatch(/<a class="entry" href="reports\/">/);
     expect(html).toMatch(/href="https:\/\/map\.igred\.org\/"/);
     expect(html).toMatch(/href="https:\/\/map\.igred\.org\/brief\/"/);
-    for (const name of ['Global Conflict Monitor', 'The IGRED Brief', 'Reports', 'Knowledge base']) expect(html).toContain(name);
+    for (const name of ['Varde Monitor', 'Varde Brief', 'Varde Reports', 'Knowledge base']) expect(html).toContain(name);
   });
 
   it('the knowledge base is one reading list with our own assessment, and coming until it has an entry', () => {
@@ -1225,8 +1236,8 @@ describe('reports on igred.org', () => {
     expect(page).toMatch(/class="r-new">Ny/);
     // Title, type, authors, date, version, ingress, how to cite, and the PDF.
     expect(page).toMatch(/Halvårsrapport · April til september 2026 · 11\. oktober 2026 · Versjon 1\.0/);
-    expect(page).toMatch(/Moe, E\. B\. og Bratberg, V\. \(2026\)\. Krigene som former høsten 2026\. IGRED halvårsrapport, versjon 1\.0, 11\. oktober 2026\. https:\/\/igred\.org\/reports\/2026-h2\//);
-    expect(page).toMatch(/<a class="link-button" href="igred-2026-h2\.pdf" download>Last ned PDF<\/a>/);
+    expect(page).toMatch(/Moe, E\. B\. og Bratberg, V\. \(2026\)\. Krigene som former høsten 2026\. Varde Reports, halvårsrapport, versjon 1\.0, 11\. oktober 2026\. https:\/\/igred\.org\/reports\/2026-h2\//);
+    expect(page).toMatch(/<a class="link-button" href="varde-2026-h2\.pdf" download>Last ned PDF<\/a>/);
   });
 
   it('every building block renders, and the figures come frozen from the first build', () => {
@@ -1258,3 +1269,22 @@ describe('reports on igred.org', () => {
     expect(read('.gitignore')).toMatch(/^www\/reports\/$/m);
   });
 });
+
+describe('one brand, from config/brand.json', () => {
+  it('every page, module and icon matches the brand file, so a rename is one edit and `npm run brand`', () => {
+    const out = execFileSync('npx', ['tsx', 'scripts/apply-brand.ts', '--check'], { cwd: repoRoot, encoding: 'utf-8' });
+    expect(out).toMatch(/every page matches config\/brand\.json/);
+    const brand = readJson('config/brand.json');
+    for (const host of ['site', 'www']) expect(read(`${host}/brand.js`)).toContain(`"name": "${brand.name}"`);
+  });
+
+  it('the code takes the name from the brand, never as a literal', () => {
+    const brand = readJson('config/brand.json');
+    const names = [brand.name, brand.products.monitor, brand.products.brief, brand.products.reports, brand.verified.en, brand.verified.nb];
+    const code = ['site/common.js', 'site/app.js', 'site/view.js', 'site/crisis.js', 'site/metode/metode.js', 'site/valg/valg.js', 'site/brief/brief.js', 'site/stream/stream.js',
+      'www/home.js', 'www/hero.js', 'scripts/build-reports.ts', 'scripts/build-crisis-pages.ts', 'src/core/crises/build.ts', 'src/core/elections/build.ts', 'src/core/detect/verified.ts', 'site/atlas.css'];
+    for (const file of code) for (const name of names) expect(read(file), `${file}: ${name}`).not.toContain(name);
+    expect(read('scripts/netlify-ignore.sh')).toMatch(/config\/brand\.json src\/core\/brand\.ts/);
+  });
+});
+

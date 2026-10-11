@@ -3,7 +3,7 @@
  * each with its risk score, every indicator behind it with source and year, and after the
  * election its result and whether unrest followed. Read at view time, like the map.
  */
-import { prefs, setupPrefs, $, h, getJson, fmtDay, electionKind } from '../common.js';
+import { prefs, setupPrefs, $, h, getJson, fmtDay, electionKind, BRAND } from '../common.js';
 
 const S = {
   en: {
@@ -20,6 +20,7 @@ const S = {
     crisis: 'The country has an active crisis on the map:', wiki: 'Wikipedia', onMap: 'On the map',
     head: { indicator: 'Indicator', figure: 'Figure', year: 'Year', risk: 'Risk', source: 'Source' },
     missing: 'No data', weight: (w) => `weight ${w}`,
+    background: 'Background, not in the score', rsfLine: (v) => `World Press Freedom Index 2026: ${v} of 100.`, rsfWhy: 'Shown unchanged; RSF\'s licence does not allow it to be adapted into a score.',
     method: 'How the score is made',
     methodIntro: 'Each indicator is a risk from 0 to 100, and the score is their weighted mean. An indicator without data for a country is left out and the others weigh more; with less than half of the weight there is no score. Below {e} is low, from {e} elevated, from {h} high.',
     sourcesH: 'Sources', skipped: 'Not used',
@@ -38,8 +39,8 @@ const S = {
       pei: (m) => `Electoral Integrity Project (PEI), ${m.office} election ${m.date}`,
       rsf: () => 'RSF, World Press Freedom Index',
       fh: () => 'Freedom House, Freedom in the World',
-      events: () => 'GDELT as IGRED counts it: violent protest, repression and armed violence',
-      trend: () => 'GDELT as IGRED counts it: the past 30 days against the 30 before',
+      events: () => `GDELT as ${BRAND.short} counts it: violent protest, repression and armed violence`,
+      trend: () => `GDELT as ${BRAND.short} counts it: the past 30 days against the 30 before`,
       margin: (m) => `Wikipedia: ${m.article}`, turnout: (m) => `Wikipedia: ${m.article}`,
       gdp: () => 'World Bank, GDP per person (current US$)',
       debt: () => 'World Bank, central government debt (share of GDP)',
@@ -62,6 +63,7 @@ const S = {
     crisis: 'Landet har en aktiv krise på kartet:', wiki: 'Wikipedia', onMap: 'På kartet',
     head: { indicator: 'Indikator', figure: 'Tall', year: 'År', risk: 'Risiko', source: 'Kilde' },
     missing: 'Ingen data', weight: (w) => `vekt ${w}`,
+    background: 'Bakgrunnstall, ikke i scoren', rsfLine: (v) => `World Press Freedom Index 2026: ${v} av 100.`, rsfWhy: 'Vist uendret; RSFs lisens tillater ikke at indeksen bearbeides til en score.',
     method: 'Slik regnes scoren',
     methodIntro: 'Hver indikator er en risiko fra 0 til 100, og scoren er det vektede snittet. En indikator uten data for landet utelates, og de andre veier mer; med under halvparten av vekten blir det ingen score. Under {e} er lav, fra {e} forhøyet, fra {h} høy.',
     sourcesH: 'Kilder', skipped: 'Ikke brukt',
@@ -80,8 +82,8 @@ const S = {
       pei: (m) => `Electoral Integrity Project (PEI), ${({ legislative: 'parlamentsvalget', presidential: 'presidentvalget', referendum: 'folkeavstemningen' })[m.office] ?? 'valget'} ${m.date}`,
       rsf: () => 'RSF, World Press Freedom Index',
       fh: () => 'Freedom House, Freedom in the World',
-      events: () => 'GDELT slik IGRED teller den: voldelige protester, undertrykking og væpnet vold',
-      trend: () => 'GDELT slik IGRED teller den: siste 30 dager mot de 30 før',
+      events: () => `GDELT slik ${BRAND.short} teller den: voldelige protester, undertrykking og væpnet vold`,
+      trend: () => `GDELT slik ${BRAND.short} teller den: siste 30 dager mot de 30 før`,
       margin: (m) => `Wikipedia: ${m.article}`, turnout: (m) => `Wikipedia: ${m.article}`,
       gdp: () => 'Verdensbanken, BNP per innbygger (løpende USD)',
       debt: () => 'Verdensbanken, sentralstatens gjeld (andel av BNP)',
@@ -147,6 +149,13 @@ function detail(e) {
       h('td.num', null, fmt(p.risk, 0))))];
   }));
   parts.push(h('table.vote-ind', null, head, body));
+  for (const b of e.background ?? []) {
+    parts.push(h('div.vote-background', null,
+      h('p.meta', null, s.background),
+      h('p', null, s.rsfLine(new Intl.NumberFormat(prefs.lang === 'nb' ? 'nb-NO' : 'en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(b.raw)), ' ',
+        h('a', { href: b.url, target: '_blank', rel: 'noopener' }, b.credit), '.'),
+      h('p.meta', null, s.rsfWhy, ' ', b.licenseUrl ? h('a', { href: b.licenseUrl, target: '_blank', rel: 'noopener' }, 'CC BY-NC-ND') : null)));
+  }
   parts.push(h('p.vote-links', null,
     h('a.link-button', { href: e.wiki.url, target: '_blank', rel: 'noopener' }, s.wiki),
     e.crisis ? h('span', null, `${s.crisis} `, h('a', { href: `../#crisis=${encodeURIComponent(e.crisis.id)}` }, nb ? e.crisis.nb : e.crisis.en)) : null));
@@ -163,7 +172,8 @@ function methodBody() {
   const s = t();
   const m = data.method;
   const intro = s.methodIntro.replaceAll('{e}', String(m.levels.elevated)).replaceAll('{h}', String(m.levels.high));
-  const used = data.sources.filter((x) => x.status === 'ok');
+  const used = data.sources.filter((x) => x.status === 'ok' && !x.background);
+  const beside = data.sources.filter((x) => x.status === 'ok' && x.background);
   const skipped = data.sources.filter((x) => x.status !== 'ok');
   return [
     h('p', null, intro),
@@ -174,8 +184,11 @@ function methodBody() {
       ...used.map((x) => h('li', null, h('a', { href: x.page, target: '_blank', rel: 'noopener' }, x.name), `, ${x.edition}. `,
         x.licenseUrl ? h('a', { href: x.licenseUrl, target: '_blank', rel: 'noopener' }, x.license) : (x.license ?? ''))),
       h('li', null, h('a', { href: data.worldBank.url, target: '_blank', rel: 'noopener' }, 'World Bank'), ', API.'),
-      h('li', null, 'GDELT, ', h('a', { href: '../metode/' }, prefs.lang === 'nb' ? 'slik IGRED teller den' : 'as IGRED counts it'), '.'),
+      h('li', null, 'GDELT, ', h('a', { href: '../metode/' }, prefs.lang === 'nb' ? `slik ${BRAND.short} teller den` : `as ${BRAND.short} counts it`), '.'),
       ...data.calendar.pages.map((p) => h('li', null, h('a', { href: p.url, target: '_blank', rel: 'noopener' }, `Wikipedia: ${p.title}`)))),
+    beside.length ? h('p.meta', null, s.background) : null,
+    beside.length ? h('ul', null, ...beside.map((x) => h('li', null, h('a', { href: x.page, target: '_blank', rel: 'noopener' }, x.name), `, ${x.edition}. ${x.credit ?? ''}. `,
+      x.licenseUrl ? h('a', { href: x.licenseUrl, target: '_blank', rel: 'noopener' }, x.license) : (x.license ?? '')))) : null,
     skipped.length ? h('p.meta', null, s.skipped) : null,
     skipped.length ? h('ul', null, ...skipped.map((x) => h('li', null, h('a', { href: x.page, target: '_blank', rel: 'noopener' }, x.name), `: ${x.reason}`))) : null,
   ];
@@ -188,7 +201,7 @@ function render() {
     const v = prefs.t[node.dataset.i18n];
     if (typeof v === 'string') node.textContent = v;
   }
-  document.title = `${s.page} · IGRED Global Conflict Monitor`;
+  document.title = `${s.page} · ${BRAND.products.monitor}`;
   $('votes-title').replaceChildren(h('span', null, s.title));
   $('votes-intro').textContent = s.intro;
   $('upcoming-h').textContent = s.upcoming;

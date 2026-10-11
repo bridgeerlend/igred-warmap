@@ -13,6 +13,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { repoRoot } from '../src/core/util/paths.js';
+import { BRAND, brandLink } from '../src/core/brand.js';
 
 interface Crisis { id: string; name: string; nameNb: string; short?: string; region: string }
 
@@ -28,7 +29,7 @@ const esc = (v: string) => v.replace(/&/g, '&amp;').replace(/"/g, '&quot;').repl
 
 function page(c: Crisis | null, depth: number): string {
   const up = '../'.repeat(depth);
-  const title = c ? `${c.name} · IGRED Global Conflict Monitor` : 'Crisis · IGRED Global Conflict Monitor';
+  const title = `${c ? c.name : 'Crisis'} · ${BRAND.products.monitor}`;
   const description = c
     ? `${c.name}: the latest reporting, every incident with its sources, the UCDP register and the background. Updated several times a day.`
     : 'One crisis: the latest reporting, every incident with its sources, the UCDP register and the background.';
@@ -46,6 +47,7 @@ function page(c: Crisis | null, depth: number): string {
 <link rel="icon" href="${up}favicon.ico" sizes="32x32">
 <link rel="icon" href="${up}favicon.svg" type="image/svg+xml">
 <link rel="icon" href="${up}favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="${up}favicon-16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="${up}apple-touch-icon.png">
 <link rel="manifest" href="${up}site.webmanifest">
 <title>${esc(title)}</title>
@@ -54,7 +56,7 @@ function page(c: Crisis | null, depth: number): string {
 <meta name="theme-color" content="#0B0B0A">
 <link rel="canonical" href="${url}">
 <meta property="og:type" content="article">
-<meta property="og:site_name" content="IGRED Global Conflict Monitor">
+<meta property="og:site_name" content="${esc(BRAND.products.monitor)}">
 <meta property="og:title" content="${esc(c ? c.name : 'Crisis')}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${url}">
@@ -70,7 +72,7 @@ ${image ? `<meta property="og:image" content="${esc(image)}">\n<meta name="twitt
 <body class="crisis-page"${c ? ` data-crisis="${c.id}"` : ''}>
 <div class="banner" id="banner" hidden></div>
 <header class="masthead page-masthead is-sticky">
-  <a class="wordmark wordmark-link" href="https://igred.org/"><strong>IGRED</strong></a>
+  ${brandLink('https://igred.org/')}
   <nav class="controls">
     <a class="link-button" href="${up}" data-i18n="map">Map</a>
     <a class="link-button" href="${up}brief/" data-i18n="brief">Brief</a>

@@ -14,7 +14,7 @@
 
 .topbar {
   position: fixed; left: 0; right: 0; top: 0; z-index: 40;
-  display: flex; justify-content: space-between; align-items: baseline; gap: 12px 24px;
+  display: flex; justify-content: space-between; align-items: center; gap: 12px 24px;
   padding: max(16px, env(safe-area-inset-top)) var(--gutter) 14px;
   /* Over the film it is always light on dark, whatever the theme. */
   color: #F7F5EF; --fg: #F7F5EF; --s3: #EC5A3A; --pick: #8CC7FF;
@@ -28,10 +28,14 @@
 }
 body.home { --page-fg: var(--fg); --page-s3: var(--s3); --page-pick: var(--pick); }
 .hero-mark {
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; min-width: 0;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0;
 }
+/* The tagline sits under the name, lined up with its first letter. */
+.hero-mark .hero-name { padding-left: 47px; }
+/* Over the film the mark is light whatever the theme; past it, it follows the page. */
+.topbar:not(.is-solid) .brand-mark { color: #F4F2EC; }
 @media (max-width: 640px) {
-  .topbar { flex-direction: column; gap: 10px; }
+  .topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
   .topbar .controls { justify-content: flex-start; gap: 16px; }
   .hero-name { display: none; }
 }

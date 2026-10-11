@@ -1,5 +1,5 @@
 /**
- * The IGRED Brief — one dated edition each morning.
+ * The Brief, one dated edition each morning.
  *
  * An edition is fetched at view time, like the map's data, so publishing one never rebuilds
  * the site. Editions are immutable once written: the URL you cite today shows the same words
@@ -10,6 +10,7 @@
  * such and appears only because a human approved it.
  */
 import { dataBaseUrl, repoUrl, CONFIG } from '../config.js';
+import { BRAND } from '../brand.js';
 
 const STRINGS = {
   en: {
@@ -28,7 +29,7 @@ const STRINGS = {
     stories: (n) => `${n} ${n === 1 ? 'story' : 'stories'}`,
     outlets: (n) => `${n} ${n === 1 ? 'outlet' : 'outlets'}`,
     standfirst: (stories, outlets, articles, feeds) =>
-      `<b>${stories}</b> ${stories === 1 ? 'story' : 'stories'} in geopolitical risk and economic development, drawn from <b>${articles}</b> articles across <b>${feeds}</b> feeds and grouped by coverage. <span class="quiet">Every story lists the outlets that reported it.</span>`,
+      `<b>${stories}</b> ${stories === 1 ? 'story' : 'stories'} in geopolitical risk, drawn from <b>${articles}</b> articles across <b>${feeds}</b> feeds and grouped by coverage. <span class="quiet">Every story lists the outlets that reported it.</span>`,
     drafted: 'Drafted from the sources above, approved before publication',
     inField: 'in field',
     citeAs: (title, date, url) => `Cite as: ${title}, ${date}. ${url}`,
@@ -58,7 +59,7 @@ const STRINGS = {
     stories: (n) => `${n} ${n === 1 ? 'sak' : 'saker'}`,
     outlets: (n) => `${n} ${n === 1 ? 'kilde' : 'kilder'}`,
     standfirst: (stories, outlets, articles, feeds) =>
-      `<b>${stories}</b> ${stories === 1 ? 'sak' : 'saker'} innen georisiko og økonomisk utvikling, hentet fra <b>${articles}</b> artikler i <b>${feeds}</b> kilder og gruppert etter dekning. <span class="quiet">Hver sak viser redaksjonene som meldte den.</span>`,
+      `<b>${stories}</b> ${stories === 1 ? 'sak' : 'saker'} innen geopolitisk risiko, hentet fra <b>${articles}</b> artikler i <b>${feeds}</b> kilder og gruppert etter dekning. <span class="quiet">Hver sak viser redaksjonene som meldte den.</span>`,
     drafted: 'Skrevet ut fra kildene over, godkjent før publisering',
     inField: 'i feltet',
     citeAs: (title, date, url) => `Siteres som: ${title}, ${date}. ${url}`,
@@ -414,7 +415,7 @@ function renderColophon() {
 
   if (edition) {
     const url = `${CONFIG.briefBaseUrl}?edition=${edition.date}`;
-    $('cite').textContent = t().citeAs('IGRED Brief', edition.date, url);
+    $('cite').textContent = t().citeAs(BRAND.products.brief, edition.date, url);
     $('colophon-meta').textContent =
       `${t().updated}: ${new Date(edition.generatedAt).toISOString().slice(0, 16).replace('T', ' ')} UTC`;
   }
@@ -484,7 +485,7 @@ function wireBrowsing() {
 function wireChrome() {
   const root = document.documentElement;
   const stored = localStorage.getItem('igred-theme-v2');
-  // Dark by default across every IGRED page; light only once the reader has chosen it.
+  // Dark by default across every page; light only once the reader has chosen it.
   root.dataset.theme = stored === 'light' ? 'light' : 'dark';
   const syncTheme = () => { $('theme').textContent = root.dataset.theme === 'dark' ? (state.lang === 'nb' ? 'Lys' : 'Light') : (state.lang === 'nb' ? 'Mørk' : 'Dark'); };
   syncTheme();

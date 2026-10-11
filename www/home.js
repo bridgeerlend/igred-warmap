@@ -8,21 +8,22 @@
  */
 import { toView } from './projection.js';
 import { startHero } from './hero.js';
+import { BRAND } from './brand.js';
 
 const LOCAL = ['localhost', '127.0.0.1', ''].includes(location.hostname);
 const DATA = LOCAL ? '../data/' : 'https://raw.githubusercontent.com/bridgeerlend/igred-warmap/main/data/';
 
 const STRINGS = {
   en: {
-    fullName: 'Institute for Geopolitical Risk and Economic Development',
+    tagline: BRAND.tagline.en,
     heroLine: 'Armed conflict and geopolitical risk, with every source shown.',
     productsHeading: 'What we publish',
     mapBody: 'A live map of armed conflict. Open any crisis for the latest reporting, the numbers and every source behind them.',
-    briefBody: 'A daily synthesis of geopolitical risk and economic development. Each edition is dated and fixed, so it can be cited.',
+    briefBody: 'A daily synthesis of geopolitical risk. Each edition is dated and fixed, so it can be cited.',
     reportsBody: 'Half-yearly assessments of geopolitical risk, written to the same framework each time so findings compare across editions.',
     baseBody: 'Books, articles and research worth reading, each with the institute’s own assessment of what it argues and where it holds.',
-    aboutHeading: 'About IGRED',
-    about1: 'IGRED is an independent analysis body. We track where political risk and economic conditions meet, and what that means for the countries and sectors exposed to both.',
+    aboutHeading: `About ${BRAND.name}`,
+    about1: `${BRAND.name} is an independent analysis body. We measure geopolitical risk as it unfolds, and what it means for the countries and sectors exposed to it.`,
     about2: 'Everything we publish carries its sources. Each figure names where it came from, when it was collected, and links to the original, so a reader can check the work rather than take it on trust.',
     role: 'Co-Founder & Analyst',
     open: 'Open', read: 'Read', coming: 'Coming',
@@ -35,19 +36,19 @@ const STRINGS = {
     countLede: 'armed incidents reported in the past seven days',
     weekCount: (n) => `${n} incidents this week`,
     playback: 'Thirty days of reported incidents',
-    briefToday: (d) => `The IGRED Brief, ${d}`,
+    briefToday: (d) => `${BRAND.products.brief}, ${d}`,
     crisesToday: (n) => `${n} crises tracked`,
   },
   nb: {
-    fullName: 'Institutt for geopolitisk risiko og økonomisk utvikling',
+    tagline: BRAND.tagline.nb,
     heroLine: 'Væpnet konflikt og geopolitisk risiko, med hver kilde synlig.',
     productsHeading: 'Hva vi publiserer',
     mapBody: 'Et levende kart over væpnet konflikt. Åpne en krise for siste nytt, tallene og hver kilde bak dem.',
-    briefBody: 'En daglig sammenstilling av geopolitisk risiko og økonomisk utvikling. Hver utgave er datert og låst, så den kan siteres.',
+    briefBody: 'En daglig sammenstilling av geopolitisk risiko. Hver utgave er datert og låst, så den kan siteres.',
     reportsBody: 'Halvårlige vurderinger av geopolitisk risiko, skrevet etter samme rammeverk hver gang så funnene kan sammenlignes.',
     baseBody: 'Bøker, artikler og forskning verdt å lese, hver med instituttets egen vurdering av hva den hevder og hvor den holder.',
-    aboutHeading: 'Om IGRED',
-    about1: 'IGRED er et uavhengig analysemiljø. Vi følger hvor politisk risiko og økonomiske forhold møtes, og hva det betyr for landene og sektorene som er utsatt for begge.',
+    aboutHeading: `Om ${BRAND.name}`,
+    about1: `${BRAND.name} er et uavhengig analysemiljø. Vi måler geopolitisk risiko mens den utvikler seg, og hva den betyr for landene og sektorene som er utsatt for den.`,
     about2: 'Alt vi publiserer har kilder. Hvert tall sier hvor det kommer fra, når det ble hentet, og lenker til originalen, så leseren kan sjekke arbeidet i stedet for å ta det på tro.',
     role: 'Medgründer og analytiker',
     open: 'Åpne', read: 'Les', coming: 'Kommer',
@@ -60,7 +61,7 @@ const STRINGS = {
     countLede: 'væpnede hendelser meldt de siste sju dagene',
     weekCount: (n) => `${n} hendelser denne uken`,
     playback: 'Tretti dager med meldte hendelser',
-    briefToday: (d) => `The IGRED Brief, ${d}`,
+    briefToday: (d) => `${BRAND.products.brief}, ${d}`,
     crisesToday: (n) => `${n} kriser fulgt`,
   },
 };

@@ -4,7 +4,7 @@
  *
  * Uncertainty is visible in the mark itself: an incident resting on a single source is a
  * hollow ring; one carried by two or more independent outlets is filled. Incidents an
- * IGRED analyst has verified are magenta, and nothing else ever is.
+ * analyst of ours has verified are magenta, and nothing else ever is.
  */
 import { FIPS_TO_ISO_N, ISO_N_TO_FIPS, NAME_TO_FIPS } from './countries.js';
 

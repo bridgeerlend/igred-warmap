@@ -4,7 +4,7 @@
  * only the layout differs. The id comes from the page (site/crisis/<id>/) or ?id= for
  * automatic crises, which have no page of their own.
  */
-import { prefs, setupPrefs, $, getJson, Incidents, shortName, crisisName, fmtStamp, hoursOld } from './common.js';
+import { prefs, setupPrefs, $, getJson, Incidents, shortName, crisisName, fmtStamp, hoursOld, BRAND } from './common.js';
 import { renderCrisis } from './view.js';
 import { createMap } from './mapcore.js';
 
@@ -31,7 +31,7 @@ function paint() {
   $('ranking').textContent = t.ranking;
   if (state.inc) $('updated').textContent = `${t.updated} ${fmtStamp(state.inc.generatedAt)}`;
   if (state.entry) {
-    document.title = `${crisisName(state.entry)} · IGRED Global Conflict Monitor`;
+    document.title = `${crisisName(state.entry)} · ${BRAND.products.monitor}`;
     renderCrisis($('detail'), ctx(), state.entry, state.detail);
   }
 }

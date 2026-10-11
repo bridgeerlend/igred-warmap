@@ -1,3 +1,4 @@
+import { BRAND } from '../brand.js';
 import type { Conflict } from '../schema/conflict.js';
 import type { VerifiedConflictsConfig } from '../schema/config.js';
 
@@ -15,7 +16,7 @@ export function verifiedConflicts(
   return config.conflicts.map((entry) => {
     const provenance = entry.sources.map((url) => ({
       sourceId: 'igred',
-      sourceName: 'IGRED — confirmed by hand',
+      sourceName: `${BRAND.name}, confirmed by hand`,
       sourceTier: 3 as const,
       url,
       retrievedAt: now,

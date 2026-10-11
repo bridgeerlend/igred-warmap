@@ -4,7 +4,7 @@
  *
  *   www/reports/index.html               the list, half-year reports first and larger
  *   www/reports/<slug>/index.html        one page per report, written for reading
- *   www/reports/<slug>/igred-<slug>.pdf  the same page printed to A4 (with --pdf)
+ *   www/reports/<slug>/<prefix>-<slug>.pdf  the same page printed to A4 (with --pdf)
  *
  * The building blocks are fenced in the Markdown as `::: name` … `:::` with YAML inside, the
  * form Decap's editor components write. Charts and small maps are drawn from the map's own
@@ -22,6 +22,7 @@ import yaml from 'js-yaml';
 import { marked } from 'marked';
 import { toView } from '../www/projection.js';
 import { repoRoot } from '../src/core/util/paths.js';
+import { BRAND, brandLink, markSvg } from '../src/core/brand.js';
 
 const WWW = path.join(repoRoot, 'www');
 const CONTENT = path.join(WWW, 'content', 'reports');
@@ -31,6 +32,8 @@ const SITE = 'https://igred.org';
 const PDF = process.argv.includes('--pdf');
 const FREEZE = process.argv.includes('--freeze');
 const DAY = 86_400_000;
+/** The PDF's file name, from the brand's file prefix. */
+const pdfName = (slug: string) => `${BRAND.filePrefix}-${slug}.pdf`;
 
 /* ---------- content -------------------------------------------------------- */
 
@@ -97,7 +100,7 @@ const LIKELIHOOD: Likelihood[] = ['very-unlikely', 'unlikely', 'even', 'likely',
 
 const T = {
   nb: {
-    halvar: 'Halvårsrapport', analyse: 'Analyse', reports: 'Rapporter', map: 'Kart', brief: 'Brief', methodNav: 'Metode',
+    halvar: 'Halvårsrapport', analyse: 'Analyse', reports: 'Rapporter', map: 'Kart', brief: 'Brief', methodNav: 'Metode', tagline: BRAND.tagline.nb,
     light: 'Lys', dark: 'Mørk', version: 'Versjon', by: 'Av', and: 'og', pdf: 'Last ned PDF',
     cite: 'Slik siterer du', contents: 'Innhold', assessments: 'Hovedvurderinger', risks: 'Risikoregister',
     regions: 'Regioner', economy: 'Økonomisk utvikling', essay: 'Temaessay', misses: 'Hva vi bommet på',
@@ -110,17 +113,17 @@ const T = {
     wordsNote: 'Sannsynlighetsordene har faste betydninger: svært usannsynlig, under 10 %; usannsynlig, 10-35 %; like sannsynlig, 35-55 %; sannsynlig, 55-80 %; svært sannsynlig, over 80 %.',
     scaleNote: 'Sannsynlighet og konsekvens er vurdert på en skala fra 1 til 5. Score er produktet av de to, høyst 25. Endringen er målt mot forrige halvårsrapport.',
     eventsWeek: 'Væpnede hendelser per uke', weekOf: 'uke fra', to: 'til', wholeWeeks: 'hele uker fra',
-    chartSource: 'Kilde: nyhetsstrømmen GDELT, slik IGRED-kartet teller den (map.igred.org). Hver hendelse er meldt av minst ett medium.',
+    chartSource: `Kilde: nyhetsstrømmen GDELT, slik ${BRAND.products.monitor} teller den (map.igred.org). Hver hendelse er meldt av minst ett medium.`,
     seriesStarts: (d: string) => `Kartets dataserie begynner ${d}.`,
     mapSource: 'Hendelser meldt i nyhetsstrømmen GDELT. Fylt merke: to eller flere uavhengige medier. Hult merke: én kilde. Grenser: Natural Earth.',
     noEvents: 'Kartets arkiv har ingen hendelser for denne perioden.',
-    list: 'Halvårsrapporter og analyser fra IGRED. Hver rapport kan leses her og lastes ned som PDF.',
+    list: `Halvårsrapporter og analyser fra ${BRAND.name}. Hver rapport kan leses her og lastes ned som PDF.`,
     halvarPlural: 'Halvårsrapporter', analysePlural: 'Analyser', none: 'Ingen ennå.',
-    page: 'Side', placeholder: 'IGRED',
+    page: 'Side',
     months: ['januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember'],
   },
   en: {
-    halvar: 'Half-year report', analyse: 'Analysis', reports: 'Reports', map: 'Map', brief: 'Brief', methodNav: 'Method',
+    halvar: 'Half-year report', analyse: 'Analysis', reports: 'Reports', map: 'Map', brief: 'Brief', methodNav: 'Method', tagline: BRAND.tagline.en,
     light: 'Light', dark: 'Dark', version: 'Version', by: 'By', and: 'and', pdf: 'Download PDF',
     cite: 'How to cite', contents: 'Contents', assessments: 'Key judgements', risks: 'Risk register',
     regions: 'Regions', economy: 'Economic developments', essay: 'Essay', misses: 'What we got wrong',
@@ -133,13 +136,13 @@ const T = {
     wordsNote: 'The probability words have fixed meanings: highly unlikely, under 10%; unlikely, 10-35%; roughly even chance, 35-55%; likely, 55-80%; highly likely, over 80%.',
     scaleNote: 'Likelihood and consequence are scored from 1 to 5. The score is their product, at most 25. The change is measured against the previous half-year report.',
     eventsWeek: 'Armed incidents per week', weekOf: 'week of', to: 'to', wholeWeeks: 'whole weeks from',
-    chartSource: 'Source: the GDELT news stream, as the IGRED map counts it (map.igred.org). Each incident was reported by at least one outlet.',
+    chartSource: `Source: the GDELT news stream, as ${BRAND.products.monitor} counts it (map.igred.org). Each incident was reported by at least one outlet.`,
     seriesStarts: (d: string) => `The map's series begins on ${d}.`,
     mapSource: 'Incidents reported in the GDELT news stream. Filled: two or more independent outlets. Hollow: a single source. Borders: Natural Earth.',
     noEvents: 'The map archive holds no incidents for this period.',
-    list: 'Half-year reports and analyses from IGRED. Each can be read here and downloaded as a PDF.',
+    list: `Half-year reports and analyses from ${BRAND.name}. Each can be read here and downloaded as a PDF.`,
     halvarPlural: 'Half-year reports', analysePlural: 'Analyses', none: 'None yet.',
-    page: 'Page', placeholder: 'IGRED',
+    page: 'Page',
     months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
   },
 };
@@ -459,6 +462,8 @@ function head(title: string, description: string, url: string, up: string, lang:
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="icon" href="${up}favicon.ico" sizes="32x32">
 <link rel="icon" href="${up}favicon.svg" type="image/svg+xml">
+<link rel="icon" href="${up}favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="${up}favicon-16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="${up}apple-touch-icon.png">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
@@ -479,7 +484,7 @@ ${extra}</head>`;
 
 function masthead(up: string, w: Words, current: boolean): string {
   return `<header class="masthead is-sticky r-masthead">
-  <a class="wordmark wordmark-link" href="${up}"><strong>IGRED</strong></a>
+  ${brandLink(up)}
   <nav class="controls" aria-label="Menu">
     <a class="link-button" href="https://map.igred.org/">${esc(w.map)}</a>
     <a class="link-button" href="https://map.igred.org/brief/">${esc(w.brief)}</a>
@@ -491,14 +496,14 @@ function masthead(up: string, w: Words, current: boolean): string {
 }
 
 const footer = `<footer class="colophon r-colophon">
-  <p class="meta"><strong>IGRED</strong> · <a href="mailto:contact@igred.org">contact@igred.org</a></p>
+  <p class="meta"><strong>${BRAND.name}</strong> · <a href="mailto:contact@igred.org">contact@igred.org</a></p>
 </footer>
 <script type="module" src="../../reports.js"></script>`;
 
 function citation(r: Report, w: Words): string {
   const names = r.authors.map(citeName);
   const who = names.length ? `${listJoin(names, w)} (${r.date.slice(0, 4)}). ` : '';
-  return `${who}${r.title}. IGRED ${r.type === 'halvar' ? w.halvar.toLowerCase() : w.analyse.toLowerCase()}, ${w.version.toLowerCase()} ${r.version}, ${day(r.date, r.lang)}. ${SITE}/reports/${r.slug}/`;
+  return `${who}${r.title}. ${BRAND.products.reports}, ${r.type === 'halvar' ? w.halvar.toLowerCase() : w.analyse.toLowerCase()}, ${w.version.toLowerCase()} ${r.version}, ${day(r.date, r.lang)}. ${SITE}/reports/${r.slug}/`;
 }
 
 function reportPage(r: Report, all: Report[]): string {
@@ -506,7 +511,7 @@ function reportPage(r: Report, all: Report[]): string {
   const ctx: Ctx = { lang: r.lang, w, notes: new Map(), order: [] };
   const typeLabel = r.type === 'halvar' ? w.halvar : w.analyse;
   const url = `${SITE}/reports/${r.slug}/`;
-  const pdf = `igred-${r.slug}.pdf`;
+  const pdf = pdfName(r.slug);
   const meta = `${typeLabel}${r.period ? ` · ${r.period}` : ''} · ${day(r.date, r.lang)} · ${w.version} ${r.version}`;
   const authors = r.authors.length ? `${w.by} ${listJoin(r.authors, w)}` : '';
   const sections: { id: string; title: string; html: string }[] = [];
@@ -562,13 +567,13 @@ function reportPage(r: Report, all: Report[]): string {
 
   // The running header and the page numbers of the PDF: CSS page margin boxes, with the title
   // written in here because Chromium has no string-set.
-  const printStyle = `<style>@page { @top-left { content: "IGRED · ${esc(typeLabel)}"; } @top-right { content: "${esc(r.title).replace(/"/g, '\\"')}"; } @bottom-right { content: "${esc(w.page)} " counter(page); } } @page :first { @top-left { content: none; } @top-right { content: none; } @bottom-right { content: none; } }</style>\n`;
+  const printStyle = `<style>@page { @top-left { content: "${esc(BRAND.name)} · ${esc(typeLabel)}"; } @top-right { content: "${esc(r.title).replace(/"/g, '\\"')}"; } @bottom-right { content: "${esc(w.page)} " counter(page); } } @page :first { @top-left { content: none; } @top-right { content: none; } @bottom-right { content: none; } }</style>\n`;
 
-  return `${head(`${r.title} · IGRED`, r.ingress, url, '../../', r.lang, printStyle)}
+  return `${head(`${r.title} · ${BRAND.products.reports}`, r.ingress, url, '../../', r.lang, printStyle)}
 <body class="r-page r-${r.type}">
 ${masthead('../../', w, true)}
 <section class="r-cover" aria-hidden="true">
-  <p class="wordmark"><strong>IGRED</strong> <span>Institute for Geopolitical Risk and Economic Development</span></p>
+  <p class="wordmark brand">${markSvg()}<strong>${esc(BRAND.name)}</strong> <span>${esc(w.tagline)}</span></p>
   <div class="r-cover-main">
     <p class="meta">${esc(typeLabel)}${r.period ? ` · ${esc(r.period)}` : ''}</p>
     <h1 class="title">${esc(r.title)}</h1>
@@ -609,7 +614,7 @@ function listPage(reports: Report[]): string {
   };
   const halvar = reports.filter((r) => r.type === 'halvar');
   const analyser = reports.filter((r) => r.type === 'analyse');
-  return `${head('Rapporter · IGRED', w.list, `${SITE}/reports/`, '../', 'nb')}
+  return `${head(BRAND.products.reports, w.list, `${SITE}/reports/`, '../', 'nb')}
 <body class="r-page r-list-page">
 ${masthead('../', w, true)}
 <main class="r-list">
@@ -646,9 +651,9 @@ async function printPdfs(reports: Report[]): Promise<void> {
       await page.goto(`http://localhost:${port}/reports/${r.slug}/`, { waitUntil: 'networkidle' });
       await page.emulateMedia({ media: 'print' });
       await page.evaluate('document.fonts.ready');
-      await page.pdf({ path: path.join(OUT, r.slug, `igred-${r.slug}.pdf`), format: 'A4', printBackground: true, preferCSSPageSize: true });
+      await page.pdf({ path: path.join(OUT, r.slug, pdfName(r.slug)), format: 'A4', printBackground: true, preferCSSPageSize: true });
       await page.close();
-      console.log(`  pdf: reports/${r.slug}/igred-${r.slug}.pdf`);
+      console.log(`  pdf: reports/${r.slug}/${pdfName(r.slug)}`);
     }
   } finally {
     // Closed whatever happened, or the build would never exit.
@@ -684,8 +689,8 @@ if (PDF) {
   }
   // A report without its PDF loses the button rather than offering a broken link.
   for (const r of reports) {
-    if (existsSync(path.join(OUT, r.slug, `igred-${r.slug}.pdf`))) continue;
+    if (existsSync(path.join(OUT, r.slug, pdfName(r.slug)))) continue;
     const file = path.join(OUT, r.slug, 'index.html');
-    writeFileSync(file, readFileSync(file, 'utf-8').replace(/<a class="link-button" href="igred-[^"]+\.pdf" download>[^<]*<\/a> /, ''));
+    writeFileSync(file, readFileSync(file, 'utf-8').replace(new RegExp(`<a class="link-button" href="${BRAND.filePrefix}-[^"]+\\.pdf" download>[^<]*</a> `), ''));
   }
 }

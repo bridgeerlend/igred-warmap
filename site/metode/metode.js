@@ -2,7 +2,7 @@
  * The method page: two languages written out in the page, and the corrections log read from
  * data/corrections.json, so a correction appears without a site build.
  */
-import { prefs, setupPrefs, $, getJson, esc, fmtDay } from '../common.js';
+import { prefs, setupPrefs, $, getJson, esc, fmtDay, BRAND } from '../common.js';
 
 const LABEL = {
   en: { wrong: 'What was wrong', fixed: 'What was done', none: 'No corrections yet.' },
@@ -18,7 +18,7 @@ function render() {
     if (typeof v === 'string') node.textContent = v;
   }
   for (const art of document.querySelectorAll('article[data-lang]')) art.hidden = art.dataset.lang !== lang;
-  document.title = lang === 'nb' ? 'Metode og rettelser · IGRED Global Conflict Monitor' : 'Method and corrections · IGRED Global Conflict Monitor';
+  document.title = `${lang === 'nb' ? 'Metode og rettelser' : 'Method and corrections'} · ${BRAND.products.monitor}`;
   const name = (id) => { const c = crises.find((x) => x.id === id); return c ? (lang === 'nb' ? c.nameNb : c.name) : id; };
   for (const list of document.querySelectorAll('[data-corrections]')) {
     list.innerHTML = corrections.length

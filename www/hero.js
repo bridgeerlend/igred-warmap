@@ -10,6 +10,7 @@
  * pauses when the hero is off screen, and costs one small JSON file.
  */
 import { toView } from './projection.js';
+import { BRAND } from './brand.js';
 
 const W0 = 1000, H0 = 520;
 
@@ -253,7 +254,7 @@ export function startHero({ canvas, scene, data, world, strings, lang = 'en', fr
         const cls = /\d/.test(bare) ? ' fig' : STRONG.test(lower) ? ' strong' : name ? ' name' : '';
         return `<span class="w${cls}" style="transition-delay:${j * 45}ms">${esc(w)}</span>`;
       }).join(' ');
-      const node = setScene(`<p class="scene-headline">${words}</p><p class="scene-outlet">${esc(hl.publisher)} · The IGRED Brief</p>`);
+      const node = setScene(`<p class="scene-headline">${words}</p><p class="scene-outlet">${esc(hl.publisher)} · ${esc(BRAND.products.brief)}</p>`);
       setTimeout(() => { node.querySelector('.scene-headline')?.classList.add('is-in'); node.querySelector('.scene-outlet')?.classList.add('is-in'); }, 60);
       return node;
     }, () => ({ dots: 'week', dim: 0.7 }));
@@ -276,7 +277,7 @@ export function startHero({ canvas, scene, data, world, strings, lang = 'en', fr
 
   // 5. The name, then again.
   starts.end = scenes.reduce((a, x) => a + x.seconds, 0);
-  add(4.5, () => setScene(`<p class="scene-big">IGRED</p><p class="scene-meta">${esc(strings.fullName)}</p>`, 'scene-end'),
+  add(4.5, () => setScene(`<p class="scene-big">${esc(BRAND.name.split(' ')[0])}<span class="italic">${esc(BRAND.name.split(' ').slice(1).join(' '))}</span></p><p class="scene-meta">${esc(strings.tagline)}</p>`, 'scene-end'),
     // Back to the opening scene's shade by the end, so the loop has no seam.
     (t) => ({ dots: 'week', dim: 0.35 + 0.4 * Math.sin(Math.PI * t) }));
   starts.total = scenes.reduce((a, x) => a + x.seconds, 0);

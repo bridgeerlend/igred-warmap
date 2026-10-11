@@ -110,6 +110,14 @@ describe('the election page and its data', () => {
     }
   });
 
+  it('RSF is a background figure with its credit, and no indicator uses it', () => {
+    for (const e of data.elections) {
+      for (const ind of e.indicators) for (const p of ind.parts) expect(p.key).not.toBe('rsf');
+      for (const b of e.background) { expect(b.credit).toBe('Reporters Without Borders / RSForg'); expect(b.unit).toBe('of100'); }
+    }
+    expect(data.elections.some((e: { background: unknown[] }) => e.background.length)).toBe(true);
+  });
+
   it('records each yearly dataset with its licence, and says which could not be downloaded and why', () => {
     const manifest = JSON.parse(read('data/elections/sources/manifest.json')).sources;
     for (const id of ['vdem', 'pei', 'fh', 'geonames']) {
@@ -117,10 +125,11 @@ describe('the election page and its data', () => {
       expect(manifest[id].license).toBeTruthy();
       expect(manifest[id].edition).toBeTruthy();
     }
-    // RSF's licence forbids adapting the Index, which a composite score does.
-    expect(manifest.rsf.reason).toMatch(/no derivatives/);
-    expect(read('src/core/elections/build.ts')).not.toMatch(/rsf-2026/);
-    for (const id of ['nelda', 'ecav', 'idea', 'rsf']) {
+    // RSF's licence forbids adapting the Index: it is shown unchanged beside the score, never in it.
+    expect(manifest.rsf.status).toBe('ok');
+    expect(manifest.rsf.background).toBe(true);
+    expect(manifest.rsf.credit).toBe('Reporters Without Borders / RSForg');
+    for (const id of ['nelda', 'ecav', 'idea']) {
       expect(manifest[id].status).toBe('skipped');
       expect(manifest[id].reason.length).toBeGreaterThan(20);
     }

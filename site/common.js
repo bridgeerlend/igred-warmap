@@ -4,13 +4,18 @@
  * published incident file; nothing is estimated.
  */
 import { dataBaseUrl } from './config.js';
+import { BRAND } from './brand.js';
+
+export { BRAND };
+/** The map's name over two lines: the first word, then the rest in italic. */
+const [MONITOR_1, ...MONITOR_REST] = BRAND.products.monitor.split(' ');
 
 export const STRINGS = {
   en: {
     brief: 'Brief', wire: 'Wire', methodNav: 'Method', map: 'Map',
     switchLang: 'NO', switchLangLabel: 'Bytt til norsk',
     dark: 'Dark', light: 'Light',
-    titleLine1: 'Global Conflict', titleLine2: 'Monitor',
+    titleLine1: MONITOR_1, titleLine2: MONITOR_REST.join(' '),
     search: 'Search a crisis, country or place',
     win: { 1: '24 hours', 7: '7 days', 30: '30 days' },
     standfirst: (n, c, span) => `<b>${n}</b> armed ${n === '1' ? 'incident' : 'incidents'} reported ${span}, across <b>${c}</b> ${c === '1' ? 'crisis' : 'crises'}.`,
@@ -81,7 +86,7 @@ export const STRINGS = {
     reportsN: (n) => `${n} ${n === 1 ? 'report' : 'reports'}`,
     oneSource: 'One source',
     corroborated: (n) => `${n} independent outlets`,
-    verified: 'Verified by IGRED',
+    verified: BRAND.verified.en,
     verify: 'Verify',
     sources: 'Sources',
     fromLink: 'from the link',
@@ -101,7 +106,7 @@ export const STRINGS = {
     keyEmber: 'Reported incident, by intensity',
     keyHollow: 'One source',
     keyFilled: 'Two or more outlets',
-    keyVerified: 'Verified by IGRED',
+    keyVerified: BRAND.verified.en,
     noResults: 'Nothing matches that.',
     kindCrisis: 'Crisis', kindCountry: 'Country', kindPlace: 'Place',
     updated: 'Data updated',
@@ -118,7 +123,7 @@ export const STRINGS = {
     brief: 'Brief', wire: 'Wire', methodNav: 'Metode', map: 'Kart',
     switchLang: 'EN', switchLangLabel: 'Switch to English',
     dark: 'Mørk', light: 'Lys',
-    titleLine1: 'Global Conflict', titleLine2: 'Monitor',
+    titleLine1: MONITOR_1, titleLine2: MONITOR_REST.join(' '),
     search: 'Søk etter krise, land eller sted',
     win: { 1: '24 timer', 7: '7 dager', 30: '30 dager' },
     standfirst: (n, c, span) => `<b>${n}</b> ${n === '1' ? 'væpnet hendelse' : 'væpnede hendelser'} meldt ${span}, i <b>${c}</b> ${c === '1' ? 'krise' : 'kriser'}.`,
@@ -189,7 +194,7 @@ export const STRINGS = {
     reportsN: (n) => `${n} ${n === 1 ? 'melding' : 'meldinger'}`,
     oneSource: 'Én kilde',
     corroborated: (n) => `${n} uavhengige medier`,
-    verified: 'Verifisert av IGRED',
+    verified: BRAND.verified.nb,
     verify: 'Verifiser',
     sources: 'Kilder',
     fromLink: 'fra lenken',
@@ -209,7 +214,7 @@ export const STRINGS = {
     keyEmber: 'Meldt hendelse, etter intensitet',
     keyHollow: 'Én kilde',
     keyFilled: 'To eller flere medier',
-    keyVerified: 'Verifisert av IGRED',
+    keyVerified: BRAND.verified.nb,
     noResults: 'Ingen treff.',
     kindCrisis: 'Krise', kindCountry: 'Land', kindPlace: 'Sted',
     updated: 'Data oppdatert',

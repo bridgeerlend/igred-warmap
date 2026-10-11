@@ -10,6 +10,7 @@ import {
   prefs, h, esc, fmtNum, fmtBig, fmtDay, fmtShortDay, ago, joinNames, hostOf,
   crisisName, regionName, monumentLines, statusSentence, barChart, CATEGORY, DAY, downloadData, FEED_BASE, copyText,
   electionKind, ELECTIONS_URL,
+  BRAND,
 } from './common.js';
 import { CONFIG } from './config.js';
 
@@ -312,7 +313,7 @@ function places(ctx, d) {
   if (d.outlets.length) {
     out.push(section(t.outlets, h('p.cv-outlets', null, d.outlets.map((o, i) => [i ? ', ' : '', h('span', null, o.name), h('span.meta', null, ` ${o.count}`)]))));
   }
-  const csvLink = h('a.link-button', { href: '#', onclick: (ev) => { ev.preventDefault(); downloadData(`csv/${d.id}.csv`, `igred-${d.id}-${new Date().toISOString().slice(0, 10)}.csv`).catch(() => {}); } }, t.downloadCsv);
+  const csvLink = h('a.link-button', { href: '#', onclick: (ev) => { ev.preventDefault(); downloadData(`csv/${d.id}.csv`, `${BRAND.filePrefix}-${d.id}-${new Date().toISOString().slice(0, 10)}.csv`).catch(() => {}); } }, t.downloadCsv);
   out.push(section(t.downloadCsv, h('p', null, csvLink), h('p.meta', null, t.csvNote)));
   out.push(section(t.rawData, h('p.cv-raw', null,
     [['GDELT', d.feeds.gdelt], ['Google News', d.feeds.gnews], ['Wikipedia', d.feeds.wikipedia], ['World Bank', d.feeds.worldBank], ['UCDP', 'https://ucdp.uu.se/']]

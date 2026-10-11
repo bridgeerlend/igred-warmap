@@ -6,14 +6,15 @@
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="favicon-16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<title>IGRED · Institute for Geopolitical Risk and Economic Development</title>
-<meta name="description" content="IGRED tracks armed conflict as it is reported and explains geopolitical risk with every source shown.">
+<title>Varde Research · Geopolitics, measured.</title>
+<meta name="description" content="Varde Research tracks armed conflict as it is reported and explains geopolitical risk with every source shown.">
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#0B0B0A">
-<meta property="og:title" content="IGRED · Institute for Geopolitical Risk and Economic Development">
-<meta property="og:description" content="Armed conflict and geopolitical risk, with every source shown.">
+<meta property="og:title" content="Varde Research">
+<meta property="og:description" content="Geopolitics, measured.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://igred.org/">
 <script>try{if(localStorage.getItem('igred-theme-v2')==='light')document.documentElement.dataset.theme='light'}catch(e){}</script>
@@ -30,8 +31,8 @@
 <!-- The menu and the light switch stay at the top of the page, over the film and after it. -->
 <div class="topbar" id="topbar">
   <div class="hero-mark">
-    <p class="wordmark"><strong>IGRED</strong></p>
-    <p class="hero-name" data-i18n="fullName">Institute for Geopolitical Risk and Economic Development</p>
+    <p class="wordmark brand"><svg class="brand-mark" viewBox="0 0 200 200" aria-hidden="true" focusable="false"><path d="M100.00 14.00L100.00 14.00A86 86 0 0 1 162.02 40.42L37.98 40.42A86 86 0 0 1 100.00 14.00Z" fill="#E4542A"/><path d="M24.94 47.42L161.06 47.42A86 86 0 0 1 177.71 85.17L8.29 85.17A86 86 0 0 1 24.94 47.42Z" fill="currentColor"/><path d="M22.36 92.17L193.64 92.17A86 86 0 0 1 187.12 133.70L28.88 133.70A86 86 0 0 1 22.36 92.17Z" fill="currentColor"/><path d="M20.24 140.70L171.76 140.70A86 86 0 0 1 96.00 186.00L96.00 186.00A86 86 0 0 1 20.24 140.70Z" fill="currentColor"/></svg><strong>Varde Research</strong></p>
+    <p class="hero-name" data-i18n="tagline">Geopolitics, measured.</p>
   </div>
   <nav class="controls" aria-label="Menu">
     <a class="link-button" href="https://map.igred.org/" data-i18n="navMap">Map</a>
@@ -44,7 +45,7 @@
   </nav>
 </div>
 
-<header class="hero" id="hero" aria-label="IGRED">
+<header class="hero" id="hero" aria-label="Varde Research">
   <canvas class="hero-canvas" id="hero-canvas" aria-hidden="true"></canvas>
   <div class="hero-scene" id="hero-scene" aria-live="off"></div>
   <p class="hero-line" data-i18n="heroLine">Armed conflict and geopolitical risk, with every source shown.</p>
@@ -59,26 +60,27 @@
     <div class="entries">
       <a class="entry" href="https://map.igred.org/">
         <div class="entry-preview" id="preview-map" aria-hidden="true"></div>
-        <h3 class="entry-name">Global Conflict Monitor</h3>
+        <h3 class="entry-name">Varde Monitor</h3>
         <p class="entry-body" data-i18n="mapBody">A live map of armed conflict. Open any crisis for the latest reporting, the numbers and every source behind them.</p>
         <span class="link-button" data-i18n="open">Open</span>
       </a>
       <a class="entry" href="https://map.igred.org/brief/">
         <div class="entry-preview cover-photo cover-brief" id="preview-brief"></div>
         <p class="cover-credit meta" id="preview-brief-credit"></p>
-        <h3 class="entry-name">The IGRED Brief</h3>
-        <p class="entry-body" data-i18n="briefBody">A daily synthesis of geopolitical risk and economic development. Each edition is dated and fixed, so it can be cited.</p>
+        <h3 class="entry-name">Varde Brief</h3>
+        <p class="entry-body" data-i18n="briefBody">A daily synthesis of geopolitical risk. Each edition is dated and fixed, so it can be cited.</p>
         <span class="link-button" data-i18n="read">Read</span>
       </a>
-      <div class="entry is-coming" aria-disabled="true">
+      <a class="entry" href="reports/">
         <div class="entry-preview cover-report" aria-hidden="true">
-          <p class="cover-kicker"><strong>IGRED</strong> · <span data-i18n="reportKicker">Half-yearly report</span></p>
+          <p class="cover-kicker"><strong>Varde</strong> · <span data-i18n="reportKicker">Half-yearly report</span></p>
           <p class="cover-title"><span>Geopolitical</span><span class="italic">risk</span></p>
-          <p class="cover-foot"><span data-i18n="reportEdition">First edition</span><span class="coming" data-i18n="coming">Coming</span></p>
+          <p class="cover-foot"><span data-i18n="reportEdition">First edition</span></p>
         </div>
-        <h3 class="entry-name">Reports</h3>
+        <h3 class="entry-name">Varde Reports</h3>
         <p class="entry-body" data-i18n="reportsBody">Half-yearly assessments of geopolitical risk, written to the same framework each time so findings compare across editions.</p>
-      </div>
+        <span class="link-button" data-i18n="read">Read</span>
+      </a>
       <div class="entry is-coming" aria-disabled="true" data-entry="knowledge">
         <div class="entry-preview cover-photo">
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Long_Room_Interior%2C_Trinity_College_Dublin%2C_Ireland_-_Diliff.jpg/960px-Long_Room_Interior%2C_Trinity_College_Dublin%2C_Ireland_-_Diliff.jpg" alt="The Long Room, Trinity College Dublin" loading="lazy" decoding="async" referrerpolicy="no-referrer">
@@ -92,10 +94,10 @@
   </section>
 
   <section class="about" id="about" aria-labelledby="about-h">
-    <h2 class="section-h" id="about-h" data-i18n="aboutHeading">About IGRED</h2>
+    <h2 class="section-h" id="about-h" data-i18n="aboutHeading">About Varde Research</h2>
     <div class="about-grid">
     <div class="about-body">
-      <p class="about-lead" data-i18n="about1">IGRED is an independent analysis body. We track where political risk and economic conditions meet, and what that means for the countries and sectors exposed to both.</p>
+      <p class="about-lead" data-i18n="about1">Varde Research is an independent analysis body. We measure geopolitical risk as it unfolds, and what it means for the countries and sectors exposed to it.</p>
       <p data-i18n="about2">Everything we publish carries its sources. Each figure names where it came from, when it was collected, and links to the original, so a reader can check the work rather than take it on trust.</p>
       <ul class="people">
         <li><span class="person-name">Erlend B. Moe</span> <a class="person-in" href="https://www.linkedin.com/in/erlendbmoe/" target="_blank" rel="noopener" aria-label="Erlend B. Moe on LinkedIn" title="Erlend B. Moe on LinkedIn"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a> <span class="meta" data-i18n="role">Co-Founder &amp; Analyst</span></li>
@@ -123,7 +125,7 @@
 </main>
 
 <footer class="colophon">
-  <p class="meta"><strong>IGRED</strong> · <span data-i18n="fullName">Institute for Geopolitical Risk and Economic Development</span></p>
+  <p class="meta"><strong>Varde Research</strong> · <span data-i18n="tagline">Geopolitics, measured.</span></p>
   <p class="meta"><a href="mailto:contact@igred.org">contact@igred.org</a></p>
 </footer>
 

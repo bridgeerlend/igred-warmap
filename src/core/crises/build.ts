@@ -11,6 +11,7 @@ import {
   countriesIndex, crisisDetail, economyLayer, homeSnapshot, storyPictures, wireFile, type SubjectPicture, crisisIndex, mapEvents, MAP_EVENT_FIELDS,
   type CrisisArticle, type CrisisDetail, type CrisisImage, type CrisisIndexEntry, type CrisisIndicator,
 } from './schema.js';
+import { BRAND } from '../brand.js';
 import { PROMPT_VERSION, currentSummary, runSummaries, type SummaryInput, type SummarySettings, type SummaryState } from './summary.js';
 import { CATEGORY, COUNTRY, countryName, incidentType, INCIDENT_TYPES, joinNames } from './names.js';
 
@@ -949,9 +950,9 @@ ${items.sort((a, b) => b.at.localeCompare(a.at)).map((it) => `<item>
   for (const d of details) {
     const fips = new Set(d.countries.map((c) => c.fips));
     const items = [summaryItem(d), ...incidentItems(events.filter((e) => fips.has(e.location.countryFips)), d.name)].filter((x): x is FeedItem => !!x);
-    writeFeed(`${d.id}.xml`, `${d.name} · IGRED Global Conflict Monitor`, `New summaries and incidents confirmed by several sources in ${d.name}.`, `https://map.igred.org/crisis/${d.id}/`, items);
+    writeFeed(`${d.id}.xml`, `${d.name} · ${BRAND.products.monitor}`, `New summaries and incidents confirmed by several sources in ${d.name}.`, `https://map.igred.org/crisis/${d.id}/`, items);
   }
-  writeFeed('all.xml', 'IGRED Global Conflict Monitor', 'New crisis summaries and incidents confirmed by several sources, across every crisis on the map.', 'https://map.igred.org/', [
+  writeFeed('all.xml', BRAND.products.monitor, 'New crisis summaries and incidents confirmed by several sources, across every crisis on the map.', 'https://map.igred.org/', [
     ...details.map(summaryItem).filter((x): x is FeedItem => !!x),
     ...incidentItems(events).slice(0, 100),
   ]);

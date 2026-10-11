@@ -1,5 +1,5 @@
 /**
- * IGRED Global Conflict Monitor — the map page.
+ * The map page.
  *
  * Data is fetched at view time from the repository, never baked into this page, so the
  * hourly pipeline can commit new JSON without any site rebuild.
@@ -10,7 +10,7 @@
  */
 import {
   prefs, setupPrefs, h, $, esc, fmtNum, fmtDay, fmtShortDay, fmtStamp, shortName, crisisName,
-  getJson, Incidents, scoreOf, changeOf, hoursOld, CATEGORY, DAY, downloadData, electionKind, ELECTIONS_URL,
+  getJson, Incidents, scoreOf, changeOf, hoursOld, CATEGORY, DAY, downloadData, electionKind, ELECTIONS_URL, BRAND,
 } from './common.js';
 import { renderCrisis, renderCountry } from './view.js';
 import { createMap, WORLD } from './mapcore.js';
@@ -685,7 +685,7 @@ async function start() {
   resetSearch = setupSearch();
   $('download-all').addEventListener('click', (ev) => {
     ev.preventDefault();
-    downloadData('csv/all.csv', `igred-all-crises-${new Date().toISOString().slice(0, 10)}.csv`).catch(() => {});
+    downloadData('csv/all.csv', `${BRAND.filePrefix}-all-crises-${new Date().toISOString().slice(0, 10)}.csv`).catch(() => {});
   });
   $('sources-toggle').addEventListener('click', () => {
     const open = $('colophon-sources').hidden;

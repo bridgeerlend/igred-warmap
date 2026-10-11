@@ -9,6 +9,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { BRAND } from '../brand.js';
 import { COUNTRY } from '../crises/names.js';
 import type { SummarySettings } from '../crises/summary.js';
 import { configDir, dataDir, repoRoot } from '../util/paths.js';
@@ -140,6 +141,8 @@ export interface Election {
   coverage: number;
   missing: IndicatorId[];
   indicators: Indicator[];
+  /** Figures shown beside the score and never in it: RSF's licence does not allow adapting its Index. */
+  background: { key: string; source: string; credit: string; url: string; licenseUrl?: string; year: string; raw: number; unit: string }[];
   crisis: { id: string; en: string; nb: string } | null;
 }
 
@@ -249,17 +252,16 @@ export async function buildElections(options: { offline?: boolean; log?: (line: 
     ]));
     // Unrest at the previous election: NELDA and ECAV need registration (see the manifest).
     out.push(indicator('unrest', []));
-    const r = RSF.get(place.iso3); const f = FH.get(place.iso3);
+    const f = FH.get(place.iso3);
     out.push(indicator('press', [
-      ...(r !== undefined ? [{ key: 'rsf', source: 'RSF, World Press Freedom Index', url: rsfPage, year: '2026', raw: r, unit: 'of100', risk: risk.inverse100(r) }] : []),
       ...(f !== undefined ? [{ key: 'fh', source: 'Freedom House, Freedom in the World', url: fhPage, year: '2026', raw: f, unit: 'of100', risk: risk.inverse100(f) }] : []),
     ]));
     const c30 = count(place.fips, last30From, lastDay); const p30 = count(place.fips, prev30From, prev30To);
     const rate = perMillion.get(place.fips);
     const span = `${last30From}/${lastDay}`;
     out.push(indicator('now', [
-      ...(rate !== undefined ? [{ key: 'events', source: 'GDELT, as IGRED counts it (violent protest, repression and armed violence)', url: 'https://map.igred.org/metode/', year: span, raw: c30, unit: 'incidents', risk: percentile(rate, allRates) }] : []),
-      { key: 'trend', source: 'GDELT, as IGRED counts it: the past 30 days against the 30 before', url: 'https://map.igred.org/metode/', year: span, raw: p30 ? ((c30 - p30) / p30) * 100 : c30 ? 100 : 0, unit: 'pct', risk: risk.trend(c30, p30) },
+      ...(rate !== undefined ? [{ key: 'events', source: `GDELT, as ${BRAND.short} counts it (violent protest, repression and armed violence)`, url: 'https://map.igred.org/metode/', year: span, raw: c30, unit: 'incidents', risk: percentile(rate, allRates) }] : []),
+      { key: 'trend', source: `GDELT, as ${BRAND.short} counts it: the past 30 days against the 30 before`, url: 'https://map.igred.org/metode/', year: span, raw: p30 ? ((c30 - p30) / p30) * 100 : c30 ? 100 : 0, unit: 'pct', risk: risk.trend(c30, p30) },
     ], (parts) => {
       const ev = parts.find((x) => x.key === 'events'); const tr = parts.find((x) => x.key === 'trend')!;
       return ev ? 0.6 * ev.risk + 0.4 * tr.risk : tr.risk;
@@ -278,6 +280,15 @@ export async function buildElections(options: { offline?: boolean; log?: (line: 
       ...(dep !== null ? [{ key: 'currency', source: `World Bank, official exchange rate against the US dollar, ${fxThen!.year} to ${fxNow!.year}`, url: wbUrl(WB.exchangeRate, place.iso2), year: String(fxNow!.year), raw: dep, unit: 'pct', risk: risk.depreciation(dep, s), meta: { from: String(fxThen!.year), to: String(fxNow!.year) } }] : []),
     ]));
     return out;
+  }
+
+  const rsfSource = cfg.sources.find((x) => x.id === 'rsf') as SourceConfig & { credit?: string; licenseUrl?: string };
+  function backgroundFor(place: Place): Election['background'] {
+    const r = manifest.rsf?.status === 'ok' ? RSF.get(place.iso3) : undefined;
+    return r === undefined ? [] : [{
+      key: 'rsf', source: 'World Press Freedom Index 2026', credit: rsfSource.credit ?? 'Reporters Without Borders / RSForg',
+      url: rsfPage, ...(rsfSource.licenseUrl ? { licenseUrl: rsfSource.licenseUrl } : {}), year: '2026', raw: r, unit: 'of100',
+    }];
   }
 
   /* the sentences: why it matters before, the result after */
@@ -326,6 +337,7 @@ export async function buildElections(options: { offline?: boolean; log?: (line: 
       unrest,
       ...sc,
       indicators,
+      background: backgroundFor(place),
       crisis: crisis ? { id: crisis.id, en: crisis.name, nb: crisis.nameNb } : null,
     });
   }
