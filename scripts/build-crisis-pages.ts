@@ -75,6 +75,7 @@ ${image ? `<meta property="og:image" content="${esc(image)}">\n<meta name="twitt
     <a class="link-button" href="${up}" data-i18n="map">Map</a>
     <a class="link-button" href="${up}brief/" data-i18n="brief">Brief</a>
     <a class="link-button" href="${up}stream/" data-i18n="wire">Wire</a>
+    <a class="link-button" href="${up}metode/" data-i18n="methodNav">Method</a>
     <button type="button" class="link-button" id="lang">NO</button>
     <button type="button" class="link-button" id="theme">Light</button>
   </nav>

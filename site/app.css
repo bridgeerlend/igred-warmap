@@ -361,3 +361,9 @@ body.mapapp { display: flex; flex-direction: column; min-height: 100svh; }
   border: 0; border-bottom: 1px solid var(--hair); border-radius: 0; padding: 5px 0;
 }
 .cv-follow-row input:focus { outline: none; border-bottom-color: var(--pick); }
+
+/* Six items in the top menu: on a phone they sit a little closer so the row fits the width. */
+@media (max-width: 420px) {
+  .masthead .controls { gap: 11px; }
+  .masthead .controls .link-button { letter-spacing: 0.12em; }
+}

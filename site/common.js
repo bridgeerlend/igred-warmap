@@ -7,7 +7,7 @@ import { dataBaseUrl } from './config.js';
 
 export const STRINGS = {
   en: {
-    brief: 'Brief', wire: 'Wire', map: 'Map',
+    brief: 'Brief', wire: 'Wire', methodNav: 'Method', map: 'Map',
     switchLang: 'NO', switchLangLabel: 'Bytt til norsk',
     dark: 'Dark', light: 'Light',
     titleLine1: 'Global Conflict', titleLine2: 'Monitor',
@@ -110,7 +110,7 @@ export const STRINGS = {
     ago: (m) => (m < 60 ? `${Math.max(1, m)} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`),
   },
   nb: {
-    brief: 'Brief', wire: 'Wire', map: 'Kart',
+    brief: 'Brief', wire: 'Wire', methodNav: 'Metode', map: 'Kart',
     switchLang: 'EN', switchLangLabel: 'Switch to English',
     dark: 'Mørk', light: 'Lys',
     titleLine1: 'Global Conflict', titleLine2: 'Monitor',

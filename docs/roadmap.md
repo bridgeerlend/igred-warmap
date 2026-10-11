@@ -17,6 +17,14 @@
 The AI text step and its pull-request approval flow shipped with the Brief, ahead of the
 original order, because that is where the first prose actually appears.
 
+## Queued for www/ (not before 14 October 2026)
+
+www/ is frozen until the Netlify build credits reset on 14 October 2026. Changes waiting:
+
+- **Method in the igred.org menu.** In `www/index.html`, after Brief, before NO:
+  `<a class="link-button" href="https://map.igred.org/metode/" data-i18n="navMethod">Method</a>`,
+  with `navMethod: 'Method'` / `'Metode'` in the strings in `www/home.js`, matching the map.
+
 ## The acceptance list
 
 `tests/acceptance.test.ts` checks the brief's criteria mechanically — 39 tests, each named

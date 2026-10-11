@@ -909,6 +909,15 @@ describe('the data can be downloaded', () => {
   });
 });
 
+describe('the method is one click away', () => {
+  it('Method sits in the top menu between Wire and the language switch, marked on its own page', () => {
+    const between = /data-i18n="wire">Wire<\/a>\s*<a class="link-button" href="[^"]*metode\/"? ?[^>]*data-i18n="methodNav"[^>]*>Method<\/a>\s*<button type="button" class="link-button" id="lang">/;
+    for (const file of ['site/index.html', 'site/crisis/sudan/index.html', 'site/crisis/index.html']) expect(read(file)).toMatch(between);
+    expect(read('site/metode/index.html')).toMatch(/href="\.\/" data-i18n="methodNav" aria-current="true">Method<\/a>\s*<button type="button" class="link-button" id="lang">/);
+    expect(read('site/common.js')).toMatch(/methodNav: 'Method'[\s\S]*methodNav: 'Metode'/);
+  });
+});
+
 describe('a crisis can be followed', () => {
   it('an RSS feed per crisis and one for all, with summaries and corroborated incidents only', () => {
     for (const c of readJson('config/crises.json').crises as { id: string }[]) expect(exists(`site/feed/${c.id}.xml`)).toBe(true);

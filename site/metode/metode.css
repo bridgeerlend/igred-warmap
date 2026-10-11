@@ -16,3 +16,9 @@
 .corrections li { display: grid; gap: 6px; padding-bottom: 14px; border-bottom: 1px solid var(--hair-soft); }
 .corrections p { margin: 0; }
 .corrections .label { font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; margin-top: 4px; }
+
+/* Six items in the top menu: on a phone they sit a little closer so the row fits the width. */
+@media (max-width: 420px) {
+  .masthead .controls { gap: 11px; }
+  .masthead .controls .link-button { letter-spacing: 0.12em; }
+}
