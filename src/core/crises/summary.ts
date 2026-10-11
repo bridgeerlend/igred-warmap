@@ -130,6 +130,8 @@ const VAGUE: [RegExp, number, number, string][] = [
  */
 export function noDashes(text: string): string {
   return text
+    // A dash inside a word or a name ("Sør‑Sudan", "Iran–Israel") is a hyphen.
+    .replace(/(\p{L})[‐‑–—](\p{L})/gu, '$1-$2')
     .replace(/(\d)\s*[–—]\s*(\d)/g, '$1-$2')
     .replace(/\s*[–—]\s*([^–—]{1,120}?)\s*[–—]\s*/g, ', $1, ')
     .replace(/\s*[–—]\s*/g, ', ')

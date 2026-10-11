@@ -110,6 +110,7 @@ describe('the crisis summary guard', () => {
     expect(noDashes('Houthis struck Riyadh airport — killing twelve — and closed it.')).toBe('Houthis struck Riyadh airport, killing twelve, and closed it.');
     expect(noDashes('Fighting resumed – again.')).toBe('Fighting resumed, again.');
     expect(noDashes('Deaths in 2022–2023 rose.')).toBe('Deaths in 2022-2023 rose.');
+    expect(noDashes('Valget i Sør‑Sudan og Iran–Israel.')).toBe('Valget i Sør-Sudan og Iran-Israel.');
     expect(noDashes('tolv personer ble drept – blant dem en flykaptein – og hundrevis såret.')).toBe('tolv personer ble drept, blant dem en flykaptein, og hundrevis såret.');
   });
 
