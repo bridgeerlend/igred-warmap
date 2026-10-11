@@ -24,6 +24,7 @@ const STRINGS = {
 let lang = safeGet('igred-lang') === 'nb' ? 'nb' : 'en';
 const t = () => STRINGS[lang];
 let works = null;
+let topics = [];
 
 function render() {
   document.documentElement.lang = lang;
@@ -33,13 +34,18 @@ function render() {
   $('kb-intro').textContent = t().intro;
   if (!works) return;
   if (!works.length) { $('kb-works').innerHTML = `<li class="kb-work"><p>${esc(t().empty)}</p></li>`; return; }
-  $('kb-works').innerHTML = works.map((w) => {
+  const card = (w) => {
     const title = w.url ? `<a href="${esc(w.url)}" target="_blank" rel="noopener">${esc(w.title)}</a>` : esc(w.title);
-    const meta = [t().kind[w.kind] ?? null, w.author, w.year].filter(Boolean).map(esc).join(' · ');
+    const meta = [w.author, w.year].filter(Boolean).map(esc).join(' · ');
     return `<li class="kb-work"><h2>${title}</h2>${meta ? `<p class="meta">${meta}</p>` : ''}` +
       (w.argues ? `<p class="kb-label">${esc(t().argues)}</p><p>${esc(w.argues)}</p>` : '') +
       (w.holds ? `<p class="kb-label">${esc(t().holds)}</p><p>${esc(w.holds)}</p>` : '') + '</li>';
-  }).join('');
+  };
+  // Grouped by topic, in the order the file lists the topics; anything untagged comes last.
+  const groups = [...topics.map((tp) => ({ label: tp[lang] ?? tp.en, items: works.filter((w) => w.topic === tp.id) })),
+    { label: '', items: works.filter((w) => !topics.some((tp) => tp.id === w.topic)) }].filter((g) => g.items.length);
+  $('kb-works').innerHTML = groups.map((g) =>
+    `${g.label ? `<li class="kb-topic"><h3>${esc(g.label)}</h3></li>` : ''}${g.items.map(card).join('')}`).join('');
 }
 
 $('lang').addEventListener('click', () => { lang = lang === 'en' ? 'nb' : 'en'; safeSet('igred-lang', lang); render(); });
@@ -50,6 +56,7 @@ $('theme').addEventListener('click', () => {
   render();
 });
 fetch('../knowledge.json', { cache: 'no-cache' }).then((r) => r.json()).then((d) => {
+  topics = d.topics ?? [];
   works = [...(d.works ?? [])].sort((a, b) => (b.year ?? 0) - (a.year ?? 0) || String(a.title).localeCompare(String(b.title)));
   render();
 }).catch(() => { works = []; render(); });

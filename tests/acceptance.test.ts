@@ -943,7 +943,7 @@ describe('the front page', () => {
 
   it('the knowledge base is one reading list with our own assessment, and coming until it has an entry', () => {
     const kb = readJson('www/knowledge.json');
-    expect(Object.keys(kb).filter((k) => !k.startsWith('$'))).toEqual(['works']);
+    expect(Object.keys(kb).filter((k) => !k.startsWith('$'))).toEqual(['topics', 'works']);
     for (const work of kb.works as { title: string; author?: string; year?: number; url?: string; argues?: string; holds?: string }[]) {
       expect(work.title.length).toBeGreaterThan(0);
       if (work.url) expect(work.url).toMatch(/^https?:\/\//);
