@@ -28,6 +28,8 @@ Utkast ligger som grener (`cms/...`) og bygger aldri produksjonssiden.
 
 ## For Viktor: første innlogging
 
+Se `docs/report-examples/` for to ferdige eksempler med alle byggeklossene i bruk.
+
 1. Du trenger en GitHub-konto. Godta invitasjonen til `bridgeerlend/igred-warmap` som kommer
    på e-post (eller på github.com/notifications).
 2. Gå til **igred.org/admin** og trykk **Logg inn med GitHub**. Godkjenn appen

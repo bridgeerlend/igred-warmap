@@ -11,3 +11,18 @@ button?.addEventListener('click', () => {
   label();
 });
 if (button) label();
+
+// The empty list follows the reader's language as the front page decides it: a stored choice,
+// else the browser's.
+const soon = document.querySelector('.r-soon');
+if (soon) {
+  let stored = null;
+  try { stored = localStorage.getItem('igred-lang'); } catch { /* private mode */ }
+  const nb = stored ? stored === 'nb' : /^(nb|nn|no)/.test((navigator.language || '').toLowerCase());
+  if (!nb) {
+    soon.textContent = soon.dataset.en;
+    const title = document.querySelector('.r-list .title span');
+    if (title?.dataset.en) title.textContent = title.dataset.en;
+    document.documentElement.lang = 'en';
+  }
+}

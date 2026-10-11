@@ -25,9 +25,11 @@ import { repoRoot } from '../src/core/util/paths.js';
 import { BRAND, brandLink, markSvg } from '../src/core/brand.js';
 
 const WWW = path.join(repoRoot, 'www');
-const CONTENT = path.join(WWW, 'content', 'reports');
+// The examples in docs/report-examples/ can be built elsewhere for a look or a test:
+// REPORTS_CONTENT=docs/report-examples REPORTS_OUT=/tmp/x npx tsx scripts/build-reports.ts
+const CONTENT = process.env.REPORTS_CONTENT ? path.resolve(repoRoot, process.env.REPORTS_CONTENT) : path.join(WWW, 'content', 'reports');
 const FROZEN = path.join(CONTENT, 'frozen');
-const OUT = path.join(WWW, 'reports');
+const OUT = process.env.REPORTS_OUT ? path.resolve(repoRoot, process.env.REPORTS_OUT) : path.join(WWW, 'reports');
 const SITE = 'https://igred.org';
 const PDF = process.argv.includes('--pdf');
 const FREEZE = process.argv.includes('--freeze');
@@ -70,7 +72,8 @@ const load = (src: string) => yaml.load(src, { schema: yaml.CORE_SCHEMA }) as Re
 function readReports(): Report[] {
   if (!existsSync(CONTENT)) return [];
   return readdirSync(CONTENT)
-    .filter((f) => f.endsWith('.md'))
+    // A report starts with front matter; anything else (a README) is not one.
+    .filter((f) => f.endsWith('.md') && readFileSync(path.join(CONTENT, f), 'utf-8').startsWith('---'))
     .map((file) => {
       const raw = readFileSync(path.join(CONTENT, file), 'utf-8');
       const m = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/.exec(raw);
@@ -118,7 +121,7 @@ const T = {
     mapSource: 'Hendelser meldt i nyhetsstrømmen GDELT. Fylt merke: to eller flere uavhengige medier. Hult merke: én kilde. Grenser: Natural Earth.',
     noEvents: 'Kartets arkiv har ingen hendelser for denne perioden.',
     list: `Halvårsrapporter og analyser fra ${BRAND.name}. Hver rapport kan leses her og lastes ned som PDF.`,
-    halvarPlural: 'Halvårsrapporter', analysePlural: 'Analyser', none: 'Ingen ennå.',
+    halvarPlural: 'Halvårsrapporter', analysePlural: 'Analyser', soon: 'Den første rapporten kommer snart.',
     page: 'Side',
     months: ['januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember'],
   },
@@ -141,7 +144,7 @@ const T = {
     mapSource: 'Incidents reported in the GDELT news stream. Filled: two or more independent outlets. Hollow: a single source. Borders: Natural Earth.',
     noEvents: 'The map archive holds no incidents for this period.',
     list: `Half-year reports and analyses from ${BRAND.name}. Each can be read here and downloaded as a PDF.`,
-    halvarPlural: 'Half-year reports', analysePlural: 'Analyses', none: 'None yet.',
+    halvarPlural: 'Half-year reports', analysePlural: 'Analyses', soon: 'The first report is coming soon.',
     page: 'Page',
     months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
   },
@@ -614,14 +617,20 @@ function listPage(reports: Report[]): string {
   };
   const halvar = reports.filter((r) => r.type === 'halvar');
   const analyser = reports.filter((r) => r.type === 'analyse');
+  // A kind with no reports is left out; with none at all, one quiet line and nothing else.
+  const group = (title: string, list: Report[], big: boolean) => (list.length
+    ? `<section class="r-group"><h2 class="meta">${esc(title)}</h2><ul class="r-entries">${list.map((r) => entry(r, big)).join('')}</ul></section>` : '');
+  const body = reports.length
+    ? `  <p class="standfirst">${esc(w.list)}</p>
+  ${group(w.halvarPlural, halvar, true)}
+  ${group(w.analysePlural, analyser, false)}`
+    : `  <p class="standfirst r-soon" data-en="${esc(T.en.soon)}">${esc(w.soon)}</p>`;
   return `${head(BRAND.products.reports, w.list, `${SITE}/reports/`, '../', 'nb')}
 <body class="r-page r-list-page">
 ${masthead('../', w, true)}
 <main class="r-list">
-  <h1 class="title"><span>Rapporter</span></h1>
-  <p class="standfirst">${esc(w.list)}</p>
-  <section class="r-group"><h2 class="meta">${esc(w.halvarPlural)}</h2><ul class="r-entries">${halvar.map((r) => entry(r, true)).join('') || `<li class="r-entry"><p>${esc(w.none)}</p></li>`}</ul></section>
-  <section class="r-group"><h2 class="meta">${esc(w.analysePlural)}</h2><ul class="r-entries">${analyser.map((r) => entry(r, false)).join('') || `<li class="r-entry"><p>${esc(w.none)}</p></li>`}</ul></section>
+  <h1 class="title"><span data-en="Reports">Rapporter</span></h1>
+${body}
 </main>
 ${footer.replace('../../reports.js', '../reports.js')}
 </body>

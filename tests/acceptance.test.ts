@@ -1,5 +1,6 @@
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import os from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { loadConfig } from '../src/core/config.js';
@@ -1213,11 +1214,29 @@ describe('reports on igred.org', () => {
     expect(read('scripts/build-reports.ts')).toMatch(/await browser\?\.close\(\);\s*server\.close\(\);/);
   });
 
-  const build = () => execFileSync('npx', ['tsx', 'scripts/build-reports.ts'], { cwd: repoRoot, encoding: 'utf-8' });
+  // The two example reports live in docs/report-examples/, out of what Netlify publishes; they
+  // are built into a scratch folder here to test the blocks.
+  const scratch = path.join(os.tmpdir(), 'varde-report-examples');
+  const build = () => execFileSync('npx', ['tsx', 'scripts/build-reports.ts'], { cwd: repoRoot, encoding: 'utf-8', env: { ...process.env, REPORTS_CONTENT: 'docs/report-examples', REPORTS_OUT: scratch } });
+  const built = (rel: string) => readFileSync(path.join(scratch, rel), 'utf-8');
+
+  it('with no reports, /reports is one quiet line in either language, and no example is published', () => {
+    const out = execFileSync('npx', ['tsx', 'scripts/build-reports.ts'], { cwd: repoRoot, encoding: 'utf-8' });
+    expect(out).toMatch(/reports: 0 built/);
+    const main = /<main class="r-list">([\s\S]*?)<\/main>/.exec(read('www/reports/index.html'))![1]!;
+    expect(main).toContain('<p class="standfirst r-soon" data-en="The first report is coming soon.">Den første rapporten kommer snart.</p>');
+    expect(main).not.toMatch(/<a |<button|r-group|r-entry/);
+    expect(readdirSync(path.join(repoRoot, 'www/content/reports')).filter((f) => f.endsWith('.md'))).toEqual([]);
+    for (const f of ['2026-h2.md', '2026-10-sudan-kordofan.md', 'frozen/2026-h2.json']) expect(exists(`docs/report-examples/${f}`)).toBe(true);
+    // The front page leads to the list, never to a report, and its cover says the first one is coming.
+    const home = read('www/index.html');
+    expect(home).not.toMatch(/href="reports\/[^"]+"/);
+    expect(home).toMatch(/<span data-i18n="reportEdition">First edition<\/span><span class="coming" data-i18n="coming">Coming<\/span>/);
+  });
 
   it('builds the list and one page per report, half-year reports first and larger', () => {
     expect(build()).toMatch(/reports: 2 built \(1 half-year, 1 analyses\)/);
-    const list = read('www/reports/index.html');
+    const list = built('index.html');
     expect(list.indexOf('Halvårsrapporter')).toBeLessThan(list.indexOf('Analyser'));
     expect(list).toMatch(/class="r-entry r-entry-big"[\s\S]*?Halvårsrapport ·/);
     expect(list).toMatch(/class="r-entry"><a[^>]*>[\s\S]*?Analyse ·/);
@@ -1225,7 +1244,7 @@ describe('reports on igred.org', () => {
 
   it('a half-year report keeps its fixed order, fixed probability words and register arrows', () => {
     build();
-    const page = read('www/reports/2026-h2/index.html');
+    const page = built('2026-h2/index.html');
     const order = ['Hovedvurderinger', 'Risikoregister', 'Regioner', 'Økonomisk utvikling', 'Temaessay', 'Hva vi bommet på', 'Metode og kilder'];
     const at = order.map((h) => page.indexOf(`</span>${h}`));
     expect(at.every((i) => i > 0)).toBe(true);
@@ -1242,10 +1261,10 @@ describe('reports on igred.org', () => {
 
   it('every building block renders, and the figures come frozen from the first build', () => {
     build();
-    const page = read('www/reports/2026-10-sudan-kordofan/index.html');
+    const page = built('2026-10-sudan-kordofan/index.html');
     for (const cls of ['r-figures', 'r-chart-svg', 'r-table', 'r-risk', 'r-map-svg', 'r-quote', 'r-fn', 'r-sources', 'r-cite']) expect(page).toContain(cls);
     expect(page).not.toMatch(/r-empty">\[/);
-    const frozen = readJson('www/content/reports/frozen/2026-10-sudan-kordofan.json');
+    const frozen = readJson('docs/report-examples/frozen/2026-10-sudan-kordofan.json');
     expect(Object.keys(frozen).some((k) => k.startsWith('chart:'))).toBe(true);
     expect(Object.keys(frozen).some((k) => k.startsWith('map:'))).toBe(true);
   });
@@ -1255,7 +1274,7 @@ describe('reports on igred.org', () => {
     expect(css).toMatch(/@page \{ size: A4;/);
     expect(css).toMatch(/\.r-cover \{\s*display: flex;[^}]*break-after: page;/);
     build();
-    expect(read('www/reports/2026-h2/index.html')).toMatch(/@bottom-right \{ content: "Side " counter\(page\); \}[^<]*@page :first/);
+    expect(built('2026-h2/index.html')).toMatch(/@bottom-right \{ content: "Side " counter\(page\); \}[^<]*@page :first/);
   });
 
   it('the editor: Decap on GitHub through Netlify OAuth, editorial workflow, one component per block', () => {
