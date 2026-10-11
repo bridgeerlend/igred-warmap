@@ -145,6 +145,23 @@ function watchTopbar() {
   }).observe($('hero'));
 }
 
+/** The Knowledge base entry becomes a link the moment www/knowledge.json lists a work. */
+async function enableKnowledgeBase() {
+  try {
+    const kb = await fetch('knowledge.json', { cache: 'no-cache' }).then((r) => r.json());
+    if (!(kb.works ?? []).length) return;
+    const entry = document.querySelector('[data-entry="knowledge"]');
+    if (!entry) return;
+    const link = document.createElement('a');
+    link.className = 'entry';
+    link.href = 'knowledge/';
+    link.innerHTML = entry.innerHTML.replace(/<p class="coming"[^>]*>[\s\S]*?<\/p>/, '');
+    entry.replaceWith(link);
+  } catch {
+    // stays as coming
+  }
+}
+
 /** Sends the form to Netlify without leaving the page, and says plainly whether it arrived. */
 function setupFeedback() {
   const form = $('feedback');
@@ -178,6 +195,7 @@ async function start() {
   }
   paintMapPreview();
   paintBriefPreview();
+  enableKnowledgeBase();
   // After the page has painted, so the film never competes with the first render.
   (window.requestIdleCallback ?? ((fn) => setTimeout(fn, 200)))(restartHero);
 }

@@ -913,6 +913,24 @@ describe('the front page', () => {
     for (const name of ['Global Conflict Monitor', 'The IGRED Brief', 'Reports', 'Knowledge base']) expect(html).toContain(name);
   });
 
+  it('the knowledge base is one reading list with our own assessment, and coming until it has an entry', () => {
+    const kb = readJson('www/knowledge.json');
+    expect(Object.keys(kb).filter((k) => !k.startsWith('$'))).toEqual(['works']);
+    for (const work of kb.works as { title: string; author?: string; year?: number; url?: string; argues?: string; holds?: string }[]) {
+      expect(work.title.length).toBeGreaterThan(0);
+      if (work.url) expect(work.url).toMatch(/^https?:\/\//);
+    }
+    const js = read('www/knowledge/knowledge.js');
+    expect(js).toMatch(/t\(\)\.argues/);
+    expect(js).toMatch(/t\(\)\.holds/);
+    expect(js).not.toMatch(/films|top five|topp fem/i);
+    expect(read('www/home.js')).toMatch(/if \(!\(kb\.works \?\? \[\]\)\.length\) return;/);
+    expect(read('www/index.html')).toMatch(/class="entry is-coming" aria-disabled="true" data-entry="knowledge"/);
+    // No About page, and nothing pointing at one.
+    expect(exists('www/about')).toBe(false);
+    expect(read('www/index.html')).not.toMatch(/href="[^"#]*about/);
+  });
+
   it('names the people behind it and how to reach them', () => {
     const html = read('www/index.html');
     expect(html).toContain('Erlend B. Moe');
