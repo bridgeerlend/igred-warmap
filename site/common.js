@@ -500,7 +500,7 @@ export async function downloadData(file, name) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-export const FEED_BASE = 'https://raw.githubusercontent.com/bridgeerlend/igred-warmap/main/data/feed/';
+export const FEED_BASE = 'https://map.igred.org/feed/';
 
 /** Copies text and says so on the button for a moment. */
 export async function copyText(text, button, done) {

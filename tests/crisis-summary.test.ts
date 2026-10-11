@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { PROMPT_VERSION, checkEnglish, checkNorwegian, checkSummary, currentSummary, normaliseNumbers, runSummaries, type SummarySettings, type SummaryState } from '../src/core/crises/summary.js';
+import { PROMPT_VERSION, noDashes, checkEnglish, checkNorwegian, checkSummary, currentSummary, normaliseNumbers, runSummaries, type SummarySettings, type SummaryState } from '../src/core/crises/summary.js';
 
 const input = {
   id: 'sudan',
@@ -96,6 +96,21 @@ describe('the crisis summary guard', () => {
     expect(states.sudan!.approved!.en).toBe(good.en);
     expect(states.sudan!.approved!.nb).toBeNull();
     expect(log.join('\n')).toMatch(/Norwegian refused/);
+  });
+
+  it('takes out every dash, in any language', () => {
+    expect(noDashes('Houthis struck Riyadh airport — killing twelve — and closed it.')).toBe('Houthis struck Riyadh airport, killing twelve, and closed it.');
+    expect(noDashes('Fighting resumed – again.')).toBe('Fighting resumed, again.');
+    expect(noDashes('Deaths in 2022–2023 rose.')).toBe('Deaths in 2022-2023 rose.');
+    expect(noDashes('tolv personer ble drept – blant dem en flykaptein – og hundrevis såret.')).toBe('tolv personer ble drept, blant dem en flykaptein, og hundrevis såret.');
+  });
+
+  it('checks a name as a whole, and always accepts the common organisations', () => {
+    const source = 'Fighting near Goma\nM23 rebels advance';
+    const base = 'Rebels of the M23 movement advanced near Goma.';
+    expect(checkEnglish(`${base} The African Union called for talks.`, source, 110).ok).toBe(true);
+    expect(checkEnglish(`${base} The UN Security Council met.`, source, 110).ok).toBe(true);
+    expect(checkEnglish(`${base} The East African Community called for talks.`, source, 110).reason).toMatch(/the name "East African Community"/);
   });
 
   it('reads Norwegian thousands spaces as the same figure', () => {

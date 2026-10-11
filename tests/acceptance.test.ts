@@ -613,7 +613,7 @@ describe('the pages read their data at view time', () => {
     const out = execFileSync('npx', ['tsx', 'scripts/build-crisis-pages.ts', '--check'], { cwd: repoRoot, encoding: 'utf-8' });
     expect(out).toMatch(/already current/);
     for (const workflow of ['ingest.yml', 'crises.yml', 'brief.yml']) {
-      expect(read(`.github/workflows/${workflow}`)).not.toMatch(/crisis-pages|git add site/);
+      expect(read(`.github/workflows/${workflow}`)).not.toMatch(/crisis-pages|git add site(?!\/feed)|git add data site(?!\/feed)/);
     }
   });
 });
@@ -911,14 +911,20 @@ describe('the data can be downloaded', () => {
 
 describe('a crisis can be followed', () => {
   it('an RSS feed per crisis and one for all, with summaries and corroborated incidents only', () => {
-    for (const c of readJson('config/crises.json').crises as { id: string }[]) expect(exists(`data/feed/${c.id}.xml`)).toBe(true);
-    const all = read('data/feed/all.xml');
+    for (const c of readJson('config/crises.json').crises as { id: string }[]) expect(exists(`site/feed/${c.id}.xml`)).toBe(true);
+    const all = read('site/feed/all.xml');
     expect(all).toMatch(/^<\?xml version="1\.0" encoding="UTF-8"\?>\n<rss version="2\.0"/);
     // Every incident item names two or more outlets.
     for (const m of all.matchAll(/<title>[^<]*\((\d+) outlets\)<\/title>/g)) expect(Number(m[1])).toBeGreaterThanOrEqual(2);
     expect(read('src/core/crises/build.ts')).toMatch(/\.filter\(\(e\) => e\.distinctPublishers >= 2 && nowRef - Date\.parse\(e\.occurredAt\) < 7 \* DAY\)/);
-    // Written to data/, so a new item never rebuilds the site.
-    expect(read('src/core/crises/build.ts')).toMatch(/const feedDir = path\.join\(dataDir, 'feed'\);/);
+    // Served from the map at map.igred.org/feed/, written only when an item changes, and published
+    // by the Crises workflow alone, which deploys Pages only when a feed did change.
+    expect(read('src/core/crises/build.ts')).toMatch(/const feedDir = path\.join\(dataDir, '\.\.', 'site', 'feed'\);/);
+    expect(read('src/core/crises/build.ts')).toMatch(/readFileSync\(file, 'utf-8'\) === body\) return;/);
+    const crises = read('.github/workflows/crises.yml');
+    expect(crises).toMatch(/git add data site\/feed/);
+    expect(crises).toMatch(/if: steps\.commit\.outputs\.feeds == 'changed'[\s\S]*gh workflow run pages\.yml/);
+    for (const workflow of ['ingest.yml', 'brief.yml']) expect(read(`.github/workflows/${workflow}`)).not.toMatch(/site\/feed|pages\.yml/);
   });
 
   it('the crisis panel offers Share and Follow, the feed address with a copy button', () => {

@@ -554,7 +554,7 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
       const key = file?.replace(/ /g, '_');
       const credit = key ? cache.commons[key] : undefined;
       const img: CrisisImage = {
-        src, caption,
+        src, caption: caption.replace(/\s*[–—]\s*/g, '-'),
         url: file ? `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(key!)}` : fallbackUrl,
         credit: 'Wikimedia Commons',
         kind: imageKind(file ?? src, caption),
@@ -638,7 +638,7 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
     /* UCDP's own fatality counts, a contrast to counts of media reports */
     const span = (years: string[]) => {
       const sorted = [...new Set(years)].sort();
-      return sorted.length > 1 ? `${sorted[0]}–${sorted[sorted.length - 1]}` : (sorted[0] ?? '');
+      return sorted.length > 1 ? `${sorted[0]}-${sorted[sorted.length - 1]}` : (sorted[0] ?? '');
     };
     const battleInd = indicators.find((ind) => ind.id === 'VC.BTL.DETH');
     const battle = battleInd && battleInd.values.length
@@ -876,9 +876,11 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
   }
 
   /* follow a crisis: RSS feeds of approved summaries and corroborated incidents */
-  const feedDir = path.join(dataDir, 'feed');
+  // Published with the map at map.igred.org/feed/. A feed file is written only when its content
+  // changes, so the hourly run deploys the site only when there is something new to follow.
+  const feedDir = path.join(dataDir, '..', 'site', 'feed');
   mkdirSync(feedDir, { recursive: true });
-  const FEED_BASE = 'https://raw.githubusercontent.com/bridgeerlend/igred-warmap/main/data/feed';
+  const FEED_BASE = 'https://map.igred.org/feed';
   const xml = (v: string) => v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const rfc822 = (iso: string) => new Date(iso).toUTCString();
   interface FeedItem { title: string; link: string; guid: string; at: string; html: string }
@@ -910,7 +912,7 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
 <atom:link href="${FEED_BASE}/${name}" rel="self" type="application/rss+xml"/>
 <description>${xml(description)}</description>
 <language>en</language>
-<lastBuildDate>${rfc822(generatedAt)}</lastBuildDate>
+<lastBuildDate>${rfc822(items.reduce((max, it) => (it.at > max ? it.at : max), '1970-01-01T00:00:00Z'))}</lastBuildDate>
 ${items.sort((a, b) => b.at.localeCompare(a.at)).map((it) => `<item>
 <title>${xml(it.title)}</title>
 <link>${xml(it.link)}</link>
@@ -922,6 +924,7 @@ ${items.sort((a, b) => b.at.localeCompare(a.at)).map((it) => `<item>
 </rss>
 `;
     const file = path.join(feedDir, name);
+    if (existsSync(file) && readFileSync(file, 'utf-8') === body) return;
     writeFileSync(`${file}.tmp`, body);
     renameSync(`${file}.tmp`, file);
   };

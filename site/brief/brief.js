@@ -40,7 +40,7 @@ const STRINGS = {
     errorTitle: 'The edition could not be loaded.',
     errorBody: (url) => `Tried <code>${url}</code>. Nothing is shown rather than something unverified.`,
     noProse: 'This edition carries no drafted prose.',
-    noProseBody: 'Either none was drafted, or none was approved. The stories below are unaffected — they were never dependent on it.',
+    noProseBody: 'Either none was drafted, or none was approved. The stories below are unaffected. They were never dependent on it.',
   },
   nb: {
     archive: 'Tidligere utgaver',
@@ -70,7 +70,7 @@ const STRINGS = {
     errorTitle: 'Utgaven kunne ikke lastes.',
     errorBody: (url) => `Forsøkte <code>${url}</code>. Ingenting vises heller enn noe ubekreftet.`,
     noProse: 'Denne utgaven har ingen utskrevne avsnitt.',
-    noProseBody: 'Enten ble ingen skrevet, eller ingen godkjent. Sakene under er upåvirket — de var aldri avhengige av det.',
+    noProseBody: 'Enten ble ingen skrevet, eller ingen godkjent. Sakene under er upåvirket. De var aldri avhengige av det.',
   },
 };
 

@@ -11,6 +11,9 @@ on:
 
 permissions:
   contents: write
+  # To start the map's deploy when a feed has changed: a push by this workflow's own token
+  # does not start other workflows, a dispatch does.
+  actions: write
 
 # Shares the ingest's group, so the two never push to data/ at the same moment.
 concurrency:
@@ -44,17 +47,34 @@ jobs:
         run: npm run crises
 
       - name: Commit data if it changed
+        id: commit
         run: |
-          if [ -z "$(git status --porcelain data)" ]; then
+          if [ -z "$(git status --porcelain data site/feed)" ]; then
             echo "No data changes."
             exit 0
           fi
+          # Feeds live with the map; if one changed, the map is deployed once after the push.
+          if [ -n "$(git status --porcelain site/feed)" ]; then echo "feeds=changed" >> "$GITHUB_OUTPUT"; fi
           git config user.name "igred-bot"
           git config user.email "map@igred.org"
-          git add data
+          git add data site/feed
           git commit -m "data: crises $(date -u +%Y-%m-%dT%H:%MZ)"
           for attempt in 1 2 3; do
             git pull --rebase origin main && git push && exit 0
             sleep 10
           done
           exit 1
+
+      - name: Publish the feeds with the map
+        if: steps.commit.outputs.feeds == 'changed'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # At most once an hour: if the map was deployed in the last hour, the feeds wait for the
+        # next run, which deploys whatever is committed by then.
+        run: |
+          last=$(gh run list --workflow pages.yml --limit 1 --json createdAt --jq '.[0].createdAt // empty')
+          if [ -n "$last" ] && [ $(( $(date +%s) - $(date -d "$last" +%s) )) -lt 3600 ]; then
+            echo "the map was deployed less than an hour ago; the feeds go out with the next run"
+            exit 0
+          fi
+          gh workflow run pages.yml --ref main

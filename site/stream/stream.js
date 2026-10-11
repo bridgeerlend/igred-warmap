@@ -29,7 +29,7 @@ const STRINGS = {
     errorTitle: 'The wire could not be loaded.',
     errorBody: (url) => `Tried <code>${url}</code>. The page shows nothing rather than showing something unsourced.`,
     colophon:
-      'Every line on this page was fetched from the outlet that published it and is shown with its name in plain text — never a masthead, which is a trademark. Incidents come from the news stream behind the map; stories come from The IGRED Brief. Both are clustered by this project without any language model. Full history is kept in the repository; older data is available on request at',
+      'Every line on this page was fetched from the outlet that published it and is shown with its name in plain text, never a masthead, which is a trademark. Incidents come from the news stream behind the map; stories come from The IGRED Brief. Both are clustered by this project without any language model. Full history is kept in the repository; older data is available on request at',
     updated: 'Data updated',
     today: 'Today', yesterday: 'Yesterday',
     incidentAt: (place) => `Incident at ${place}`,
@@ -49,7 +49,7 @@ const STRINGS = {
     errorTitle: 'Strømmen kunne ikke lastes.',
     errorBody: (url) => `Forsøkte <code>${url}</code>. Siden viser heller ingenting enn noe ukildebelagt.`,
     colophon:
-      'Hver linje på denne siden er hentet fra redaksjonen som publiserte den, og vises med navnet i ren tekst — aldri en avislogo, som er et varemerke. Hendelsene kommer fra nyhetsstrømmen bak kartet; sakene kommer fra The IGRED Brief. Begge er gruppert av dette prosjektet uten noen språkmodell. Full historikk ligger i repoet; eldre data fås ved henvendelse til',
+      'Hver linje på denne siden er hentet fra redaksjonen som publiserte den, og vises med navnet i ren tekst, aldri en avislogo, som er et varemerke. Hendelsene kommer fra nyhetsstrømmen bak kartet; sakene kommer fra The IGRED Brief. Begge er gruppert av dette prosjektet uten noen språkmodell. Full historikk ligger i repoet; eldre data fås ved henvendelse til',
     updated: 'Data oppdatert',
     today: 'I dag', yesterday: 'I går',
     incidentAt: (place) => `Hendelse ved ${place}`,
@@ -230,7 +230,7 @@ function renderColophon() {
     (repo ? ` <a href="${escapeHtml(repo)}" target="_blank" rel="noopener">Source</a>.` : '');
   const updated = state.generatedAt
     ? `${new Date(state.generatedAt).toISOString().slice(0, 16).replace('T', ' ')} UTC`
-    : '—';
+    : '·';
   $('colophon-meta').textContent = `${t().updated}: ${updated}`;
 }
 

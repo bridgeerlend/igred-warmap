@@ -72,7 +72,7 @@ export interface SummaryInput {
 }
 
 /** Bumped when the brief to the model changes, so every crisis is rewritten once. */
-export const PROMPT_VERSION = 5;
+export const PROMPT_VERSION = 6;
 
 /** Norwegian writes 1 200 and 4,5; the guard compares digits, so thousands spaces are closed up. */
 export function normaliseNumbers(text: string): string {
@@ -119,6 +119,20 @@ const VAGUE: [RegExp, number, number, string][] = [
   [/\bhundreds\b|\bhundrevis\b/gi, 200, 999, 'hundreds'],
   [/\bdozens\b|\bdusinvis\b|\btitalls\b/gi, 24, 99, 'dozens'],
 ];
+
+/**
+ * No dashes in any language: a pair around an aside becomes commas, a single one a comma, and
+ * a span of years keeps a plain hyphen.
+ */
+export function noDashes(text: string): string {
+  return text
+    .replace(/(\d)\s*[–—]\s*(\d)/g, '$1-$2')
+    .replace(/\s*[–—]\s*([^–—]{1,120}?)\s*[–—]\s*/g, ', $1, ')
+    .replace(/\s*[–—]\s*/g, ', ')
+    .replace(/,\s*([,.;:!?])/g, '$1')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
 
 /** Every quantity a text states in words; "a dozen" and "et dusin" are twelve. */
 export function numberWords(text: string, lang: 'en' | 'nb'): NumberMention[] {
@@ -206,23 +220,45 @@ const NOT_NAMES = new Set(['UCDP', 'UN', 'US', 'USA', 'EU', 'UK', 'World', 'Bank
  * must be in the material: a model that joins two stories puts a name where it does not
  * belong. Forms of the same word ("Ethiopia", "Ethiopian") count as the same name.
  */
+/** Common organisations a summary may always name, in either language. */
+const KNOWN_ORGS = new Set([
+  'un', 'united nations', 'fn', 'de forente nasjoner', 'eu', 'european union', 'den europeiske union',
+  'african union', 'den afrikanske union', 'au', 'nato', 'icrc', 'international committee of the red cross',
+  'red cross', 'røde kors', 'unhcr', 'wfp', 'world food programme', 'ocha', 'un security council',
+].map((x) => x.toLowerCase()));
+
 export function namesSupported(text: string, sourceText: string): { ok: boolean; reason?: string } {
   const source = sourceText.toLowerCase();
   const sourceWords = new Set(source.match(/[\p{L}]+/gu) ?? []);
   const stem = (w: string) => w.toLowerCase().slice(0, Math.min(6, w.length));
   // "United Nations" is the UN the headlines name.
   const un = /\bUN\b|united nations/i.test(sourceText);
-  const known = (w: string) => (un && /^(United|Nations)$/.test(w)) || source.includes(w.toLowerCase()) || [...sourceWords].some((sw) => sw.length >= 4 && w.length >= 4 && stem(sw) === stem(w));
+  const known = (w: string) => (un && /^(United|Nations)$/.test(w)) || source.includes(w.toLowerCase())
+    || [...sourceWords].some((sw) => sw.length >= 4 && w.length >= 4 && stem(sw) === stem(w));
+  const clean = (raw: string) => raw.replace(/['’]s$/, '').replace(/[.'’-]+$/, '');
   for (const sentence of text.split(/(?<=[.!?])\s+/)) {
-    const words = sentence.match(/[\p{L}][\p{L}'’.-]*/gu) ?? [];
-    words.forEach((raw, i) => {
-      const w = raw.replace(/['’]s$/, '').replace(/[.'’-]+$/, '');
-      if (!/^\p{Lu}/u.test(w) || NOT_NAMES.has(w)) return;
-      // The first word of a sentence is capitalised anyway: it is taken for a name only when it
-      // starts a run of names, or is not an ordinary English word.
-      if (i === 0 && !/^\p{Lu}/u.test(words[1] ?? '') && (STARTERS.has(w.toLowerCase()) || /(ing|ed|ion|ions|ers|ies|ly|ment|ments|ity|ness|ence|ance|al|es)$/i.test(w))) return;
-      if (!known(w)) throw new Error(w);
-    });
+    const words = (sentence.match(/[\p{L}][\p{L}'’.-]*/gu) ?? []).map(clean);
+    // A name is a whole run of capitalised words ("African Union", "Democratic Republic of the
+    // Congo"), checked as one: a run is fine if it is in the sources as written, is a common
+    // organisation, or every word of it is in the sources.
+    for (let i = 0; i < words.length; i++) {
+      if (!/^\p{Lu}/u.test(words[i]!) || NOT_NAMES.has(words[i]!)) continue;
+      let j = i + 1;
+      while (j < words.length && (/^\p{Lu}/u.test(words[j]!) || (/^(of|the|and|de|al)$/.test(words[j]!) && /^\p{Lu}/u.test(words[j + 1] ?? '')))) j++;
+      let run = words.slice(i, j);
+      const start = i;
+      i = j - 1;
+      // "The African Union" is the name "African Union".
+      if (run.length > 1 && /^(The|A|An|Den|Det|De)$/.test(run[0]!)) run = run.slice(1);
+      const name = run.join(' ');
+      // The first word of a sentence is capitalised anyway: alone, it is taken for a name only
+      // when it is not an ordinary English word.
+      if (start === 0 && run.length === 1 && (STARTERS.has(name.toLowerCase()) || /(ing|ed|ion|ions|ers|ies|ly|ment|ments|ity|ness|ence|ance|al|es)$/i.test(name))) continue;
+      if (KNOWN_ORGS.has(name.toLowerCase()) || source.includes(name.toLowerCase())) continue;
+      const parts = run.filter((w) => /^\p{Lu}/u.test(w) && !NOT_NAMES.has(w));
+      if (parts.every(known)) continue;
+      throw new Error(name);
+    }
   }
   return { ok: true };
 }
@@ -302,6 +338,7 @@ function promptFor(input: SummaryInput, maxWords: number): string {
     '- Make clear who did what to whom: name the attacker and the attacked, as the headlines do.',
     '- A named person: say exactly whether they were killed or wounded, as the headlines say. Never "killed or injured" about a named person; if the headlines disagree or are unclear, leave the person out.',
     '- Stay with this crisis. Events in a neighbouring country belong only if the headlines tie them directly to this crisis.',
+    '- No dashes (— or –): use a comma or a full stop.',
     '- No commentary or interpretation: no "highlighting", "underscores", "marks a new phase", "adds a new dimension", "these developments", "since the last briefing". The last sentence states a fact.',
     '- Do not speculate. Do not name the outlets in the headlines.',
     'If the material is too thin, reply {"en":"INSUFFICIENT"}.',
@@ -324,7 +361,10 @@ function translationPrompt(en: string): string {
     '- Natural, plain Norwegian as a Norwegian newspaper would write it; no anglicisms and no word-for-word renderings. For example:',
     '  "droneangrep", not "dronstrike"; "glidebomber", not "glide-bombe";',
     '  "grensen mot Etiopia", not "Etiopi-grensen"; "drepte i kamper", not "dødsfall i kamprelaterte handlinger";',
-    '  "vold mellom folkegrupper", not "interkommunal vold"; "fordrevne" and "leirer for internt fordrevne", not "fordrivelsesleirer".',
+    '  "vold mellom folkegrupper", not "interkommunal vold"; "fordrevne" and "leirer for internt fordrevne", not "fordrivelsesleirer";',
+    '  "skjøt missiler mot", not "lanserte missilangrep"; "kamper", not "kamprelaterte handlinger";',
+    '  "angrep gjennom stedfortredere", not "proxy-aggresjon"; "varslet gjengjeldelse", not "lovet et stort svar".',
+    '- No dashes (— or –): use a comma or a full stop.',
     '- Use the established Norwegian form of place names where one exists (Jemen, Etiopia, Zaporizjzja, Kharkiv, Gaza, Khartoum, Darfur, Kordofan).',
     '- Keep every number exactly as in the English: the same figures, and a number written as a word stays a word. Write thousands with a space (75 767).',
     '- Add nothing and leave nothing out.',
@@ -381,7 +421,7 @@ function parseReply(text: string, key: 'en' | 'nb'): string | undefined {
   if (!json) return undefined;
   try {
     const value = (JSON.parse(json) as Record<string, unknown>)[key];
-    return typeof value === 'string' ? value.replace(/\s+/g, ' ').trim() : undefined;
+    return typeof value === 'string' ? noDashes(value.replace(/\s+/g, ' ').trim()) : undefined;
   } catch {
     return undefined;
   }
@@ -475,8 +515,16 @@ export async function runSummaries(
     let nb: string | null = null;
     const second = await ask(translationPrompt(en), provider);
     if (second && !('failure' in second.reply)) {
-      const text = parseReply(second.reply.text, 'nb');
-      const nbCheck = text ? checkNorwegian(text, en, settings.maxWords) : { ok: false, reason: 'unreadable reply' };
+      let text = parseReply(second.reply.text, 'nb');
+      let nbCheck = text ? checkNorwegian(text, en, settings.maxWords) : { ok: false, reason: 'unreadable reply' };
+      if (!nbCheck.ok) {
+        // Refused once: asked again with the reason, then given up.
+        const again = await ask(`${translationPrompt(en)}\n\nYour previous translation was refused: ${nbCheck.reason}. Translate it again, keeping every rule above.`, provider);
+        if (again && !('failure' in again.reply)) {
+          text = parseReply(again.reply.text, 'nb');
+          nbCheck = text ? checkNorwegian(text, en, settings.maxWords) : { ok: false, reason: 'unreadable reply' };
+        }
+      }
       if (text && nbCheck.ok) nb = text;
       else log.push(`${input.id}: Norwegian refused (${nbCheck.reason}); the English stands alone`);
     } else {
