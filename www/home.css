@@ -68,8 +68,10 @@ body.home { --page-fg: var(--fg); --page-s3: var(--s3); --page-pick: var(--pick)
 }
 .scene-headline .w { display: inline-block; opacity: 0; transform: translateY(0.35em); transition: opacity 420ms ease, transform 520ms cubic-bezier(.2,.7,.2,1); }
 .scene-headline.is-in .w { opacity: 1; transform: none; }
-.scene-headline .w.name { font-style: italic; }
-.scene-headline .w.fig { color: #EE7637; font-style: italic; }
+.scene-headline .w.name, .scene-headline .w.strong, .scene-headline .w.fig { font-style: italic; }
+.scene-headline .w.name { color: #F2914A; }
+.scene-headline .w.strong { color: #E85A2C; }
+.scene-headline .w.fig { color: #DC3F26; }
 .scene-outlet { margin: 16px 0 0; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; opacity: 0; transition: opacity 600ms ease 500ms; }
 .scene-outlet.is-in { opacity: 0.85; }
 .scene-date { font-family: var(--display); font-size: clamp(28px, 4vw, 56px); margin: 0; font-variant-numeric: tabular-nums; }

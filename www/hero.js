@@ -12,6 +12,11 @@
 import { toView } from './projection.js';
 
 const W0 = 1000, H0 = 520;
+
+/** Words that carry a conflict headline: what happened. Matched as word stems. */
+const STRONG = /^(kill|killed|kills|killing|dead|deaths?|attack(s|ed)?|strike(s)?|struck|war|wars|invasion|invade[sd]?|missile(s)?|drone(s)?|bomb(s|ing|ed)?|shell(ing|ed)|ceasefire|truce|deal|sanctions?|coup|famine|genocide|massacre|siege|offensive|captured?|seize[sd]?|evacuat\w*|displaced|refugees?|hostages?|arrest(s|ed)?|detained|protests?|clash(es|ed)?|fighting|assault|raid(s)?|suicide|nuclear|recalls?|condemns?|warns?|demands?|blames?|hits?)$/;
+/** Capitalised words that are not names: they open a headline or a clause. */
+const PLAIN = new Set(['the', 'a', 'an', 'in', 'on', 'at', 'after', 'as', 'how', 'why', 'what', 'who', 'when', 'several', 'thousands', 'hundreds', 'dozens', 'three', 'two', 'four', 'five', 'one', 'photos', 'live', 'former', 'new', 'top', 'security', 'council', 'president', 'prime', 'minister']);
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 
@@ -239,10 +244,13 @@ export function startHero({ canvas, scene, data, world, strings, lang = 'en', fr
   starts.headlines = scenes.reduce((a, x) => a + x.seconds, 0);
   headlines.forEach((hl) => {
     add(2.2, () => {
-      // Names in italic and figures in ember carry the sentence; the rest stays plain.
+      // The words that carry the sentence — who, what happened, how many — are set in italic
+      // ember; the connective words stay plain, so each headline reads at a glance.
       const words = hl.headline.split(' ').map((w, j) => {
         const bare = w.replace(/^[‘'"“(]+|[’'"”),.:;!?]+$/g, '');
-        const cls = /\d/.test(bare) ? ' fig' : j > 0 && /^\p{Lu}\p{Ll}/u.test(bare) ? ' name' : '';
+        const lower = bare.toLowerCase();
+        const name = /^\p{Lu}[\p{Ll}\p{Lu}'-]+/u.test(bare) && !PLAIN.has(lower) && (j > 0 || bare.length > 3);
+        const cls = /\d/.test(bare) ? ' fig' : STRONG.test(lower) ? ' strong' : name ? ' name' : '';
         return `<span class="w${cls}" style="transition-delay:${j * 45}ms">${esc(w)}</span>`;
       }).join(' ');
       const node = setScene(`<p class="scene-headline">${words}</p><p class="scene-outlet">${esc(hl.publisher)} · The IGRED Brief</p>`);
