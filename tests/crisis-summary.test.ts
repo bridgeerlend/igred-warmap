@@ -98,6 +98,14 @@ describe('the crisis summary guard', () => {
     expect(log.join('\n')).toMatch(/Norwegian refused/);
   });
 
+  it('refuses translated-sounding Norwegian the prompt examples rule out', () => {
+    const en = 'Houthis fired missiles at Riyadh airport. The EU condemned the attack.';
+    expect(checkNorwegian('Houthiene skjøt missiler mot flyplassen i Riyadh. EU fordømte angrepet.', en, 110).ok).toBe(true);
+    expect(checkNorwegian('Houthiene skjøt missiler mot flyplassen i Riyadh. EU kalte det Iran-støttet proxy‑aggressjon.', en, 110).reason).toMatch(/stiff Norwegian/);
+    expect(checkNorwegian('Houthiene lanserte missilangrep mot Riyadh. EU fordømte angrepet.', en, 110).reason).toMatch(/stiff Norwegian/);
+    expect(checkNorwegian('Houthiene skjøt missiler mot Riyadh. Saudi-Arabia lovet en stor respons.', en, 110).reason).toMatch(/stiff Norwegian/);
+  });
+
   it('takes out every dash, in any language', () => {
     expect(noDashes('Houthis struck Riyadh airport — killing twelve — and closed it.')).toBe('Houthis struck Riyadh airport, killing twelve, and closed it.');
     expect(noDashes('Fighting resumed – again.')).toBe('Fighting resumed, again.');

@@ -11,7 +11,7 @@ import {
   countriesIndex, crisisDetail, economyLayer, homeSnapshot, storyPictures, wireFile, type SubjectPicture, crisisIndex, mapEvents, MAP_EVENT_FIELDS,
   type CrisisArticle, type CrisisDetail, type CrisisImage, type CrisisIndexEntry, type CrisisIndicator,
 } from './schema.js';
-import { currentSummary, runSummaries, type SummaryInput, type SummarySettings, type SummaryState } from './summary.js';
+import { PROMPT_VERSION, currentSummary, runSummaries, type SummaryInput, type SummarySettings, type SummaryState } from './summary.js';
 import { CATEGORY, COUNTRY, countryName, incidentType, INCIDENT_TYPES, joinNames } from './names.js';
 
 /* ---------- inputs ----------------------------------------------------- */
@@ -742,7 +742,9 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
   if (!options.offline) {
     // Highest-ranked first, so a free tier that runs dry leaves the quiet crises waiting, not the worst.
     const rank = new Map(details.map((d) => [d.id, d.stats.score * 1000 + d.stats.last7d]));
-    const ordered = [...summaryInputs].sort((a, b) => (rank.get(b.id) ?? 0) - (rank.get(a.id) ?? 0));
+    // A crisis with no approved text under the current prompt goes before one being rewritten.
+    const current = (id: string) => (summaryStates[id]?.approved?.promptVersion === PROMPT_VERSION ? 1 : 0);
+    const ordered = [...summaryInputs].sort((a, b) => current(a.id) - current(b.id) || (rank.get(b.id) ?? 0) - (rank.get(a.id) ?? 0));
     for (const line of await runSummaries(ordered, summaryStates, settings.summary, now)) log(line);
     writeInternal(summariesFile, summaryStates);
   }

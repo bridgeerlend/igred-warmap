@@ -304,8 +304,13 @@ export function checkNorwegian(nb: string, en: string, maxWords: number): { ok: 
   if (METHOD.test(nb)) return { ok: false, reason: 'talks about method, not events' };
   if (VAGUE_FATE.test(nb)) return { ok: false, reason: '"drept eller såret": say which' };
   if (COMMENTARY.test(nb)) return { ok: false, reason: `commentary instead of facts ("${COMMENTARY.exec(nb)![0]}")` };
+  const stiff = STIFF_NB.exec(nb);
+  if (stiff) return { ok: false, reason: `stiff Norwegian ("${stiff[0]}"), write it as a Norwegian reporter would` };
   return { ok: true };
 }
+
+/** Translated-sounding Norwegian the examples in the prompt already rule out. */
+const STIFF_NB = /\bproxy[\s\S]?aggres+jon|\bkamprelatert\w* handling\w*|\blanserte \w*angrep|\blovet (?:et stort svar|en stor respons)|\binterkommunal\w*|\bfordrivelsesleir\w*|\bintensifisert\b/i;
 
 /** Both languages, for callers that have both at once. */
 export function checkSummary(
