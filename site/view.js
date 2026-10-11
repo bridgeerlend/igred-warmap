@@ -8,7 +8,7 @@
  */
 import {
   prefs, h, esc, fmtNum, fmtBig, fmtDay, fmtShortDay, ago, joinNames, hostOf,
-  crisisName, regionName, monumentLines, statusSentence, barChart, CATEGORY, DAY, downloadData,
+  crisisName, regionName, monumentLines, statusSentence, barChart, CATEGORY, DAY, downloadData, FEED_BASE, copyText,
 } from './common.js';
 import { CONFIG } from './config.js';
 
@@ -20,7 +20,35 @@ function windowBars(inc, w, asOf) {
   return { from: Math.max(0, end - w), to: end };
 }
 
-function header(ctx, { title, region, rows, prevRows, exclude, daily }) {
+/** Share the crisis page, or follow the crisis as a feed: a small note with the address to copy. */
+function shareFollow(entry) {
+  const t = prefs.t;
+  const page = `https://map.igred.org/crisis/${entry.id}/`;
+  const dlg = h('dialog.cv-follow', { 'aria-label': t.followTitle(crisisName(entry)) });
+  const row = (url) => {
+    const field = h('input', { type: 'text', readonly: true, value: url, onfocus: (ev) => ev.target.select() });
+    const btn = h('button.link-button', { type: 'button', onclick: () => copyText(url, btn, t.copied) }, t.copy);
+    return h('p.cv-follow-row', null, field, btn);
+  };
+  const open = () => {
+    dlg.replaceChildren(
+      h('h3', null, t.followTitle(crisisName(entry))),
+      h('p', null, t.followBody),
+      row(`${FEED_BASE}${entry.id}.xml`),
+      h('p.meta', null, t.followAll),
+      row(`${FEED_BASE}all.xml`),
+      h('p', null, h('button.link-button.quiet', { type: 'button', onclick: () => dlg.close() }, t.close)));
+    dlg.showModal();
+  };
+  const share = h('button.link-button.quiet', { type: 'button', onclick: async (ev) => {
+    if (navigator.share) { try { await navigator.share({ title: crisisName(entry), url: page }); return; } catch { /* fall back to copying */ } }
+    copyText(page, ev.target, t.copied);
+  } }, t.share);
+  dlg.addEventListener('click', (ev) => { if (ev.target === dlg) dlg.close(); });
+  return [share, h('button.link-button.quiet', { type: 'button', onclick: open }, t.follow), dlg];
+}
+
+function header(ctx, { title, region, rows, prevRows, exclude, daily, entry }) {
   const { inc, w, asOf } = ctx;
   const [l1, l2] = title;
   const bars = windowBars(inc, w, asOf);
@@ -28,6 +56,7 @@ function header(ctx, { title, region, rows, prevRows, exclude, daily }) {
     h('nav.cv-top', null,
       ctx.onBack ? h('button.link-button.quiet.cv-back', { type: 'button', onclick: ctx.onBack }, `← ${prefs.t.allCrises}`) : null,
       region ? h('span.meta', null, region) : null,
+      entry ? h('span.cv-actions', null, ...shareFollow(entry)) : null,
       ctx.onClose ? h('button.link-button.quiet.cv-close', { type: 'button', onclick: ctx.onClose, 'aria-label': prefs.t.close }, prefs.t.close) : null),
     h('h2.title.cv-title', null, h('span', null, l1), l2 ? h('span.italic', null, l2) : null),
     h('p.standfirst.cv-status', { html: statusSentence(inc, rows, prevRows, w, asOf, exclude) }),
@@ -73,6 +102,7 @@ export function renderCrisis(container, ctx, entry, detail) {
     ...header(ctx, {
       title: monumentLines(crisisName(entry)),
       region: regionName(entry),
+      entry,
       rows, prevRows, exclude,
       daily: inc.daily(own),
     }),

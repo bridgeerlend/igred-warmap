@@ -909,6 +909,26 @@ describe('the data can be downloaded', () => {
   });
 });
 
+describe('a crisis can be followed', () => {
+  it('an RSS feed per crisis and one for all, with summaries and corroborated incidents only', () => {
+    for (const c of readJson('config/crises.json').crises as { id: string }[]) expect(exists(`data/feed/${c.id}.xml`)).toBe(true);
+    const all = read('data/feed/all.xml');
+    expect(all).toMatch(/^<\?xml version="1\.0" encoding="UTF-8"\?>\n<rss version="2\.0"/);
+    // Every incident item names two or more outlets.
+    for (const m of all.matchAll(/<title>[^<]*\((\d+) outlets\)<\/title>/g)) expect(Number(m[1])).toBeGreaterThanOrEqual(2);
+    expect(read('src/core/crises/build.ts')).toMatch(/\.filter\(\(e\) => e\.distinctPublishers >= 2 && nowRef - Date\.parse\(e\.occurredAt\) < 7 \* DAY\)/);
+    // Written to data/, so a new item never rebuilds the site.
+    expect(read('src/core/crises/build.ts')).toMatch(/const feedDir = path\.join\(dataDir, 'feed'\);/);
+  });
+
+  it('the crisis panel offers Share and Follow, the feed address with a copy button', () => {
+    const view = read('site/view.js');
+    expect(view).toMatch(/row\(`\$\{FEED_BASE\}\$\{entry\.id\}\.xml`\)/);
+    expect(view).toMatch(/onclick: \(\) => copyText\(url, btn, t\.copied\)/);
+    expect(read('site/common.js')).toMatch(/follow: 'Følg'/);
+  });
+});
+
 describe('the crisis and country views', () => {
   it('link everything they report to its source', () => {
     const view = read('site/view.js');

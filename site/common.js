@@ -28,6 +28,10 @@ export const STRINGS = {
     allCrises: 'All crises',
     filter: 'Filter', filterAll: 'All types',
     tradeLayer: 'Trade and energy',
+    share: 'Share', follow: 'Follow', copy: 'Copy', copied: 'Copied',
+    followTitle: (name) => `Follow ${name}`,
+    followBody: 'New summaries and incidents confirmed by several sources, as an RSS feed. Paste the address into a feed reader (Feedly, Inoreader, NetNewsWire, or Outlook and Slack, which read RSS).',
+    followAll: 'Every crisis in one feed:',
     downloadCsv: 'Download data (CSV)', downloadAll: 'Download all crises (CSV)',
     csvNote: 'The past 30 days: date, place, coordinates, type, intensity, number of sources and every source URL.',
     licence: 'Our own data: CC BY 4.0. UCDP and World Bank data under their own licences:',
@@ -126,6 +130,10 @@ export const STRINGS = {
     allCrises: 'Alle kriser',
     filter: 'Filter', filterAll: 'Alle typer',
     tradeLayer: 'Handel og energi',
+    share: 'Del', follow: 'Følg', copy: 'Kopier', copied: 'Kopiert',
+    followTitle: (name) => `Følg ${name}`,
+    followBody: 'Nye sammendrag og hendelser bekreftet av flere kilder, som RSS-feed. Lim adressen inn i en feedleser (Feedly, Inoreader, NetNewsWire, eller Outlook og Slack, som leser RSS).',
+    followAll: 'Alle kriser i én feed:',
     downloadCsv: 'Last ned data (CSV)', downloadAll: 'Last ned alle kriser (CSV)',
     csvNote: 'De siste 30 dagene: dato, sted, koordinater, type, intensitet, antall kilder og alle kilde-URL-er.',
     licence: 'Våre egne data: CC BY 4.0. Data fra UCDP og Verdensbanken har egne lisenser:',
@@ -488,4 +496,14 @@ export async function downloadData(file, name) {
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+export const FEED_BASE = 'https://raw.githubusercontent.com/bridgeerlend/igred-warmap/main/data/feed/';
+
+/** Copies text and says so on the button for a moment. */
+export async function copyText(text, button, done) {
+  try { await navigator.clipboard.writeText(text); } catch { /* the field stays selectable */ }
+  const was = button.textContent;
+  button.textContent = done;
+  setTimeout(() => { button.textContent = was; }, 1600);
 }

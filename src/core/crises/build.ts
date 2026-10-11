@@ -867,6 +867,68 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
   const keepCsv = new Set(['all.csv', ...defs.map((d) => `${d.id}.csv`)]);
   for (const file of readdirSync(csvDir)) if (file.endsWith('.csv') && !keepCsv.has(file)) unlinkSync(path.join(csvDir, file));
 
+  /* follow a crisis: RSS feeds of approved summaries and corroborated incidents */
+  const feedDir = path.join(dataDir, 'feed');
+  mkdirSync(feedDir, { recursive: true });
+  const FEED_BASE = 'https://raw.githubusercontent.com/bridgeerlend/igred-warmap/main/data/feed';
+  const xml = (v: string) => v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const rfc822 = (iso: string) => new Date(iso).toUTCString();
+  interface FeedItem { title: string; link: string; guid: string; at: string; html: string }
+  const summaryItem = (d: CrisisDetail): FeedItem | null => d.summary ? {
+    title: `${d.name}: the situation`,
+    link: `https://map.igred.org/crisis/${d.id}/`,
+    guid: `igred-summary-${d.id}-${d.summary.writtenAt}`,
+    at: d.summary.writtenAt,
+    html: `<p>${xml(d.summary.en)}</p><p><em>Machine-written from the linked sources, checked for figures and names not in them.</em></p><p>${d.summary.sources.slice(0, 12).map((src) => `<a href="${xml(src.url)}">${xml(src.publisher)}</a>`).join(', ')}</p>`,
+  } : null;
+  // Only incidents two or more independent outlets carried: a feed is no place for single-source noise.
+  const incidentItems = (list: EventRec[], crisisName?: string): FeedItem[] => list
+    .filter((e) => e.distinctPublishers >= 2 && nowRef - Date.parse(e.occurredAt) < 7 * DAY)
+    .sort((a, b) => b.occurredAt.localeCompare(a.occurredAt))
+    .slice(0, 60)
+    .map((e) => ({
+      title: `${CATEGORY.en[e.category] ?? e.category}, ${placeOf(e.location.name)}${crisisName ? '' : ''} (${e.distinctPublishers} outlets)`,
+      link: e.provenance[0]?.url ?? 'https://map.igred.org/',
+      guid: `igred-${e.id}`,
+      at: e.occurredAt,
+      html: `<p>${xml(CATEGORY.en[e.category] ?? e.category)} in ${xml(placeOf(e.location.name))}, ${e.occurredAt.slice(0, 10)}, reported by ${e.distinctPublishers} independent outlets.</p><p>${e.provenance.map((pv) => `<a href="${xml(pv.url)}">${xml(outletName(pv.publisher, pv.url))}</a>`).join(', ')}</p>`,
+    }));
+  const writeFeed = (name: string, title: string, description: string, link: string, items: FeedItem[]) => {
+    const body = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+<title>${xml(title)}</title>
+<link>${xml(link)}</link>
+<atom:link href="${FEED_BASE}/${name}" rel="self" type="application/rss+xml"/>
+<description>${xml(description)}</description>
+<language>en</language>
+<lastBuildDate>${rfc822(generatedAt)}</lastBuildDate>
+${items.sort((a, b) => b.at.localeCompare(a.at)).map((it) => `<item>
+<title>${xml(it.title)}</title>
+<link>${xml(it.link)}</link>
+<guid isPermaLink="false">${xml(it.guid)}</guid>
+<pubDate>${rfc822(it.at)}</pubDate>
+<description>${xml(it.html)}</description>
+</item>`).join('\n')}
+</channel>
+</rss>
+`;
+    const file = path.join(feedDir, name);
+    writeFileSync(`${file}.tmp`, body);
+    renameSync(`${file}.tmp`, file);
+  };
+  for (const d of details) {
+    const fips = new Set(d.countries.map((c) => c.fips));
+    const items = [summaryItem(d), ...incidentItems(events.filter((e) => fips.has(e.location.countryFips)), d.name)].filter((x): x is FeedItem => !!x);
+    writeFeed(`${d.id}.xml`, `${d.name} · IGRED Global Conflict Monitor`, `New summaries and incidents confirmed by several sources in ${d.name}.`, `https://map.igred.org/crisis/${d.id}/`, items);
+  }
+  writeFeed('all.xml', 'IGRED Global Conflict Monitor', 'New crisis summaries and incidents confirmed by several sources, across every crisis on the map.', 'https://map.igred.org/', [
+    ...details.map(summaryItem).filter((x): x is FeedItem => !!x),
+    ...incidentItems(events).slice(0, 100),
+  ]);
+  const keepFeeds = new Set(['all.xml', ...details.map((d) => `${d.id}.xml`)]);
+  for (const file of readdirSync(feedDir)) if (file.endsWith('.xml') && !keepFeeds.has(file)) unlinkSync(path.join(feedDir, file));
+
   /* the trade and energy layer, with the week's incidents near each point */
   const RADIUS_KM = 300;
   const week = events.filter((e) => nowRef - Date.parse(e.occurredAt) < 7 * DAY);
