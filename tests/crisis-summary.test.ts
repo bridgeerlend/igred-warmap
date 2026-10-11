@@ -18,8 +18,8 @@ const settings: SummarySettings = {
 };
 
 const good = {
-  en: 'Fighting continues across Kordofan and Darfur. A drone strike on a market in El Obeid killed 12 people. The army says it repelled an attack on Babanusa. The UN warns of famine in Darfur camps.',
-  nb: 'Kampene fortsetter i Kordofan og Darfur. Et droneangrep på et marked i El Obeid drepte 12 mennesker. Hæren sier den slo tilbake et angrep på Babanusa. FN advarer om hungersnød i leirene i Darfur.',
+  en: 'Fighting continues in Darfur. A drone strike on a market in El Obeid killed 12 people. The army says it repelled an attack on Babanusa. The UN warns of famine in Darfur camps.',
+  nb: 'Kampene fortsetter i Darfur. Et droneangrep på et marked i El Obeid drepte 12 mennesker. Hæren sier den slo tilbake et angrep på Babanusa. FN advarer om hungersnød i leirene i Darfur.',
 };
 
 function reply(body: unknown, status = 200) {
@@ -42,7 +42,7 @@ describe('the crisis summary guard', () => {
   });
 
   it('refuses what the status line already says, ranges, method talk and undated UCDP figures', () => {
-    const source = 'UCDP counted 4680 battle-related deaths in 2024.\nRSF drone strike kills 41 near the Ethiopian border\nArmy repels attack on Babanusa; 27 armed incidents';
+    const source = 'UCDP counted 4680 battle-related deaths in 2024.\nRSF drone strike kills 41 near the Ethiopian border\nArmy repels attack on Babanusa; 27 armed incidents\nFighting moves to Kordofan';
     const ok = 'Fighting has shifted to Kordofan. A drone strike killed 41 people near the Ethiopian border. The army says it repelled an attack on Babanusa.';
     const nb = 'Kampene har flyttet seg til Kordofan. Et droneangrep drepte 41 mennesker nær grensen til Etiopia. Hæren sier den slo tilbake et angrep på Babanusa.';
     expect(checkSummary(ok, nb, source, 110, [27, 23])).toEqual({ ok: true });
@@ -56,8 +56,21 @@ describe('the crisis summary guard', () => {
     expect(checkSummary(`${ok} Incidents rose by 23% this week.`, nb, `${source} 23`, 110, [23]).reason).toMatch(/repeats the status line's figure 23/);
   });
 
+  it('refuses names not in the sources, vague fates, commentary and a neighbouring crisis', () => {
+    const source = 'Ambush on contractors linked to Erik Prince in eastern Congo wounds ex-UFC fighter Tim Kennedy\nM23 rebels advance near Goma\nUCDP counted 1158 battle-related deaths in 2024.';
+    const base = 'Rebels of the M23 movement advanced near Goma. Contractors linked to Erik Prince were ambushed in eastern Congo, and Tim Kennedy was wounded.';
+    expect(checkEnglish(base, source, 110).ok).toBe(true);
+    expect(checkEnglish(`${base} Kinshasa responded with air strikes.`, source, 110).reason).toMatch(/the name "Kinshasa" is not in the sources/);
+    expect(checkEnglish(base.replace('was wounded', 'was killed or injured'), source, 110).reason).toMatch(/killed or injured/);
+    expect(checkEnglish(`${base} This underscores the role of private forces.`, source, 110).reason).toMatch(/commentary/);
+    expect(checkEnglish(`${base} The escalation marks a new phase.`, source, 110).reason).toMatch(/commentary/);
+    expect(checkEnglish('Fighting continues in Darfur. Clashes were also reported in South Sudan.', 'Fighting in Darfur\nClashes in South Sudan', 110, [], ['South Sudan']).reason)
+      .toMatch(/neighbouring crisis/);
+    expect(checkNorwegian('Kampene fortsetter. Dette understreker alvoret.', 'Fighting continues. Clashes follow.', 110).reason).toMatch(/commentary/);
+  });
+
   it('holds numbers written as words to the sources, by size', () => {
-    const source = 'Drone strike kills 41 near border\nTwelve aid workers detained\nThousands flee El Fasher';
+    const source = 'Drone strike kills 41 near border in Darfur\nTwelve aid workers detained\nThousands flee El Fasher';
     const base = 'Fighting continues in Darfur. Aid deliveries have stopped.';
     const nbBase = 'Kampene fortsetter i Darfur. Nødhjelpen har stanset.';
     expect(checkEnglish(`${base} Dozens were killed near the border.`, source, 110).ok).toBe(true);           // 41 is in the dozens

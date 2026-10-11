@@ -65,10 +65,12 @@ export interface SummaryInput {
   previous?: { text: string; writtenAt: string };
   /** The status line's own figures: the summary must not repeat them. */
   avoid?: number[];
+  /** Names that belong to a neighbouring crisis, not this one (Sudan is not South Sudan). */
+  notAbout?: string[];
 }
 
 /** Bumped when the brief to the model changes, so every crisis is rewritten once. */
-export const PROMPT_VERSION = 3;
+export const PROMPT_VERSION = 4;
 
 /** Norwegian writes 1 200 and 4,5; the guard compares digits, so thousands spaces are closed up. */
 export function normaliseNumbers(text: string): string {
@@ -173,14 +175,62 @@ function repeatsStatus(text: string, avoid: number[]): number | undefined {
 
 const METHOD = /\b(outlets?|medier|several sources|multiple sources|flere kilder|reported by|meldt av|incident monitor|hendelsesmonitor)\b/i;
 
+/** Commentary instead of facts: the summary reports, it does not interpret or narrate itself. */
+const COMMENTARY = /\b(highlight(s|ing|ed)?|underscor(e|es|ing|ed)|marks? a new phase|adds? a new dimension|since the (last|previous) (briefing|summary|update)|these developments|this development|signal(s|ling)? a|reflect(s|ing) a|represent(s|ing)? a|fremhever|understreker|siden forrige (orientering|oppdatering)|disse utviklingene|markerer en ny fase|tilfører en ny dimensjon)\b/i;
+
+/** "Killed or injured" about a named person: say which, as the sources do, or leave them out. */
+const VAGUE_FATE = /\b(killed or (injured|wounded)|(injured|wounded) or killed|drept eller såret|såret eller drept)\b/i;
+
+/** Ordinary words that open sentences in a conflict summary. */
+const STARTERS = new Set(['the', 'a', 'an', 'in', 'on', 'at', 'after', 'before', 'as', 'while', 'meanwhile', 'this', 'these', 'those',
+  'that', 'it', 'its', 'they', 'their', 'he', 'she', 'his', 'her', 'we', 'recent', 'fighting', 'clashes', 'violence', 'armed', 'rebels',
+  'government', 'forces', 'troops', 'officials', 'authorities', 'attacks', 'air', 'drone', 'drones', 'military', 'humanitarian', 'aid',
+  'talks', 'tensions', 'protests', 'several', 'many', 'dozens', 'hundreds', 'thousands', 'over', 'more', 'most', 'some', 'both',
+  'another', 'other', 'elsewhere', 'separately', 'also', 'since', 'despite', 'following', 'according', 'across', 'near', 'during',
+  'with', 'without', 'civilians', 'residents', 'people', 'shelling', 'strikes', 'airstrikes', 'militants', 'insurgents', 'security',
+  'police', 'gunmen', 'there', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'twelve', 'one', 'at', 'by',
+  'from', 'for', 'to', 'of', 'no', 'not', 'all', 'each', 'new', 'heavy', 'deadly', 'renewed', 'state', 'local', 'international']);
+
+const NOT_NAMES = new Set(['UCDP', 'UN', 'US', 'USA', 'EU', 'UK', 'World', 'Bank', 'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']);
+
+/**
+ * Every name in the English text — a capitalised word inside a sentence, or a run of them —
+ * must be in the material: a model that joins two stories puts a name where it does not
+ * belong. Forms of the same word ("Ethiopia", "Ethiopian") count as the same name.
+ */
+export function namesSupported(text: string, sourceText: string): { ok: boolean; reason?: string } {
+  const source = sourceText.toLowerCase();
+  const sourceWords = new Set(source.match(/[\p{L}]+/gu) ?? []);
+  const stem = (w: string) => w.toLowerCase().slice(0, Math.min(6, w.length));
+  const known = (w: string) => source.includes(w.toLowerCase()) || [...sourceWords].some((sw) => sw.length >= 4 && w.length >= 4 && stem(sw) === stem(w));
+  for (const sentence of text.split(/(?<=[.!?])\s+/)) {
+    const words = sentence.match(/[\p{L}][\p{L}'’.-]*/gu) ?? [];
+    words.forEach((raw, i) => {
+      const w = raw.replace(/['’]s$/, '').replace(/[.'’-]+$/, '');
+      if (!/^\p{Lu}/u.test(w) || NOT_NAMES.has(w)) return;
+      // The first word of a sentence is capitalised anyway: it is taken for a name only when it
+      // starts a run of names, or is not an ordinary English word.
+      if (i === 0 && !/^\p{Lu}/u.test(words[1] ?? '') && (STARTERS.has(w.toLowerCase()) || /(ing|ed|ion|ions|ers|ies|ly|ment|ments|ity|ness|ence|ance|al|es)$/i.test(w))) return;
+      if (!known(w)) throw new Error(w);
+    });
+  }
+  return { ok: true };
+}
+
 /** The English text: every figure and every number in words from the sources, and the house rules. */
-export function checkEnglish(en: string, sourceText: string, maxWords: number, avoid: number[] = []): { ok: boolean; reason?: string } {
+export function checkEnglish(en: string, sourceText: string, maxWords: number, avoid: number[] = [], notAbout: string[] = []): { ok: boolean; reason?: string } {
+  const offTopic = notAbout.find((n) => new RegExp(`\\b${n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(en));
+  if (offTopic) return { ok: false, reason: `about ${offTopic}, a neighbouring crisis` };
   const source = normaliseNumbers(sourceText);
   const plain = normaliseNumbers(en);
   const guard = guardDraft(plain, source, maxWords);
   if (!guard.ok) return guard;
   const words = wordsSupported(en, sourceText);
   if (!words.ok) return words;
+  try { namesSupported(en, sourceText); } catch (name) { return { ok: false, reason: `the name "${(name as Error).message}" is not in the sources` }; }
+  if (VAGUE_FATE.test(en)) return { ok: false, reason: '"killed or injured": say which' };
+  if (COMMENTARY.test(en)) return { ok: false, reason: `commentary instead of facts ("${COMMENTARY.exec(en)![0]}")` };
   const n = sentences(en);
   if (n < 2 || n > 6) return { ok: false, reason: `${n} sentences` };
   if (/INSUFFICIENT|as an ai|language model/i.test(en)) return { ok: false, reason: 'not a summary' };
@@ -207,6 +257,8 @@ export function checkNorwegian(nb: string, en: string, maxWords: number): { ok: 
   const b = numberSignature(nb, 'nb').join(' ');
   if (a !== b) return { ok: false, reason: `numbers differ from the English (${b || 'none'} vs ${a || 'none'})` };
   if (METHOD.test(nb)) return { ok: false, reason: 'talks about method, not events' };
+  if (VAGUE_FATE.test(nb)) return { ok: false, reason: '"drept eller såret": say which' };
+  if (COMMENTARY.test(nb)) return { ok: false, reason: `commentary instead of facts ("${COMMENTARY.exec(nb)![0]}")` };
   return { ok: true };
 }
 
@@ -238,6 +290,10 @@ function promptFor(input: SummaryInput, maxWords: number): string {
     '- A figure from UCDP or the World Bank always names its source and its year, e.g. "4,680 battle-related deaths in 2024, according to UCDP".',
     '- Give one figure and name who reported it; never a range such as "40-41".',
     '- Write about events, not about reporting: no sentences about outlets, sources or how many reported something.',
+    '- Make clear who did what to whom: name the attacker and the attacked, as the headlines do.',
+    '- A named person: say exactly whether they were killed or wounded, as the headlines say. Never "killed or injured" about a named person; if the headlines disagree or are unclear, leave the person out.',
+    '- Stay with this crisis. Events in a neighbouring country belong only if the headlines tie them directly to this crisis.',
+    '- No commentary or interpretation: no "highlighting", "underscores", "marks a new phase", "adds a new dimension", "these developments", "since the last briefing". The last sentence states a fact.',
     '- Do not speculate. Do not name the outlets in the headlines.',
     'If the material is too thin, reply {"en":"INSUFFICIENT"}.',
     'Reply with JSON only: {"en": "..."}',
@@ -255,7 +311,11 @@ function translationPrompt(en: string): string {
     en,
     '',
     'Rules:',
-    '- Natural, plain Norwegian as a Norwegian newspaper would write it; no anglicisms and no word-for-word renderings (write "droneangrep", not "dronstrike"; "glidebomber", not "glide-bombe").',
+    '- Translate; do not interpret. Add nothing, change no meaning, and keep the same subject and object in every sentence: who did what to whom stays exactly as in the English.',
+    '- Natural, plain Norwegian as a Norwegian newspaper would write it; no anglicisms and no word-for-word renderings. For example:',
+    '  "droneangrep", not "dronstrike"; "glidebomber", not "glide-bombe";',
+    '  "grensen mot Etiopia", not "Etiopi-grensen"; "drepte i kamper", not "dødsfall i kamprelaterte handlinger";',
+    '  "vold mellom folkegrupper", not "interkommunal vold"; "fordrevne" and "leirer for internt fordrevne", not "fordrivelsesleirer".',
     '- Use the established Norwegian form of place names where one exists (Jemen, Etiopia, Zaporizjzja, Kharkiv, Gaza, Khartoum, Darfur, Kordofan).',
     '- Keep every number exactly as in the English: the same figures, and a number written as a word stays a word. Write thousands with a space (75 767).',
     '- Add nothing and leave nothing out.',
@@ -393,7 +453,7 @@ export async function runSummaries(
     state.promptVersion = PROMPT_VERSION;
     const en = parseReply(reply.text, 'en');
     if (!en) { state.lastOutcome = `${provider.id}: unreadable reply`; log.push(`${input.id}: ${state.lastOutcome}`); continue; }
-    const check = checkEnglish(en, sourceTextOf(input), settings.maxWords, input.avoid ?? []);
+    const check = checkEnglish(en, sourceTextOf(input), settings.maxWords, input.avoid ?? [], input.notAbout ?? []);
     if (!check.ok) { state.lastOutcome = `rejected — en: ${check.reason}`; log.push(`${input.id}: ${state.lastOutcome}`); continue; }
 
     // 2. The Norwegian, translated from the approved English and held to the same numbers.

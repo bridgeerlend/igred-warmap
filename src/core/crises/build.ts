@@ -19,6 +19,8 @@ import { CATEGORY, COUNTRY, countryName, joinNames } from './names.js';
 interface CrisisDef {
   id: string; name: string; nameNb: string; short?: string; shortNb?: string; region: string; regionNb: string;
   fips: string[]; iso3: string[]; wikipedia?: string; query: string; terms: string;
+  /** Names of a neighbouring crisis the summary must not drift into. */
+  notAbout?: string[];
 }
 interface CrisesConfig {
   settings: {
@@ -672,6 +674,7 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
       headlines: chosen.map(({ title, url, publisher }) => ({ title, url, publisher })),
       ...(background?.extract ? { background: background.extract } : {}),
       ...(previous ? { previous: { text: previous.en, writtenAt: previous.writtenAt } } : {}),
+      notAbout: defs.find((x) => x.id === d.id)?.notAbout ?? [],
       avoid: [stats.last7d, stats.prev7d, stats.corroborated7d, ...(stats.change7dPct === null ? [] : [Math.round(Math.abs(stats.change7dPct))])],
     });
 
