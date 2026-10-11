@@ -1,0 +1,7058 @@
+{
+ "artifactVersion": 1,
+ "generatedAt": "2026-10-11T20:56:37.030Z",
+ "calendar": {
+  "fetchedAt": "2026-10-11T17:52:33.991Z",
+  "pages": [
+   {
+    "title": "2026 national electoral calendar",
+    "url": "https://en.wikipedia.org/wiki/2026_national_electoral_calendar"
+   },
+   {
+    "title": "2027 national electoral calendar",
+    "url": "https://en.wikipedia.org/wiki/2027_national_electoral_calendar"
+   }
+  ]
+ },
+ "countsThrough": "2026-10-11",
+ "method": {
+  "weights": {
+   "quality": 20,
+   "unrest": 15,
+   "press": 15,
+   "now": 25,
+   "close": 10,
+   "economy": 15
+  },
+  "levels": {
+   "$note": "Below elevated is low; from elevated, elevated; from high, high.",
+   "elevated": 35,
+   "high": 60
+  },
+  "scales": {
+   "$note": "How a raw figure becomes a risk from 0 to 100. Each is a straight line between the two ends, clamped.",
+   "marginPointsForZero": 20,
+   "turnoutForZero": 80,
+   "turnoutForHundred": 40,
+   "gdpPerPersonForZero": 50000,
+   "gdpPerPersonForHundred": 500,
+   "debtForHundred": 120,
+   "depreciationForHundred": 50,
+   "depreciationYears": 3
+  },
+  "unrest": {
+   "$note": "After an election: incidents in the first days after it against the same number of days before, from the GDELT counts. 'Unrest' when the count after is at least ratio times the count before, and at least minEvents.",
+   "days": 14,
+   "ratio": 1.5,
+   "minEvents": 10
+  },
+  "mapLayerDays": 90,
+  "indicators": [
+   "quality",
+   "unrest",
+   "press",
+   "now",
+   "close",
+   "economy"
+  ]
+ },
+ "sources": [
+  {
+   "id": "vdem",
+   "name": "V-Dem, clean elections index (v2xel_frefair)",
+   "page": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+   "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index.csv?useColumnShortNames=true",
+   "file": "vdem-v2xel-frefair.csv",
+   "license": "CC BY 4.0 (V-Dem, processed by Our World in Data)",
+   "edition": "V-Dem (2026), processed by Our World in Data on 17 March 2026",
+   "indicator": "quality",
+   "status": "ok",
+   "downloadedAt": "2026-10-11T17:49:30.590Z"
+  },
+  {
+   "id": "pei",
+   "name": "Electoral Integrity Project, Perceptions of Electoral Integrity (PEI 11.0)",
+   "page": "https://doi.org/10.7910/DVN/EDY2V0",
+   "url": "https://dataverse.harvard.edu/api/access/datafile/11632678",
+   "file": "pei-11-election.tab",
+   "license": "CC BY 4.0",
+   "edition": "PEI 11.0 (2025)",
+   "indicator": "quality",
+   "status": "ok",
+   "downloadedAt": "2026-10-11T17:49:31.814Z"
+  },
+  {
+   "id": "nelda",
+   "name": "NELDA, National Elections across Democracy and Autocracy",
+   "page": "https://nelda.co/",
+   "indicator": "unrest",
+   "status": "skipped",
+   "reason": "Downloads only after registering a name and an email address in a Google form."
+  },
+  {
+   "id": "ecav",
+   "name": "ECAV, Electoral Contention and Violence",
+   "page": "https://ecavdata.org/data-access/",
+   "indicator": "unrest",
+   "status": "skipped",
+   "reason": "Downloads only after registering a name and an email address in a Qualtrics survey."
+  },
+  {
+   "id": "rsf",
+   "name": "RSF, World Press Freedom Index 2026",
+   "page": "https://rsf.org/en/index",
+   "licenseUrl": "https://rsf.org/en/methodology-used-compiling-world-press-freedom-index-2026",
+   "indicator": "press",
+   "status": "skipped",
+   "reason": "Licence: RSF's terms (Creative Commons, attribution, no commercial use, no derivatives) allow sharing the Index with credit, but not modifying or adapting it without RSF's consent. Turning its score into a risk figure inside a composite score would be an adaptation, so it is not used."
+  },
+  {
+   "id": "fh",
+   "name": "Freedom House, Freedom in the World 2026 (global freedom score)",
+   "page": "https://freedomhouse.org/country/scores",
+   "url": "https://freedomhouse.org/country/scores",
+   "file": "freedom-house-2026.csv",
+   "license": "Noncommercial use permitted with citation (Freedom House content permissions)",
+   "edition": "2026",
+   "indicator": "press",
+   "status": "ok",
+   "downloadedAt": "2026-10-11T17:51:48.114Z",
+   "licenseUrl": "https://freedomhouse.org/about-us/content-permissions"
+  },
+  {
+   "id": "idea",
+   "name": "International IDEA, Voter Turnout Database",
+   "page": "https://www.idea.int/data-tools/data/voter-turnout-database",
+   "indicator": "close",
+   "status": "skipped",
+   "reason": "No file to download without the site's interactive export; turnout and margin come from the previous election's Wikipedia article instead."
+  },
+  {
+   "id": "geonames",
+   "name": "GeoNames, country codes",
+   "page": "https://www.geonames.org/",
+   "url": "https://download.geonames.org/export/dump/countryInfo.txt",
+   "file": "geonames-countryInfo.txt",
+   "license": "CC BY 4.0",
+   "edition": "current",
+   "status": "ok",
+   "downloadedAt": "2026-10-11T17:49:32.290Z"
+  }
+ ],
+ "worldBank": {
+  "fetchedAt": "2026-10-11T17:50:49.956Z",
+  "url": "https://data.worldbank.org/"
+ },
+ "elections": [
+  {
+   "id": "2026-08-12-cok-2026-cook-islands-general-election",
+   "date": "2026-08-12",
+   "status": "held",
+   "country": {
+    "iso2": "CK",
+    "iso3": "COK",
+    "fips": "CW",
+    "en": "Cook Islands",
+    "nb": "Cookøyene"
+   },
+   "center": [
+    -159.79,
+    -21.22
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Parliament",
+   "wiki": {
+    "title": "2026 Cook Islands general election",
+    "url": "https://en.wikipedia.org/wiki/2026_Cook_Islands_general_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": {
+    "days": 14,
+    "complete": true,
+    "after": 2,
+    "before": 2,
+    "unrest": false
+   },
+   "score": null,
+   "level": null,
+   "coverage": 35,
+   "missing": [
+    "quality",
+    "unrest",
+    "press",
+    "economy"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "now",
+     "risk": 20.8,
+     "parts": [
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -50,
+       "unit": "pct",
+       "risk": 20.8
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 14.5,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2022 Cook Islands general election",
+       "url": "https://en.wikipedia.org/wiki/2022_Cook_Islands_general_election",
+       "year": "2022",
+       "raw": 17.1,
+       "unit": "points",
+       "risk": 14.5,
+       "meta": {
+        "article": "2022 Cook Islands general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": null,
+     "parts": []
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-08-13-zmb-2026-zambian-general-election",
+   "date": "2026-08-13",
+   "status": "held",
+   "country": {
+    "iso2": "ZM",
+    "iso3": "ZMB",
+    "fips": "ZA",
+    "en": "Zambia",
+    "nb": "Zambia"
+   },
+   "center": [
+    27.77,
+    -13.46
+   ],
+   "types": [
+    "president",
+    "parliament"
+   ],
+   "label": "President and Parliament",
+   "wiki": {
+    "title": "2026 Zambian general election",
+    "url": "https://en.wikipedia.org/wiki/2026_Zambian_general_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": {
+    "days": 14,
+    "complete": true,
+    "after": 22,
+    "before": 9,
+    "unrest": true
+   },
+   "score": 42,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 58.3,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.5,
+       "unit": "index",
+       "risk": 53.9
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2021-08-12",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2021",
+       "raw": 37.2,
+       "unit": "of100",
+       "risk": 62.8,
+       "meta": {
+        "office": "presidential",
+        "date": "2021-08-12"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 47,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 53,
+       "unit": "of100",
+       "risk": 47
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 15.5,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 8,
+       "unit": "incidents",
+       "risk": 25.8
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -75.8,
+       "unit": "pct",
+       "risk": 0
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 11.7,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2021 Zambian general election",
+       "url": "https://en.wikipedia.org/wiki/2021_Zambian_general_election",
+       "year": "2021",
+       "raw": 20.3,
+       "unit": "points",
+       "risk": 0,
+       "meta": {
+        "article": "2021 Zambian general election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2021 Zambian general election",
+       "url": "https://en.wikipedia.org/wiki/2021_Zambian_general_election",
+       "year": "2021",
+       "raw": 70.6,
+       "unit": "pct",
+       "risk": 23.5,
+       "meta": {
+        "article": "2021 Zambian general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 79,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=ZM",
+       "year": "2025",
+       "raw": 1317.9,
+       "unit": "usd",
+       "risk": 79
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=ZM",
+       "year": "2021",
+       "raw": 71.4,
+       "unit": "pct",
+       "risk": 59.5
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=ZM",
+       "year": "2025",
+       "raw": 49.2,
+       "unit": "pct",
+       "risk": 98.5,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-08-23-kaz-2026-kazakh-legislative-election",
+   "date": "2026-08-23",
+   "status": "held",
+   "country": {
+    "iso2": "KZ",
+    "iso3": "KAZ",
+    "fips": "KZ",
+    "en": "Kazakhstan",
+    "nb": "Kasakhstan"
+   },
+   "center": [
+    67.29,
+    48.16
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Kurultai",
+   "wiki": {
+    "title": "2026 Kazakh legislative election",
+    "url": "https://en.wikipedia.org/wiki/2026_Kazakh_legislative_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": {
+    "days": 14,
+    "complete": true,
+    "after": 7,
+    "before": 5,
+    "unrest": false
+   },
+   "score": 40,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 64.8,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.3,
+       "unit": "index",
+       "risk": 66.1
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2023-03-19",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2023",
+       "raw": 36.5,
+       "unit": "of100",
+       "risk": 63.5,
+       "meta": {
+        "office": "legislative",
+        "date": "2023-03-19"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 77,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 23,
+       "unit": "of100",
+       "risk": 77
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 11.1,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 5,
+       "unit": "incidents",
+       "risk": 18.5
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -58.3,
+       "unit": "pct",
+       "risk": 0
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 32.2,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2023 Kazakh legislative election",
+       "url": "https://en.wikipedia.org/wiki/2023_Kazakh_legislative_election",
+       "year": "2023",
+       "raw": 43,
+       "unit": "points",
+       "risk": 0,
+       "meta": {
+        "article": "2023 Kazakh legislative election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2023 Kazakh legislative election",
+       "url": "https://en.wikipedia.org/wiki/2023_Kazakh_legislative_election",
+       "year": "2023",
+       "raw": 54.2,
+       "unit": "pct",
+       "risk": 64.5,
+       "meta": {
+        "article": "2023 Kazakh legislative election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 23.5,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=KZ",
+       "year": "2025",
+       "raw": 14692.1,
+       "unit": "usd",
+       "risk": 26.6
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=KZ",
+       "year": "2023",
+       "raw": 20.9,
+       "unit": "pct",
+       "risk": 17.4
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=KZ",
+       "year": "2025",
+       "raw": 13.2,
+       "unit": "pct",
+       "risk": 26.5,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-08-29-isl-2026-icelandic-european-union-membership-negotia",
+   "date": "2026-08-29",
+   "status": "held",
+   "country": {
+    "iso2": "IS",
+    "iso3": "ISL",
+    "fips": "IC",
+    "en": "Iceland",
+    "nb": "Island"
+   },
+   "center": [
+    -18.57,
+    65
+   ],
+   "types": [
+    "referendum"
+   ],
+   "label": "Referendum",
+   "wiki": {
+    "title": "2026 Icelandic European Union membership negotiations referendum",
+    "url": "https://en.wikipedia.org/wiki/2026_Icelandic_European_Union_membership_negotiations_referendum"
+   },
+   "why": null,
+   "result": null,
+   "unrest": {
+    "days": 14,
+    "complete": true,
+    "after": 2,
+    "before": 2,
+    "unrest": false
+   },
+   "score": 12,
+   "level": "low",
+   "coverage": 75,
+   "missing": [
+    "unrest",
+    "close"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 20.1,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.9,
+       "unit": "index",
+       "risk": 7.1
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2021-09-25",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2021",
+       "raw": 66.8,
+       "unit": "of100",
+       "risk": 33.2,
+       "meta": {
+        "office": "legislative",
+        "date": "2021-09-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 5,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 95,
+       "unit": "of100",
+       "risk": 5
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 3.4,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 0,
+       "unit": "incidents",
+       "risk": 5.7
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -100,
+       "unit": "pct",
+       "risk": 0
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "economy",
+     "risk": 22.2,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=IS",
+       "year": "2025",
+       "raw": 98323.5,
+       "unit": "usd",
+       "risk": 0
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=IS",
+       "year": "2023",
+       "raw": 80.1,
+       "unit": "pct",
+       "risk": 66.7
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=IS",
+       "year": "2025",
+       "raw": -5.1,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-08-30-gnb-2026-guinea-bissau-constitutional-referendum",
+   "date": "2026-08-30",
+   "status": "held",
+   "country": {
+    "iso2": "GW",
+    "iso3": "GNB",
+    "fips": "PU",
+    "en": "Guinea-Bissau",
+    "nb": "Guinea-Bissau"
+   },
+   "center": [
+    -14.92,
+    12.06
+   ],
+   "types": [
+    "referendum"
+   ],
+   "label": "Constitutional referendum",
+   "wiki": {
+    "title": "2026 Guinea-Bissau constitutional referendum",
+    "url": "https://en.wikipedia.org/wiki/2026_Guinea-Bissau_constitutional_referendum"
+   },
+   "why": null,
+   "result": null,
+   "unrest": {
+    "days": 14,
+    "complete": true,
+    "after": 3,
+    "before": 1,
+    "unrest": false
+   },
+   "score": 46,
+   "level": "elevated",
+   "coverage": 75,
+   "missing": [
+    "unrest",
+    "close"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 72.2,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0,
+       "unit": "index",
+       "risk": 100
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2023-06-04",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2023",
+       "raw": 55.6,
+       "unit": "of100",
+       "risk": 44.4,
+       "meta": {
+        "office": "legislative",
+        "date": "2023-06-04"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 67,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 33,
+       "unit": "of100",
+       "risk": 67
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 16.1,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 1,
+       "unit": "incidents",
+       "risk": 26.8
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -75,
+       "unit": "pct",
+       "risk": 0
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "economy",
+     "risk": 41.2,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=GW",
+       "year": "2025",
+       "raw": 1123.8,
+       "unit": "usd",
+       "risk": 82.4
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=GW",
+       "year": "2025",
+       "raw": -6.7,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-09-13-swe-2026-swedish-general-election",
+   "date": "2026-09-13",
+   "status": "held",
+   "country": {
+    "iso2": "SE",
+    "iso3": "SWE",
+    "fips": "SW",
+    "en": "Sweden",
+    "nb": "Sverige"
+   },
+   "center": [
+    16.73,
+    62.83
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Parliament",
+   "wiki": {
+    "title": "2026 Swedish general election",
+    "url": "https://en.wikipedia.org/wiki/2026_Swedish_general_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": {
+    "days": 14,
+    "complete": true,
+    "after": 13,
+    "before": 4,
+    "unrest": true
+   },
+   "score": 17,
+   "level": "low",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 10.1,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.9,
+       "unit": "index",
+       "risk": 5.5
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2022-09-11",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2022",
+       "raw": 85.4,
+       "unit": "of100",
+       "risk": 14.6,
+       "meta": {
+        "office": "legislative",
+        "date": "2022-09-11"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 1,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 99,
+       "unit": "of100",
+       "risk": 1
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 38.3,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 19,
+       "unit": "incidents",
+       "risk": 63.8
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -58.7,
+       "unit": "pct",
+       "risk": 0
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 25.5,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2022 Swedish general election",
+       "url": "https://en.wikipedia.org/wiki/2022_Swedish_general_election",
+       "year": "2022",
+       "raw": 9.8,
+       "unit": "points",
+       "risk": 51,
+       "meta": {
+        "article": "2022 Swedish general election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2022 Swedish general election",
+       "url": "https://en.wikipedia.org/wiki/2022_Swedish_general_election",
+       "year": "2022",
+       "raw": 84.2,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "article": "2022 Swedish general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 0,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=SE",
+       "year": "2025",
+       "raw": 63133.2,
+       "unit": "usd",
+       "risk": 0
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=SE",
+       "year": "2025",
+       "raw": -2.9,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-09-18-rus-2026-russian-legislative-election",
+   "date": "2026-09-18",
+   "dateEnd": "2026-09-20",
+   "status": "held",
+   "country": {
+    "iso2": "RU",
+    "iso3": "RUS",
+    "fips": "RS",
+    "en": "Russia",
+    "nb": "Russland"
+   },
+   "center": [
+    37.6,
+    55.7
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "State Duma",
+   "wiki": {
+    "title": "2026 Russian legislative election",
+    "url": "https://en.wikipedia.org/wiki/2026_Russian_legislative_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": {
+    "days": 14,
+    "complete": true,
+    "after": 123,
+    "before": 160,
+    "unrest": false
+   },
+   "score": 55,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 60.1,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.1,
+       "unit": "index",
+       "risk": 86.5
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2018-03-18",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2018",
+       "raw": 66.3,
+       "unit": "of100",
+       "risk": 33.7,
+       "meta": {
+        "office": "presidential",
+        "date": "2018-03-18"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 88,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 12,
+       "unit": "of100",
+       "risk": 88
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 55.3,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 289,
+       "unit": "incidents",
+       "risk": 66.4
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -14.7,
+       "unit": "pct",
+       "risk": 38.5
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 35.4,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2021 Russian legislative election",
+       "url": "https://en.wikipedia.org/wiki/2021_Russian_legislative_election",
+       "year": "2021",
+       "raw": 30.9,
+       "unit": "points",
+       "risk": 0,
+       "meta": {
+        "article": "2021 Russian legislative election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2021 Russian legislative election",
+       "url": "https://en.wikipedia.org/wiki/2021_Russian_legislative_election",
+       "year": "2021",
+       "raw": 51.7,
+       "unit": "pct",
+       "risk": 70.7,
+       "meta": {
+        "article": "2021 Russian legislative election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 27.3,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=RU",
+       "year": "2025",
+       "raw": 17546.6,
+       "unit": "usd",
+       "risk": 22.7
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=RU",
+       "year": "2024",
+       "raw": 17.9,
+       "unit": "pct",
+       "risk": 14.9
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=RU",
+       "year": "2025",
+       "raw": 22.1,
+       "unit": "pct",
+       "risk": 44.3,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": {
+    "id": "ukraine",
+    "en": "Russia's war in Ukraine",
+    "nb": "Krigen i Ukraina"
+   }
+  },
+  {
+   "id": "2026-09-23-mar-2026-moroccan-general-election",
+   "date": "2026-09-23",
+   "status": "held",
+   "country": {
+    "iso2": "MA",
+    "iso3": "MAR",
+    "fips": "MO",
+    "en": "Morocco",
+    "nb": "Marokko"
+   },
+   "center": [
+    -8.46,
+    29.84
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "House of Representatives",
+   "wiki": {
+    "title": "2026 Moroccan general election",
+    "url": "https://en.wikipedia.org/wiki/2026_Moroccan_general_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": {
+    "days": 14,
+    "complete": true,
+    "after": 7,
+    "before": 16,
+    "unrest": false
+   },
+   "score": 39,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 36.9,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.5,
+       "unit": "index",
+       "risk": 54.5
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2021-09-08",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2021",
+       "raw": 80.6,
+       "unit": "of100",
+       "risk": 19.4,
+       "meta": {
+        "office": "legislative",
+        "date": "2021-09-08"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 63,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 37,
+       "unit": "of100",
+       "risk": 63
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 18,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 21,
+       "unit": "incidents",
+       "risk": 29.9
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -52.3,
+       "unit": "pct",
+       "risk": 0
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 72.9,
+     "parts": [
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2021 Moroccan general election",
+       "url": "https://en.wikipedia.org/wiki/2021_Moroccan_general_election",
+       "year": "2021",
+       "raw": 50.9,
+       "unit": "pct",
+       "risk": 72.9,
+       "meta": {
+        "article": "2021 Moroccan general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 31.4,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=MA",
+       "year": "2025",
+       "raw": 4672.5,
+       "unit": "usd",
+       "risk": 51.5
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=MA",
+       "year": "2011",
+       "raw": 51.2,
+       "unit": "pct",
+       "risk": 42.7
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=MA",
+       "year": "2025",
+       "raw": -8,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-09-24-imn-2026-manx-general-election",
+   "date": "2026-09-24",
+   "status": "held",
+   "country": {
+    "iso2": "IM",
+    "iso3": "IMN",
+    "fips": "IM",
+    "en": "Isle of Man",
+    "nb": "Man"
+   },
+   "center": [
+    -4.54,
+    54.22
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "House of Keys",
+   "wiki": {
+    "title": "2026 Manx general election",
+    "url": "https://en.wikipedia.org/wiki/2026_Manx_general_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": {
+    "days": 14,
+    "complete": true,
+    "after": 0,
+    "before": 0,
+    "unrest": false
+   },
+   "score": 25,
+   "level": "low",
+   "coverage": 50,
+   "missing": [
+    "quality",
+    "unrest",
+    "press"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "now",
+     "risk": 50,
+     "parts": [
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 0,
+       "unit": "pct",
+       "risk": 50
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 0,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2021 Manx general election",
+       "url": "https://en.wikipedia.org/wiki/2021_Manx_general_election",
+       "year": "2021",
+       "raw": 81.2,
+       "unit": "points",
+       "risk": 0,
+       "meta": {
+        "article": "2021 Manx general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 0,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=IM",
+       "year": "2023",
+       "raw": 90015.2,
+       "unit": "usd",
+       "risk": 0
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=IM",
+       "year": "2025",
+       "raw": -6.4,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-09-27-stp-2026-sao-tomean-parliamentary-election",
+   "date": "2026-09-27",
+   "status": "held",
+   "country": {
+    "iso2": "ST",
+    "iso3": "STP",
+    "fips": "TP",
+    "en": "Sao Tome and Principe",
+    "nb": "São Tomé og Príncipe"
+   },
+   "center": [
+    6.61,
+    0.24
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Parliament",
+   "wiki": {
+    "title": "2026 São Toméan parliamentary election",
+    "url": "https://en.wikipedia.org/wiki/2026_S%C3%A3o_Tom%C3%A9an_parliamentary_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": {
+    "days": 14,
+    "complete": true,
+    "after": 0,
+    "before": 0,
+    "unrest": false
+   },
+   "score": 28,
+   "level": "low",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 42.5,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.8,
+       "unit": "index",
+       "risk": 24.7
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2016-08-07",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2016",
+       "raw": 39.8,
+       "unit": "of100",
+       "risk": 60.2,
+       "meta": {
+        "office": "presidential",
+        "date": "2016-08-07"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 16,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 84,
+       "unit": "of100",
+       "risk": 16
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 23.4,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 0,
+       "unit": "incidents",
+       "risk": 5.7
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 0,
+       "unit": "pct",
+       "risk": 50
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 32.8,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2022 São Toméan parliamentary election",
+       "url": "https://en.wikipedia.org/wiki/2022_S%C3%A3o_Tom%C3%A9an_parliamentary_election",
+       "year": "2022",
+       "raw": 14.2,
+       "unit": "points",
+       "risk": 29,
+       "meta": {
+        "article": "2022 São Toméan parliamentary election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2022 São Toméan parliamentary election",
+       "url": "https://en.wikipedia.org/wiki/2022_S%C3%A3o_Tom%C3%A9an_parliamentary_election",
+       "year": "2022",
+       "raw": 65.4,
+       "unit": "pct",
+       "risk": 36.6,
+       "meta": {
+        "article": "2022 São Toméan parliamentary election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 27.2,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=ST",
+       "year": "2025",
+       "raw": 4084.4,
+       "unit": "usd",
+       "risk": 54.4
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=ST",
+       "year": "2025",
+       "raw": -6.6,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-09-27-che-2026-swiss-referendums",
+   "date": "2026-09-27",
+   "status": "held",
+   "country": {
+    "iso2": "CH",
+    "iso3": "CHE",
+    "fips": "SZ",
+    "en": "Switzerland",
+    "nb": "Sveits"
+   },
+   "center": [
+    8.21,
+    46.8
+   ],
+   "types": [
+    "referendum"
+   ],
+   "label": "Referendums",
+   "wiki": {
+    "title": "2026 Swiss referendums",
+    "url": "https://en.wikipedia.org/wiki/2026_Swiss_referendums"
+   },
+   "why": null,
+   "result": null,
+   "unrest": {
+    "days": 14,
+    "complete": true,
+    "after": 15,
+    "before": 15,
+    "unrest": false
+   },
+   "score": 22,
+   "level": "low",
+   "coverage": 75,
+   "missing": [
+    "unrest",
+    "close"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 7,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.9,
+       "unit": "index",
+       "risk": 5.8
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2023-10-22",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2023",
+       "raw": 91.8,
+       "unit": "of100",
+       "risk": 8.2,
+       "meta": {
+        "office": "legislative",
+        "date": "2023-10-22"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 4,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 96,
+       "unit": "of100",
+       "risk": 4
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 53.7,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 32,
+       "unit": "incidents",
+       "risk": 75.3
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -33.3,
+       "unit": "pct",
+       "risk": 21.5
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "economy",
+     "risk": 6.2,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=CH",
+       "year": "2025",
+       "raw": 114769,
+       "unit": "usd",
+       "risk": 0
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=CH",
+       "year": "2024",
+       "raw": 22.3,
+       "unit": "pct",
+       "risk": 18.6
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=CH",
+       "year": "2025",
+       "raw": -12.9,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-10-03-lva-2026-latvian-parliamentary-election",
+   "date": "2026-10-03",
+   "status": "held",
+   "country": {
+    "iso2": "LV",
+    "iso3": "LVA",
+    "fips": "LG",
+    "en": "Latvia",
+    "nb": "Latvia"
+   },
+   "center": [
+    24.91,
+    56.85
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Parliament",
+   "wiki": {
+    "title": "2026 Latvian parliamentary election",
+    "url": "https://en.wikipedia.org/wiki/2026_Latvian_parliamentary_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": {
+    "days": 14,
+    "complete": false,
+    "after": 4,
+    "before": 4,
+    "unrest": false
+   },
+   "score": 29,
+   "level": "low",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 17.6,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.9,
+       "unit": "index",
+       "risk": 8
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2022-10-01",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2022",
+       "raw": 72.7,
+       "unit": "of100",
+       "risk": 27.3,
+       "meta": {
+        "office": "legislative",
+        "date": "2022-10-01"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 11,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 89,
+       "unit": "of100",
+       "risk": 11
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 48.9,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 9,
+       "unit": "incidents",
+       "risk": 81.5
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -60.9,
+       "unit": "pct",
+       "risk": 0
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 59.2,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2022 Latvian parliamentary election",
+       "url": "https://en.wikipedia.org/wiki/2022_Latvian_parliamentary_election",
+       "year": "2022",
+       "raw": 6.6,
+       "unit": "points",
+       "risk": 67,
+       "meta": {
+        "article": "2022 Latvian parliamentary election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2022 Latvian parliamentary election",
+       "url": "https://en.wikipedia.org/wiki/2022_Latvian_parliamentary_election",
+       "year": "2022",
+       "raw": 59.4,
+       "unit": "pct",
+       "risk": 51.5,
+       "meta": {
+        "article": "2022 Latvian parliamentary election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 6.7,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=LV",
+       "year": "2025",
+       "raw": 26312,
+       "unit": "usd",
+       "risk": 13.9
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=LV",
+       "year": "1994",
+       "raw": 7.4,
+       "unit": "pct",
+       "risk": 6.2
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=LV",
+       "year": "2025",
+       "raw": -6.8,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-10-04-bih-2026-bosnian-general-election",
+   "date": "2026-10-04",
+   "status": "held",
+   "country": {
+    "iso2": "BA",
+    "iso3": "BIH",
+    "fips": "BK",
+    "en": "Bosnia and Herzegovina",
+    "nb": "Bosnia-Hercegovina"
+   },
+   "center": [
+    17.77,
+    44.17
+   ],
+   "types": [
+    "president",
+    "parliament"
+   ],
+   "label": "Presidency and House of Representatives",
+   "wiki": {
+    "title": "2026 Bosnian general election",
+    "url": "https://en.wikipedia.org/wiki/2026_Bosnian_general_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": {
+    "days": 14,
+    "complete": false,
+    "after": 1,
+    "before": 1,
+    "unrest": false
+   },
+   "score": 34,
+   "level": "low",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 49.1,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.5,
+       "unit": "index",
+       "risk": 48.9
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2022-10-02",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2022",
+       "raw": 50.8,
+       "unit": "of100",
+       "risk": 49.2,
+       "meta": {
+        "office": "presidential",
+        "date": "2022-10-02"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 46,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 54,
+       "unit": "of100",
+       "risk": 46
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 19.8,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 2,
+       "unit": "incidents",
+       "risk": 33.1
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -92,
+       "unit": "pct",
+       "risk": 0
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 35.7,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2022 Bosnian general election",
+       "url": "https://en.wikipedia.org/wiki/2022_Bosnian_general_election",
+       "year": "2022",
+       "raw": 20.1,
+       "unit": "points",
+       "risk": 0,
+       "meta": {
+        "article": "2022 Bosnian general election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2022 Bosnian general election",
+       "url": "https://en.wikipedia.org/wiki/2022_Bosnian_general_election",
+       "year": "2022",
+       "raw": 51.5,
+       "unit": "pct",
+       "risk": 71.4,
+       "meta": {
+        "article": "2022 Bosnian general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 22.4,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=BA",
+       "year": "2025",
+       "raw": 10381.8,
+       "unit": "usd",
+       "risk": 34.1
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=BA",
+       "year": "2024",
+       "raw": 39.7,
+       "unit": "pct",
+       "risk": 33.1
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=BA",
+       "year": "2025",
+       "raw": -6.6,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-10-04-bra-2026-brazilian-general-election-r1",
+   "date": "2026-10-04",
+   "status": "held",
+   "country": {
+    "iso2": "BR",
+    "iso3": "BRA",
+    "fips": "BR",
+    "en": "Brazil",
+    "nb": "Brasil"
+   },
+   "center": [
+    -51.9,
+    -14.2
+   ],
+   "types": [
+    "president",
+    "parliament"
+   ],
+   "round": 1,
+   "label": "President (1st round), Chamber of Deputies and Senate",
+   "wiki": {
+    "title": "2026 Brazilian general election",
+    "url": "https://en.wikipedia.org/wiki/2026_Brazilian_general_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": {
+    "days": 14,
+    "complete": false,
+    "after": 14,
+    "before": 16,
+    "unrest": false
+   },
+   "score": 33,
+   "level": "low",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 26.7,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.8,
+       "unit": "index",
+       "risk": 16.2
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2022-10-30",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2022",
+       "raw": 62.8,
+       "unit": "of100",
+       "risk": 37.2,
+       "meta": {
+        "office": "presidential",
+        "date": "2022-10-30"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 27,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 73,
+       "unit": "of100",
+       "risk": 27
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 32.8,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 40,
+       "unit": "incidents",
+       "risk": 16.4
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 11.1,
+       "unit": "pct",
+       "risk": 57.4
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 46.7,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2022 Brazilian general election",
+       "url": "https://en.wikipedia.org/wiki/2022_Brazilian_general_election",
+       "year": "2022",
+       "raw": 1.8,
+       "unit": "points",
+       "risk": 91,
+       "meta": {
+        "article": "2022 Brazilian general election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2022 Brazilian general election",
+       "url": "https://en.wikipedia.org/wiki/2022_Brazilian_general_election",
+       "year": "2022",
+       "raw": 79.1,
+       "unit": "pct",
+       "risk": 2.4,
+       "meta": {
+        "article": "2022 Brazilian general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 39.4,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=BR",
+       "year": "2025",
+       "raw": 10713.3,
+       "unit": "usd",
+       "risk": 33.5
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=BR",
+       "year": "2024",
+       "raw": 81.9,
+       "unit": "pct",
+       "risk": 68.2
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=BR",
+       "year": "2025",
+       "raw": 8.2,
+       "unit": "pct",
+       "risk": 16.4,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-10-09-cze-2026-czech-senate-election-r1",
+   "date": "2026-10-09",
+   "dateEnd": "2026-10-10",
+   "status": "held",
+   "country": {
+    "iso2": "CZ",
+    "iso3": "CZE",
+    "fips": "EZ",
+    "en": "Czechia",
+    "nb": "Tsjekkia"
+   },
+   "center": [
+    15.31,
+    49.73
+   ],
+   "types": [
+    "parliament"
+   ],
+   "round": 1,
+   "label": "Senate (1st round)",
+   "wiki": {
+    "title": "2026 Czech Senate election",
+    "url": "https://en.wikipedia.org/wiki/2026_Czech_Senate_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": {
+    "days": 14,
+    "complete": false,
+    "after": 0,
+    "before": 5,
+    "unrest": false
+   },
+   "score": 29,
+   "level": "low",
+   "coverage": 75,
+   "missing": [
+    "unrest",
+    "close"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 14,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.9,
+       "unit": "index",
+       "risk": 6
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2024-09-21",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2024",
+       "raw": 78.1,
+       "unit": "of100",
+       "risk": 21.9,
+       "meta": {
+        "office": "legislative",
+        "date": "2024-09-21"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 5,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 95,
+       "unit": "of100",
+       "risk": 5
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 69.5,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 14,
+       "unit": "incidents",
+       "risk": 52.3
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 100,
+       "unit": "pct",
+       "risk": 95.3
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "economy",
+     "risk": 6.3,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=CZ",
+       "year": "2025",
+       "raw": 35917.3,
+       "unit": "usd",
+       "risk": 7.2
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=CZ",
+       "year": "1994",
+       "raw": 14,
+       "unit": "pct",
+       "risk": 11.7
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=CZ",
+       "year": "2025",
+       "raw": -6.3,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-10-16-cze-2026-czech-senate-election-r2",
+   "date": "2026-10-16",
+   "dateEnd": "2026-10-17",
+   "status": "upcoming",
+   "country": {
+    "iso2": "CZ",
+    "iso3": "CZE",
+    "fips": "EZ",
+    "en": "Czechia",
+    "nb": "Tsjekkia"
+   },
+   "center": [
+    15.31,
+    49.73
+   ],
+   "types": [
+    "parliament"
+   ],
+   "round": 2,
+   "label": "Senate (2nd round)",
+   "wiki": {
+    "title": "2026 Czech Senate election",
+    "url": "https://en.wikipedia.org/wiki/2026_Czech_Senate_election"
+   },
+   "why": {
+    "en": "Voters will elect a Senator by simple majority in districts requiring a second‑round run‑off.",
+    "nb": "Velgere vil velge en senator med enkel flertall i distrikter som krever en andre runde."
+   },
+   "result": null,
+   "unrest": null,
+   "score": 29,
+   "level": "low",
+   "coverage": 75,
+   "missing": [
+    "unrest",
+    "close"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 14,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.9,
+       "unit": "index",
+       "risk": 6
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2024-09-21",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2024",
+       "raw": 78.1,
+       "unit": "of100",
+       "risk": 21.9,
+       "meta": {
+        "office": "legislative",
+        "date": "2024-09-21"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 5,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 95,
+       "unit": "of100",
+       "risk": 5
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 69.5,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 14,
+       "unit": "incidents",
+       "risk": 52.3
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 100,
+       "unit": "pct",
+       "risk": 95.3
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "economy",
+     "risk": 6.3,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=CZ",
+       "year": "2025",
+       "raw": 35917.3,
+       "unit": "usd",
+       "risk": 7.2
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=CZ",
+       "year": "1994",
+       "raw": 14,
+       "unit": "pct",
+       "risk": 11.7
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=CZ",
+       "year": "2025",
+       "raw": -6.3,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-10-25-bra-2026-brazilian-general-election-r2",
+   "date": "2026-10-25",
+   "status": "upcoming",
+   "country": {
+    "iso2": "BR",
+    "iso3": "BRA",
+    "fips": "BR",
+    "en": "Brazil",
+    "nb": "Brasil"
+   },
+   "center": [
+    -51.9,
+    -14.2
+   ],
+   "types": [
+    "president"
+   ],
+   "round": 2,
+   "label": "President (2nd round)",
+   "wiki": {
+    "title": "2026 Brazilian general election",
+    "url": "https://en.wikipedia.org/wiki/2026_Brazilian_general_election"
+   },
+   "why": {
+    "en": "The election will determine Brazil’s president, vice president, members of the National Congress, governors and other officials.",
+    "nb": "Valget vil bestemme presidenten i Brasil, visepresidenten, medlemmer av nasjonalkongressen, guvernører og andre embetsmenn."
+   },
+   "result": null,
+   "unrest": null,
+   "score": 33,
+   "level": "low",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 26.7,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.8,
+       "unit": "index",
+       "risk": 16.2
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2022-10-30",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2022",
+       "raw": 62.8,
+       "unit": "of100",
+       "risk": 37.2,
+       "meta": {
+        "office": "presidential",
+        "date": "2022-10-30"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 27,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 73,
+       "unit": "of100",
+       "risk": 27
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 32.8,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 40,
+       "unit": "incidents",
+       "risk": 16.4
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 11.1,
+       "unit": "pct",
+       "risk": 57.4
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 46.7,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2022 Brazilian general election",
+       "url": "https://en.wikipedia.org/wiki/2022_Brazilian_general_election",
+       "year": "2022",
+       "raw": 1.8,
+       "unit": "points",
+       "risk": 91,
+       "meta": {
+        "article": "2022 Brazilian general election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2022 Brazilian general election",
+       "url": "https://en.wikipedia.org/wiki/2022_Brazilian_general_election",
+       "year": "2022",
+       "raw": 79.1,
+       "unit": "pct",
+       "risk": 2.4,
+       "meta": {
+        "article": "2022 Brazilian general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 39.4,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=BR",
+       "year": "2025",
+       "raw": 10713.3,
+       "unit": "usd",
+       "risk": 33.5
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=BR",
+       "year": "2024",
+       "raw": 81.9,
+       "unit": "pct",
+       "risk": 68.2
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=BR",
+       "year": "2025",
+       "raw": 8.2,
+       "unit": "pct",
+       "risk": 16.4,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-10-25-bgr-2026-bulgarian-presidential-election",
+   "date": "2026-10-25",
+   "status": "upcoming",
+   "country": {
+    "iso2": "BG",
+    "iso3": "BGR",
+    "fips": "BU",
+    "en": "Bulgaria",
+    "nb": "Bulgaria"
+   },
+   "center": [
+    25.22,
+    42.77
+   ],
+   "types": [
+    "president"
+   ],
+   "label": "President",
+   "wiki": {
+    "title": "2026 Bulgarian presidential election",
+    "url": "https://en.wikipedia.org/wiki/2026_Bulgarian_presidential_election"
+   },
+   "why": {
+    "en": "The election will decide Bulgaria’s president, with incumbent Iliana Iotova seeking a full term.",
+    "nb": "Valget vil avgjøre presidenten i Bulgaria, med sittende Iliana Iotova som søker en full periode."
+   },
+   "result": null,
+   "unrest": null,
+   "score": 41,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 46.6,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.6,
+       "unit": "index",
+       "risk": 36
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2024-10-27",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2024",
+       "raw": 42.9,
+       "unit": "of100",
+       "risk": 57.1,
+       "meta": {
+        "office": "legislative",
+        "date": "2024-10-27"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 26,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 74,
+       "unit": "of100",
+       "risk": 26
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 59.8,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 25,
+       "unit": "incidents",
+       "risk": 77.9
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -21.9,
+       "unit": "pct",
+       "risk": 32.8
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 49.4,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2021 Bulgarian general election",
+       "url": "https://en.wikipedia.org/wiki/2021_Bulgarian_general_election",
+       "year": "2021",
+       "raw": 34.9,
+       "unit": "points",
+       "risk": 0,
+       "meta": {
+        "article": "2021 Bulgarian general election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2021 Bulgarian general election",
+       "url": "https://en.wikipedia.org/wiki/2021_Bulgarian_general_election",
+       "year": "2021",
+       "raw": 40.5,
+       "unit": "pct",
+       "risk": 98.8,
+       "meta": {
+        "article": "2021 Bulgarian general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 9.8,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=BG",
+       "year": "2025",
+       "raw": 20328.2,
+       "unit": "usd",
+       "risk": 19.5
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=BG",
+       "year": "2025",
+       "raw": -6.7,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-10-25-srb-2026-serbian-parliamentary-election",
+   "date": "2026-10-25",
+   "status": "upcoming",
+   "country": {
+    "iso2": "RS",
+    "iso3": "SRB",
+    "fips": "RI",
+    "en": "Serbia",
+    "nb": "Serbia"
+   },
+   "center": [
+    20.79,
+    44.22
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Parliament",
+   "wiki": {
+    "title": "2026 Serbian parliamentary election",
+    "url": "https://en.wikipedia.org/wiki/2026_Serbian_parliamentary_election"
+   },
+   "why": {
+    "en": "Early elections will choose members of Serbia’s National Assembly.",
+    "nb": "Tidlige valg vil velge medlemmer av Serbias nasjonalforsamling."
+   },
+   "result": null,
+   "unrest": null,
+   "score": 37,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 62.1,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.2,
+       "unit": "index",
+       "risk": 78.8
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2017-04-02",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2017",
+       "raw": 54.6,
+       "unit": "of100",
+       "risk": 45.4,
+       "meta": {
+        "office": "presidential",
+        "date": "2017-04-02"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 47,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 53,
+       "unit": "of100",
+       "risk": 47
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 29.6,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 6,
+       "unit": "incidents",
+       "risk": 41.9
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -45.5,
+       "unit": "pct",
+       "risk": 11.1
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 26.5,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2023 Serbian parliamentary election",
+       "url": "https://en.wikipedia.org/wiki/2023_Serbian_parliamentary_election",
+       "year": "2023",
+       "raw": 23.7,
+       "unit": "points",
+       "risk": 0,
+       "meta": {
+        "article": "2023 Serbian parliamentary election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2023 Serbian parliamentary election",
+       "url": "https://en.wikipedia.org/wiki/2023_Serbian_parliamentary_election",
+       "year": "2023",
+       "raw": 58.8,
+       "unit": "pct",
+       "risk": 53.1,
+       "meta": {
+        "article": "2023 Serbian parliamentary election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 12.9,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=RS",
+       "year": "2025",
+       "raw": 15262,
+       "unit": "usd",
+       "risk": 25.8
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=RS",
+       "year": "2025",
+       "raw": -6.9,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-10-27-isr-2026-israeli-legislative-election",
+   "date": "2026-10-27",
+   "status": "upcoming",
+   "country": {
+    "iso2": "IL",
+    "iso3": "ISR",
+    "fips": "IS",
+    "en": "Israel",
+    "nb": "Israel"
+   },
+   "center": [
+    34.9,
+    31.5
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Knesset",
+   "wiki": {
+    "title": "2026 Israeli legislative election",
+    "url": "https://en.wikipedia.org/wiki/2026_Israeli_legislative_election"
+   },
+   "why": {
+    "en": "The vote will fill all 120 Knesset seats and shape the coalition that follows Prime Minister Benjamin Netanyahu’s 37th government.",
+    "nb": "Stemmene vil fylle alle 120 seter i Knesset og forme koalisjonen som følger statsminister Benjamin Netanyahus 37. regjering."
+   },
+   "result": null,
+   "unrest": null,
+   "score": 41,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 12.7,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.9,
+       "unit": "index",
+       "risk": 12.7
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2013-01-22",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2013",
+       "raw": 87.2,
+       "unit": "of100",
+       "risk": 12.8,
+       "meta": {
+        "office": "legislative",
+        "date": "2013-01-22"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 27,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 73,
+       "unit": "of100",
+       "risk": 27
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 77,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 300,
+       "unit": "incidents",
+       "risk": 97.7
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -5.4,
+       "unit": "pct",
+       "risk": 46
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 47.7,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2022 Israeli legislative election",
+       "url": "https://en.wikipedia.org/wiki/2022_Israeli_legislative_election",
+       "year": "2022",
+       "raw": 5.6,
+       "unit": "points",
+       "risk": 72,
+       "meta": {
+        "article": "2022 Israeli legislative election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2022 Israeli legislative election",
+       "url": "https://en.wikipedia.org/wiki/2022_Israeli_legislative_election",
+       "year": "2022",
+       "raw": 70.6,
+       "unit": "pct",
+       "risk": 23.4,
+       "meta": {
+        "article": "2022 Israeli legislative election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 26.4,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=IL",
+       "year": "2025",
+       "raw": 60336.8,
+       "unit": "usd",
+       "risk": 0
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=IL",
+       "year": "1999",
+       "raw": 88.3,
+       "unit": "pct",
+       "risk": 73.6
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=IL",
+       "year": "2025",
+       "raw": 2.7,
+       "unit": "pct",
+       "risk": 5.5,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": {
+    "id": "gaza",
+    "en": "Israel, Gaza and the West Bank",
+    "nb": "Israel, Gaza og Vestbredden"
+   }
+  },
+  {
+   "id": "2026-11-03-usa-2026-united-states-house-of-representatives-elec",
+   "date": "2026-11-03",
+   "status": "upcoming",
+   "country": {
+    "iso2": "US",
+    "iso3": "USA",
+    "fips": "US",
+    "en": "United States",
+    "nb": "USA"
+   },
+   "center": [
+    -99.14,
+    39.53
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "House of Representatives",
+   "wiki": {
+    "title": "2026 United States House of Representatives elections",
+    "url": "https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections"
+   },
+   "why": {
+    "en": "The election will choose representatives from all 435 congressional districts and five non‑voting delegates as part of the 2026 midterm elections during President Donald Trump’s second nonconsecutive term.",
+    "nb": "Valget vil velge representanter fra alle 435 kongressdistrikter og fem ikke stemmegivende delegater som en del av midtvalgene i 2026 under president Donald Trumps andre ikke påfølgende periode."
+   },
+   "result": null,
+   "unrest": null,
+   "score": 48,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 27.8,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.9,
+       "unit": "index",
+       "risk": 9.8
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2024-11-05",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2024",
+       "raw": 54.2,
+       "unit": "of100",
+       "risk": 45.8,
+       "meta": {
+        "office": "presidential",
+        "date": "2024-11-05"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 19,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 81,
+       "unit": "of100",
+       "risk": 19
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 74.6,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 3364,
+       "unit": "incidents",
+       "risk": 93
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -4,
+       "unit": "pct",
+       "risk": 47.1
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 87,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2024 United States House of Representatives elections",
+       "url": "https://en.wikipedia.org/wiki/2024_United_States_House_of_Representatives_elections",
+       "year": "2024",
+       "raw": 2.6,
+       "unit": "points",
+       "risk": 87,
+       "meta": {
+        "article": "2024 United States House of Representatives elections"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 32.2,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=US",
+       "year": "2025",
+       "raw": 90026.5,
+       "unit": "usd",
+       "risk": 0
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=US",
+       "year": "2024",
+       "raw": 115.8,
+       "unit": "pct",
+       "risk": 96.5
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=US",
+       "year": "2025",
+       "raw": 0,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-11-05-grd-2026-grenadian-general-election",
+   "date": "2026-11-05",
+   "status": "upcoming",
+   "country": {
+    "iso2": "GD",
+    "iso3": "GRD",
+    "fips": "GJ",
+    "en": "Grenada",
+    "nb": "Grenada"
+   },
+   "center": [
+    -61.68,
+    12.12
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Parliament",
+   "wiki": {
+    "title": "2026 Grenadian general election",
+    "url": "https://en.wikipedia.org/wiki/2026_Grenadian_general_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": null,
+   "score": 35,
+   "level": "elevated",
+   "coverage": 65,
+   "missing": [
+    "quality",
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 11,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 89,
+       "unit": "of100",
+       "risk": 11
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 53.9,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 1,
+       "unit": "incidents",
+       "risk": 89.8
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -66.7,
+       "unit": "pct",
+       "risk": 0
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 51.9,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2022 Grenadian general election",
+       "url": "https://en.wikipedia.org/wiki/2022_Grenadian_general_election",
+       "year": "2022",
+       "raw": 4.1,
+       "unit": "points",
+       "risk": 79.5,
+       "meta": {
+        "article": "2022 Grenadian general election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2022 Grenadian general election",
+       "url": "https://en.wikipedia.org/wiki/2022_Grenadian_general_election",
+       "year": "2022",
+       "raw": 70.3,
+       "unit": "pct",
+       "risk": 24.2,
+       "meta": {
+        "article": "2022 Grenadian general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 15.4,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=GD",
+       "year": "2025",
+       "raw": 12106.9,
+       "unit": "usd",
+       "risk": 30.8
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=GD",
+       "year": "2025",
+       "raw": 0,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-11-07-nzl-2026-new-zealand-general-election",
+   "date": "2026-11-07",
+   "status": "upcoming",
+   "country": {
+    "iso2": "NZ",
+    "iso3": "NZL",
+    "fips": "NZ",
+    "en": "New Zealand",
+    "nb": "New Zealand"
+   },
+   "center": [
+    170.53,
+    -43.97
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Parliament",
+   "wiki": {
+    "title": "2026 New Zealand general election",
+    "url": "https://en.wikipedia.org/wiki/2026_New_Zealand_general_election"
+   },
+   "why": {
+    "en": "The election will choose 120 members of New Zealand’s House of Representatives using the mixed‑member proportional system.",
+    "nb": "Valget vil velge 120 medlemmer av New Zealands representanthus med bruk av blandet medlems proporsjonalt system."
+   },
+   "result": null,
+   "unrest": null,
+   "score": 35,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 17.2,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 1,
+       "unit": "index",
+       "risk": 4.6
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2023-10-14",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2023",
+       "raw": 70.3,
+       "unit": "of100",
+       "risk": 29.7,
+       "meta": {
+        "office": "legislative",
+        "date": "2023-10-14"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 1,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 99,
+       "unit": "of100",
+       "risk": 1
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 75.9,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 61,
+       "unit": "incidents",
+       "risk": 94
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -1.6,
+       "unit": "pct",
+       "risk": 48.8
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 44,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2023 New Zealand general election",
+       "url": "https://en.wikipedia.org/wiki/2023_New_Zealand_general_election",
+       "year": "2023",
+       "raw": 11.2,
+       "unit": "points",
+       "risk": 44,
+       "meta": {
+        "article": "2023 New Zealand general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 20.5,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=NZ",
+       "year": "2025",
+       "raw": 49591,
+       "unit": "usd",
+       "risk": 0.2
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=NZ",
+       "year": "2024",
+       "raw": 52,
+       "unit": "pct",
+       "risk": 43.3
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=NZ",
+       "year": "2025",
+       "raw": 9.1,
+       "unit": "pct",
+       "risk": 18.1,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-11-15-cpv-2026-cape-verdean-presidential-election",
+   "date": "2026-11-15",
+   "status": "upcoming",
+   "country": {
+    "iso2": "CV",
+    "iso3": "CPV",
+    "fips": "CV",
+    "en": "Cabo Verde",
+    "nb": "Kapp Verde"
+   },
+   "center": [
+    -23.64,
+    15.08
+   ],
+   "types": [
+    "president"
+   ],
+   "label": "President",
+   "wiki": {
+    "title": "2026 Cape Verdean presidential election",
+    "url": "https://en.wikipedia.org/wiki/2026_Cape_Verdean_presidential_election"
+   },
+   "why": {
+    "en": "It decides who will be president of Cape Verde.",
+    "nb": "Den avgjør hvem som blir president i Kapp Verde."
+   },
+   "result": null,
+   "unrest": null,
+   "score": 31,
+   "level": "low",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 24.1,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.8,
+       "unit": "index",
+       "risk": 16.4
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2021-10-17",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2021",
+       "raw": 68.1,
+       "unit": "of100",
+       "risk": 31.9,
+       "meta": {
+        "office": "presidential",
+        "date": "2021-10-17"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 8,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 92,
+       "unit": "of100",
+       "risk": 8
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 39.2,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 1,
+       "unit": "incidents",
+       "risk": 65.4
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -66.7,
+       "unit": "pct",
+       "risk": 0
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 66.5,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2021 Cape Verdean presidential election",
+       "url": "https://en.wikipedia.org/wiki/2021_Cape_Verdean_presidential_election",
+       "year": "2021",
+       "raw": 9.4,
+       "unit": "points",
+       "risk": 53,
+       "meta": {
+        "article": "2021 Cape Verdean presidential election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2021 Cape Verdean presidential election",
+       "url": "https://en.wikipedia.org/wiki/2021_Cape_Verdean_presidential_election",
+       "year": "2021",
+       "raw": 48,
+       "unit": "pct",
+       "risk": 80,
+       "meta": {
+        "article": "2021 Cape Verdean presidential election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 23.4,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=CV",
+       "year": "2025",
+       "raw": 5796.5,
+       "unit": "usd",
+       "risk": 46.8
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=CV",
+       "year": "2025",
+       "raw": -6.7,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-11-29-esp-2026-spanish-general-election",
+   "date": "2026-11-29",
+   "status": "upcoming",
+   "country": {
+    "iso2": "ES",
+    "iso3": "ESP",
+    "fips": "SP",
+    "en": "Spain",
+    "nb": "Spania"
+   },
+   "center": [
+    -3.56,
+    40.4
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Senate and Congress of Deputies",
+   "wiki": {
+    "title": "2026 Spanish general election",
+    "url": "https://en.wikipedia.org/wiki/2026_Spanish_general_election"
+   },
+   "why": {
+    "en": "It decides the composition of Spain's Congress of Deputies and Senate.",
+    "nb": "Den avgjør sammensetningen av Spanias kongress av representanter og senat."
+   },
+   "result": null,
+   "unrest": null,
+   "score": 39,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 13.7,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 1,
+       "unit": "index",
+       "risk": 4.4
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2023-07-23",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2023",
+       "raw": 77,
+       "unit": "of100",
+       "risk": 23,
+       "meta": {
+        "office": "legislative",
+        "date": "2023-07-23"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 9,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 91,
+       "unit": "of100",
+       "risk": 9
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 59,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 79,
+       "unit": "incidents",
+       "risk": 61.2
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 8.2,
+       "unit": "pct",
+       "risk": 55.6
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 93,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2023 Spanish general election",
+       "url": "https://en.wikipedia.org/wiki/2023_Spanish_general_election",
+       "year": "2023",
+       "raw": 1.4,
+       "unit": "points",
+       "risk": 93,
+       "meta": {
+        "article": "2023 Spanish general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 31.2,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=ES",
+       "year": "2025",
+       "raw": 38627.2,
+       "unit": "usd",
+       "risk": 5.6
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=ES",
+       "year": "2024",
+       "raw": 105.6,
+       "unit": "pct",
+       "risk": 88
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=ES",
+       "year": "2025",
+       "raw": -6.8,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-11-29-che-2026-swiss-referendums",
+   "date": "2026-11-29",
+   "status": "upcoming",
+   "country": {
+    "iso2": "CH",
+    "iso3": "CHE",
+    "fips": "SZ",
+    "en": "Switzerland",
+    "nb": "Sveits"
+   },
+   "center": [
+    8.21,
+    46.8
+   ],
+   "types": [
+    "referendum"
+   ],
+   "label": "Referendums",
+   "wiki": {
+    "title": "2026 Swiss referendums",
+    "url": "https://en.wikipedia.org/wiki/2026_Swiss_referendums"
+   },
+   "why": null,
+   "result": null,
+   "unrest": null,
+   "score": 22,
+   "level": "low",
+   "coverage": 75,
+   "missing": [
+    "unrest",
+    "close"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 7,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.9,
+       "unit": "index",
+       "risk": 5.8
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2023-10-22",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2023",
+       "raw": 91.8,
+       "unit": "of100",
+       "risk": 8.2,
+       "meta": {
+        "office": "legislative",
+        "date": "2023-10-22"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 4,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 96,
+       "unit": "of100",
+       "risk": 4
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 53.7,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 32,
+       "unit": "incidents",
+       "risk": 75.3
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -33.3,
+       "unit": "pct",
+       "risk": 21.5
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "economy",
+     "risk": 6.2,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=CH",
+       "year": "2025",
+       "raw": 114769,
+       "unit": "usd",
+       "risk": 0
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=CH",
+       "year": "2024",
+       "raw": 22.3,
+       "unit": "pct",
+       "risk": 18.6
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=CH",
+       "year": "2025",
+       "raw": -12.9,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-12-05-gmb-2026-gambian-presidential-election",
+   "date": "2026-12-05",
+   "status": "upcoming",
+   "country": {
+    "iso2": "GM",
+    "iso3": "GMB",
+    "fips": "GA",
+    "en": "Gambia",
+    "nb": "Gambia"
+   },
+   "center": [
+    -15.4,
+    13.45
+   ],
+   "types": [
+    "president"
+   ],
+   "label": "President",
+   "wiki": {
+    "title": "2026 Gambian presidential election",
+    "url": "https://en.wikipedia.org/wiki/2026_Gambian_presidential_election"
+   },
+   "why": {
+    "en": "It decides the next president of the Gambia.",
+    "nb": "Den avgjør Gambias neste president."
+   },
+   "result": null,
+   "unrest": null,
+   "score": 47,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 30.9,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.8,
+       "unit": "index",
+       "risk": 22.3
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2021-12-04",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2021",
+       "raw": 60.5,
+       "unit": "of100",
+       "risk": 39.5,
+       "meta": {
+        "office": "presidential",
+        "date": "2021-12-04"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 49,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 51,
+       "unit": "of100",
+       "risk": 49
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 60.6,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 11,
+       "unit": "incidents",
+       "risk": 78.4
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -21.4,
+       "unit": "pct",
+       "risk": 33.9
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 0,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2021 Gambian presidential election",
+       "url": "https://en.wikipedia.org/wiki/2021_Gambian_presidential_election",
+       "year": "2021",
+       "raw": 25.5,
+       "unit": "points",
+       "risk": 0,
+       "meta": {
+        "article": "2021 Gambian presidential election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2021 Gambian presidential election",
+       "url": "https://en.wikipedia.org/wiki/2021_Gambian_presidential_election",
+       "year": "2021",
+       "raw": 89.3,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "article": "2021 Gambian presidential election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 73.2,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=GM",
+       "year": "2025",
+       "raw": 919.1,
+       "unit": "usd",
+       "risk": 86.8
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=GM",
+       "year": "2025",
+       "raw": 29.8,
+       "unit": "pct",
+       "risk": 59.6,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-12-09-fji-2026-fijian-constitutional-referendum",
+   "date": "2026-12-09",
+   "status": "upcoming",
+   "country": {
+    "iso2": "FJ",
+    "iso3": "FJI",
+    "fips": "FJ",
+    "en": "Fiji",
+    "nb": "Fiji"
+   },
+   "center": [
+    177.97,
+    -17.82
+   ],
+   "types": [
+    "referendum"
+   ],
+   "label": "Constitutional referendum",
+   "wiki": {
+    "title": "2026 Fijian constitutional referendum",
+    "url": "https://en.wikipedia.org/wiki/2026_Fijian_constitutional_referendum"
+   },
+   "why": {
+    "en": "It decides whether the draft new Constitution is approved in Fiji.",
+    "nb": "Den avgjør om det foreløpige nye grunnlovforslaget godkjennes i Fiji."
+   },
+   "result": null,
+   "unrest": null,
+   "score": 47,
+   "level": "elevated",
+   "coverage": 75,
+   "missing": [
+    "unrest",
+    "close"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 55.9,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.5,
+       "unit": "index",
+       "risk": 46
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2018-11-14",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2018",
+       "raw": 34.2,
+       "unit": "of100",
+       "risk": 65.8,
+       "meta": {
+        "office": "legislative",
+        "date": "2018-11-14"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 28,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 72,
+       "unit": "of100",
+       "risk": 28
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 63.5,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 11,
+       "unit": "incidents",
+       "risk": 94.5
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -38.9,
+       "unit": "pct",
+       "risk": 16.9
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "economy",
+     "risk": 27.7,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=FJ",
+       "year": "2025",
+       "raw": 6642,
+       "unit": "usd",
+       "risk": 43.8
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=FJ",
+       "year": "1994",
+       "raw": 36.6,
+       "unit": "pct",
+       "risk": 30.5
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=FJ",
+       "year": "2025",
+       "raw": 4.4,
+       "unit": "pct",
+       "risk": 8.9,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2026-12-22-ssd-2026-south-sudanese-general-election",
+   "date": "2026-12-22",
+   "status": "upcoming",
+   "country": {
+    "iso2": "SS",
+    "iso3": "SSD",
+    "fips": "OD",
+    "en": "South Sudan",
+    "nb": "Sør-Sudan"
+   },
+   "center": [
+    31.3,
+    7
+   ],
+   "types": [
+    "president",
+    "parliament"
+   ],
+   "label": "President, Assembly and Council of States",
+   "wiki": {
+    "title": "2026 South Sudanese general election",
+    "url": "https://en.wikipedia.org/wiki/2026_South_Sudanese_general_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": null,
+   "score": 71,
+   "level": "high",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 100,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0,
+       "unit": "index",
+       "risk": 100
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 100,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 0,
+       "unit": "of100",
+       "risk": 100
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 35.8,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 19,
+       "unit": "incidents",
+       "risk": 59.6
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -51.3,
+       "unit": "pct",
+       "risk": 0
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 22.5,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2010 Southern Sudanese general election",
+       "url": "https://en.wikipedia.org/wiki/2010_Southern_Sudanese_general_election",
+       "year": "2010",
+       "raw": 86,
+       "unit": "points",
+       "risk": 0,
+       "meta": {
+        "article": "2010 Southern Sudanese general election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2010 Southern Sudanese general election",
+       "url": "https://en.wikipedia.org/wiki/2010_Southern_Sudanese_general_election",
+       "year": "2010",
+       "raw": 62,
+       "unit": "pct",
+       "risk": 45.1,
+       "meta": {
+        "article": "2010 Southern Sudanese general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 91.6,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=SS",
+       "year": "2015",
+       "raw": 1080.1,
+       "unit": "usd",
+       "risk": 83.3
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2021 to 2024",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=SS",
+       "year": "2024",
+       "raw": 606.1,
+       "unit": "pct",
+       "risk": 100,
+       "meta": {
+        "from": "2021",
+        "to": "2024"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": {
+    "id": "south-sudan",
+    "en": "South Sudan",
+    "nb": "Sør-Sudan"
+   }
+  },
+  {
+   "id": "2027-01-16-nga-2027-nigerian-general-election",
+   "date": "2027-01-16",
+   "status": "upcoming",
+   "country": {
+    "iso2": "NG",
+    "iso3": "NGA",
+    "fips": "NI",
+    "en": "Nigeria",
+    "nb": "Nigeria"
+   },
+   "center": [
+    8.7,
+    9.1
+   ],
+   "types": [
+    "president",
+    "parliament"
+   ],
+   "label": "President, Senate and House of Representatives",
+   "wiki": {
+    "title": "2027 Nigerian general election",
+    "url": "https://en.wikipedia.org/wiki/2027_Nigerian_general_election"
+   },
+   "why": {
+    "en": "It decides Nigeria's president, vice president, Senate and House of Representatives.",
+    "nb": "Den avgjør Nigerias president, visepresident, senat og representantenes hus."
+   },
+   "result": null,
+   "unrest": null,
+   "score": 66,
+   "level": "high",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 60.1,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.4,
+       "unit": "index",
+       "risk": 64.5
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2023-02-25",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2023",
+       "raw": 44.4,
+       "unit": "of100",
+       "risk": 55.6,
+       "meta": {
+        "office": "presidential",
+        "date": "2023-02-25"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 56,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 44,
+       "unit": "of100",
+       "risk": 56
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 56.5,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 447,
+       "unit": "incidents",
+       "risk": 64.8
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -8,
+       "unit": "pct",
+       "risk": 44
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 81.3,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2023 Nigerian general election",
+       "url": "https://en.wikipedia.org/wiki/2023_Nigerian_general_election",
+       "year": "2023",
+       "raw": 7.5,
+       "unit": "points",
+       "risk": 62.5,
+       "meta": {
+        "article": "2023 Nigerian general election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2023 Nigerian general election",
+       "url": "https://en.wikipedia.org/wiki/2023_Nigerian_general_election",
+       "year": "2023",
+       "raw": 26.7,
+       "unit": "pct",
+       "risk": 100,
+       "meta": {
+        "article": "2023 Nigerian general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 90.3,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=NG",
+       "year": "2025",
+       "raw": 1224.3,
+       "unit": "usd",
+       "risk": 80.6
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=NG",
+       "year": "2025",
+       "raw": 256.4,
+       "unit": "pct",
+       "risk": 100,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": {
+    "id": "nigeria",
+    "en": "Nigeria",
+    "nb": "Nigeria"
+   }
+  },
+  {
+   "id": "2027-01-27-kgz-2027-kyrgyz-presidential-election",
+   "date": "2027-01-27",
+   "status": "upcoming",
+   "country": {
+    "iso2": "KG",
+    "iso3": "KGZ",
+    "fips": "KG",
+    "en": "Kyrgyzstan",
+    "nb": "Kirgisistan"
+   },
+   "center": [
+    74.53,
+    41.46
+   ],
+   "types": [
+    "president"
+   ],
+   "label": "President",
+   "wiki": {
+    "title": "2027 Kyrgyz presidential election",
+    "url": "https://en.wikipedia.org/wiki/2027_Kyrgyz_presidential_election"
+   },
+   "why": {
+    "en": "It decides the president of Kyrgyzstan.",
+    "nb": "Den avgjør presidenten i Kirgisistan."
+   },
+   "result": null,
+   "unrest": null,
+   "score": 55,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 61,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.4,
+       "unit": "index",
+       "risk": 57.4
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2021-11-28",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2021",
+       "raw": 35.4,
+       "unit": "of100",
+       "risk": 64.6,
+       "meta": {
+        "office": "legislative",
+        "date": "2021-11-28"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 75,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 25,
+       "unit": "of100",
+       "risk": 75
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 54.7,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 7,
+       "unit": "incidents",
+       "risk": 44
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 40,
+       "unit": "pct",
+       "risk": 70.8
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 50,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2021 Kyrgyz presidential election",
+       "url": "https://en.wikipedia.org/wiki/2021_Kyrgyz_presidential_election",
+       "year": "2021",
+       "raw": 73,
+       "unit": "points",
+       "risk": 0,
+       "meta": {
+        "article": "2021 Kyrgyz presidential election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2021 Kyrgyz presidential election",
+       "url": "https://en.wikipedia.org/wiki/2021_Kyrgyz_presidential_election",
+       "year": "2021",
+       "raw": 39.2,
+       "unit": "pct",
+       "risk": 100,
+       "meta": {
+        "article": "2021 Kyrgyz presidential election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 33.5,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=KG",
+       "year": "2025",
+       "raw": 3081,
+       "unit": "usd",
+       "risk": 60.5
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=KG",
+       "year": "2024",
+       "raw": 38.7,
+       "unit": "pct",
+       "risk": 32.3
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=KG",
+       "year": "2025",
+       "raw": 3.9,
+       "unit": "pct",
+       "risk": 7.7,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2027-02-28-slv-2027-salvadoran-presidential-election",
+   "date": "2027-02-28",
+   "status": "upcoming",
+   "country": {
+    "iso2": "SV",
+    "iso3": "SLV",
+    "fips": "ES",
+    "en": "El Salvador",
+    "nb": "El Salvador"
+   },
+   "center": [
+    -88.87,
+    13.74
+   ],
+   "types": [
+    "president"
+   ],
+   "label": "President",
+   "wiki": {
+    "title": "2027 Salvadoran presidential election",
+    "url": "https://en.wikipedia.org/wiki/2027_Salvadoran_presidential_election"
+   },
+   "why": {
+    "en": "The election will determine the president and legislative assembly under new rules that remove term limits and extend presidential terms to six years.",
+    "nb": null
+   },
+   "result": null,
+   "unrest": null,
+   "score": 40,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 69,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.3,
+       "unit": "index",
+       "risk": 69.3
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2024-02-04",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2024",
+       "raw": 31.4,
+       "unit": "of100",
+       "risk": 68.6,
+       "meta": {
+        "office": "presidential",
+        "date": "2024-02-04"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 58,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 42,
+       "unit": "of100",
+       "risk": 58
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 3.4,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 0,
+       "unit": "incidents",
+       "risk": 5.7
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -100,
+       "unit": "pct",
+       "risk": 0
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 34.3,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2024 Salvadoran presidential election",
+       "url": "https://en.wikipedia.org/wiki/2024_Salvadoran_presidential_election",
+       "year": "2024",
+       "raw": 78.3,
+       "unit": "points",
+       "risk": 0,
+       "meta": {
+        "article": "2024 Salvadoran presidential election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2024 Salvadoran presidential election",
+       "url": "https://en.wikipedia.org/wiki/2024_Salvadoran_presidential_election",
+       "year": "2024",
+       "raw": 52.6,
+       "unit": "pct",
+       "risk": 68.5,
+       "meta": {
+        "article": "2024 Salvadoran presidential election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 45.4,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=SV",
+       "year": "2025",
+       "raw": 5766.7,
+       "unit": "usd",
+       "risk": 46.9
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=SV",
+       "year": "2024",
+       "raw": 107.3,
+       "unit": "pct",
+       "risk": 89.4
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=SV",
+       "year": "2025",
+       "raw": 0,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2027-03-02-fsm-2027-micronesian-general-election",
+   "date": "2027-03-02",
+   "status": "upcoming",
+   "country": {
+    "iso2": "FM",
+    "iso3": "FSM",
+    "fips": "FM",
+    "en": "Micronesia",
+    "nb": "Mikronesiaføderasjonen"
+   },
+   "center": [
+    158.23,
+    6.89
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Parliament",
+   "wiki": {
+    "title": "2027 Micronesian general election",
+    "url": "https://en.wikipedia.org/wiki/2027_Micronesian_general_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": null,
+   "score": 20,
+   "level": "low",
+   "coverage": 55,
+   "missing": [
+    "quality",
+    "unrest",
+    "close"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 8,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 92,
+       "unit": "of100",
+       "risk": 8
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 23.4,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 0,
+       "unit": "incidents",
+       "risk": 5.7
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 0,
+       "unit": "pct",
+       "risk": 50
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "economy",
+     "risk": 25.3,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=FM",
+       "year": "2025",
+       "raw": 4414,
+       "unit": "usd",
+       "risk": 52.7
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=FM",
+       "year": "2020",
+       "raw": 27.8,
+       "unit": "pct",
+       "risk": 23.2
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=FM",
+       "year": "2025",
+       "raw": 0,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2027-04-10-gmb-2027-gambian-parliamentary-election",
+   "date": "2027-04-10",
+   "status": "upcoming",
+   "country": {
+    "iso2": "GM",
+    "iso3": "GMB",
+    "fips": "GA",
+    "en": "Gambia",
+    "nb": "Gambia"
+   },
+   "center": [
+    -15.4,
+    13.45
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Parliament",
+   "wiki": {
+    "title": "2027 Gambian parliamentary election",
+    "url": "https://en.wikipedia.org/wiki/2027_Gambian_parliamentary_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": null,
+   "score": 56,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 30.9,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.8,
+       "unit": "index",
+       "risk": 22.3
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2021-12-04",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2021",
+       "raw": 60.5,
+       "unit": "of100",
+       "risk": 39.5,
+       "meta": {
+        "office": "presidential",
+        "date": "2021-12-04"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 49,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 51,
+       "unit": "of100",
+       "risk": 49
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 60.6,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 11,
+       "unit": "incidents",
+       "risk": 78.4
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -21.4,
+       "unit": "pct",
+       "risk": 33.9
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 83,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2022 Gambian parliamentary election",
+       "url": "https://en.wikipedia.org/wiki/2022_Gambian_parliamentary_election",
+       "year": "2022",
+       "raw": 1.2,
+       "unit": "points",
+       "risk": 94,
+       "meta": {
+        "article": "2022 Gambian parliamentary election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2022 Gambian parliamentary election",
+       "url": "https://en.wikipedia.org/wiki/2022_Gambian_parliamentary_election",
+       "year": "2022",
+       "raw": 51.2,
+       "unit": "pct",
+       "risk": 72,
+       "meta": {
+        "article": "2022 Gambian parliamentary election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 73.2,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=GM",
+       "year": "2025",
+       "raw": 919.1,
+       "unit": "usd",
+       "risk": 86.8
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=GM",
+       "year": "2025",
+       "raw": 29.8,
+       "unit": "pct",
+       "risk": 59.6,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2027-04-18-fin-2027-finnish-parliamentary-election",
+   "date": "2027-04-18",
+   "status": "upcoming",
+   "country": {
+    "iso2": "FI",
+    "iso3": "FIN",
+    "fips": "FI",
+    "en": "Finland",
+    "nb": "Finland"
+   },
+   "center": [
+    26.28,
+    64.5
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Parliament",
+   "wiki": {
+    "title": "2027 Finnish parliamentary election",
+    "url": "https://en.wikipedia.org/wiki/2027_Finnish_parliamentary_election"
+   },
+   "why": {
+    "en": "The election will choose Finland’s parliament for the 2027-2031 term, the first since the country joined NATO.",
+    "nb": null
+   },
+   "result": null,
+   "unrest": null,
+   "score": 16,
+   "level": "low",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 6.3,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 1,
+       "unit": "index",
+       "risk": 3.9
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2024-02-11",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2024",
+       "raw": 91.3,
+       "unit": "of100",
+       "risk": 8.7,
+       "meta": {
+        "office": "presidential",
+        "date": "2024-02-11"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 0,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 100,
+       "unit": "of100",
+       "risk": 0
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 15.2,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 2,
+       "unit": "incidents",
+       "risk": 25.3
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -85.7,
+       "unit": "pct",
+       "risk": 0
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 57.5,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2023 Finnish parliamentary election",
+       "url": "https://en.wikipedia.org/wiki/2023_Finnish_parliamentary_election",
+       "year": "2023",
+       "raw": 0.7,
+       "unit": "points",
+       "risk": 96.5,
+       "meta": {
+        "article": "2023 Finnish parliamentary election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2023 Finnish parliamentary election",
+       "url": "https://en.wikipedia.org/wiki/2023_Finnish_parliamentary_election",
+       "year": "2023",
+       "raw": 72.6,
+       "unit": "pct",
+       "risk": 18.5,
+       "meta": {
+        "article": "2023 Finnish parliamentary election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 16.2,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=FI",
+       "year": "2025",
+       "raw": 56148.6,
+       "unit": "usd",
+       "risk": 0
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=FI",
+       "year": "1994",
+       "raw": 58.3,
+       "unit": "pct",
+       "risk": 48.6
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=FI",
+       "year": "2025",
+       "raw": -6.8,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2027-04-18-fra-2027-french-presidential-election",
+   "date": "2027-04-18",
+   "status": "upcoming",
+   "country": {
+    "iso2": "FR",
+    "iso3": "FRA",
+    "fips": "FR",
+    "en": "France",
+    "nb": "Frankrike"
+   },
+   "center": [
+    2.2,
+    46.2
+   ],
+   "types": [
+    "president"
+   ],
+   "label": "President",
+   "wiki": {
+    "title": "2027 French presidential election",
+    "url": "https://en.wikipedia.org/wiki/2027_French_presidential_election"
+   },
+   "why": {
+    "en": "The election will decide France’s president, with a possible second round on 2 May if no candidate wins a majority.",
+    "nb": null
+   },
+   "result": null,
+   "unrest": null,
+   "score": 28,
+   "level": "low",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 15.6,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.9,
+       "unit": "index",
+       "risk": 5.9
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2024-07-07",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2024",
+       "raw": 74.7,
+       "unit": "of100",
+       "risk": 25.3,
+       "meta": {
+        "office": "legislative",
+        "date": "2024-07-07"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 11,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 89,
+       "unit": "of100",
+       "risk": 11
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 70,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 120,
+       "unit": "incidents",
+       "risk": 62.8
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 53.8,
+       "unit": "pct",
+       "risk": 80.8
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 15.1,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2022 French presidential election",
+       "url": "https://en.wikipedia.org/wiki/2022_French_presidential_election",
+       "year": "2022",
+       "raw": 17.1,
+       "unit": "points",
+       "risk": 14.5,
+       "meta": {
+        "article": "2022 French presidential election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2022 French presidential election",
+       "url": "https://en.wikipedia.org/wiki/2022_French_presidential_election",
+       "year": "2022",
+       "raw": 73.7,
+       "unit": "pct",
+       "risk": 15.8,
+       "meta": {
+        "article": "2022 French presidential election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 0.2,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=FR",
+       "year": "2025",
+       "raw": 48985.7,
+       "unit": "usd",
+       "risk": 0.4
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=FR",
+       "year": "2025",
+       "raw": -6.8,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2027-05-03-bdi-2027-burundian-presidential-election",
+   "date": "2027-05-03",
+   "status": "upcoming",
+   "country": {
+    "iso2": "BI",
+    "iso3": "BDI",
+    "fips": "BY",
+    "en": "Burundi",
+    "nb": "Burundi"
+   },
+   "center": [
+    29.9,
+    -3.4
+   ],
+   "types": [
+    "president"
+   ],
+   "label": "President",
+   "wiki": {
+    "title": "2027 Burundian presidential election",
+    "url": "https://en.wikipedia.org/wiki/2027_Burundian_presidential_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": null,
+   "score": 59,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 89.3,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.1,
+       "unit": "index",
+       "risk": 89.3
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 87,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 13,
+       "unit": "of100",
+       "risk": 87
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 16.3,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 1,
+       "unit": "incidents",
+       "risk": 13.3
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -50,
+       "unit": "pct",
+       "risk": 20.8
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 8.2,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2020 Burundian general election",
+       "url": "https://en.wikipedia.org/wiki/2020_Burundian_general_election",
+       "year": "2020",
+       "raw": 46.3,
+       "unit": "points",
+       "risk": 0,
+       "meta": {
+        "article": "2020 Burundian general election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2020 Burundian general election",
+       "url": "https://en.wikipedia.org/wiki/2020_Burundian_general_election",
+       "year": "2020",
+       "raw": 73.4,
+       "unit": "pct",
+       "risk": 16.4,
+       "meta": {
+        "article": "2020 Burundian general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 94.7,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=BI",
+       "year": "2025",
+       "raw": 233.8,
+       "unit": "usd",
+       "risk": 100
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=BI",
+       "year": "2025",
+       "raw": 44.7,
+       "unit": "pct",
+       "risk": 89.4,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": {
+    "id": "drc",
+    "en": "Eastern DR Congo",
+    "nb": "Øst-Kongo"
+   }
+  },
+  {
+   "id": "2027-06-06-mex-2027-mexican-legislative-election",
+   "date": "2027-06-06",
+   "status": "upcoming",
+   "country": {
+    "iso2": "MX",
+    "iso3": "MEX",
+    "fips": "MX",
+    "en": "Mexico",
+    "nb": "Mexico"
+   },
+   "center": [
+    -102.5,
+    23.6
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Chamber of Deputies",
+   "wiki": {
+    "title": "2027 Mexican legislative election",
+    "url": "https://en.wikipedia.org/wiki/2027_Mexican_legislative_election"
+   },
+   "why": {
+    "en": "The election will elect all 500 members of Mexico’s Chamber of Deputies for the LXVII Legislature (2027-2030).",
+    "nb": null
+   },
+   "result": null,
+   "unrest": null,
+   "score": 39,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 45.8,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.5,
+       "unit": "index",
+       "risk": 45.5
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2024-06-02",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2024",
+       "raw": 54,
+       "unit": "of100",
+       "risk": 46,
+       "meta": {
+        "office": "presidential",
+        "date": "2024-06-02"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 42,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 58,
+       "unit": "of100",
+       "risk": 42
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 46.7,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 90,
+       "unit": "incidents",
+       "risk": 35.2
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 21.6,
+       "unit": "pct",
+       "risk": 63.9
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 23.7,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2024 Mexican general election",
+       "url": "https://en.wikipedia.org/wiki/2024_Mexican_general_election",
+       "year": "2024",
+       "raw": 33.1,
+       "unit": "points",
+       "risk": 0,
+       "meta": {
+        "article": "2024 Mexican general election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2024 Mexican general election",
+       "url": "https://en.wikipedia.org/wiki/2024_Mexican_general_election",
+       "year": "2024",
+       "raw": 61.1,
+       "unit": "pct",
+       "risk": 47.4,
+       "meta": {
+        "article": "2024 Mexican general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 23.2,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=MX",
+       "year": "2025",
+       "raw": 13889.2,
+       "unit": "usd",
+       "risk": 27.8
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=MX",
+       "year": "2024",
+       "raw": 50.3,
+       "unit": "pct",
+       "risk": 41.9
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=MX",
+       "year": "2025",
+       "raw": -4.4,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": {
+    "id": "mexico",
+    "en": "Mexico's cartel violence",
+    "nb": "Kartellvolden i Mexico"
+   }
+  },
+  {
+   "id": "2027-06-27-gtm-2027-guatemalan-general-election",
+   "date": "2027-06-27",
+   "status": "upcoming",
+   "country": {
+    "iso2": "GT",
+    "iso3": "GTM",
+    "fips": "GT",
+    "en": "Guatemala",
+    "nb": "Guatemala"
+   },
+   "center": [
+    -90.37,
+    15.69
+   ],
+   "types": [
+    "president",
+    "parliament"
+   ],
+   "label": "President and Congress",
+   "wiki": {
+    "title": "2027 Guatemalan general election",
+    "url": "https://en.wikipedia.org/wiki/2027_Guatemalan_general_election"
+   },
+   "why": {
+    "en": "The election will select Guatemala’s president, vice president, all 160 congressional seats and other officials for the 2027 term.",
+    "nb": null
+   },
+   "result": null,
+   "unrest": null,
+   "score": 36,
+   "level": "elevated",
+   "coverage": 75,
+   "missing": [
+    "unrest",
+    "close"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 40.6,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.7,
+       "unit": "index",
+       "risk": 33.4
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2023-08-20",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2023",
+       "raw": 52.2,
+       "unit": "of100",
+       "risk": 47.8,
+       "meta": {
+        "office": "presidential",
+        "date": "2023-08-20"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 52,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 48,
+       "unit": "of100",
+       "risk": 52
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 32,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 5,
+       "unit": "incidents",
+       "risk": 20.1
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 0,
+       "unit": "pct",
+       "risk": 50
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "economy",
+     "risk": 21.7,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=GT",
+       "year": "2025",
+       "raw": 6598.2,
+       "unit": "usd",
+       "risk": 44
+      },
+      {
+       "key": "debt",
+       "source": "World Bank, central government debt (share of GDP)",
+       "url": "https://data.worldbank.org/indicator/GC.DOD.TOTL.GD.ZS?locations=GT",
+       "year": "2013",
+       "raw": 25.2,
+       "unit": "pct",
+       "risk": 21
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=GT",
+       "year": "2025",
+       "raw": -0.9,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2027-08-10-ken-2027-kenyan-general-election",
+   "date": "2027-08-10",
+   "status": "upcoming",
+   "country": {
+    "iso2": "KE",
+    "iso3": "KEN",
+    "fips": "KE",
+    "en": "Kenya",
+    "nb": "Kenya"
+   },
+   "center": [
+    37.9,
+    0
+   ],
+   "types": [
+    "president",
+    "parliament"
+   ],
+   "label": "President, National Assembly and Senate",
+   "wiki": {
+    "title": "2027 Kenyan general election",
+    "url": "https://en.wikipedia.org/wiki/2027_Kenyan_general_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": null,
+   "score": 48,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 42.2,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.5,
+       "unit": "index",
+       "risk": 50.7
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2022-08-09",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2022",
+       "raw": 66.3,
+       "unit": "of100",
+       "risk": 33.7,
+       "meta": {
+        "office": "legislative",
+        "date": "2022-08-09"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 51,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 49,
+       "unit": "of100",
+       "risk": 51
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 48.6,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 85,
+       "unit": "incidents",
+       "risk": 58.6
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -20.6,
+       "unit": "pct",
+       "risk": 33.6
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 65,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2022 Kenyan general election",
+       "url": "https://en.wikipedia.org/wiki/2022_Kenyan_general_election",
+       "year": "2022",
+       "raw": 1.6,
+       "unit": "points",
+       "risk": 92,
+       "meta": {
+        "article": "2022 Kenyan general election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2022 Kenyan general election",
+       "url": "https://en.wikipedia.org/wiki/2022_Kenyan_general_election",
+       "year": "2022",
+       "raw": 64.8,
+       "unit": "pct",
+       "risk": 38.1,
+       "meta": {
+        "article": "2022 Kenyan general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 42.8,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=KE",
+       "year": "2025",
+       "raw": 2362.9,
+       "unit": "usd",
+       "risk": 66.3
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=KE",
+       "year": "2025",
+       "raw": 9.7,
+       "unit": "pct",
+       "risk": 19.4,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2027-08-24-ago-2027-angolan-general-election",
+   "date": "2027-08-24",
+   "status": "upcoming",
+   "country": {
+    "iso2": "AO",
+    "iso3": "AGO",
+    "fips": "AO",
+    "en": "Angola",
+    "nb": "Angola"
+   },
+   "center": [
+    17.56,
+    -12.33
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Parliament",
+   "wiki": {
+    "title": "2027 Angolan general election",
+    "url": "https://en.wikipedia.org/wiki/2027_Angolan_general_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": null,
+   "score": 58,
+   "level": "elevated",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 71.1,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.3,
+       "unit": "index",
+       "risk": 70.7
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), presidential election 2022-08-24",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2022",
+       "raw": 28.6,
+       "unit": "of100",
+       "risk": 71.4,
+       "meta": {
+        "office": "presidential",
+        "date": "2022-08-24"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 72,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 28,
+       "unit": "of100",
+       "risk": 72
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 17.2,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 5,
+       "unit": "incidents",
+       "risk": 14.8
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -37.5,
+       "unit": "pct",
+       "risk": 20.8
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 76,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2022 Angolan general election",
+       "url": "https://en.wikipedia.org/wiki/2022_Angolan_general_election",
+       "year": "2022",
+       "raw": 7.2,
+       "unit": "points",
+       "risk": 64,
+       "meta": {
+        "article": "2022 Angolan general election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2022 Angolan general election",
+       "url": "https://en.wikipedia.org/wiki/2022_Angolan_general_election",
+       "year": "2022",
+       "raw": 44.8,
+       "unit": "pct",
+       "risk": 87.9,
+       "meta": {
+        "article": "2022 Angolan general election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 80.1,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=AO",
+       "year": "2025",
+       "raw": 3129.5,
+       "unit": "usd",
+       "risk": 60.2
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=AO",
+       "year": "2025",
+       "raw": 98,
+       "unit": "pct",
+       "risk": 100,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  },
+  {
+   "id": "2027-09-28-svk-next-slovak-parliamentary-election",
+   "date": "2027-09-28",
+   "status": "upcoming",
+   "country": {
+    "iso2": "SK",
+    "iso3": "SVK",
+    "fips": "LO",
+    "en": "Slovakia",
+    "nb": "Slovakia"
+   },
+   "center": [
+    19.48,
+    48.71
+   ],
+   "types": [
+    "parliament"
+   ],
+   "label": "Parliament",
+   "wiki": {
+    "title": "Next Slovak parliamentary election",
+    "url": "https://en.wikipedia.org/wiki/Next_Slovak_parliamentary_election"
+   },
+   "why": null,
+   "result": null,
+   "unrest": null,
+   "score": 25,
+   "level": "low",
+   "coverage": 85,
+   "missing": [
+    "unrest"
+   ],
+   "indicators": [
+    {
+     "id": "quality",
+     "risk": 14.1,
+     "parts": [
+      {
+       "key": "vdem",
+       "source": "V-Dem, clean elections index",
+       "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+       "year": "2025",
+       "raw": 0.9,
+       "unit": "index",
+       "risk": 6.2
+      },
+      {
+       "key": "pei",
+       "source": "Electoral Integrity Project (PEI), legislative election 2020-02-29",
+       "url": "https://doi.org/10.7910/DVN/EDY2V0",
+       "year": "2020",
+       "raw": 78.1,
+       "unit": "of100",
+       "risk": 21.9,
+       "meta": {
+        "office": "legislative",
+        "date": "2020-02-29"
+       }
+      }
+     ]
+    },
+    {
+     "id": "unrest",
+     "risk": null,
+     "parts": []
+    },
+    {
+     "id": "press",
+     "risk": 12,
+     "parts": [
+      {
+       "key": "fh",
+       "source": "Freedom House, Freedom in the World",
+       "url": "https://freedomhouse.org/country/scores",
+       "year": "2026",
+       "raw": 88,
+       "unit": "of100",
+       "risk": 12
+      }
+     ]
+    },
+    {
+     "id": "now",
+     "risk": 41,
+     "parts": [
+      {
+       "key": "events",
+       "source": "GDELT, as IGRED counts it (violent protest, repression and armed violence)",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": 5,
+       "unit": "incidents",
+       "risk": 42.4
+      },
+      {
+       "key": "trend",
+       "source": "GDELT, as IGRED counts it: the past 30 days against the 30 before",
+       "url": "https://map.igred.org/metode/",
+       "year": "2026-09-12/2026-10-11",
+       "raw": -16.7,
+       "unit": "pct",
+       "risk": 38.9
+      }
+     ]
+    },
+    {
+     "id": "close",
+     "risk": 51.9,
+     "parts": [
+      {
+       "key": "margin",
+       "source": "Wikipedia: 2023 Slovak parliamentary election",
+       "url": "https://en.wikipedia.org/wiki/2023_Slovak_parliamentary_election",
+       "year": "2023",
+       "raw": 5,
+       "unit": "points",
+       "risk": 75,
+       "meta": {
+        "article": "2023 Slovak parliamentary election"
+       }
+      },
+      {
+       "key": "turnout",
+       "source": "Wikipedia: 2023 Slovak parliamentary election",
+       "url": "https://en.wikipedia.org/wiki/2023_Slovak_parliamentary_election",
+       "year": "2023",
+       "raw": 68.5,
+       "unit": "pct",
+       "risk": 28.7,
+       "meta": {
+        "article": "2023 Slovak parliamentary election"
+       }
+      }
+     ]
+    },
+    {
+     "id": "economy",
+     "risk": 6.1,
+     "parts": [
+      {
+       "key": "gdp",
+       "source": "World Bank, GDP per person (current US$)",
+       "url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=SK",
+       "year": "2025",
+       "raw": 28543.7,
+       "unit": "usd",
+       "risk": 12.2
+      },
+      {
+       "key": "currency",
+       "source": "World Bank, official exchange rate against the US dollar, 2022 to 2025",
+       "url": "https://data.worldbank.org/indicator/PA.NUS.FCRF?locations=SK",
+       "year": "2025",
+       "raw": -6.8,
+       "unit": "pct",
+       "risk": 0,
+       "meta": {
+        "from": "2022",
+        "to": "2025"
+       }
+      }
+     ]
+    }
+   ],
+   "crisis": null
+  }
+ ]
+}

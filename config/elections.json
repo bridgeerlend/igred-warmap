@@ -1,0 +1,88 @@
+{
+  "$note": "The election page (map.igred.org/valg) and the map layer. The calendar comes from Wikipedia's national electoral calendars, refreshed weekly; the score is recomputed daily from the files in data/elections/sources/ and our own GDELT counts. Every number on the page names its source and year.",
+  "calendarPages": ["2026_national_electoral_calendar", "2027_national_electoral_calendar"],
+  "horizonDays": 365,
+  "keepHeldDays": 60,
+  "calendarRefreshDays": 7,
+  "mapLayerDays": 90,
+  "unrest": {
+    "$note": "After an election: incidents in the first days after it against the same number of days before, from the GDELT counts. 'Unrest' when the count after is at least ratio times the count before, and at least minEvents.",
+    "days": 14,
+    "ratio": 1.5,
+    "minEvents": 10
+  },
+  "$weightsNote": "Open weighting: each indicator is a risk from 0 to 100, and the score is their weighted mean. An indicator with no data for a country is left out and the others are weighted up; the page says how much of the weight a score rests on.",
+  "weights": {
+    "quality": 20,
+    "unrest": 15,
+    "press": 15,
+    "now": 25,
+    "close": 10,
+    "economy": 15
+  },
+  "levels": {
+    "$note": "Below elevated is low; from elevated, elevated; from high, high.",
+    "elevated": 35,
+    "high": 60
+  },
+  "scales": {
+    "$note": "How a raw figure becomes a risk from 0 to 100. Each is a straight line between the two ends, clamped.",
+    "marginPointsForZero": 20,
+    "turnoutForZero": 80,
+    "turnoutForHundred": 40,
+    "gdpPerPersonForZero": 50000,
+    "gdpPerPersonForHundred": 500,
+    "debtForHundred": 120,
+    "depreciationForHundred": 50,
+    "depreciationYears": 3
+  },
+  "why": {
+    "$note": "One sentence per election on why it matters, from the Wikipedia calendar line and the lead of the election's article only, checked by the same guard as the crisis summaries. Written once per election and kept; the result after an election likewise.",
+    "maxWords": 32,
+    "batch": 8
+  },
+  "sources": [
+    {
+      "id": "vdem", "indicator": "quality", "name": "V-Dem, clean elections index (v2xel_frefair)",
+      "url": "https://ourworldindata.org/grapher/free-and-fair-elections-index.csv?useColumnShortNames=true",
+      "page": "https://ourworldindata.org/grapher/free-and-fair-elections-index",
+      "file": "vdem-v2xel-frefair.csv", "license": "CC BY 4.0 (V-Dem, processed by Our World in Data)", "edition": "V-Dem (2026), processed by Our World in Data on 17 March 2026"
+    },
+    {
+      "id": "pei", "indicator": "quality", "name": "Electoral Integrity Project, Perceptions of Electoral Integrity (PEI 11.0)",
+      "url": "https://dataverse.harvard.edu/api/access/datafile/11632678",
+      "page": "https://doi.org/10.7910/DVN/EDY2V0",
+      "file": "pei-11-election.tab", "license": "CC BY 4.0", "edition": "PEI 11.0 (2025)"
+    },
+    {
+      "id": "nelda", "indicator": "unrest", "name": "NELDA, National Elections across Democracy and Autocracy",
+      "page": "https://nelda.co/", "skip": "Downloads only after registering a name and an email address in a Google form."
+    },
+    {
+      "id": "ecav", "indicator": "unrest", "name": "ECAV, Electoral Contention and Violence",
+      "page": "https://ecavdata.org/data-access/", "skip": "Downloads only after registering a name and an email address in a Qualtrics survey."
+    },
+    {
+      "id": "rsf", "indicator": "press", "name": "RSF, World Press Freedom Index 2026",
+      "page": "https://rsf.org/en/index",
+      "licenseUrl": "https://rsf.org/en/methodology-used-compiling-world-press-freedom-index-2026",
+      "skip": "Licence: RSF's terms (Creative Commons, attribution, no commercial use, no derivatives) allow sharing the Index with credit, but not modifying or adapting it without RSF's consent. Turning its score into a risk figure inside a composite score would be an adaptation, so it is not used."
+    },
+    {
+      "id": "fh", "indicator": "press", "name": "Freedom House, Freedom in the World 2026 (global freedom score)",
+      "url": "https://freedomhouse.org/country/scores",
+      "page": "https://freedomhouse.org/country/scores",
+      "file": "freedom-house-2026.csv", "license": "Noncommercial use permitted with citation (Freedom House content permissions)", "licenseUrl": "https://freedomhouse.org/about-us/content-permissions", "edition": "2026"
+    },
+    {
+      "id": "idea", "indicator": "close", "name": "International IDEA, Voter Turnout Database",
+      "page": "https://www.idea.int/data-tools/data/voter-turnout-database", "skip": "No file to download without the site's interactive export; turnout and margin come from the previous election's Wikipedia article instead."
+    },
+    {
+      "id": "geonames", "name": "GeoNames, country codes",
+      "url": "https://download.geonames.org/export/dump/countryInfo.txt",
+      "page": "https://www.geonames.org/",
+      "file": "geonames-countryInfo.txt", "license": "CC BY 4.0", "edition": "current"
+    }
+  ]
+}

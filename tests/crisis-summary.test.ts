@@ -98,6 +98,13 @@ describe('the crisis summary guard', () => {
     expect(log.join('\n')).toMatch(/Norwegian refused/);
   });
 
+  it('refuses the English name of an armed group where the Norwegian one is given', () => {
+    const en = 'The Rapid Support Forces attacked El Fasher. The Sudanese Armed Forces responded.';
+    expect(checkNorwegian('RSF-militsen angrep El Fasher. Den sudanske hæren (SAF) svarte.', en, 110).ok).toBe(true);
+    expect(checkNorwegian('Rapid Support Forces angrep El Fasher. Hæren svarte.', en, 110).reason).toMatch(/English name "Rapid Support Forces"/);
+    expect(checkNorwegian('RSF-militsen angrep El Fasher. Sudanese Armed Forces svarte.', en, 110).reason).toMatch(/Sudanese Armed Forces/);
+  });
+
   it('refuses translated-sounding Norwegian the prompt examples rule out', () => {
     const en = 'Houthis fired missiles at Riyadh airport. The EU condemned the attack.';
     expect(checkNorwegian('Houthiene skjøt missiler mot flyplassen i Riyadh. EU fordømte angrepet.', en, 110).ok).toBe(true);
@@ -110,6 +117,7 @@ describe('the crisis summary guard', () => {
     expect(noDashes('Houthis struck Riyadh airport — killing twelve — and closed it.')).toBe('Houthis struck Riyadh airport, killing twelve, and closed it.');
     expect(noDashes('Fighting resumed – again.')).toBe('Fighting resumed, again.');
     expect(noDashes('Deaths in 2022–2023 rose.')).toBe('Deaths in 2022-2023 rose.');
+    expect(noDashes('Valget i Sør‑Sudan og Iran–Israel.')).toBe('Valget i Sør-Sudan og Iran-Israel.');
     expect(noDashes('tolv personer ble drept – blant dem en flykaptein – og hundrevis såret.')).toBe('tolv personer ble drept, blant dem en flykaptein, og hundrevis såret.');
   });
 

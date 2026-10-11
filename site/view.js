@@ -9,6 +9,7 @@
 import {
   prefs, h, esc, fmtNum, fmtBig, fmtDay, fmtShortDay, ago, joinNames, hostOf,
   crisisName, regionName, monumentLines, statusSentence, barChart, CATEGORY, DAY, downloadData, FEED_BASE, copyText,
+  electionKind, ELECTIONS_URL,
 } from './common.js';
 import { CONFIG } from './config.js';
 
@@ -182,6 +183,17 @@ function overview(d, ctx) {
         t.nearestRoute(nb ? route.nameNb : route.name, fmtNum(d.nearestRoute.distanceKm)), '. ',
         h('b', null, nb ? route.figure.text.nb : route.figure.text.en), ` (${route.figure.year}, `,
         h('a', { href: route.figure.url, target: '_blank', rel: 'noopener' }, route.figure.source), ').') : null));
+  }
+
+  // Upcoming elections in the crisis's countries, each with its risk score and the way to it.
+  const today = new Date().toISOString().slice(0, 10);
+  const fips = new Set((d.countries ?? []).map((c) => c.fips));
+  const votes = (ctx?.elections?.elections ?? []).filter((e) => e.status === 'upcoming' && e.date >= today && fips.has(e.country.fips));
+  if (votes.length) {
+    out.push(section(t.upcomingElections, h('ul.cv-list.cv-votes', null, votes.map((e) => h('li', null,
+      h('a.cv-name', { href: `${ELECTIONS_URL}#${e.id}` }, `${nb ? e.country.nb : e.country.en}: ${electionKind(e)}`),
+      h('span.meta', null, [fmtDay(`${e.date}T00:00:00Z`),
+        e.score === null ? t.noScore : `${t.electionRisk} ${e.score} (${t.riskLevel[e.level]})`].join(' · ')))))));
   }
 
   const rest = d.indicators.filter((ind) => !STAKE.includes(ind.id));

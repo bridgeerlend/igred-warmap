@@ -130,6 +130,8 @@ const VAGUE: [RegExp, number, number, string][] = [
  */
 export function noDashes(text: string): string {
   return text
+    // A dash inside a word or a name ("Sør‑Sudan", "Iran–Israel") is a hyphen.
+    .replace(/(\p{L})[‐‑–—](\p{L})/gu, '$1-$2')
     .replace(/(\d)\s*[–—]\s*(\d)/g, '$1-$2')
     .replace(/\s*[–—]\s*([^–—]{1,120}?)\s*[–—]\s*/g, ', $1, ')
     .replace(/\s*[–—]\s*/g, ', ')
@@ -270,7 +272,9 @@ export function namesSupported(text: string, sourceText: string): { ok: boolean;
 }
 
 /** The English text: every figure and every number in words from the sources, and the house rules. */
-export function checkEnglish(en: string, sourceText: string, maxWords: number, avoid: number[] = [], notAbout: string[] = []): { ok: boolean; reason?: string } {
+export function checkEnglish(
+  en: string, sourceText: string, maxWords: number, avoid: number[] = [], notAbout: string[] = [], sentenceRange: [number, number] = [2, 6],
+): { ok: boolean; reason?: string } {
   const offTopic = notAbout.find((n) => new RegExp(`\\b${n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(en));
   if (offTopic) return { ok: false, reason: `about ${offTopic}, a neighbouring crisis` };
   const source = normaliseNumbers(sourceText);
@@ -283,7 +287,7 @@ export function checkEnglish(en: string, sourceText: string, maxWords: number, a
   if (VAGUE_FATE.test(en)) return { ok: false, reason: '"killed or injured": say which' };
   if (COMMENTARY.test(en)) return { ok: false, reason: `commentary instead of facts ("${COMMENTARY.exec(en)![0]}")` };
   const n = sentences(en);
-  if (n < 2 || n > 6) return { ok: false, reason: `${n} sentences` };
+  if (n < sentenceRange[0] || n > sentenceRange[1]) return { ok: false, reason: `${n} sentences` };
   if (/INSUFFICIENT|as an ai|language model/i.test(en)) return { ok: false, reason: 'not a summary' };
   const repeated = repeatsStatus(en, avoid);
   if (repeated !== undefined) return { ok: false, reason: `repeats the status line's figure ${repeated}` };
@@ -312,11 +316,16 @@ export function checkNorwegian(nb: string, en: string, maxWords: number): { ok: 
   if (COMMENTARY.test(nb)) return { ok: false, reason: `commentary instead of facts ("${COMMENTARY.exec(nb)![0]}")` };
   const stiff = STIFF_NB.exec(nb);
   if (stiff) return { ok: false, reason: `stiff Norwegian ("${stiff[0]}"), write it as a Norwegian reporter would` };
+  const english = ENGLISH_GROUP_NB.exec(nb);
+  if (english) return { ok: false, reason: `the English name "${english[0]}" where a Norwegian one exists (see the examples)` };
   return { ok: true };
 }
 
 /** Translated-sounding Norwegian the examples in the prompt already rule out. */
 const STIFF_NB = /\bproxy[\s\S]?aggres+jon|\bkamprelatert\w* handling\w*|\blanserte \w*angrep|\blovet (?:et stort svar|en stor respons)|\binterkommunal\w*|\bfordrivelsesleir\w*|\bintensifisert\b/i;
+
+/** Armed groups whose Norwegian names the prompt gives: the English name in a Norwegian text is refused. */
+const ENGLISH_GROUP_NB = /\b(Sudanese Armed Forces|Rapid Support Forces|Islamic State|Houthis)\b/;
 
 /** Both languages, for callers that have both at once. */
 export function checkSummary(
@@ -375,6 +384,10 @@ function translationPrompt(en: string): string {
     '  "vold mellom folkegrupper", not "interkommunal vold"; "fordrevne" and "leirer for internt fordrevne", not "fordrivelsesleirer";',
     '  "skjøt missiler mot", not "lanserte missilangrep"; "kamper", not "kamprelaterte handlinger";',
     '  "angrep gjennom stedfortredere", not "proxy-aggresjon"; "varslet gjengjeldelse", not "lovet et stort svar".',
+    '- Armed groups by their established Norwegian names where they have one, never the English name:',
+    '  "Sudanese Armed Forces" is "den sudanske hæren (SAF)", later "regjeringshæren" or "hæren";',
+    '  "Rapid Support Forces" is "RSF-militsen" at first mention, later "RSF";',
+    '  "Houthis" is "houthiene"; "Islamic State" is "IS" or "Den islamske staten"; "M23 rebels" is "M23-opprørerne".',
     '- No dashes (— or –): use a comma or a full stop.',
     '- Use the established Norwegian form of place names where one exists (Jemen, Etiopia, Zaporizjzja, Kharkiv, Gaza, Khartoum, Darfur, Kordofan).',
     '- Keep every number exactly as in the English: the same figures, and a number written as a word stays a word. Write thousands with a space (75 767).',
@@ -383,7 +396,7 @@ function translationPrompt(en: string): string {
   ].join('\n');
 }
 
-type Reply = { text: string } | { failure: string; quota?: boolean; retryAfterMs?: number };
+export type Reply = { text: string } | { failure: string; quota?: boolean; retryAfterMs?: number };
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -432,7 +445,7 @@ async function callProvider(provider: Provider, key: string, prompt: string, tim
   }
 }
 
-function parseReply(text: string, key: 'en' | 'nb'): string | undefined {
+export function parseReply(text: string, key: string): string | undefined {
   const json = /\{[\s\S]*\}/.exec(text)?.[0];
   if (!json) return undefined;
   try {
@@ -444,29 +457,17 @@ function parseReply(text: string, key: 'en' | 'nb'): string | undefined {
 }
 
 /**
- * Runs the summaries for one build. Mutates `states` in place and returns a log line per
- * crisis attempted. Crises whose headlines have not changed, or that were tried within
- * `minHoursBetween`, are skipped: the free tiers are small and the text only needs to move
- * when the reporting does.
+ * One question at a time to the first provider still available, for any caller that writes
+ * with the models. A provider that is out of quota or no longer has the model hands over to
+ * the next in the list; a short per-minute limit is waited out.
  */
-export async function runSummaries(
-  inputs: SummaryInput[],
-  states: Record<string, SummaryState>,
-  settings: SummarySettings,
-  now: number,
-  env: NodeJS.ProcessEnv = process.env,
-): Promise<string[]> {
-  const log: string[] = [];
-  if (!settings.enabled) return ['summaries: disabled in config'];
+export function makeAsker(settings: SummarySettings, env: NodeJS.ProcessEnv, log: string[]): {
+  providers: Provider[];
+  ask: (prompt: string, prefer?: Provider) => Promise<{ reply: Reply; provider: Provider } | undefined>;
+} {
   const providers = settings.providers.filter((p) => !!env[p.keyEnv]);
-  if (providers.length === 0) return ['summaries: no provider key set; pages keep their last approved text'];
   const exhausted = new Set<string>();
   const lastCall = new Map<string, number>();
-
-  /**
-   * One question to the first provider still available. A provider that is out of quota or
-   * no longer has the model hands over to the next; a short per-minute limit is waited out.
-   */
   async function ask(prompt: string, prefer?: Provider): Promise<{ reply: Reply; provider: Provider } | undefined> {
     const order = prefer ? [prefer, ...providers.filter((p) => p !== prefer)] : providers;
     for (const provider of order) {
@@ -489,6 +490,27 @@ export async function runSummaries(
     }
     return undefined;
   }
+  return { providers, ask };
+}
+
+/**
+ * Runs the summaries for one build. Mutates `states` in place and returns a log line per
+ * crisis attempted. Crises whose headlines have not changed, or that were tried within
+ * `minHoursBetween`, are skipped: the free tiers are small and the text only needs to move
+ * when the reporting does.
+ */
+export async function runSummaries(
+  inputs: SummaryInput[],
+  states: Record<string, SummaryState>,
+  settings: SummarySettings,
+  now: number,
+  env: NodeJS.ProcessEnv = process.env,
+): Promise<string[]> {
+  const log: string[] = [];
+  if (!settings.enabled) return ['summaries: disabled in config'];
+  const { providers, ask } = makeAsker(settings, env, log);
+  if (providers.length === 0) return ['summaries: no provider key set; pages keep their last approved text'];
+
 
   let attempts = 0;
   for (const input of inputs) {
@@ -505,8 +527,11 @@ export async function runSummaries(
       const had = new Set((current.sources ?? []).map((s) => s.url));
       const fresh = input.headlines.filter((h) => !had.has(h.url)).length;
       const age = (now - Date.parse(current.writtenAt)) / 3_600_000;
-      if (fresh < settings.minNewSources && age <= settings.rewriteAfterHours) continue;
-      if (since < settings.minHoursBetween) continue;
+      // A Norwegian text approved before a rule was added is held to it now: if it would be
+      // refused today, the crisis is written again without waiting for news or the clock.
+      const outdated = !!current.nb && !checkNorwegian(current.nb, current.en, settings.maxWords).ok;
+      if (!outdated && fresh < settings.minNewSources && age <= settings.rewriteAfterHours) continue;
+      if (!outdated && since < settings.minHoursBetween) continue;
     } else if (since < settings.minHoursBetween && !rewrite) continue;
 
     // 1. The English, from the sources; refused once, it is asked for again with the reason.

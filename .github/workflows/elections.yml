@@ -1,0 +1,45 @@
+name: Elections
+
+# The election page's data: the national electoral calendar from Wikipedia (read at most once
+# a week, as the build decides), a risk score per election recomputed daily from the yearly
+# datasets in data/elections/sources/, the World Bank and our own GDELT counts, and one
+# sentence per election written once by the free models behind the crisis summaries.
+# Writes data/ only, so it never builds a site.
+on:
+  schedule:
+    - cron: '41 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ingest
+  cancel-in-progress: false
+
+jobs:
+  elections:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build the election data
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: npm run elections
+      - name: Commit data if it changed
+        run: |
+          if [ -z "$(git status --porcelain data)" ]; then echo "nothing changed"; exit 0; fi
+          git config user.name "igred-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data
+          git commit -m "data: elections $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3 4 5; do git pull --rebase && git push && exit 0; sleep 10; done
+          exit 1
