@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="../favicon.ico" sizes="32x32">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<title>Elections · IGRED Global Conflict Monitor</title>
+<meta name="description" content="National elections in the next twelve months, each with a risk score from 0 to 100 and every indicator behind it with its source and year.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0B0B0A">
+<link rel="canonical" href="https://map.igred.org/valg/">
+<script>try{if(localStorage.getItem('igred-theme-v2')==='light')document.documentElement.dataset.theme='light'}catch(e){}</script>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<link rel="stylesheet" href="../atlas.css">
+<link rel="stylesheet" href="valg.css">
+</head>
+<body>
+<header class="masthead is-sticky votes-masthead">
+  <a class="wordmark wordmark-link" href="https://igred.org/"><strong>IGRED</strong></a>
+  <nav class="controls">
+    <a class="link-button" href="../" data-i18n="map">Map</a>
+    <a class="link-button" href="../brief/" data-i18n="brief">Brief</a>
+    <a class="link-button" href="../stream/" data-i18n="wire">Wire</a>
+    <a class="link-button" href="../metode/" data-i18n="methodNav">Method</a>
+    <button type="button" class="link-button" id="lang">NO</button>
+    <button type="button" class="link-button" id="theme">Light</button>
+  </nav>
+</header>
+
+<main class="votes">
+  <h1 class="title" id="votes-title"><span>Elections</span></h1>
+  <p class="standfirst" id="votes-intro"></p>
+  <p class="meta" id="votes-updated"></p>
+  <section class="votes-group" aria-labelledby="upcoming-h">
+    <h2 class="votes-h" id="upcoming-h"></h2>
+    <ol class="votes-list" id="upcoming"></ol>
+  </section>
+  <section class="votes-group" aria-labelledby="held-h">
+    <h2 class="votes-h" id="held-h"></h2>
+    <ol class="votes-list" id="held"></ol>
+  </section>
+  <section class="votes-method" id="method" aria-labelledby="method-h">
+    <h2 class="votes-h" id="method-h"></h2>
+    <div id="method-body"></div>
+  </section>
+</main>
+<footer class="colophon">
+  <p class="meta"><strong>IGRED</strong> · <a href="mailto:contact@igred.org">contact@igred.org</a></p>
+</footer>
+<script type="module" src="valg.js"></script>
+</body>
+</html>

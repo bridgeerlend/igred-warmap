@@ -883,7 +883,7 @@ describe('the trade and energy layer', () => {
     expect(core).toMatch(/id: 'econ', type: 'circle', source: 'economy', layout: \{ visibility: 'none' \}/);
     expect(core).toMatch(/'circle-opacity': 0, 'circle-stroke-color': p\.pick, 'circle-stroke-width': 1\.3/);
     expect(read('site/common.js')).toMatch(/tradeLayer: 'Handel og energi'/);
-    expect(read('site/app.js')).toMatch(/if \(state\.trade\) q\.set\('layers', 'trade'\)/);
+    expect(read('site/app.js')).toMatch(/state\.trade \? 'trade' : ''/);
     const view = read('site/view.js');
     expect(view).toMatch(/const STAKE = \['NY\.GDP\.MKTP\.CD', 'NY\.GDP\.PCAP\.CD', 'NE\.EXP\.GNFS\.ZS', 'TM\.VAL\.FOOD\.ZS\.UN', 'SM\.POP\.REFG\.OR', 'VC\.IDP\.TOCV'\]/);
     expect(view).toMatch(/h\('td\.meta', null, v\.year, ' · ', h\('a', \{ href: ind\.url/);

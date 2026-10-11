@@ -20,7 +20,7 @@ function css(name) {
 
 function palette() {
   return {
-    bg: css('--bg'), land: css('--land'), coast: css('--coast'), stipple: Number(css('--stipple-opacity')) || 0.2,
+    bg: css('--bg'), fg: css('--fg'), land: css('--land'), coast: css('--coast'), stipple: Number(css('--stipple-opacity')) || 0.2,
     s: [css('--s1'), css('--s2'), css('--s3'), css('--s4'), css('--s5')],
     verified: css('--verified'), pick: css('--pick'),
   };
@@ -90,6 +90,7 @@ export async function createMap(container, options = {}) {
         events: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
         pulse: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
         economy: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
+        elections: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
       },
       layers: [
         { id: 'sea', type: 'background', paint: { 'background-color': p.bg } },
@@ -120,6 +121,16 @@ export async function createMap(container, options = {}) {
         {
           id: 'econ-core', type: 'circle', source: 'economy', layout: { visibility: 'none' },
           paint: { 'circle-radius': 1.6, 'circle-color': p.pick },
+        },
+        // Elections in the next 90 days: a small thin ring with a dot, in the text colour, at the
+        // country's centre; smaller than a crisis marker and never filled like an incident.
+        {
+          id: 'elec', type: 'circle', source: 'elections', layout: { visibility: 'none' },
+          paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 1, 4.5, 6, 8], 'circle-color': p.bg, 'circle-opacity': 0, 'circle-stroke-color': p.fg, 'circle-stroke-width': 0.9, 'circle-stroke-opacity': 0.9 },
+        },
+        {
+          id: 'elec-dot', type: 'circle', source: 'elections', layout: { visibility: 'none' },
+          paint: { 'circle-radius': 1.2, 'circle-color': p.fg },
         },
         { id: 'pulse', type: 'circle', source: 'pulse', paint: { 'circle-radius': 4, 'circle-color': 'rgba(0,0,0,0)', 'circle-stroke-color': p.s[2], 'circle-stroke-width': 1, 'circle-stroke-opacity': 0 } },
       ],
@@ -168,6 +179,8 @@ export async function createMap(container, options = {}) {
       map.setPaintProperty('pulse', 'circle-stroke-color', q.s[2]);
       map.setPaintProperty('econ', 'circle-stroke-color', q.pick);
       map.setPaintProperty('econ-core', 'circle-color', q.pick);
+      map.setPaintProperty('elec', 'circle-stroke-color', q.fg);
+      map.setPaintProperty('elec-dot', 'circle-color', q.fg);
       if (map.hasImage('stipple')) map.removeImage('stipple');
       const { image, ratio } = stippleImage(q);
       map.addImage('stipple', image, { pixelRatio: ratio });
@@ -178,6 +191,13 @@ export async function createMap(container, options = {}) {
         type: 'Feature', geometry: { type: 'Point', coordinates: [pt.lon, pt.lat] }, properties: { i },
       })) });
       for (const id of ['econ', 'econ-core']) map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
+    },
+
+    setElections(list, visible) {
+      map.getSource('elections').setData({ type: 'FeatureCollection', features: (list ?? []).filter((e) => e.center).map((e) => ({
+        type: 'Feature', geometry: { type: 'Point', coordinates: e.center }, properties: { id: e.id },
+      })) });
+      for (const id of ['elec', 'elec-dot']) map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
     },
 
     setEvents(features) {
@@ -280,6 +300,9 @@ export async function createMap(container, options = {}) {
         const route = map.getLayer('econ') && map.getLayoutProperty('econ', 'visibility') === 'visible'
           ? map.queryRenderedFeatures(box, { layers: ['econ'] })[0] : null;
         if (route) { handler({ kind: 'route', feature: route }); return; }
+        const election = map.getLayer('elec') && map.getLayoutProperty('elec', 'visibility') === 'visible'
+          ? map.queryRenderedFeatures(box, { layers: ['elec'] })[0] : null;
+        if (election) { handler({ kind: 'election', feature: election }); return; }
         const hits = map.queryRenderedFeatures([[ev.point.x - pad, ev.point.y - pad], [ev.point.x + pad, ev.point.y + pad]], { layers: EVENT_LAYERS });
         if (hits.length) {
           // The brightest incident under the pointer, not merely the topmost.
@@ -290,7 +313,7 @@ export async function createMap(container, options = {}) {
         const land = map.queryRenderedFeatures(ev.point, { layers: ['land-hit'] })[0];
         if (land) handler({ kind: 'country', fips: land.properties.fips, name: land.properties.name });
       });
-      for (const id of [...EVENT_LAYERS, 'econ']) {
+      for (const id of [...EVENT_LAYERS, 'econ', 'elec']) {
         map.on('mouseenter', id, () => { map.getCanvas().style.cursor = 'pointer'; });
         map.on('mouseleave', id, () => { map.getCanvas().style.cursor = ''; });
       }

@@ -1,0 +1,65 @@
+/* The election page: one reading column on the shared Atlas foundation. */
+.votes-masthead { padding-left: var(--gutter); padding-right: var(--gutter); }
+.votes { max-width: 820px; margin: 0 auto; padding: clamp(28px, 5vw, 64px) var(--gutter) 64px; }
+.votes .title { font-size: clamp(52px, 9vw, 104px); margin-bottom: 18px; }
+.votes .standfirst { max-width: 56ch; margin-bottom: 12px; }
+.votes-group, .votes-method { margin-top: 44px; }
+.votes-h { margin: 0 0 4px; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 600; }
+
+.votes-list { list-style: none; margin: 0; padding: 0; }
+.votes-list > li { border-top: 1px solid var(--hair); }
+.votes-list > li:last-child { border-bottom: 1px solid var(--hair); }
+
+/* A row: the date, the country and what is voted on, the score. A button, so it opens in place. */
+.vote-row {
+  all: unset; box-sizing: border-box; cursor: pointer; width: 100%;
+  display: grid; grid-template-columns: 7.5em minmax(0, 1fr) auto; gap: 4px 18px; align-items: baseline;
+  padding: 14px 0;
+}
+.vote-row:focus-visible { outline: 2px solid var(--pick); outline-offset: 2px; }
+.vote-row:hover .vote-country { color: var(--s3); }
+.vote-row[aria-expanded="true"] .vote-country { color: var(--pick); }
+.vote-date { font-size: 13px; font-variant-numeric: tabular-nums; }
+.vote-country { font-family: var(--display); font-size: clamp(19px, 2.2vw, 23px); line-height: 1.2; }
+.vote-kind { display: block; font-size: 13px; margin-top: 2px; }
+.vote-score { text-align: right; white-space: nowrap; }
+.vote-score b { font-family: var(--display); font-weight: 300; font-size: 30px; line-height: 1; font-variant-numeric: tabular-nums; }
+.vote-score .meta { display: block; margin-top: 2px; }
+.risk-low { color: var(--s1); }
+.risk-elevated { color: var(--s3); }
+.risk-high { color: var(--s5); }
+
+.vote-detail { padding: 2px 0 26px; }
+.vote-detail p { margin: 0 0 10px; line-height: 1.6; max-width: 66ch; }
+.vote-why { font-size: 16.5px; }
+.vote-machine { margin-top: -4px !important; }
+.vote-big { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin: 16px 0 6px; }
+.vote-big b { font-family: var(--display); font-weight: 300; font-size: 64px; line-height: 0.9; font-variant-numeric: tabular-nums; }
+.vote-links { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 14px !important; }
+
+.vote-ind { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.vote-ind th, .vote-ind td { text-align: left; padding: 7px 10px 7px 0; vertical-align: top; border-bottom: 1px solid var(--hair-soft); }
+.vote-ind thead th { font-weight: 400; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-2); border-bottom-color: var(--hair); }
+.vote-ind .ind-name { font-weight: 600; padding-top: 12px; }
+.vote-ind .num { text-align: right; white-space: nowrap; }
+.vote-ind .ind-missing { color: var(--fg-2); }
+.vote-ind a { overflow-wrap: anywhere; }
+.vote-result { border-left: 1px solid var(--s3); padding-left: 14px; }
+
+.votes-method p, .votes-method li { line-height: 1.65; max-width: 68ch; }
+.votes-method ul { padding-left: 1.2em; display: grid; gap: 6px; }
+.votes-weights { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 20px; margin: 10px 0 16px; max-width: 420px; }
+.votes-weights dt, .votes-weights dd { padding: 6px 0; border-bottom: 1px solid var(--hair-soft); margin: 0; }
+.votes-weights dd { text-align: right; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 560px) {
+  .vote-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .vote-date { grid-column: 1 / -1; }
+  .vote-ind { font-size: 12.5px; }
+}
+
+/* Six items in the top menu: on a phone they sit a little closer so the row fits the width. */
+@media (max-width: 420px) {
+  .masthead .controls { gap: 11px; }
+  .masthead .controls .link-button { letter-spacing: 0.12em; }
+}

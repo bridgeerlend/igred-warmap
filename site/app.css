@@ -341,6 +341,12 @@ body.mapapp { display: flex; flex-direction: column; min-height: 100svh; }
   .mapfilter.is-open { padding: 10px 12px 12px; }
 }
 .mapfilter-ring { width: 10px; height: 10px; border: 1.3px solid var(--pick); border-radius: 50%; justify-self: end; }
+.mapfilter-ring-vote { width: 8px; height: 8px; border: 0.9px solid var(--fg); position: relative; }
+.mapfilter-ring-vote::after { content: ''; position: absolute; left: 50%; top: 50%; width: 2px; height: 2px; margin: -1px 0 0 -1px; border-radius: 50%; background: var(--fg); }
+/* An election's risk level: the ember scale, never a box. */
+.risk-low { color: var(--s1); }
+.risk-elevated { color: var(--s3); }
+.risk-high { color: var(--s5); }
 .pop-near { margin-top: 8px !important; }
 .cv-route { font-size: 13.5px; line-height: 1.6; margin-top: 4px !important; }
 

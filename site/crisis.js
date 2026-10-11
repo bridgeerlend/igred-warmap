@@ -9,12 +9,12 @@ import { renderCrisis } from './view.js';
 import { createMap } from './mapcore.js';
 
 const id = document.body.dataset.crisis || new URLSearchParams(location.search).get('id');
-const state = { w: 7, tab: null, index: null, inc: null, detail: null, entry: null, economy: null };
+const state = { w: 7, tab: null, index: null, inc: null, detail: null, entry: null, economy: null, elections: null };
 let atlas = null;
 
 function ctx() {
   return {
-    inc: state.inc, w: state.w, asOf: null, economy: state.economy,
+    inc: state.inc, w: state.w, asOf: null, economy: state.economy, elections: state.elections,
     get cvTab() { return state.tab; },
     set cvTab(v) { state.tab = v; },
     onZoom: (center, zoom) => { atlas?.flyTo(center, zoom); window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); },
@@ -54,8 +54,9 @@ async function start() {
   const up = location.pathname.includes(`/crisis/${id}/`) ? '../../' : '../';
   const mapReady = createMap($('map'), { vendor: `${up}vendor/countries-50m.json`, cooperative: true, padding: 24 });
   try {
-    const [index, events, detail, economy] = await Promise.all([getJson('crises.json'), getJson('map-events.json'), getJson(`crises/${encodeURIComponent(id)}.json`), getJson('economy.json').catch(() => null)]);
+    const [index, events, detail, economy, elections] = await Promise.all([getJson('crises.json'), getJson('map-events.json'), getJson(`crises/${encodeURIComponent(id)}.json`), getJson('economy.json').catch(() => null), getJson('elections.json').catch(() => null)]);
     state.economy = economy;
+    state.elections = elections;
     state.index = index;
     state.inc = new Incidents(events);
     state.detail = detail;

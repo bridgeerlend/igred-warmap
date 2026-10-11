@@ -270,7 +270,9 @@ export function namesSupported(text: string, sourceText: string): { ok: boolean;
 }
 
 /** The English text: every figure and every number in words from the sources, and the house rules. */
-export function checkEnglish(en: string, sourceText: string, maxWords: number, avoid: number[] = [], notAbout: string[] = []): { ok: boolean; reason?: string } {
+export function checkEnglish(
+  en: string, sourceText: string, maxWords: number, avoid: number[] = [], notAbout: string[] = [], sentenceRange: [number, number] = [2, 6],
+): { ok: boolean; reason?: string } {
   const offTopic = notAbout.find((n) => new RegExp(`\\b${n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(en));
   if (offTopic) return { ok: false, reason: `about ${offTopic}, a neighbouring crisis` };
   const source = normaliseNumbers(sourceText);
@@ -283,7 +285,7 @@ export function checkEnglish(en: string, sourceText: string, maxWords: number, a
   if (VAGUE_FATE.test(en)) return { ok: false, reason: '"killed or injured": say which' };
   if (COMMENTARY.test(en)) return { ok: false, reason: `commentary instead of facts ("${COMMENTARY.exec(en)![0]}")` };
   const n = sentences(en);
-  if (n < 2 || n > 6) return { ok: false, reason: `${n} sentences` };
+  if (n < sentenceRange[0] || n > sentenceRange[1]) return { ok: false, reason: `${n} sentences` };
   if (/INSUFFICIENT|as an ai|language model/i.test(en)) return { ok: false, reason: 'not a summary' };
   const repeated = repeatsStatus(en, avoid);
   if (repeated !== undefined) return { ok: false, reason: `repeats the status line's figure ${repeated}` };
@@ -383,7 +385,7 @@ function translationPrompt(en: string): string {
   ].join('\n');
 }
 
-type Reply = { text: string } | { failure: string; quota?: boolean; retryAfterMs?: number };
+export type Reply = { text: string } | { failure: string; quota?: boolean; retryAfterMs?: number };
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -432,7 +434,7 @@ async function callProvider(provider: Provider, key: string, prompt: string, tim
   }
 }
 
-function parseReply(text: string, key: 'en' | 'nb'): string | undefined {
+export function parseReply(text: string, key: string): string | undefined {
   const json = /\{[\s\S]*\}/.exec(text)?.[0];
   if (!json) return undefined;
   try {
@@ -444,29 +446,17 @@ function parseReply(text: string, key: 'en' | 'nb'): string | undefined {
 }
 
 /**
- * Runs the summaries for one build. Mutates `states` in place and returns a log line per
- * crisis attempted. Crises whose headlines have not changed, or that were tried within
- * `minHoursBetween`, are skipped: the free tiers are small and the text only needs to move
- * when the reporting does.
+ * One question at a time to the first provider still available, for any caller that writes
+ * with the models. A provider that is out of quota or no longer has the model hands over to
+ * the next in the list; a short per-minute limit is waited out.
  */
-export async function runSummaries(
-  inputs: SummaryInput[],
-  states: Record<string, SummaryState>,
-  settings: SummarySettings,
-  now: number,
-  env: NodeJS.ProcessEnv = process.env,
-): Promise<string[]> {
-  const log: string[] = [];
-  if (!settings.enabled) return ['summaries: disabled in config'];
+export function makeAsker(settings: SummarySettings, env: NodeJS.ProcessEnv, log: string[]): {
+  providers: Provider[];
+  ask: (prompt: string, prefer?: Provider) => Promise<{ reply: Reply; provider: Provider } | undefined>;
+} {
   const providers = settings.providers.filter((p) => !!env[p.keyEnv]);
-  if (providers.length === 0) return ['summaries: no provider key set; pages keep their last approved text'];
   const exhausted = new Set<string>();
   const lastCall = new Map<string, number>();
-
-  /**
-   * One question to the first provider still available. A provider that is out of quota or
-   * no longer has the model hands over to the next; a short per-minute limit is waited out.
-   */
   async function ask(prompt: string, prefer?: Provider): Promise<{ reply: Reply; provider: Provider } | undefined> {
     const order = prefer ? [prefer, ...providers.filter((p) => p !== prefer)] : providers;
     for (const provider of order) {
@@ -489,6 +479,27 @@ export async function runSummaries(
     }
     return undefined;
   }
+  return { providers, ask };
+}
+
+/**
+ * Runs the summaries for one build. Mutates `states` in place and returns a log line per
+ * crisis attempted. Crises whose headlines have not changed, or that were tried within
+ * `minHoursBetween`, are skipped: the free tiers are small and the text only needs to move
+ * when the reporting does.
+ */
+export async function runSummaries(
+  inputs: SummaryInput[],
+  states: Record<string, SummaryState>,
+  settings: SummarySettings,
+  now: number,
+  env: NodeJS.ProcessEnv = process.env,
+): Promise<string[]> {
+  const log: string[] = [];
+  if (!settings.enabled) return ['summaries: disabled in config'];
+  const { providers, ask } = makeAsker(settings, env, log);
+  if (providers.length === 0) return ['summaries: no provider key set; pages keep their last approved text'];
+
 
   let attempts = 0;
   for (const input of inputs) {

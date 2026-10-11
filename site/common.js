@@ -28,6 +28,11 @@ export const STRINGS = {
     allCrises: 'All crises',
     filter: 'Filter', filterAll: 'All types',
     tradeLayer: 'Trade and energy',
+    electionsLayer: 'Elections, next 90 days', upcomingElections: 'Upcoming elections', electionRisk: 'Election risk',
+    electionType: { president: 'presidential election', parliament: 'parliamentary election', referendum: 'referendum' },
+    electionRound: (n) => (n === 2 ? 'second round' : 'first round'),
+    riskLevel: { low: 'low', elevated: 'elevated', high: 'high' },
+    seeElection: 'See the election', noScore: 'too little data for a score', electionsPage: 'Elections',
     methodLink: 'Method and corrections', howItWorks: 'How this is written and checked',
     share: 'Share', follow: 'Follow', copy: 'Copy', copied: 'Copied',
     followTitle: (name) => `Follow ${name}`,
@@ -131,6 +136,11 @@ export const STRINGS = {
     allCrises: 'Alle kriser',
     filter: 'Filter', filterAll: 'Alle typer',
     tradeLayer: 'Handel og energi',
+    electionsLayer: 'Valg neste 90 dager', upcomingElections: 'Kommende valg', electionRisk: 'Valgrisiko',
+    electionType: { president: 'presidentvalg', parliament: 'parlamentsvalg', referendum: 'folkeavstemning' },
+    electionRound: (n) => (n === 2 ? '2. runde' : '1. runde'),
+    riskLevel: { low: 'lav', elevated: 'forhøyet', high: 'høy' },
+    seeElection: 'Se valget', noScore: 'for lite data til en score', electionsPage: 'Valg',
     methodLink: 'Metode og rettelser', howItWorks: 'Slik skrives og kontrolleres teksten',
     share: 'Del', follow: 'Følg', copy: 'Kopier', copied: 'Kopiert',
     followTitle: (name) => `Følg ${name}`,
@@ -509,3 +519,14 @@ export async function copyText(text, button, done) {
   button.textContent = done;
   setTimeout(() => { button.textContent = was; }, 1600);
 }
+
+/** "Presidential and parliamentary election, second round", from an election in data/elections.json. */
+export function electionKind(e) {
+  const t = prefs.t;
+  const names = e.types.map((k) => t.electionType[k] ?? k);
+  const joined = names.length > 1 ? `${names.slice(0, -1).join(', ')} ${prefs.lang === 'nb' ? 'og' : 'and'} ${names.at(-1)}` : names[0] ?? '';
+  const text = joined.charAt(0).toUpperCase() + joined.slice(1);
+  return e.round ? `${text}, ${t.electionRound(e.round)}` : text;
+}
+
+export const ELECTIONS_URL = 'https://map.igred.org/valg/';
