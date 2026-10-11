@@ -80,6 +80,8 @@ const NAV_PAGES: Record<string, NavKey | null> = {
   'site/stream/index.html': 'wire',
   'site/valg/index.html': 'elections',
   'site/metode/index.html': 'method',
+  'www/index.html': null,
+  'www/knowledge/index.html': null,
 };
 
 function stampNav(body: string, active: NavKey | null): string {

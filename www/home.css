@@ -34,9 +34,11 @@ body.home { --page-fg: var(--fg); --page-s3: var(--s3); --page-pick: var(--pick)
 .hero-mark .hero-name { padding-left: 47px; }
 /* Over the film the mark is light whatever the theme; past it, it follows the page. */
 .topbar:not(.is-solid) .brand-mark { color: #F4F2EC; }
+/* The folded menu over the film keeps the film's dark ground under its light text. */
+.topbar:not(.is-solid) .site-nav .nav-items { background: #0B0B0A; border-color: rgba(247, 245, 239, 0.18); }
 @media (max-width: 640px) {
-  .topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
-  .topbar .controls { justify-content: flex-start; gap: 16px; }
+  /* The mark and the Menu button share one line, as on every other page. */
+  .topbar { flex-direction: row; align-items: center; gap: 10px; }
   .hero-name { display: none; }
 }
 .hero-mark p { margin: 0; }

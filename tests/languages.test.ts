@@ -5,12 +5,17 @@
  */
 import { createServer, type Server } from 'node:http';
 import { existsSync, readFileSync, statSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import os from 'node:os';
 import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { chromium, type Browser } from 'playwright';
 import { repoRoot } from '../src/core/util/paths.js';
 
-const PAGES = ['/site/', '/site/crisis/sudan/', '/site/metode/', '/site/valg/', '/site/brief/', '/site/stream/'];
+const PAGES = ['/site/', '/site/crisis/sudan/', '/site/metode/', '/site/valg/', '/site/brief/', '/site/stream/',
+  '/www/', '/www/knowledge/', '/www/reports/', '/rx/2026-h2/', '/rx/2026-10-sudan-kordofan/'];
+// The two example reports (docs/report-examples/), built for this test and served under /rx/.
+const EXAMPLES = path.join(os.tmpdir(), 'varde-language-examples');
 
 /** Words that give a fixed text away as the other language. Whole words, case as written. */
 const TELLS = {
@@ -23,7 +28,7 @@ const SCAN = `(() => {
   const own = document.documentElement.lang;
   const sel = 'header, nav, footer, .colophon, button, label, th, h1, h2, .meta, [data-i18n], .legend, .mapfilter, .skip, .standfirst';
   const skip = (el) => el.closest('[lang]:not(html)')?.getAttribute('lang') && el.closest('[lang]:not(html)').getAttribute('lang') !== own
-    || el.closest('.cv-news, .cv-headlines, .wire-list, .line, .story, .stories, .cv-bg, .pop, .vote-why, .vote-result, .cv-summary, .cv-machine-text');
+    || el.closest('.cv-news, .cv-headlines, .wire-list, .line, .story, .stories, .cv-bg, .pop, .vote-why, .vote-result, .cv-summary, .cv-machine-text, .kb-shelves, .kb-dialog');
   const out = new Set();
   for (const el of document.querySelectorAll(sel)) {
     if (skip(el)) continue;
@@ -40,17 +45,21 @@ let browser: Browser | null = null;
 let base = '';
 
 beforeAll(async () => {
+  execFileSync('npx', ['tsx', 'scripts/build-reports.ts'], { cwd: repoRoot, env: { ...process.env, REPORTS_CONTENT: 'docs/report-examples', REPORTS_OUT: EXAMPLES } });
   server = createServer((req, res) => {
-    let file = path.join(repoRoot, decodeURIComponent((req.url ?? '/').split('?')[0]!));
-    if (existsSync(file) && statSync(file).isDirectory()) file = path.join(file, 'index.html');
-    if (!file.startsWith(repoRoot) || !existsSync(file)) { res.writeHead(404).end(); return; }
+    const url = decodeURIComponent((req.url ?? '/').split('?')[0]!);
+    const find = (p: string) => (existsSync(p) && statSync(p).isDirectory() ? path.join(p, 'index.html') : p);
+    // /rx/ is the built examples; what they load from the site root comes from www/.
+    let file = url.startsWith('/rx/') ? find(path.join(EXAMPLES, url.slice(4))) : find(path.join(repoRoot, url));
+    if (!existsSync(file)) file = find(path.join(repoRoot, 'www', url));
+    if (!existsSync(file)) { res.writeHead(404).end(); return; }
     const type = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' }[path.extname(file)] ?? 'application/octet-stream';
     res.writeHead(200, { 'content-type': type }).end(readFileSync(file));
   });
   await new Promise<void>((resolve) => server.listen(0, resolve));
   base = `http://localhost:${(server.address() as { port: number }).port}`;
   browser = await chromium.launch();
-}, 60_000);
+}, 120_000);
 
 afterAll(async () => { await browser?.close(); server?.close(); });
 

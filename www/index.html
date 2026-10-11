@@ -22,6 +22,7 @@
 <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="atlas.css">
+<link rel="stylesheet" href="nav.css">
 <link rel="stylesheet" href="home.css">
 </head>
 <body class="home">
@@ -29,19 +30,23 @@
 <!-- The hero is a film made of today's data: it is drawn in the page from the same files the
      map reads, so it is never out of date and weighs almost nothing. No buttons inside it. -->
 <!-- The menu and the light switch stay at the top of the page, over the film and after it. -->
-<div class="topbar" id="topbar">
+<div class="topbar has-nav" id="topbar">
   <div class="hero-mark">
     <p class="wordmark brand"><svg class="brand-mark" viewBox="0 0 200 200" aria-hidden="true" focusable="false"><path d="M100.00 14.00L100.00 14.00A86 86 0 0 1 162.02 40.42L37.98 40.42A86 86 0 0 1 100.00 14.00Z" fill="#E4542A"/><path d="M24.94 47.42L161.06 47.42A86 86 0 0 1 177.71 85.17L8.29 85.17A86 86 0 0 1 24.94 47.42Z" fill="currentColor"/><path d="M22.36 92.17L193.64 92.17A86 86 0 0 1 187.12 133.70L28.88 133.70A86 86 0 0 1 22.36 92.17Z" fill="currentColor"/><path d="M20.24 140.70L171.76 140.70A86 86 0 0 1 96.00 186.00L96.00 186.00A86 86 0 0 1 20.24 140.70Z" fill="currentColor"/></svg><strong>Varde Research</strong></p>
     <p class="hero-name" data-i18n="tagline">Geopolitics, measured.</p>
   </div>
-  <nav class="controls" aria-label="Menu">
-    <a class="link-button" href="https://map.igred.org/" data-i18n="navMap">Map</a>
-    <a class="link-button" href="https://map.igred.org/brief/">Brief</a>
-    <a class="link-button" href="reports/" data-i18n="navReports">Reports</a>
-    <a class="link-button" href="https://map.igred.org/metode/" data-i18n="navMethod">Method</a>
-    <a class="link-button" href="#about" data-i18n="navAbout">About</a>
-    <button type="button" class="link-button" id="lang">NO</button>
-    <button type="button" class="link-button" id="theme">Light</button>
+  <nav class="controls site-nav" aria-label="Menu">
+    <button type="button" class="link-button nav-toggle" aria-expanded="false" aria-controls="nav-items" data-en="Menu" data-nb="Meny">Menu</button>
+    <div class="nav-items" id="nav-items">
+      <a class="link-button" href="https://map.igred.org/" data-en="Map" data-nb="Kart">Map</a>
+      <a class="link-button" href="https://map.igred.org/brief/" data-en="Brief" data-nb="Brief">Brief</a>
+      <a class="link-button" href="https://map.igred.org/stream/" data-en="Wire" data-nb="Wire">Wire</a>
+      <a class="link-button" href="https://igred.org/reports/" data-en="Reports" data-nb="Rapporter">Reports</a>
+      <a class="link-button" href="https://map.igred.org/valg/" data-en="Elections" data-nb="Valg">Elections</a>
+      <a class="link-button" href="https://map.igred.org/metode/" data-en="Method" data-nb="Metode">Method</a>
+      <button type="button" class="link-button" id="lang">NO</button>
+      <button type="button" class="link-button" id="theme">Light</button>
+    </div>
   </nav>
 </div>
 
@@ -130,5 +135,6 @@
 </footer>
 
 <script type="module" src="home.js"></script>
+<script type="module" src="nav.js"></script>
 </body>
 </html>
