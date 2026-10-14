@@ -1334,3 +1334,11 @@ describe('one brand, from config/brand.json', () => {
   });
 });
 
+describe('ACLED never gets in through the news searches', () => {
+  it('drops ACLED articles by name and address, and withdraws any text written from one', () => {
+    const build = read('src/core/crises/build.ts');
+    expect(build).toMatch(/\.filter\(\(a\) => !isExcludedSource\(a\.publisher, a\.url\)\)/);
+    expect(build).toMatch(/st\.approved\?\.sources\?\.some\(\(x\) => isExcludedSource\(x\.publisher, x\.url\)\)\) \{ st\.approved = null;/);
+  });
+});
+

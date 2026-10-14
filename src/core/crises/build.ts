@@ -244,6 +244,15 @@ export function statusLine(
     : `${fmtInt(n7, lang)} ${n7 === 1 ? 'væpnet hendelse' : 'væpnede hendelser'} meldt de siste sju dagene${change}${where}.`;
 }
 
+/**
+ * ACLED is excluded for good (config/sources.json): its licence forbids display on dashboards
+ * like this one and any use in AI systems. Its own articles reach the news searches too, so
+ * they are dropped by name and by address before anything is shown or given to a model.
+ */
+export function isExcludedSource(publisher: string | undefined, url: string | undefined): boolean {
+  return /\bACLED\b|Armed Conflict Location (&|and) Event Data/i.test(publisher ?? '') || /(^|\.)acleddata\.com/i.test(hostOfUrl(url ?? ''));
+}
+
 /* ---------- build ------------------------------------------------------ */
 
 export interface BuildOptions { offline?: boolean; log?: (line: string) => void }
@@ -273,6 +282,10 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
     ...(readJson<Partial<Cache>>(cacheFile) ?? {}),
   } as Cache;
   const summaryStates = readJson<Record<string, SummaryState>>(summariesFile) ?? {};
+  // A text written from an ACLED headline is withdrawn at once and written again without it.
+  for (const st of Object.values(summaryStates)) {
+    if (st.approved?.sources?.some((x) => isExcludedSource(x.publisher, x.url))) { st.approved = null; delete st.attemptedAt; }
+  }
   const economy = readJson<{ points: EconomyPoint[] }>(path.join(configDir, 'economy.json'))?.points ?? [];
   const preferredNames = (settings.summary.preferredOutlets?.names ?? []).map((n) => n.toLowerCase());
   const preferredDomains = settings.summary.preferredOutlets?.domains ?? [];
@@ -349,9 +362,9 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
         g = await gdeltDoc(`${d.query} ${d.terms}`, 75);
         gdeltFailures = g ? 0 : gdeltFailures + 1;
       }
-      if (g) cache.gdelt[d.id] = { at: generatedAt, articles: g };
+      if (g) cache.gdelt[d.id] = { at: generatedAt, articles: g.filter((a) => !isExcludedSource(a.publisher, a.url)) };
       const n = await googleNews(`${d.query.replace(/[()]/g, '')} ${d.terms.replace(/[()]/g, '')}`);
-      if (n) cache.gnews[d.id] = { at: generatedAt, articles: n };
+      if (n) cache.gnews[d.id] = { at: generatedAt, articles: n.filter((a) => !isExcludedSource(a.publisher, a.url)) };
       log(`${d.id}: gdelt ${g ? g.length : 'kept'} · google news ${n ? n.length : 'kept'}`);
     }
     // Credits for every Commons picture the pages may show, looked up once per file.
@@ -546,6 +559,7 @@ export async function buildCrises(options: BuildOptions = {}): Promise<{ crises:
     for (const a of pool) a.publisher = outletName(a.publisher, a.url);
     const seen = new Set<string>();
     const news = pool
+      .filter((a) => !isExcludedSource(a.publisher, a.url))
       .filter((a) => now - Date.parse(a.publishedAt) < 4 * DAY)
       .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
       .filter((a) => {
