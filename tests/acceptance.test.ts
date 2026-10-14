@@ -1,4 +1,4 @@
-import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync, rmSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import os from 'node:os';
 import path from 'node:path';
@@ -1238,12 +1238,16 @@ describe('reports on igred.org', () => {
   const built = (rel: string) => readFileSync(path.join(scratch, rel), 'utf-8');
 
   it('with no reports, /reports is one quiet line in either language, and no example is published', () => {
-    const out = execFileSync('npx', ['tsx', 'scripts/build-reports.ts'], { cwd: repoRoot, encoding: 'utf-8' });
+    // Built from an empty folder, as on the day before the first report.
+    const empty = path.join(os.tmpdir(), 'varde-no-reports'); const emptyOut = path.join(os.tmpdir(), 'varde-no-reports-out');
+    rmSync(empty, { recursive: true, force: true }); mkdirSync(empty, { recursive: true });
+    const out = execFileSync('npx', ['tsx', 'scripts/build-reports.ts'], { cwd: repoRoot, encoding: 'utf-8', env: { ...process.env, REPORTS_CONTENT: empty, REPORTS_OUT: emptyOut } });
     expect(out).toMatch(/reports: 0 built/);
-    const main = /<main class="r-list">([\s\S]*?)<\/main>/.exec(read('www/reports/index.html'))![1]!;
+    const main = /<main class="r-list">([\s\S]*?)<\/main>/.exec(readFileSync(path.join(emptyOut, 'index.html'), 'utf-8'))![1]!;
     expect(main).toContain('<p class="standfirst r-soon" data-nb="Den første rapporten kommer snart." data-en="The first report is coming soon.">Den første rapporten kommer snart.</p>');
     expect(main).not.toMatch(/<a |<button|r-group|r-entry/);
-    expect(readdirSync(path.join(repoRoot, 'www/content/reports')).filter((f) => f.endsWith('.md'))).toEqual([]);
+    // The examples stay out of what is published.
+    expect(readdirSync(path.join(repoRoot, 'www/content/reports')).filter((f) => f.endsWith('.md'))).not.toContain('2026-h2.md');
     for (const f of ['2026-h2.md', '2026-10-sudan-kordofan.md', 'frozen/2026-h2.json']) expect(exists(`docs/report-examples/${f}`)).toBe(true);
     // The front page leads to the list, never to a report, and its cover says the first one is coming.
     const home = read('www/index.html');
