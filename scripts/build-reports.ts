@@ -23,6 +23,7 @@ import { marked } from 'marked';
 import { toView } from '../www/projection.js';
 import { repoRoot } from '../src/core/util/paths.js';
 import { BRAND, brandLink, markSvg } from '../src/core/brand.js';
+import { navHtml } from '../src/core/nav.js';
 
 const WWW = path.join(repoRoot, 'www');
 // The examples in docs/report-examples/ can be built elsewhere for a look or a test:
@@ -280,20 +281,41 @@ function frozenOr<T>(key: string, compute: () => T): T {
   return value;
 }
 
+/* ---------- both languages ---------------------------------------------------- */
+
+/**
+ * The page follows the reader's language (the same choice as the rest of the site), so every
+ * fixed text is written in both: shown in Norwegian, swapped by reports.js. What a report
+ * says stays in the language it was written in, marked with its own lang.
+ */
+type Both = (w: Words, lang: Lang) => string;
+const both = (f: Both): [string, string] => [f(T.nb, 'nb'), f(T.en, 'en')];
+/** A fixed text as an element of its own. */
+const L = (f: Both, tag = 'span', attrs = ''): string => {
+  const [nb, en] = both(f);
+  return nb === en && !attrs && tag === 'span' ? esc(nb) : `<${tag}${attrs} data-nb="${esc(nb)}" data-en="${esc(en)}">${esc(nb)}</${tag}>`;
+};
+/** The attributes and text for an element that is itself the label (an SVG text, a heading). */
+const LA = (f: Both): { attrs: string; text: string } => {
+  const [nb, en] = both(f);
+  return { attrs: ` data-nb="${esc(nb)}" data-en="${esc(en)}"`, text: esc(nb) };
+};
+const dayBoth = (iso: string) => L((_, l) => day(iso, l));
+
 /* ---------- building blocks -------------------------------------------------- */
 
-interface Ctx { lang: Lang; w: Words; notes: Map<string, { n: number; text: string }>; order: string[] }
+interface Ctx { lang: Lang; notes: Map<string, { n: number; text: string }>; order: string[] }
 
-function chartSvg(data: ChartData, w: Words, lang: Lang): string {
-  const W = 680; const H = 230; const L = 40; const R = 12; const Tp = 14; const B = 30;
-  if (!data.weeks.length) return `<p class="r-empty">${esc(w.noEvents)}</p>`;
+function chartSvg(data: ChartData): string {
+  const W = 680; const H = 230; const L0 = 40; const R = 12; const Tp = 14; const B = 30;
+  if (!data.weeks.length) return `<p class="r-empty">${L((w) => w.noEvents)}</p>`;
   const max = Math.max(...data.weeks.map(([, n]) => n), 1);
   const step = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000, 2000, 5000].find((s) => max / s <= 4) ?? 10000;
   const top = Math.ceil(max / step) * step;
-  const x = (i: number) => L + (data.weeks.length === 1 ? (W - L - R) / 2 : (i * (W - L - R)) / (data.weeks.length - 1));
+  const x = (i: number) => L0 + (data.weeks.length === 1 ? (W - L0 - R) / 2 : (i * (W - L0 - R)) / (data.weeks.length - 1));
   const y = (n: number) => Tp + (H - Tp - B) * (1 - n / top);
   const grid = Array.from({ length: Math.round(top / step) + 1 }, (_, k) => k * step)
-    .map((v) => `<line class="r-grid" x1="${L}" x2="${W - R}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/><text class="r-axis" x="${L - 8}" y="${(y(v) + 3.5).toFixed(1)}" text-anchor="end">${v}</text>`)
+    .map((v) => `<line class="r-grid" x1="${L0}" x2="${W - R}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/><text class="r-axis" x="${L0 - 8}" y="${(y(v) + 3.5).toFixed(1)}" text-anchor="end">${v}</text>`)
     .join('');
   // A month label under the first week that starts in it.
   let lastMonth = -1;
@@ -301,11 +323,15 @@ function chartSvg(data: ChartData, w: Words, lang: Lang): string {
     const m = Number(d.slice(5, 7)) - 1;
     if (m === lastMonth) return '';
     lastMonth = m;
-    return `<text class="r-axis" x="${x(i).toFixed(1)}" y="${H - 10}" text-anchor="middle">${esc(T[lang].months[m]!.slice(0, 3))}</text>`;
+    const label = LA((_, l) => T[l].months[m]!.slice(0, 3));
+    return `<text class="r-axis" x="${x(i).toFixed(1)}" y="${H - 10}" text-anchor="middle"${label.attrs}>${label.text}</text>`;
   }).join('');
   const line = data.weeks.map(([, n], i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(n).toFixed(1)}`).join('');
-  const dots = data.weeks.map(([d, n], i) => `<circle class="r-dot" cx="${x(i).toFixed(1)}" cy="${y(n).toFixed(1)}" r="2.2"><title>${esc(w.weekOf)} ${esc(day(d, lang))}: ${n}</title></circle>`).join('');
-  return `<svg class="r-chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(w.eventsWeek)}">${grid}${months}<path class="r-line" d="${line}"/>${dots}</svg>`;
+  const dots = data.weeks.map(([d, n], i) => {
+    const tip = LA((w, l) => `${w.weekOf} ${day(d, l)}: ${n}`);
+    return `<circle class="r-dot" cx="${x(i).toFixed(1)}" cy="${y(n).toFixed(1)}" r="2.2"><title${tip.attrs}>${tip.text}</title></circle>`;
+  }).join('');
+  return `<svg class="r-chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(T.nb.eventsWeek)} / ${esc(T.en.eventsWeek)}">${grid}${months}<path class="r-line" d="${line}"/>${dots}</svg>`;
 }
 
 function parseTable(text: string): string[][] {
@@ -321,20 +347,20 @@ function riskName(id: string, lang: Lang): string {
   return register.find((r) => r.id === id)?.[lang] ?? id;
 }
 
-function changeCell(score: number, prev: number | null | undefined, w: Words): string {
-  if (prev === undefined || prev === null) return `<span class="r-new">${esc(w.isNew)}</span>`;
-  if (score === prev) return `<span class="r-same">→ ${esc(w.same)}</span>`;
+function changeCell(score: number, prev: number | null | undefined): string {
+  if (prev === undefined || prev === null) return L((w) => w.isNew, 'span', ' class="r-new"');
+  if (score === prev) return L((w) => `→ ${w.same}`, 'span', ' class="r-same"');
   return score > prev
-    ? `<span class="r-up">↑ ${esc(w.upFrom)} ${prev}</span>`
-    : `<span class="r-down">↓ ${esc(w.downFrom)} ${prev}</span>`;
+    ? L((w) => `↑ ${w.upFrom} ${prev}`, 'span', ' class="r-up"')
+    : L((w) => `↓ ${w.downFrom} ${prev}`, 'span', ' class="r-down"');
 }
 
 /** A five by five grid with each risk placed by its likelihood and consequence. */
-function matrix(items: { label: string; likelihood: number; consequence: number }[], w: Words): string {
-  const S = 34; const L = 22; const B = 22;
+function matrix(items: { label: string; likelihood: number; consequence: number }[]): string {
+  const S = 34; const L0 = 22; const B = 22;
   const cells: string[] = [];
   for (let c = 1; c <= 5; c++) for (let l = 1; l <= 5; l++) {
-    cells.push(`<rect class="r-cell" x="${L + (l - 1) * S}" y="${(5 - c) * S}" width="${S}" height="${S}"/>`);
+    cells.push(`<rect class="r-cell" x="${L0 + (l - 1) * S}" y="${(5 - c) * S}" width="${S}" height="${S}"/>`);
   }
   const placed = new Map<string, string[]>();
   for (const it of items) {
@@ -343,12 +369,13 @@ function matrix(items: { label: string; likelihood: number; consequence: number 
   }
   const marks = [...placed.entries()].map(([key, labels]) => {
     const [l, c] = key.split(':').map(Number);
-    const cx = L + (l! - 0.5) * S; const cy = (5 - c! + 0.5) * S;
-    return `<rect class="r-cell-on" x="${L + (l! - 1) * S + 1}" y="${(5 - c!) * S + 1}" width="${S - 2}" height="${S - 2}"/><text class="r-cell-label" x="${cx}" y="${cy + 3.5}" text-anchor="middle">${esc(labels.join(','))}</text>`;
+    const cx = L0 + (l! - 0.5) * S; const cy = (5 - c! + 0.5) * S;
+    return `<rect class="r-cell-on" x="${L0 + (l! - 1) * S + 1}" y="${(5 - c!) * S + 1}" width="${S - 2}" height="${S - 2}"/><text class="r-cell-label" x="${cx}" y="${cy + 3.5}" text-anchor="middle">${esc(labels.join(','))}</text>`;
   }).join('');
-  const axis = `<text class="r-axis" x="${L + 2.5 * S}" y="${5 * S + 16}" text-anchor="middle">${esc(w.likelihood)} →</text>`
-    + `<text class="r-axis" transform="translate(12 ${2.5 * S}) rotate(-90)" text-anchor="middle">${esc(w.consequence)} →</text>`;
-  return `<svg class="r-matrix" viewBox="0 0 ${L + 5 * S + 2} ${5 * S + B}" role="img" aria-label="${esc(w.risks)}">${cells.join('')}${marks}${axis}</svg>`;
+  const lk = LA((w) => `${w.likelihood} →`); const cq = LA((w) => `${w.consequence} →`);
+  const axis = `<text class="r-axis" x="${L0 + 2.5 * S}" y="${5 * S + 16}" text-anchor="middle"${lk.attrs}>${lk.text}</text>`
+    + `<text class="r-axis" transform="translate(12 ${2.5 * S}) rotate(-90)" text-anchor="middle"${cq.attrs}>${cq.text}</text>`;
+  return `<svg class="r-matrix" viewBox="0 0 ${L0 + 5 * S + 2} ${5 * S + B}" role="img" aria-label="${esc(T.nb.risks)} / ${esc(T.en.risks)}">${cells.join('')}${marks}${axis}</svg>`;
 }
 
 function sourcesList(sources: Source[] | undefined, lang: Lang): string {
@@ -365,24 +392,25 @@ function sourcesList(sources: Source[] | undefined, lang: Lang): string {
 }
 
 function block(name: string, spec: Record<string, unknown>, ctx: Ctx, slug: string): string {
-  const { lang, w } = ctx;
+  const { lang } = ctx;
   const s = (k: string) => (spec[k] === undefined || spec[k] === null ? '' : String(spec[k]));
+  const own = (text: string) => `<span lang="${lang}">${esc(text)}</span>`;
   switch (name) {
     case 'figures': {
       const items = (spec.items as { value: string; label: string; source?: string }[] | undefined) ?? [];
-      return `<dl class="r-figures">${items.map((it) => `<div><dt>${esc(it.label)}</dt><dd><span class="r-figure">${esc(it.value)}</span>${it.source ? `<span class="r-figure-source">${esc(it.source)}</span>` : ''}</dd></div>`).join('')}</dl>`;
+      return `<dl class="r-figures" lang="${lang}">${items.map((it) => `<div><dt>${esc(it.label)}</dt><dd><span class="r-figure">${esc(it.value)}</span>${it.source ? `<span class="r-figure-source">${esc(it.source)}</span>` : ''}</dd></div>`).join('')}</dl>`;
     }
     case 'chart': {
       const scope = { ...(s('crisis') ? { crisis: s('crisis') } : { country: s('country') }) };
       const from = s('from'); const to = s('to');
       const data = frozenOr(`chart:${JSON.stringify({ ...scope, from, to })}`, () => chartData({ ...scope, from, to }));
-      const { name: place } = scopeOf(scope, lang);
+      const place = (l: Lang) => scopeOf(scope, l).name;
       // Said only when the period asks for days before the map's series begins.
-      const starts = data.seriesStart && data.seriesStart > from ? ` ${w.seriesStarts(day(data.seriesStart, lang))}` : '';
-      const span = data.first ? `${day(data.first, lang)} ${w.to} ${day(data.last!, lang)}` : `${day(from, lang)} ${w.to} ${day(to, lang)}`;
-      return `<figure class="r-fig r-chart"><figcaption class="r-fig-title">${esc(s('title') || `${w.eventsWeek}, ${place}`)}</figcaption>`
-        + chartSvg(data, w, lang)
-        + `<p class="r-fig-source">${esc(w.eventsWeek)}, ${esc(place)}, ${esc(w.wholeWeeks)} ${esc(span)}. ${esc(w.chartSource)}${esc(starts)}${s('note') ? ` ${esc(s('note'))}` : ''}</p></figure>`;
+      const starts = (w: Words, l: Lang) => (data.seriesStart && data.seriesStart > from ? ` ${w.seriesStarts(day(data.seriesStart, l))}` : '');
+      const span = (w: Words, l: Lang) => (data.first ? `${day(data.first, l)} ${w.to} ${day(data.last!, l)}` : `${day(from, l)} ${w.to} ${day(to, l)}`);
+      return `<figure class="r-fig r-chart"><figcaption class="r-fig-title">${s('title') ? own(s('title')) : L((w, l) => `${w.eventsWeek}, ${place(l)}`)}</figcaption>`
+        + chartSvg(data)
+        + `<p class="r-fig-source">${L((w, l) => `${w.eventsWeek}, ${place(l)}, ${w.wholeWeeks} ${span(w, l)}. ${w.chartSource}${starts(w, l)}`)}${s('note') ? ` ${own(s('note'))}` : ''}</p></figure>`;
     }
     case 'table': {
       const rows = parseTable(s('data'));
@@ -390,7 +418,7 @@ function block(name: string, spec: Record<string, unknown>, ctx: Ctx, slug: stri
       const head = spec.header === false ? null : rows[0]!;
       const body = head ? rows.slice(1) : rows;
       const num = (v: string) => /^[−-]?[\d\s.,]+%?$/.test(v);
-      return `<figure class="r-fig r-table">${s('caption') ? `<figcaption class="r-fig-title">${esc(s('caption'))}</figcaption>` : ''}<div class="r-table-wrap"><table>`
+      return `<figure class="r-fig r-table" lang="${lang}">${s('caption') ? `<figcaption class="r-fig-title">${esc(s('caption'))}</figcaption>` : ''}<div class="r-table-wrap"><table>`
         + (head ? `<thead><tr>${head.map((c) => `<th>${esc(c)}</th>`).join('')}</tr></thead>` : '')
         + `<tbody>${body.map((r) => `<tr>${r.map((c) => `<td${num(c) ? ' class="num"' : ''}>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`
         + (s('source') ? `<p class="r-fig-source">${esc(s('source'))}</p>` : '') + '</figure>';
@@ -398,31 +426,31 @@ function block(name: string, spec: Record<string, unknown>, ctx: Ctx, slug: stri
     case 'risk': {
       const l = Number(spec.likelihood) || 1; const c = Number(spec.consequence) || 1; const score = l * c;
       const prev = spec.previous === undefined || spec.previous === '' ? undefined : Number(spec.previous);
-      return `<figure class="r-fig r-risk"><div class="r-risk-text"><p class="meta">${esc(w.risk)}</p>`
-        + `<p class="r-risk-name">${esc(riskName(s('risk'), lang))}</p>`
-        + `<p class="r-risk-score"><span class="r-figure">${score}</span> <span class="meta">${esc(w.of25)}</span></p>`
-        + `<p class="r-risk-parts">${esc(w.likelihood)} ${l} · ${esc(w.consequence)} ${c} · ${changeCell(score, prev, w)}</p>`
-        + (s('note') ? `<p>${esc(s('note'))}</p>` : '') + `</div>${matrix([{ label: '', likelihood: l, consequence: c }], w)}</figure>`;
+      return `<figure class="r-fig r-risk"><div class="r-risk-text">${L((w) => w.risk, 'p', ' class="meta"')}`
+        + L((_, lg) => riskName(s('risk'), lg), 'p', ' class="r-risk-name"')
+        + `<p class="r-risk-score"><span class="r-figure">${score}</span> ${L((w) => w.of25, 'span', ' class="meta"')}</p>`
+        + `<p class="r-risk-parts">${L((w) => `${w.likelihood} ${l} · ${w.consequence} ${c}`)} · ${changeCell(score, prev)}</p>`
+        + (s('note') ? `<p lang="${lang}">${esc(s('note'))}</p>` : '') + `</div>${matrix([{ label: '', likelihood: l, consequence: c }])}</figure>`;
     }
     case 'map': {
       const scope = { ...(s('crisis') ? { crisis: s('crisis') } : { country: s('country') }) };
       const data = frozenOr(`map:${JSON.stringify({ ...scope, from: s('from'), to: s('to') })}`, () => mapData({ ...scope, from: s('from') || undefined, to: s('to') || undefined }));
-      const { fips, name: place } = scopeOf(scope, lang);
+      const { fips } = scopeOf(scope, lang);
       const [vx, vy, vw] = data.viewBox;
       const r = (vw / 150).toFixed(2);
       const land = world.countries.map((c) => `<path class="${fips.includes(c.fips) ? 'r-land-on' : 'r-land'}" d="${c.path}"/>`).join('');
       const dots = data.dots.map(([x, y, n]) => `<circle class="${n >= 2 ? 'r-ev' : 'r-ev-single'}" cx="${x}" cy="${y}" r="${n >= 2 ? r : (Number(r) * 0.8).toFixed(2)}"/>`).join('');
-      const period = data.first ? `${day(data.first, lang)} ${w.to} ${day(data.last!, lang)}. ` : '';
-      return `<figure class="r-fig r-map"><figcaption class="r-fig-title">${esc(s('caption') || place)}</figcaption>`
-        + `<svg class="r-map-svg" viewBox="${data.viewBox.join(' ')}" role="img" aria-label="${esc(place)}"><clipPath id="clip-${esc(slug)}-${vx}-${vy}"><rect x="${vx}" y="${vy}" width="${vw}" height="${data.viewBox[3]}"/></clipPath><g clip-path="url(#clip-${esc(slug)}-${vx}-${vy})" style="--sw:${(vw / 500).toFixed(3)}">${land}${dots}</g></svg>`
-        + `<p class="r-fig-source">${esc(period)}${esc(data.dots.length ? w.mapSource : `${w.noEvents} ${w.mapSource.split('. ').at(-1)}`)}</p></figure>`;
+      const period = (w: Words, l: Lang) => (data.first ? `${day(data.first, l)} ${w.to} ${day(data.last!, l)}. ` : '');
+      return `<figure class="r-fig r-map"><figcaption class="r-fig-title">${s('caption') ? own(s('caption')) : L((_, l) => scopeOf(scope, l).name)}</figcaption>`
+        + `<svg class="r-map-svg" viewBox="${data.viewBox.join(' ')}" role="img" aria-label="${esc(scopeOf(scope, 'nb').name)}"><clipPath id="clip-${esc(slug)}-${vx}-${vy}"><rect x="${vx}" y="${vy}" width="${vw}" height="${data.viewBox[3]}"/></clipPath><g clip-path="url(#clip-${esc(slug)}-${vx}-${vy})" style="--sw:${(vw / 500).toFixed(3)}">${land}${dots}</g></svg>`
+        + `<p class="r-fig-source">${L((w, l) => `${period(w, l)}${data.dots.length ? w.mapSource : `${w.noEvents} ${w.mapSource.split('. ').at(-1)}`}`)}</p></figure>`;
     }
     case 'quote': {
-      return `<figure class="r-quote"><blockquote><p>${esc(s('text'))}</p></blockquote>`
+      return `<figure class="r-quote" lang="${lang}"><blockquote><p>${esc(s('text'))}</p></blockquote>`
         + `<figcaption>${esc(s('who'))}${s('role') ? `, ${esc(s('role'))}` : ''}${s('url') ? ` · <a href="${esc(s('url'))}">${esc(s('source') || s('url').replace(/^https?:\/\/(www\.)?/, '').split('/')[0])}</a>` : s('source') ? ` · ${esc(s('source'))}` : ''}</figcaption></figure>`;
     }
     case 'sources':
-      return `<section class="r-block-sources">${s('title') ? `<p class="meta">${esc(s('title'))}</p>` : ''}${sourcesList(spec.items as Source[] | undefined, lang)}</section>`;
+      return `<section class="r-block-sources" lang="${lang}">${s('title') ? `<p class="meta">${esc(s('title'))}</p>` : ''}${sourcesList(spec.items as Source[] | undefined, lang)}</section>`;
     default:
       return `<p class="r-empty">[${esc(name)}]</p>`;
   }
@@ -446,20 +474,21 @@ function md(src: string | undefined, ctx: Ctx, slug: string): string {
     return `\n<div data-block="${blocks.length - 1}"></div>\n`;
   });
   let html = marked.parse(text, { async: false }) as string;
-  html = html.replace(/<div data-block="(\d+)"><\/div>/g, (_, i: string) => blocks[Number(i)]!);
+  html = html.replace(/<div data-block="(\d+)"><\/div>/g, (_, i: string) => `</div>${blocks[Number(i)]!}<div class="r-text" lang="${ctx.lang}">`);
   html = html.replace(/\[\^([^\]\s]+)\]/g, (_, id: string) => {
     const note = ctx.notes.get(id) ?? (ctx.notes.set(id, { n: 0, text: '' }), ctx.notes.get(id)!);
     if (!note.n) { ctx.order.push(id); note.n = ctx.order.length; }
     return `<sup class="r-fn"><a href="#note-${note.n}" id="ref-${note.n}">${note.n}</a></sup>`;
   });
-  return html;
+  // The written text carries its own language; the blocks inside it carry both.
+  return `<div class="r-text" lang="${ctx.lang}">${html}</div>`.replace(/<div class="r-text" lang="[a-z]+"><\/div>/g, '');
 }
 
 /* ---------- pages ------------------------------------------------------------ */
 
-function head(title: string, description: string, url: string, up: string, lang: Lang, extra = ''): string {
+function head(title: string, description: string, url: string, up: string, extra = ''): string {
   return `<!doctype html>
-<html lang="${lang}" data-theme="dark">
+<html lang="nb" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -481,52 +510,48 @@ function head(title: string, description: string, url: string, up: string, lang:
 <link rel="preload" href="${up}fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${up}fonts/fonts.css">
 <link rel="stylesheet" href="${up}atlas.css">
+<link rel="stylesheet" href="${up}nav.css">
 <link rel="stylesheet" href="${up}reports.css">
 ${extra}</head>`;
 }
 
-function masthead(up: string, w: Words, current: boolean): string {
-  return `<header class="masthead is-sticky r-masthead">
+function masthead(up: string): string {
+  return `<header class="masthead is-sticky r-masthead has-nav">
   ${brandLink(up)}
-  <nav class="controls" aria-label="Menu">
-    <a class="link-button" href="https://map.igred.org/">${esc(w.map)}</a>
-    <a class="link-button" href="https://map.igred.org/brief/">${esc(w.brief)}</a>
-    <a class="link-button" href="${up}reports/"${current ? ' aria-current="true"' : ''}>${esc(w.reports)}</a>
-    <a class="link-button" href="https://map.igred.org/metode/">${esc(w.methodNav)}</a>
-    <button type="button" class="link-button" id="theme" data-light="${esc(w.light)}" data-dark="${esc(w.dark)}">${esc(w.light)}</button>
-  </nav>
+  ${navHtml('reports')}
 </header>`;
 }
 
-const footer = `<footer class="colophon r-colophon">
+const footer = (up: string) => `<footer class="colophon r-colophon">
   <p class="meta"><strong>${BRAND.name}</strong> · <a href="mailto:contact@igred.org">contact@igred.org</a></p>
 </footer>
-<script type="module" src="../../reports.js"></script>`;
+<script type="module" src="${up}reports.js"></script>
+<script type="module" src="${up}nav.js"></script>`;
 
-function citation(r: Report, w: Words): string {
+function citation(r: Report, w: Words, l: Lang): string {
   const names = r.authors.map(citeName);
   const who = names.length ? `${listJoin(names, w)} (${r.date.slice(0, 4)}). ` : '';
-  return `${who}${r.title}. ${BRAND.products.reports}, ${r.type === 'halvar' ? w.halvar.toLowerCase() : w.analyse.toLowerCase()}, ${w.version.toLowerCase()} ${r.version}, ${day(r.date, r.lang)}. ${SITE}/reports/${r.slug}/`;
+  return `${who}${r.title}. ${BRAND.products.reports}, ${r.type === 'halvar' ? w.halvar.toLowerCase() : w.analyse.toLowerCase()}, ${w.version.toLowerCase()} ${r.version}, ${day(r.date, l)}. ${SITE}/reports/${r.slug}/`;
 }
 
 function reportPage(r: Report, all: Report[]): string {
-  const w = T[r.lang];
-  const ctx: Ctx = { lang: r.lang, w, notes: new Map(), order: [] };
-  const typeLabel = r.type === 'halvar' ? w.halvar : w.analyse;
+  const ctx: Ctx = { lang: r.lang, notes: new Map(), order: [] };
+  const typeWord = (w: Words) => (r.type === 'halvar' ? w.halvar : w.analyse);
   const url = `${SITE}/reports/${r.slug}/`;
   const pdf = pdfName(r.slug);
-  const meta = `${typeLabel}${r.period ? ` · ${r.period}` : ''} · ${day(r.date, r.lang)} · ${w.version} ${r.version}`;
-  const authors = r.authors.length ? `${w.by} ${listJoin(r.authors, w)}` : '';
-  const sections: { id: string; title: string; html: string }[] = [];
+  // The period is the report's own words: kept as written, in both languages of the label.
+  const meta = L((w, l) => `${typeWord(w)}${r.period ? ` · ${r.period}` : ''} · ${day(r.date, l)} · ${w.version} ${r.version}`, 'p', ' class="meta r-label"');
+  const authors = (w: Words) => (r.authors.length ? `${w.by} ${listJoin(r.authors, w)}` : '');
+  const sections: { id: string; title: Both; html: string }[] = [];
 
   if (r.type === 'halvar') {
     const assessments = r.assessments ?? [];
     sections.push({
-      id: 'vurderinger', title: w.assessments,
+      id: 'vurderinger', title: (w) => w.assessments,
       html: `<ol class="r-judgements">${assessments.map((a) => {
         const k = LIKELIHOOD.includes(a.likelihood) ? a.likelihood : 'even';
-        return `<li><p class="r-judgement-word"><b>${esc(w.words[k])}</b> <span class="meta">${esc(w.ranges[k])}</span></p>${md(a.text, ctx, r.slug)}</li>`;
-      }).join('')}</ol><p class="r-note">${esc(w.wordsNote)}</p>`,
+        return `<li><p class="r-judgement-word">${L((w) => w.words[k], 'b')} ${L((w) => w.ranges[k], 'span', ' class="meta"')}</p>${md(a.text, ctx, r.slug)}</li>`;
+      }).join('')}</ol>${L((w) => w.wordsNote, 'p', ' class="r-note"')}`,
     });
     // The previous half-year report, for the arrows.
     const previous = all.filter((x) => x.type === 'halvar' && x.date < r.date).sort((a, b) => b.date.localeCompare(a.date))[0];
@@ -538,101 +563,98 @@ function reportPage(r: Report, all: Report[]): string {
       return { i: i + 1, k, score, prev };
     });
     sections.push({
-      id: 'risiko', title: w.risks,
-      html: `<div class="r-register"><div class="r-table-wrap"><table class="r-register-table"><thead><tr><th>#</th><th>${esc(w.risk)}</th><th class="num">${esc(w.likelihood)}</th><th class="num">${esc(w.consequence)}</th><th class="num">${esc(w.score)}</th><th>${esc(w.change)}</th></tr></thead><tbody>`
-        + rows.map(({ i, k, score, prev }) => `<tr><td class="num">${i}</td><td>${esc(riskName(k.risk, r.lang))}${k.note ? `<span class="r-risk-note">${esc(k.note)}</span>` : ''}</td><td class="num">${k.likelihood}</td><td class="num">${k.consequence}</td><td class="num"><b>${score}</b></td><td>${changeCell(score, prev, w)}</td></tr>`).join('')
-        + `</tbody></table></div>${matrix(rows.map(({ i, k }) => ({ label: String(i), likelihood: k.likelihood, consequence: k.consequence })), w)}</div><p class="r-note">${esc(w.scaleNote)}</p>`,
+      id: 'risiko', title: (w) => w.risks,
+      html: `<div class="r-register"><div class="r-table-wrap"><table class="r-register-table"><thead><tr><th>#</th>${L((w) => w.risk, 'th')}${L((w) => w.likelihood, 'th', ' class="num"')}${L((w) => w.consequence, 'th', ' class="num"')}${L((w) => w.score, 'th', ' class="num"')}${L((w) => w.change, 'th')}</tr></thead><tbody>`
+        + rows.map(({ i, k, score, prev }) => `<tr><td class="num">${i}</td><td>${L((_, l) => riskName(k.risk, l))}${k.note ? `<span class="r-risk-note" lang="${r.lang}">${esc(k.note)}</span>` : ''}</td><td class="num">${k.likelihood}</td><td class="num">${k.consequence}</td><td class="num"><b>${score}</b></td><td>${changeCell(score, prev)}</td></tr>`).join('')
+        + `</tbody></table></div>${matrix(rows.map(({ i, k }) => ({ label: String(i), likelihood: k.likelihood, consequence: k.consequence })))}</div>${L((w) => w.scaleNote, 'p', ' class="r-note"')}`,
     });
     sections.push({
-      id: 'regioner', title: w.regions,
-      html: (r.regions ?? []).map((g) => `<section class="r-region"><h3>${esc(g.name)}</h3>`
-        + (g.happened ? `<h4 class="meta">${esc(w.happened)}</h4>${md(g.happened, ctx, r.slug)}` : '')
-        + (g.drivers ? `<h4 class="meta">${esc(w.drivers)}</h4>${md(g.drivers, ctx, r.slug)}` : '')
-        + (g.next ? `<h4 class="meta">${esc(w.next)}</h4>${md(g.next, ctx, r.slug)}` : '')
-        + (g.watch?.length ? `<h4 class="meta">${esc(w.watch)}</h4><ul class="r-watch">${g.watch.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : '')
+      id: 'regioner', title: (w) => w.regions,
+      html: (r.regions ?? []).map((g) => `<section class="r-region"><h3 lang="${r.lang}">${esc(g.name)}</h3>`
+        + (g.happened ? `${L((w) => w.happened, 'h4', ' class="meta"')}${md(g.happened, ctx, r.slug)}` : '')
+        + (g.drivers ? `${L((w) => w.drivers, 'h4', ' class="meta"')}${md(g.drivers, ctx, r.slug)}` : '')
+        + (g.next ? `${L((w) => w.next, 'h4', ' class="meta"')}${md(g.next, ctx, r.slug)}` : '')
+        + (g.watch?.length ? `${L((w) => w.watch, 'h4', ' class="meta"')}<ul class="r-watch" lang="${r.lang}">${g.watch.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : '')
         + '</section>').join(''),
     });
-    sections.push({ id: 'okonomi', title: w.economy, html: md(r.economy, ctx, r.slug) });
-    sections.push({ id: 'essay', title: `${w.essay}${r.essay?.title ? `: ${r.essay.title}` : ''}`, html: md(r.essay?.body, ctx, r.slug) });
-    sections.push({ id: 'bom', title: w.misses, html: md(r.misses, ctx, r.slug) });
-    sections.push({ id: 'metode', title: w.method, html: md(r.method, ctx, r.slug) + sourcesList(r.sources, r.lang) });
+    sections.push({ id: 'okonomi', title: (w) => w.economy, html: md(r.economy, ctx, r.slug) });
+    sections.push({ id: 'essay', title: (w) => `${w.essay}${r.essay?.title ? `: ${r.essay.title}` : ''}`, html: md(r.essay?.body, ctx, r.slug) });
+    sections.push({ id: 'bom', title: (w) => w.misses, html: md(r.misses, ctx, r.slug) });
+    sections.push({ id: 'metode', title: (w) => w.method, html: md(r.method, ctx, r.slug) + sourcesList(r.sources, r.lang) });
   } else {
-    sections.push({ id: 'tekst', title: '', html: md(r.body, ctx, r.slug) });
-    if (r.sources?.length) sections.push({ id: 'kilder', title: w.sources, html: sourcesList(r.sources, r.lang) });
+    sections.push({ id: 'tekst', title: () => '', html: md(r.body, ctx, r.slug) });
+    if (r.sources?.length) sections.push({ id: 'kilder', title: (w) => w.sources, html: sourcesList(r.sources, r.lang) });
   }
 
   const notes = ctx.order.map((id) => ({ ...ctx.notes.get(id)!, id }));
   const numbered = r.type === 'halvar';
   const contents = numbered
-    ? `<nav class="r-contents" aria-label="${esc(w.contents)}"><p class="meta">${esc(w.contents)}</p><ol>${sections.map((s) => `<li><a href="#${s.id}">${esc(s.title)}</a></li>`).join('')}</ol></nav>`
+    ? `<nav class="r-contents" aria-label="${esc(T.nb.contents)}">${L((w) => w.contents, 'p', ' class="meta"')}<ol>${sections.map((s) => `<li><a href="#${s.id}">${L(s.title)}</a></li>`).join('')}</ol></nav>`
     : '';
-  const body = sections.map((s, i) => `<section class="r-section" id="${s.id}">${s.title ? `<h2 class="r-h2">${numbered ? `<span class="r-num">${i + 1}</span>` : ''}${esc(s.title)}</h2>` : ''}${s.html}</section>`).join('');
+  const body = sections.map((s, i) => `<section class="r-section" id="${s.id}">${s.title(T.nb, 'nb') ? `<h2 class="r-h2">${numbered ? `<span class="r-num">${i + 1}</span>` : ''}${L(s.title)}</h2>` : ''}${s.html}</section>`).join('');
 
-  // The running header and the page numbers of the PDF: CSS page margin boxes, with the title
-  // written in here because Chromium has no string-set.
-  const printStyle = `<style>@page { @top-left { content: "${esc(BRAND.name)} · ${esc(typeLabel)}"; } @top-right { content: "${esc(r.title).replace(/"/g, '\\"')}"; } @bottom-right { content: "${esc(w.page)} " counter(page); } } @page :first { @top-left { content: none; } @top-right { content: none; } @bottom-right { content: none; } }</style>\n`;
+  // The running header and the page numbers of the PDF, which is printed in the report's own
+  // language: CSS page margin boxes, with the title written in because Chromium has no string-set.
+  const w = T[r.lang];
+  const printStyle = `<style>@page { @top-left { content: "${esc(BRAND.name)} · ${esc(typeWord(w))}"; } @top-right { content: "${esc(r.title).replace(/"/g, '\\"')}"; } @bottom-right { content: "${esc(w.page)} " counter(page); } } @page :first { @top-left { content: none; } @top-right { content: none; } @bottom-right { content: none; } }</style>\n`;
 
-  return `${head(`${r.title} · ${BRAND.products.reports}`, r.ingress, url, '../../', r.lang, printStyle)}
-<body class="r-page r-${r.type}">
-${masthead('../../', w, true)}
+  return `${head(`${r.title} · ${BRAND.products.reports}`, r.ingress, url, '../../', printStyle)}
+<body class="r-page r-${r.type}" data-report-lang="${r.lang}">
+${masthead('../../')}
 <section class="r-cover" aria-hidden="true">
-  <p class="wordmark brand">${markSvg()}<strong>${esc(BRAND.name)}</strong> <span>${esc(w.tagline)}</span></p>
+  <p class="wordmark brand">${markSvg()}<strong>${esc(BRAND.name)}</strong> ${L((x) => x.tagline)}</p>
   <div class="r-cover-main">
-    <p class="meta">${esc(typeLabel)}${r.period ? ` · ${esc(r.period)}` : ''}</p>
-    <h1 class="title">${esc(r.title)}</h1>
-    <p class="standfirst">${esc(r.ingress)}</p>
+    ${L((x) => typeWord(x), 'p', ' class="meta"').replace('</p>', r.period ? ` · <span lang="${r.lang}">${esc(r.period)}</span></p>` : '</p>')}
+    <h1 class="title" lang="${r.lang}">${esc(r.title)}</h1>
+    <p class="standfirst" lang="${r.lang}">${esc(r.ingress)}</p>
   </div>
-  <p class="r-cover-foot">${esc(authors)}<br>${esc(day(r.date, r.lang))} · ${esc(w.version)} ${esc(r.version)}<br>${esc(url)}</p>
+  <p class="r-cover-foot">${L(authors)}<br>${L((x, l) => `${day(r.date, l)} · ${x.version} ${r.version}`)}<br>${esc(url)}</p>
 </section>
 <main class="r-main">
   <article class="r-article">
     <header class="r-head">
-      <p class="meta r-label">${esc(meta)}</p>
-      <h1 class="title r-title">${esc(r.title)}</h1>
-      <p class="standfirst r-ingress">${esc(r.ingress)}</p>
-      <p class="r-byline">${esc(authors)}</p>
-      <p class="r-actions"><a class="link-button" href="${pdf}" download>${esc(w.pdf)}</a> <a class="link-button quiet" href="#sitering">${esc(w.cite)}</a></p>
+      ${meta}
+      <h1 class="title r-title" lang="${r.lang}">${esc(r.title)}</h1>
+      <p class="standfirst r-ingress" lang="${r.lang}">${esc(r.ingress)}</p>
+      ${L(authors, 'p', ' class="r-byline"')}
+      <p class="r-actions">${L((x) => x.pdf, 'a', ` class="link-button" href="${pdf}" download`)} ${L((x) => x.cite, 'a', ' class="link-button quiet" href="#sitering"')}</p>
     </header>
     ${contents}
     ${body}
-    ${notes.length ? `<section class="r-notes"><h2 class="meta">${esc(w.notes)}</h2><ol>${notes.map((n) => `<li id="note-${n.n}">${marked.parseInline(n.text || n.id, { async: false })} <a href="#ref-${n.n}" class="r-back" aria-label="↑">↑</a></li>`).join('')}</ol></section>` : ''}
-    <section class="r-cite" id="sitering"><h2 class="meta">${esc(w.cite)}</h2><p>${esc(citation(r, w))}</p></section>
+    ${notes.length ? `<section class="r-notes">${L((x) => x.notes, 'h2', ' class="meta"')}<ol lang="${r.lang}">${notes.map((n) => `<li id="note-${n.n}">${marked.parseInline(n.text || n.id, { async: false })} <a href="#ref-${n.n}" class="r-back" aria-label="↑">↑</a></li>`).join('')}</ol></section>` : ''}
+    <section class="r-cite" id="sitering">${L((x) => x.cite, 'h2', ' class="meta"')}${L((x, l) => citation(r, x, l), 'p')}</section>
   </article>
 </main>
-${footer}
+${footer('../../')}
 </body>
 </html>
 `;
 }
 
 function listPage(reports: Report[]): string {
-  const w = T.nb;
-  const entry = (r: Report, big: boolean) => {
-    const label = r.type === 'halvar' ? T[r.lang].halvar : T[r.lang].analyse;
-    return `<li class="${big ? 'r-entry r-entry-big' : 'r-entry'}"><a href="${r.slug}/" lang="${r.lang}">`
-      + `<p class="meta">${esc(label)}${r.period ? ` · ${esc(r.period)}` : ''} · ${esc(day(r.date, r.lang))}</p>`
-      + `<h2 class="${big ? 'r-entry-title-big' : 'r-entry-title'}">${esc(r.title)}</h2>`
-      + `<p class="r-entry-ingress">${esc(r.ingress)}</p>`
-      + `<p class="r-entry-by">${esc(listJoin(r.authors, T[r.lang]))}</p></a></li>`;
-  };
+  const entry = (r: Report, big: boolean) => `<li class="${big ? 'r-entry r-entry-big' : 'r-entry'}"><a href="${r.slug}/">`
+    + L((w, l) => `${r.type === 'halvar' ? w.halvar : w.analyse}${r.period ? ` · ${r.period}` : ''} · ${day(r.date, l)}`, 'p', ' class="meta"')
+    + `<h2 class="${big ? 'r-entry-title-big' : 'r-entry-title'}" lang="${r.lang}">${esc(r.title)}</h2>`
+    + `<p class="r-entry-ingress" lang="${r.lang}">${esc(r.ingress)}</p>`
+    + L((w) => listJoin(r.authors, w), 'p', ' class="r-entry-by"') + '</a></li>';
   const halvar = reports.filter((r) => r.type === 'halvar');
   const analyser = reports.filter((r) => r.type === 'analyse');
   // A kind with no reports is left out; with none at all, one quiet line and nothing else.
-  const group = (title: string, list: Report[], big: boolean) => (list.length
-    ? `<section class="r-group"><h2 class="meta">${esc(title)}</h2><ul class="r-entries">${list.map((r) => entry(r, big)).join('')}</ul></section>` : '');
+  const group = (title: Both, list: Report[], big: boolean) => (list.length
+    ? `<section class="r-group">${L(title, 'h2', ' class="meta"')}<ul class="r-entries">${list.map((r) => entry(r, big)).join('')}</ul></section>` : '');
   const body = reports.length
-    ? `  <p class="standfirst">${esc(w.list)}</p>
-  ${group(w.halvarPlural, halvar, true)}
-  ${group(w.analysePlural, analyser, false)}`
-    : `  <p class="standfirst r-soon" data-en="${esc(T.en.soon)}">${esc(w.soon)}</p>`;
-  return `${head(BRAND.products.reports, w.list, `${SITE}/reports/`, '../', 'nb')}
+    ? `  ${L((w) => w.list, 'p', ' class="standfirst"')}
+  ${group((w) => w.halvarPlural, halvar, true)}
+  ${group((w) => w.analysePlural, analyser, false)}`
+    : `  ${L((w) => w.soon, 'p', ' class="standfirst r-soon"')}`;
+  return `${head(BRAND.products.reports, T.nb.list, `${SITE}/reports/`, '../')}
 <body class="r-page r-list-page">
-${masthead('../', w, true)}
+${masthead('../')}
 <main class="r-list">
-  <h1 class="title"><span data-en="Reports">Rapporter</span></h1>
+  <h1 class="title">${L((w) => w.reports)}</h1>
 ${body}
 </main>
-${footer.replace('../../reports.js', '../reports.js')}
+${footer('../')}
 </body>
 </html>
 `;
@@ -657,6 +679,8 @@ async function printPdfs(reports: Report[]): Promise<void> {
     browser = await chromium.launch();
     for (const r of reports) {
       const page = await browser.newPage();
+      // Printed in the language the report is written in.
+      await page.addInitScript((lang) => { try { localStorage.setItem('igred-lang', lang); } catch { /* none */ } }, r.lang);
       await page.goto(`http://localhost:${port}/reports/${r.slug}/`, { waitUntil: 'networkidle' });
       await page.emulateMedia({ media: 'print' });
       await page.evaluate('document.fonts.ready');

@@ -1,4 +1,4 @@
-import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync, rmSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import os from 'node:os';
 import path from 'node:path';
@@ -647,7 +647,7 @@ describe('dark by default, light on request', () => {
   it('the menu and the light switch sit at the top of every page, and stay there', () => {
     for (const page of PAGES) {
       const html = read(page);
-      const top = /<(header class="masthead[^"]*"|div class="topbar")[\s\S]*?<\/(header|nav)>/.exec(html)?.[0] ?? '';
+      const top = /<(header class="masthead[^"]*"|div class="topbar[^"]*")[\s\S]*?<\/(header|nav)>/.exec(html)?.[0] ?? '';
       expect(top, page).toMatch(/id="theme"/);
       expect(top, page).toMatch(/id="lang"/);
       const footer = /<footer[\s\S]*?<\/footer>/.exec(html)?.[0] ?? '';
@@ -1215,13 +1215,14 @@ describe('the front page', () => {
 });
 
 describe('reports on igred.org', () => {
-  it('igred.org links to the reports and the method from its top menu', () => {
-    for (const [file, up] of [['www/index.html', ''], ['www/knowledge/index.html', '../']] as const) {
-      const html = read(file);
-      expect(html).toContain(`<a class="link-button" href="${up}reports/" data-i18n="navReports">Reports</a>`);
-      expect(html).toContain('<a class="link-button" href="https://map.igred.org/metode/" data-i18n="navMethod">Method</a>');
+  it('igred.org has the same menu as the map, without About, from the same files', () => {
+    for (const file of ['www/index.html', 'www/knowledge/index.html']) {
+      const nav = /<nav class="controls site-nav"[\s\S]*?<\/nav>/.exec(read(file))?.[0] ?? '';
+      expect([...nav.matchAll(/data-en="([^"]+)" data-nb="[^"]+"/g)].map((m) => m[1]), file).toEqual(['Menu', 'Map', 'Brief', 'Wire', 'Reports', 'Elections', 'Method']);
+      expect(nav, file).not.toMatch(/About|Om oss|#about/);
     }
-    expect(read('www/home.js')).toMatch(/navReports: 'Rapporter', navMethod: 'Metode'/);
+    expect(read('www/nav.css')).toBe(read('site/nav.css'));
+    expect(read('www/nav.js')).toBe(read('site/nav.js'));
   });
 
   it('a build without Chromium still succeeds, without the PDF button', () => {
@@ -1237,17 +1238,25 @@ describe('reports on igred.org', () => {
   const built = (rel: string) => readFileSync(path.join(scratch, rel), 'utf-8');
 
   it('with no reports, /reports is one quiet line in either language, and no example is published', () => {
-    const out = execFileSync('npx', ['tsx', 'scripts/build-reports.ts'], { cwd: repoRoot, encoding: 'utf-8' });
+    // Built from an empty folder, as on the day before the first report.
+    const empty = path.join(os.tmpdir(), 'varde-no-reports'); const emptyOut = path.join(os.tmpdir(), 'varde-no-reports-out');
+    rmSync(empty, { recursive: true, force: true }); mkdirSync(empty, { recursive: true });
+    const out = execFileSync('npx', ['tsx', 'scripts/build-reports.ts'], { cwd: repoRoot, encoding: 'utf-8', env: { ...process.env, REPORTS_CONTENT: empty, REPORTS_OUT: emptyOut } });
     expect(out).toMatch(/reports: 0 built/);
-    const main = /<main class="r-list">([\s\S]*?)<\/main>/.exec(read('www/reports/index.html'))![1]!;
-    expect(main).toContain('<p class="standfirst r-soon" data-en="The first report is coming soon.">Den første rapporten kommer snart.</p>');
+    const main = /<main class="r-list">([\s\S]*?)<\/main>/.exec(readFileSync(path.join(emptyOut, 'index.html'), 'utf-8'))![1]!;
+    expect(main).toContain('<p class="standfirst r-soon" data-nb="Den første rapporten kommer snart." data-en="The first report is coming soon.">Den første rapporten kommer snart.</p>');
     expect(main).not.toMatch(/<a |<button|r-group|r-entry/);
-    expect(readdirSync(path.join(repoRoot, 'www/content/reports')).filter((f) => f.endsWith('.md'))).toEqual([]);
+    // The examples stay out of what is published.
+    expect(readdirSync(path.join(repoRoot, 'www/content/reports')).filter((f) => f.endsWith('.md'))).not.toContain('2026-h2.md');
     for (const f of ['2026-h2.md', '2026-10-sudan-kordofan.md', 'frozen/2026-h2.json']) expect(exists(`docs/report-examples/${f}`)).toBe(true);
     // The front page leads to the list, never to a report, and its cover says the first one is coming.
     const home = read('www/index.html');
     expect(home).not.toMatch(/href="reports\/[^"]+"/);
-    expect(home).toMatch(/<span data-i18n="reportEdition">First edition<\/span><span class="coming" data-i18n="coming">Coming<\/span>/);
+    expect(home).toMatch(/<span data-i18n="reportEdition">First edition<\/span> · <span class="coming" data-i18n="coming">Coming<\/span>/);
+    // Its picture: a cairn on Molden from Wikimedia Commons, credited like the other covers.
+    expect(home).toContain('<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/2024_Sogn_og_Fjordane_49.jpg/960px-2024_Sogn_og_Fjordane_49.jpg"');
+    expect(home).toMatch(/data-i18n="reportPicture">A cairn on Molden, Sogn og Fjordane · Øyvind Holmstad, CC BY-SA 4\.0 · Wikimedia Commons</);
+    expect(read('www/home.js')).toMatch(/reportPicture: 'Varde på Molden, Sogn og Fjordane · Øyvind Holmstad, CC BY-SA 4\.0 · Wikimedia Commons'/);
   });
 
   it('builds the list and one page per report, half-year reports first and larger', () => {
@@ -1262,17 +1271,23 @@ describe('reports on igred.org', () => {
     build();
     const page = built('2026-h2/index.html');
     const order = ['Hovedvurderinger', 'Risikoregister', 'Regioner', 'Økonomisk utvikling', 'Temaessay', 'Hva vi bommet på', 'Metode og kilder'];
-    const at = order.map((h) => page.indexOf(`</span>${h}`));
+    const at = order.map((h, i) => page.indexOf(`<span class="r-num">${i + 1}</span><span data-nb="${h}`));
     expect(at.every((i) => i > 0)).toBe(true);
     expect([...at].sort((a, b) => a - b)).toEqual(at);
     expect(page).toMatch(/svært usannsynlig, under 10 %; usannsynlig, 10-35 %; like sannsynlig, 35-55 %; sannsynlig, 55-80 %; svært sannsynlig, over 80 %/);
-    expect(page).toMatch(/class="r-up">↑ opp fra 16/);
-    expect(page).toMatch(/class="r-down">↓ ned fra 12/);
-    expect(page).toMatch(/class="r-new">Ny/);
+    expect(page).toMatch(/highly unlikely, under 10%; unlikely, 10-35%/);
+    expect(page).toMatch(/class="r-up" data-nb="↑ opp fra 16" data-en="↑ up from 16"/);
+    expect(page).toMatch(/class="r-down" data-nb="↓ ned fra 12" data-en="↓ down from 12"/);
+    expect(page).toMatch(/class="r-new" data-nb="Ny" data-en="New"/);
+    // The report's own words keep their language; the page around them follows the reader.
+    expect(page).toMatch(/<h1 class="title r-title" lang="nb">Krigene som former høsten 2026<\/h1>/);
+    expect(page).toMatch(/<div class="r-text" lang="nb">/);
+    expect(page).toMatch(/<button type="button" class="link-button" id="lang">/);
     // Title, type, authors, date, version, ingress, how to cite, and the PDF.
-    expect(page).toMatch(/Halvårsrapport · April til september 2026 · 11\. oktober 2026 · Versjon 1\.0/);
-    expect(page).toMatch(/Moe, E\. B\. og Bratberg, V\. \(2026\)\. Krigene som former høsten 2026\. Varde Reports, halvårsrapport, versjon 1\.0, 11\. oktober 2026\. https:\/\/igred\.org\/reports\/2026-h2\//);
-    expect(page).toMatch(/<a class="link-button" href="varde-2026-h2\.pdf" download>Last ned PDF<\/a>/);
+    expect(page).toMatch(/data-nb="Halvårsrapport · April til september 2026 · 11\. oktober 2026 · Versjon 1\.0" data-en="Half-year report · April til september 2026 · 11 October 2026 · Version 1\.0"/);
+    expect(page).toMatch(/data-nb="Moe, E\. B\. og Bratberg, V\. \(2026\)\. Krigene som former høsten 2026\. Varde Reports, halvårsrapport, versjon 1\.0, 11\. oktober 2026\. https:\/\/igred\.org\/reports\/2026-h2\/"/);
+    expect(page).toMatch(/data-en="Moe, E\. B\. and Bratberg, V\. \(2026\)\. Krigene som former høsten 2026\. Varde Reports, half-year report, version 1\.0, 11 October 2026\./);
+    expect(page).toMatch(/<a class="link-button" href="varde-2026-h2\.pdf" download data-nb="Last ned PDF" data-en="Download PDF">Last ned PDF<\/a>/);
   });
 
   it('every building block renders, and the figures come frozen from the first build', () => {

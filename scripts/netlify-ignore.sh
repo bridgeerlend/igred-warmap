@@ -11,4 +11,4 @@ case "$BRANCH" in cms/*) echo "editor draft ($BRANCH): skipped"; exit 0 ;; esac
 if [ "$CONTEXT" = "deploy-preview" ] || [ "$CONTEXT" = "branch-deploy" ]; then
   echo "$CONTEXT: skipped"; exit 0
 fi
-git diff --quiet "${CACHED_COMMIT_REF:-HEAD^}" "${COMMIT_REF:-HEAD}" -- www netlify.toml scripts/build-reports.ts scripts/netlify-ignore.sh config/brand.json src/core/brand.ts package.json package-lock.json
+git diff --quiet "${CACHED_COMMIT_REF:-HEAD^}" "${COMMIT_REF:-HEAD}" -- www netlify.toml scripts/build-reports.ts scripts/netlify-ignore.sh config/brand.json src/core/brand.ts src/core/nav.ts package.json package-lock.json
