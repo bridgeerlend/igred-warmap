@@ -1,6 +1,6 @@
 ---
-title: "More market, less control: excess returns and agency loss if the
-  Government Pension Fund Global invests in private equity funds"
+title: "More market, less control: an analysis of excess returns and agency loss
+  if the norwegian oil fund invests in private equity"
 type: analyse
 date: 2026-10-14
 version: "1.0"
