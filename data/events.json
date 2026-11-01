@@ -1,8 +1,8 @@
 {
   "artifactVersion": 1,
-  "generatedAt": "2026-11-01T09:32:04.539Z",
+  "generatedAt": "2026-11-01T16:52:08.931Z",
   "windowDays": 30,
-  "earliestEvent": "2026-10-02T15:30:00.000Z",
+  "earliestEvent": "2026-10-03T00:00:00.000Z",
   "latestEvent": "2026-11-01T00:00:00.000Z",
   "events": [
     {
@@ -139,7 +139,7 @@
       "id": "evt_3df4b415ca7b7b78",
       "occurredAt": "2026-11-01T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-11-01T08:30:00.000Z",
+      "ingestedAt": "2026-11-01T15:15:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Tehran, Tehran, Iran",
       "cameoCode": "190",
@@ -153,9 +153,19 @@
       },
       "actors": [
         {
-          "name": "PERSIAN GULF",
+          "name": "IRAN",
           "role": "initiator",
-          "code": "PGS"
+          "code": "IRN"
+        },
+        {
+          "name": "ARMED FORCE",
+          "role": "target",
+          "code": "UAF"
+        },
+        {
+          "name": "ARMED FORCE",
+          "role": "initiator",
+          "code": "UAF"
         }
       ],
       "confidence": "unconfirmed",
@@ -190,6 +200,15 @@
           "publisher": "canadianinquirer.net",
           "publishedAt": "2026-11-01T08:30:00.000Z",
           "retrievedAt": "2026-11-01T09:32:04.539Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://aa.com.tr/en/middle-east/iran-boosting-military-capabilities-to-respond-without-geographical-limits-defense-minister/4108079",
+          "publisher": "aa.com.tr",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
         }
       ]
     },
@@ -197,10 +216,10 @@
       "id": "evt_0b63750065592cea",
       "occurredAt": "2026-11-01T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-11-01T08:00:00.000Z",
+      "ingestedAt": "2026-11-01T16:00:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Gaza, Israel (general), Israel",
-      "cameoCode": "192",
+      "cameoCode": "190",
       "location": {
         "lat": 31.4167,
         "lon": 34.3333,
@@ -211,26 +230,41 @@
       },
       "actors": [
         {
+          "name": "MINISTRY",
+          "role": "initiator",
+          "code": "GOV"
+        },
+        {
           "name": "GAZA",
-          "role": "initiator",
-          "code": "PSE"
-        },
-        {
-          "name": "ISRAEL",
           "role": "target",
-          "code": "ISR"
+          "code": "PSEHLH"
         },
         {
           "name": "ISRAEL",
           "role": "initiator",
           "code": "ISR"
+        },
+        {
+          "name": "DISPLACED PEOPLE",
+          "role": "initiator",
+          "code": "REF"
+        },
+        {
+          "name": "THE UN",
+          "role": "initiator",
+          "code": "IGOUNO"
+        },
+        {
+          "name": "SETTLER",
+          "role": "target",
+          "code": "SET"
         }
       ],
-      "confidence": "unconfirmed",
+      "confidence": "reported",
       "severity": 4,
-      "intensity": 2,
-      "reportCount": 2,
-      "distinctPublishers": 2,
+      "intensity": 3,
+      "reportCount": 4,
+      "distinctPublishers": 4,
       "provenance": [
         {
           "sourceId": "gdelt",
@@ -267,6 +301,42 @@
           "publisher": "countercurrents.org",
           "publishedAt": "2026-11-01T08:00:00.000Z",
           "retrievedAt": "2026-11-01T09:32:04.539Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.arabnews.com/middle-east/israeli-forces-arrest-5-palestinians-in-west-bank-raids-3009278",
+          "publisher": "Arab News",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://aa.com.tr/en/middle-east/at-least-8-palestinians-killed-in-new-israeli-violations-of-gaza-ceasefire/4107999",
+          "publisher": "aa.com.tr",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.thenewsherald.com/2026/11/01/column-arab-americans-knew-what-they-were-getting-in-trump/",
+          "publisher": "thenewsherald.com",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.presstv.co.uk/Detail/2026/11/01/779685/israeli-soldier-posts-photo-of-blindfolded-palestinian-journalist-in-west-bank",
+          "publisher": "presstv.co.uk",
+          "publishedAt": "2026-11-01T16:00:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
         }
       ]
     },
@@ -449,10 +519,10 @@
       "id": "evt_d22136d06eab4fcf",
       "occurredAt": "2026-11-01T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-11-01T01:00:00.000Z",
+      "ingestedAt": "2026-11-01T15:45:00.000Z",
       "category": "armed_assault",
       "label": "Armed assault — Tehran, Tehran, Iran",
-      "cameoCode": "186",
+      "cameoCode": "180",
       "location": {
         "lat": 35.75,
         "lon": 51.5148,
@@ -468,9 +538,9 @@
           "code": "IRN"
         },
         {
-          "name": "RUSSIA",
+          "name": "UNITED STATES",
           "role": "target",
-          "code": "RUS"
+          "code": "USAMIL"
         }
       ],
       "confidence": "reported",
@@ -487,6 +557,15 @@
           "publisher": "The Jerusalem Post",
           "publishedAt": "2026-11-01T01:00:00.000Z",
           "retrievedAt": "2026-11-01T02:23:02.912Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.jpost.com/middle-east/iran-news/article-913481",
+          "publisher": "The Jerusalem Post",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
         }
       ]
     },
@@ -809,23 +888,28 @@
       "id": "evt_fcf13c1d1eda946b",
       "occurredAt": "2026-11-01T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-11-01T07:45:00.000Z",
+      "ingestedAt": "2026-11-01T15:15:00.000Z",
       "category": "armed_clash",
-      "label": "Armed clash — New Delhi, Delhi, India",
+      "label": "Armed clash — Delhi, Delhi, India",
       "cameoCode": "190",
       "location": {
-        "lat": 28.6,
-        "lon": 77.2,
-        "name": "New Delhi, Delhi, India",
+        "lat": 28.6667,
+        "lon": 77.2167,
+        "name": "Delhi, Delhi, India",
         "countryFips": "IN",
         "adm1": "IN07",
         "precision": "city"
       },
       "actors": [
         {
-          "name": "AIR FORCE",
+          "name": "DELHI",
+          "role": "target",
+          "code": "IND"
+        },
+        {
+          "name": "DELHI",
           "role": "initiator",
-          "code": "MIL"
+          "code": "IND"
         }
       ],
       "confidence": "unconfirmed",
@@ -860,6 +944,15 @@
           "publisher": "ianslive.in",
           "publishedAt": "2026-11-01T07:45:00.000Z",
           "retrievedAt": "2026-11-01T09:32:04.539Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.prokerala.com/news/articles/a1831694.html",
+          "publisher": "prokerala.com",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
         }
       ]
     },
@@ -1132,9 +1225,9 @@
       "id": "evt_4225541910159f0b",
       "occurredAt": "2026-11-01T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-11-01T08:15:00.000Z",
+      "ingestedAt": "2026-11-01T15:30:00.000Z",
       "category": "armed_clash",
-      "label": "Armed clash — Paris, France (general), France",
+      "label": "Armed clash — Charenton, France (general), France",
       "cameoCode": "190",
       "location": {
         "lat": 48.8667,
@@ -1146,29 +1239,34 @@
       },
       "actors": [
         {
-          "name": "PARIS",
+          "name": "FRANCE",
           "role": "initiator",
-          "code": "FRA"
-        },
-        {
-          "name": "DUTCH",
-          "role": "target",
-          "code": "NLD"
-        },
-        {
-          "name": "MARCHE",
-          "role": "target",
-          "code": "ITA"
-        },
-        {
-          "name": "MARCHE",
-          "role": "initiator",
-          "code": "ITA"
+          "code": "FRAGOV"
         },
         {
           "name": "PARIS",
+          "role": "initiator",
+          "code": "FRAJUD"
+        },
+        {
+          "name": "MOLOTOV",
+          "role": "target",
+          "code": "RUS"
+        },
+        {
+          "name": "INTERIOR MINIST",
+          "role": "initiator",
+          "code": "GOV"
+        },
+        {
+          "name": "FRANCE",
           "role": "target",
           "code": "FRA"
+        },
+        {
+          "name": "THE UN",
+          "role": "initiator",
+          "code": "IGOUNO"
         }
       ],
       "confidence": "reported",
@@ -1230,6 +1328,33 @@
           "publisher": "khaama.com",
           "publishedAt": "2026-11-01T08:15:00.000Z",
           "retrievedAt": "2026-11-01T09:32:04.539Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.dw.com/en/france-opens-attempted-murder-probe-after-protest-attack/a-79822853",
+          "publisher": "Deutsche Welle",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.egyptindependent.com/protests-and-violence-now-go-hand-in-hand-in-france-it-wasnt-always-like-this/",
+          "publisher": "egyptindependent.com",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.abc.net.au/news/2026-11-02/france-launches-attempted-murder-probe-into-petrol-bomb-attack/107334294",
+          "publisher": "abc.net.au",
+          "publishedAt": "2026-11-01T15:30:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
         }
       ]
     },
@@ -1376,7 +1501,7 @@
       "id": "evt_4e1bcdf1380efd97",
       "occurredAt": "2026-11-01T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-11-01T01:45:00.000Z",
+      "ingestedAt": "2026-11-01T16:00:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Kano, Kano, Nigeria",
       "cameoCode": "190",
@@ -1390,19 +1515,9 @@
       },
       "actors": [
         {
-          "name": "GOVERNMENT",
-          "role": "initiator",
-          "code": "GOV"
-        },
-        {
-          "name": "MILITARY",
+          "name": "KANO",
           "role": "target",
-          "code": "MIL"
-        },
-        {
-          "name": "ISLAM",
-          "role": "initiator",
-          "code": "MOS"
+          "code": "NGA"
         }
       ],
       "confidence": "reported",
@@ -1419,6 +1534,15 @@
           "publisher": "The Punch",
           "publishedAt": "2026-11-01T01:45:00.000Z",
           "retrievedAt": "2026-11-01T02:23:02.912Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://dailytrust.com/over-100-structures-affected-as-fire-razes-timber-market-in-kano/",
+          "publisher": "dailytrust.com",
+          "publishedAt": "2026-11-01T16:00:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
         }
       ]
     },
@@ -1525,10 +1649,10 @@
       "id": "evt_30a81e4ddec40a2b",
       "occurredAt": "2026-11-01T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-11-01T01:45:00.000Z",
+      "ingestedAt": "2026-11-01T15:45:00.000Z",
       "category": "armed_assault",
       "label": "Armed assault — Sanaa, Sana', Yemen",
-      "cameoCode": "1822",
+      "cameoCode": "181",
       "location": {
         "lat": 15.3547,
         "lon": 44.2067,
@@ -1539,22 +1663,12 @@
       },
       "actors": [
         {
-          "name": "YEMENI",
+          "name": "GOVERNMENT FORCES",
           "role": "initiator",
-          "code": "YEM"
-        },
-        {
-          "name": "PRISON",
-          "role": "target",
-          "code": "COP"
-        },
-        {
-          "name": "YEMEN",
-          "role": "initiator",
-          "code": "YEMGOV"
+          "code": "MIL"
         }
       ],
-      "confidence": "unconfirmed",
+      "confidence": "reported",
       "severity": 4,
       "intensity": 2,
       "reportCount": 1,
@@ -1568,6 +1682,15 @@
           "publisher": "newcastleherald.com.au",
           "publishedAt": "2026-11-01T01:45:00.000Z",
           "retrievedAt": "2026-11-01T02:23:02.912Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.jpost.com/middle-east/article-913473",
+          "publisher": "The Jerusalem Post",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
         }
       ]
     },
@@ -1935,10 +2058,10 @@
       "id": "evt_b89161978556f9b1",
       "occurredAt": "2026-11-01T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-11-01T02:15:00.000Z",
+      "ingestedAt": "2026-11-01T16:00:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Moscow, Moskva, Russia",
-      "cameoCode": "194",
+      "cameoCode": "190",
       "location": {
         "lat": 55.7522,
         "lon": 37.6156,
@@ -1949,16 +2072,31 @@
       },
       "actors": [
         {
-          "name": "ADEN",
+          "name": "RUSSIA",
           "role": "initiator",
-          "code": "YEM"
+          "code": "RUS"
+        },
+        {
+          "name": "UKRAINE",
+          "role": "target",
+          "code": "UKR"
+        },
+        {
+          "name": "UKRAINIAN",
+          "role": "target",
+          "code": "UKR"
+        },
+        {
+          "name": "RUSSIAN",
+          "role": "target",
+          "code": "RUS"
         }
       ],
-      "confidence": "unconfirmed",
+      "confidence": "reported",
       "severity": 4,
-      "intensity": 2,
-      "reportCount": 1,
-      "distinctPublishers": 1,
+      "intensity": 3,
+      "reportCount": 4,
+      "distinctPublishers": 4,
       "provenance": [
         {
           "sourceId": "gdelt",
@@ -1968,6 +2106,42 @@
           "publisher": "moderntokyotimes.com",
           "publishedAt": "2026-11-01T02:15:00.000Z",
           "retrievedAt": "2026-11-01T02:23:02.912Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.witneygazette.co.uk/news/national/26688212.civilians-kherson-prepare-return-war-localised-ceasefire-ends/",
+          "publisher": "witneygazette.co.uk",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.perthnow.com.au/news/conflict/pope-hopes-oleshky-truce-can-spur-ukraine-russia-peace-c-23101108",
+          "publisher": "perthnow.com.au",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.northerndailyleader.com.au/story/9383924/pope-hopes-oleshky-truce-can-spur-ukraine-russia-peace/",
+          "publisher": "northerndailyleader.com.au",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://sana.sy/en/international/2355154/",
+          "publisher": "sana.sy",
+          "publishedAt": "2026-11-01T16:00:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
         }
       ]
     },
@@ -2259,10 +2433,10 @@
       "id": "evt_c1de84cc1c13cb81",
       "occurredAt": "2026-11-01T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-11-01T07:45:00.000Z",
+      "ingestedAt": "2026-11-01T16:00:00.000Z",
       "category": "armed_clash",
       "label": "Armed clash — Bengaluru, Karnataka, India",
-      "cameoCode": "193",
+      "cameoCode": "190",
       "location": {
         "lat": 12.9833,
         "lon": 77.5833,
@@ -2273,29 +2447,24 @@
       },
       "actors": [
         {
-          "name": "GOVERNMENT",
+          "name": "CONGRESS",
           "role": "initiator",
-          "code": "GOV"
-        },
-        {
-          "name": "ANDHRA PRADESH",
-          "role": "target",
-          "code": "INDGOV"
-        },
-        {
-          "name": "UTTARAKHAND",
-          "role": "initiator",
-          "code": "IND"
-        },
-        {
-          "name": "POLICE",
-          "role": "target",
-          "code": "COP"
+          "code": "LEGLAB"
         },
         {
           "name": "KARNATAKA",
+          "role": "target",
+          "code": "IND"
+        },
+        {
+          "name": "ANDHRA PRADESH",
           "role": "initiator",
           "code": "IND"
+        },
+        {
+          "name": "STUDENT",
+          "role": "target",
+          "code": "EDU"
         }
       ],
       "confidence": "unconfirmed",
@@ -2321,6 +2490,24 @@
           "publisher": "deccanchronicle.com",
           "publishedAt": "2026-11-01T07:45:00.000Z",
           "retrievedAt": "2026-11-01T09:32:04.539Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://organiser.org/2026/11/01/423026/bharat/congress-workers-accused-of-political-goondagiri-after-attack-on-theatre-artist-addanda-cariappa/",
+          "publisher": "organiser.org",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.hindustantimes.com/entertainment/bollywood/ram-gopal-varma-defends-violence-in-films-from-scrutiny-after-andhra-pradesh-chainsaw-attack-internet-says-cinema-has-responsibility-101793546073219.html",
+          "publisher": "hindustantimes.com",
+          "publishedAt": "2026-11-01T16:00:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
         }
       ]
     },
@@ -2748,10 +2935,10 @@
       "id": "evt_8463a1697a5b6b9c",
       "occurredAt": "2026-11-01T00:00:00.000Z",
       "dateBasis": "event_date",
-      "ingestedAt": "2026-11-01T08:00:00.000Z",
+      "ingestedAt": "2026-11-01T16:00:00.000Z",
       "category": "armed_assault",
       "label": "Armed assault — Gaza, Israel (general), Israel",
-      "cameoCode": "182",
+      "cameoCode": "181",
       "location": {
         "lat": 31.4167,
         "lon": 34.3333,
@@ -2764,19 +2951,39 @@
         {
           "name": "ISRAEL",
           "role": "initiator",
-          "code": "ISR"
+          "code": "ISRGOV"
         },
         {
-          "name": "NASSER",
+          "name": "POLICE OFFICER",
           "role": "target",
-          "code": "EGY"
+          "code": "COP"
+        },
+        {
+          "name": "GAZA",
+          "role": "initiator",
+          "code": "PSE"
+        },
+        {
+          "name": "IRAN",
+          "role": "initiator",
+          "code": "IRN"
+        },
+        {
+          "name": "CORRESPONDENT",
+          "role": "target",
+          "code": "MED"
+        },
+        {
+          "name": "PRISON",
+          "role": "target",
+          "code": "COP"
         }
       ],
-      "confidence": "unconfirmed",
+      "confidence": "reported",
       "severity": 4,
-      "intensity": 2,
-      "reportCount": 1,
-      "distinctPublishers": 1,
+      "intensity": 3,
+      "reportCount": 3,
+      "distinctPublishers": 3,
       "provenance": [
         {
           "sourceId": "gdelt",
@@ -2786,6 +2993,33 @@
           "publisher": "countercurrents.org",
           "publishedAt": "2026-11-01T08:00:00.000Z",
           "retrievedAt": "2026-11-01T09:32:04.539Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://aa.com.tr/en/middle-east/at-least-8-palestinians-killed-in-new-israeli-violations-of-gaza-ceasefire/4107999",
+          "publisher": "aa.com.tr",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.presstv.co.uk/Detail/2026/11/01/779685/israeli-soldier-posts-photo-of-blindfolded-palestinian-journalist-in-west-bank",
+          "publisher": "presstv.co.uk",
+          "publishedAt": "2026-11-01T16:00:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://sana.sy/en/middle-east/2355100/",
+          "publisher": "sana.sy",
+          "publishedAt": "2026-11-01T16:00:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
         }
       ]
     },
@@ -3336,6 +3570,1458 @@
           "publisher": "manilatimes.net",
           "publishedAt": "2026-11-01T08:15:00.000Z",
           "retrievedAt": "2026-11-01T09:32:04.539Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_c8dc95f8f0321f14",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:45:00.000Z",
+      "category": "aerial_strike",
+      "label": "Aerial or missile strike — Khartoum, Al Khartum, Sudan",
+      "cameoCode": "195",
+      "location": {
+        "lat": 15.5881,
+        "lon": 32.5342,
+        "name": "Khartoum, Al Khartum, Sudan",
+        "countryFips": "SU",
+        "adm1": "SU29",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "SUDANESE",
+          "role": "target",
+          "code": "SDNCVL"
+        },
+        {
+          "name": "KHARTOUM",
+          "role": "initiator",
+          "code": "SDN"
+        },
+        {
+          "name": "CIVILIAN",
+          "role": "target",
+          "code": "CVL"
+        },
+        {
+          "name": "SUDAN",
+          "role": "initiator",
+          "code": "SDNCVL"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 5,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.vetogate.com/5761995",
+          "publisher": "vetogate.com",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_3de0c76ce8314946",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:15:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Jadavpur, West Bengal, India",
+      "cameoCode": "190",
+      "location": {
+        "lat": 22.4833,
+        "lon": 88.3833,
+        "name": "Jadavpur, West Bengal, India",
+        "countryFips": "IN",
+        "adm1": "IN28",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "CHANCELLOR",
+          "role": "target",
+          "code": "GOVEDU"
+        },
+        {
+          "name": "UNIVERSITY",
+          "role": "initiator",
+          "code": "EDU"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://organiser.org/2026/11/01/423055/bharat/srfti-protest-we-beg-to-differ-janab-naseeruddin-shah/",
+          "publisher": "organiser.org",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_0e6babd5c4d127fa",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:15:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Central District, HaMerkaz, Israel",
+      "cameoCode": "190",
+      "location": {
+        "lat": 32.0833,
+        "lon": 34.9167,
+        "name": "Central District, HaMerkaz, Israel",
+        "countryFips": "IS",
+        "adm1": "IS02",
+        "precision": "adm1"
+      },
+      "actors": [
+        {
+          "name": "DETECTIVE",
+          "role": "initiator",
+          "code": "COP"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "target",
+          "code": "ISR"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.i24news.tv/en/news/israel/society/artc-74-undocumented-palestinians-found-in-a-residential-building-in-kafr-qasim",
+          "publisher": "i24news.tv",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_6da7dc63916f1aa8",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:15:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Haryana, North-West Frontier, Pakistan",
+      "cameoCode": "190",
+      "location": {
+        "lat": 34.1779,
+        "lon": 71.6469,
+        "name": "Haryana, North-West Frontier, Pakistan",
+        "countryFips": "PK",
+        "adm1": "PK03",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "CRIMINAL",
+          "role": "initiator",
+          "code": "CRM"
+        },
+        {
+          "name": "UNITED STATES",
+          "role": "initiator",
+          "code": "USA"
+        },
+        {
+          "name": "CRIMINAL",
+          "role": "target",
+          "code": "CRM"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.tribuneindia.com/news/haryana/10-haryana-cops-to-get-union-home-ministers-medal-for-excellence-in-intelligence-counterterrorism-ops/",
+          "publisher": "tribuneindia.com",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_5a38965ce61dbd90",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:15:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Birbhum, West Bengal, India",
+      "cameoCode": "1821",
+      "location": {
+        "lat": 24,
+        "lon": 87.5833,
+        "name": "Birbhum, West Bengal, India",
+        "countryFips": "IN",
+        "adm1": "IN28",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "VILLAGE",
+          "role": "initiator",
+          "code": "CVL"
+        },
+        {
+          "name": "GANG",
+          "role": "target",
+          "code": "CRM"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://organiser.org/2026/11/01/423055/bharat/srfti-protest-we-beg-to-differ-janab-naseeruddin-shah/",
+          "publisher": "organiser.org",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_8ef5914f1e5fbdd9",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:15:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Kolkata, West Bengal, India",
+      "cameoCode": "1821",
+      "location": {
+        "lat": 22.5697,
+        "lon": 88.3697,
+        "name": "Kolkata, West Bengal, India",
+        "countryFips": "IN",
+        "adm1": "IN28",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "VILLAGE",
+          "role": "initiator",
+          "code": "CVL"
+        },
+        {
+          "name": "GANG",
+          "role": "target",
+          "code": "CRM"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://organiser.org/2026/11/01/423055/bharat/srfti-protest-we-beg-to-differ-janab-naseeruddin-shah/",
+          "publisher": "organiser.org",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_f557e574b852aebe",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:15:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Nanur, West Bengal, India",
+      "cameoCode": "1821",
+      "location": {
+        "lat": 23.7,
+        "lon": 87.8667,
+        "name": "Nanur, West Bengal, India",
+        "countryFips": "IN",
+        "adm1": "IN28",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "VILLAGE",
+          "role": "initiator",
+          "code": "CVL"
+        },
+        {
+          "name": "GANG",
+          "role": "target",
+          "code": "CRM"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://organiser.org/2026/11/01/423055/bharat/srfti-protest-we-beg-to-differ-janab-naseeruddin-shah/",
+          "publisher": "organiser.org",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_9163fb61d8fbe7c3",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:15:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Kolkata, West Bengal, India",
+      "cameoCode": "190",
+      "location": {
+        "lat": 22.5697,
+        "lon": 88.3697,
+        "name": "Kolkata, West Bengal, India",
+        "countryFips": "IN",
+        "adm1": "IN28",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "WEST BENGAL",
+          "role": "initiator",
+          "code": "IND"
+        },
+        {
+          "name": "ACTIVIST",
+          "role": "target",
+          "code": "OPP"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://organiser.org/2026/11/01/423055/bharat/srfti-protest-we-beg-to-differ-janab-naseeruddin-shah/",
+          "publisher": "organiser.org",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_f9b97e5dc329198f",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:15:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Shahed, Fars, Iran",
+      "cameoCode": "194",
+      "location": {
+        "lat": 28.5934,
+        "lon": 52.2295,
+        "name": "Shahed, Fars, Iran",
+        "countryFips": "IR",
+        "adm1": "IR07",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "IRAN",
+          "role": "initiator",
+          "code": "IRN"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.arabnews.com/middle-east/report-irans-hidden-web-of-military-agencies-is-slipping-hardware-past-the-us-blockade-3009274",
+          "publisher": "Arab News",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_19c7955c99ef8a46",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:15:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Umm Haraz, Al Khartum, Sudan",
+      "cameoCode": "192",
+      "location": {
+        "lat": 15.4078,
+        "lon": 32.4942,
+        "name": "Umm Haraz, Al Khartum, Sudan",
+        "countryFips": "SU",
+        "adm1": "SU29",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "CHAD",
+          "role": "initiator",
+          "code": "TCD"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://aa.com.tr/en/africa/insecurity-displaces-1-150-people-in-sudan-s-north-darfur-in-3-days-un-migration-agency/4108057",
+          "publisher": "aa.com.tr",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_6b3e3f619d507ec4",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:30:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Azare, Bauchi, Nigeria",
+      "cameoCode": "190",
+      "location": {
+        "lat": 11.6765,
+        "lon": 10.1948,
+        "name": "Azare, Bauchi, Nigeria",
+        "countryFips": "NI",
+        "adm1": "NI46",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "POLICE",
+          "role": "initiator",
+          "code": "COP"
+        },
+        {
+          "name": "LOCAL MEDIA",
+          "role": "target",
+          "code": "MED"
+        },
+        {
+          "name": "LOCAL MEDIA",
+          "role": "initiator",
+          "code": "MED"
+        },
+        {
+          "name": "NIGERIA",
+          "role": "initiator",
+          "code": "NGA"
+        },
+        {
+          "name": "POLICE",
+          "role": "target",
+          "code": "COP"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.express.co.uk/news/world/2262299/nigeria-farm-girl-sex-attack-arrest",
+          "publisher": "express.co.uk",
+          "publishedAt": "2026-11-01T15:30:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_d0679bf644819c83",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:30:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Camarin, Pangasinan, Philippines",
+      "cameoCode": "193",
+      "location": {
+        "lat": 16.157,
+        "lon": 120.09,
+        "name": "Camarin, Pangasinan, Philippines",
+        "countryFips": "RP",
+        "adm1": "RP51",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "STUDENT",
+          "role": "initiator",
+          "code": "EDU"
+        },
+        {
+          "name": "POLICE",
+          "role": "target",
+          "code": "COP"
+        },
+        {
+          "name": "MEDIA",
+          "role": "target",
+          "code": "MED"
+        },
+        {
+          "name": "ZAMBOANGA",
+          "role": "target",
+          "code": "PHLEDU"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://bworldonline.com/top-stories/2026/11/01/790618/philippine-schools-seek-protection-beyond-security-guards-cameras/",
+          "publisher": "bworldonline.com",
+          "publishedAt": "2026-11-01T15:30:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_44ba2350feebf059",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:30:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Tacloban, Tacloban, Philippines",
+      "cameoCode": "190",
+      "location": {
+        "lat": 11.2433,
+        "lon": 125.005,
+        "name": "Tacloban, Tacloban, Philippines",
+        "countryFips": "RP",
+        "adm1": "RPG1",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "STUDENT",
+          "role": "initiator",
+          "code": "EDU"
+        },
+        {
+          "name": "ZAMBOANGA",
+          "role": "target",
+          "code": "PHLEDU"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://bworldonline.com/top-stories/2026/11/01/790618/philippine-schools-seek-protection-beyond-security-guards-cameras/",
+          "publisher": "bworldonline.com",
+          "publishedAt": "2026-11-01T15:30:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_3d7844e61b7cbd5d",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:30:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Zhytomyr, Zhytomyrs'ka Oblast', Ukraine",
+      "cameoCode": "190",
+      "location": {
+        "lat": 50.2649,
+        "lon": 28.6767,
+        "name": "Zhytomyr, Zhytomyrs'ka Oblast', Ukraine",
+        "countryFips": "UP",
+        "adm1": "UP27",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "RUSSIAN",
+          "role": "initiator",
+          "code": "RUS"
+        },
+        {
+          "name": "UKRAINE",
+          "role": "target",
+          "code": "UKR"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://timesofindia.indiatimes.com/world/europe/zelenskyy-says-ukraine-struck-russian-defence-facility-in-rostov/articleshow/135428970.cms",
+          "publisher": "The Times of India",
+          "publishedAt": "2026-11-01T15:30:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_ec3c3624a8b85fcf",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:30:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Amazonas, Amazonas, Venezuela",
+      "cameoCode": "190",
+      "location": {
+        "lat": 3.5,
+        "lon": -66,
+        "name": "Amazonas, Amazonas, Venezuela",
+        "countryFips": "VE",
+        "adm1": "VE01",
+        "precision": "adm1"
+      },
+      "actors": [
+        {
+          "name": "VENEZUELA",
+          "role": "initiator",
+          "code": "VEN"
+        },
+        {
+          "name": "ADVOCATE",
+          "role": "target",
+          "code": "JUD"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.cubaheadlines.com/articles/344468",
+          "publisher": "cubaheadlines.com",
+          "publishedAt": "2026-11-01T15:30:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_cf40803fa7c68965",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:45:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Hebron, Israel (general), Israel",
+      "cameoCode": "193",
+      "location": {
+        "lat": 31.5333,
+        "lon": 35.1,
+        "name": "Hebron, Israel (general), Israel",
+        "countryFips": "IS",
+        "adm1": "IS00",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "TERRORIST",
+          "role": "target",
+          "code": "UAF"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "initiator",
+          "code": "ISR"
+        },
+        {
+          "name": "TERRORIST",
+          "role": "initiator",
+          "code": "UAF"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "target",
+          "code": "ISR"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.israelnationalnews.com/news/435474",
+          "publisher": "israelnationalnews.com",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_73c4536159677e69",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:45:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Jerusalem, Israel (general), Israel",
+      "cameoCode": "193",
+      "location": {
+        "lat": 31.7667,
+        "lon": 35.2333,
+        "name": "Jerusalem, Israel (general), Israel",
+        "countryFips": "IS",
+        "adm1": "IS00",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "GOVERNMENT",
+          "role": "initiator",
+          "code": "GOV"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "initiator",
+          "code": "ISR"
+        },
+        {
+          "name": "GOVERNMENT",
+          "role": "target",
+          "code": "GOV"
+        },
+        {
+          "name": "ISRAELI",
+          "role": "initiator",
+          "code": "ISRMIL"
+        },
+        {
+          "name": "WEST BANK",
+          "role": "target",
+          "code": "PSE"
+        },
+        {
+          "name": "HIGH COURT",
+          "role": "initiator",
+          "code": "JUD"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 3,
+      "reportCount": 3,
+      "distinctPublishers": 3,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.jpost.com/israel-news/defense-news/article-913475",
+          "publisher": "The Jerusalem Post",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.arabnews.com/middle-east/israeli-forces-arrest-5-palestinians-in-west-bank-raids-3009278",
+          "publisher": "Arab News",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.israelnationalnews.com/news/435473",
+          "publisher": "israelnationalnews.com",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_8dd572b2b06eeee2",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:45:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Modiin, Israel (general), Israel",
+      "cameoCode": "194",
+      "location": {
+        "lat": 31.9339,
+        "lon": 34.9856,
+        "name": "Modiin, Israel (general), Israel",
+        "countryFips": "IS",
+        "adm1": "IS00",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "ISRAEL",
+          "role": "initiator",
+          "code": "ISR"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.jpost.com/israel-news/defense-news/article-913475",
+          "publisher": "The Jerusalem Post",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_8b6c5a2a46b09084",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:45:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Marib, Ma'rib, Yemen",
+      "cameoCode": "181",
+      "location": {
+        "lat": 15.461,
+        "lon": 45.3253,
+        "name": "Marib, Ma'rib, Yemen",
+        "countryFips": "YM",
+        "adm1": "YM14",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "GOVERNMENT FORCES",
+          "role": "initiator",
+          "code": "MIL"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.jpost.com/middle-east/article-913473",
+          "publisher": "The Jerusalem Post",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_dc6c136572571466",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:45:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Jerusalem, Israel (general), Israel",
+      "cameoCode": "1822",
+      "location": {
+        "lat": 31.7667,
+        "lon": 35.2333,
+        "name": "Jerusalem, Israel (general), Israel",
+        "countryFips": "IS",
+        "adm1": "IS00",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "HUMAN RIGHTS ORGANIZATION",
+          "role": "initiator",
+          "code": "NGOHRI"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.arabnews.com/middle-east/israeli-forces-arrest-5-palestinians-in-west-bank-raids-3009278",
+          "publisher": "Arab News",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_61e82c2be1a3dcd9",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T16:00:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Kano State, Kano, Nigeria",
+      "cameoCode": "190",
+      "location": {
+        "lat": 11.5,
+        "lon": 8.5,
+        "name": "Kano State, Kano, Nigeria",
+        "countryFips": "NI",
+        "adm1": "NI29",
+        "precision": "adm1"
+      },
+      "actors": [
+        {
+          "name": "KANO",
+          "role": "target",
+          "code": "NGA"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://dailytrust.com/over-100-structures-affected-as-fire-razes-timber-market-in-kano/",
+          "publisher": "dailytrust.com",
+          "publishedAt": "2026-11-01T16:00:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_ef63df1652e87db1",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T16:00:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Lahore, Punjab, Pakistan",
+      "cameoCode": "190",
+      "location": {
+        "lat": 31.5497,
+        "lon": 74.3436,
+        "name": "Lahore, Punjab, Pakistan",
+        "countryFips": "PK",
+        "adm1": "PK04",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "LAHORE",
+          "role": "target",
+          "code": "PAK"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.geo.tv/latest/689254-drone-used-for-surveillance-crashes-into-ctd-headquarters-in-lahore",
+          "publisher": "geo.tv",
+          "publishedAt": "2026-11-01T16:00:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_3fe3a35cc7e8826a",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T16:00:00.000Z",
+      "category": "armed_assault",
+      "label": "Armed assault — Manori, Maharashtra, India",
+      "cameoCode": "186",
+      "location": {
+        "lat": 19.75,
+        "lon": 72.9167,
+        "name": "Manori, Maharashtra, India",
+        "countryFips": "IN",
+        "adm1": "IN16",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "POLICE",
+          "role": "initiator",
+          "code": "COP"
+        },
+        {
+          "name": "RESIDENTS",
+          "role": "target",
+          "code": "CVL"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.freepressjournal.in/mumbai/gadchiroli-police-villagers-build-60-metre-temporary-pipe-bridge-to-restore-connectivity-to-tribal-village",
+          "publisher": "freepressjournal.in",
+          "publishedAt": "2026-11-01T16:00:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_651b807f1e0eae76",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T16:00:00.000Z",
+      "category": "armed_clash",
+      "label": "Armed clash — Gilboa, Ha?afon, Israel",
+      "cameoCode": "190",
+      "location": {
+        "lat": 32.5472,
+        "lon": 35.3583,
+        "name": "Gilboa, Ha?afon, Israel",
+        "countryFips": "IS",
+        "adm1": "IS03",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "ISRAEL",
+          "role": "initiator",
+          "code": "ISR"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 4,
+      "intensity": 2,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://sana.sy/en/middle-east/2355100/",
+          "publisher": "sana.sy",
+          "publishedAt": "2026-11-01T16:00:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_6d2f5431cc35ee11",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:15:00.000Z",
+      "category": "siege_blockade",
+      "label": "Siege or blockade — Delhi, Delhi, India",
+      "cameoCode": "1721",
+      "location": {
+        "lat": 28.6667,
+        "lon": 77.2167,
+        "name": "Delhi, Delhi, India",
+        "countryFips": "IN",
+        "adm1": "IN07",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "NEWSPAPER",
+          "role": "initiator",
+          "code": "MED"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 3,
+      "intensity": 1,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://organiser.org/2026/11/01/423039/bharat/nationalist-ideas-once-considered-anathema-are-now-mainstream-bl-santhosh-bjp-national-general-secretary/",
+          "publisher": "organiser.org",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_06fbc8a929815884",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:15:00.000Z",
+      "category": "siege_blockade",
+      "label": "Siege or blockade — Kolkata, West Bengal, India",
+      "cameoCode": "1721",
+      "location": {
+        "lat": 22.5697,
+        "lon": 88.3697,
+        "name": "Kolkata, West Bengal, India",
+        "countryFips": "IN",
+        "adm1": "IN28",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "MEDIA",
+          "role": "initiator",
+          "code": "MED"
+        },
+        {
+          "name": "KOLKATA",
+          "role": "target",
+          "code": "IND"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 3,
+      "intensity": 1,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://organiser.org/2026/11/01/423055/bharat/srfti-protest-we-beg-to-differ-janab-naseeruddin-shah/",
+          "publisher": "organiser.org",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_ab6cb3177a853363",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:15:00.000Z",
+      "category": "siege_blockade",
+      "label": "Siege or blockade — Jadavpur, West Bengal, India",
+      "cameoCode": "1721",
+      "location": {
+        "lat": 22.4833,
+        "lon": 88.3833,
+        "name": "Jadavpur, West Bengal, India",
+        "countryFips": "IN",
+        "adm1": "IN28",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "MEDIA",
+          "role": "initiator",
+          "code": "MED"
+        },
+        {
+          "name": "KOLKATA",
+          "role": "target",
+          "code": "IND"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 3,
+      "intensity": 1,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://organiser.org/2026/11/01/423055/bharat/srfti-protest-we-beg-to-differ-janab-naseeruddin-shah/",
+          "publisher": "organiser.org",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_979626688cff4e9e",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:45:00.000Z",
+      "category": "violent_repression",
+      "label": "Violent repression — Jerusalem, Israel (general), Israel",
+      "cameoCode": "175",
+      "location": {
+        "lat": 31.7667,
+        "lon": 35.2333,
+        "name": "Jerusalem, Israel (general), Israel",
+        "countryFips": "IS",
+        "adm1": "IS00",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "PALESTINIAN",
+          "role": "initiator",
+          "code": "PSE"
+        },
+        {
+          "name": "ISRAEL",
+          "role": "target",
+          "code": "ISROPP"
+        },
+        {
+          "name": "PALESTINIAN",
+          "role": "target",
+          "code": "PSEOPP"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 3,
+      "intensity": 1,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.arabnews.com/middle-east/israeli-forces-arrest-5-palestinians-in-west-bank-raids-3009278",
+          "publisher": "Arab News",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_16bb7a85eef3b9f5",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:45:00.000Z",
+      "category": "violent_unrest",
+      "label": "Violent unrest — Paris, France (general), France",
+      "cameoCode": "145",
+      "location": {
+        "lat": 48.8667,
+        "lon": 2.33333,
+        "name": "Paris, France (general), France",
+        "countryFips": "FR",
+        "adm1": "FR00",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "AUTHORITIES",
+          "role": "initiator",
+          "code": "GOV"
+        },
+        {
+          "name": "RIOTER",
+          "role": "target",
+          "code": "OPP"
+        },
+        {
+          "name": "POLICE",
+          "role": "initiator",
+          "code": "COP"
+        },
+        {
+          "name": "AUTHORITIES",
+          "role": "target",
+          "code": "GOV"
+        }
+      ],
+      "confidence": "unconfirmed",
+      "severity": 2,
+      "intensity": 2,
+      "reportCount": 2,
+      "distinctPublishers": 2,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.thejournal.ie/police-brace-for-major-protests-planned-in-france-germany-and-spain-7210774-Nov2026/",
+          "publisher": "thejournal.ie",
+          "publishedAt": "2026-11-01T15:15:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        },
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://www.wccbcharlotte.com/2026/11/01/who-pays-for-a-1b-riot-europe-looks-past-rioters-to-their-parents-and-the-apps-in-their-pockets/",
+          "publisher": "wccbcharlotte.com",
+          "publishedAt": "2026-11-01T15:45:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_3b403ea6c7e8be16",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:30:00.000Z",
+      "category": "violent_unrest",
+      "label": "Violent unrest — Hyderabad, Andhra Pradesh, India",
+      "cameoCode": "145",
+      "location": {
+        "lat": 17.3753,
+        "lon": 78.4744,
+        "name": "Hyderabad, Andhra Pradesh, India",
+        "countryFips": "IN",
+        "adm1": "IN02",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "TELUGU",
+          "role": "target",
+          "code": "tel"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 2,
+      "intensity": 1,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://timesofindia.indiatimes.com/india/immersive-story/the-day-india-redrew-itself/",
+          "publisher": "The Times of India",
+          "publishedAt": "2026-11-01T15:30:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
+        }
+      ]
+    },
+    {
+      "id": "evt_e031686840b3add6",
+      "occurredAt": "2026-11-01T00:00:00.000Z",
+      "dateBasis": "event_date",
+      "ingestedAt": "2026-11-01T15:30:00.000Z",
+      "category": "violent_unrest",
+      "label": "Violent unrest — Andhra, Andhra Pradesh, India",
+      "cameoCode": "145",
+      "location": {
+        "lat": 18,
+        "lon": 79.5,
+        "name": "Andhra, Andhra Pradesh, India",
+        "countryFips": "IN",
+        "adm1": "IN02",
+        "precision": "city"
+      },
+      "actors": [
+        {
+          "name": "TELUGU",
+          "role": "target",
+          "code": "tel"
+        }
+      ],
+      "confidence": "reported",
+      "severity": 2,
+      "intensity": 1,
+      "reportCount": 1,
+      "distinctPublishers": 1,
+      "provenance": [
+        {
+          "sourceId": "gdelt",
+          "sourceName": "GDELT 2.0 Event Database",
+          "sourceTier": 1,
+          "url": "https://timesofindia.indiatimes.com/india/immersive-story/the-day-india-redrew-itself/",
+          "publisher": "The Times of India",
+          "publishedAt": "2026-11-01T15:30:00.000Z",
+          "retrievedAt": "2026-11-01T16:52:08.931Z"
         }
       ]
     },
@@ -400009,51 +401695,6 @@
           "publisher": "riotimesonline.com",
           "publishedAt": "2026-10-03T23:45:00.000Z",
           "retrievedAt": "2026-10-03T23:43:19.735Z"
-        }
-      ]
-    },
-    {
-      "id": "evt_a4343676b6b47849",
-      "occurredAt": "2026-10-02T15:30:00.000Z",
-      "dateBasis": "report_date",
-      "ingestedAt": "2026-10-02T15:30:00.000Z",
-      "category": "armed_clash",
-      "label": "Armed clash — Suvarnabhumi Airport, Samut Prakan, Thailand",
-      "cameoCode": "190",
-      "location": {
-        "lat": 13.6881,
-        "lon": 100.741,
-        "name": "Suvarnabhumi Airport, Samut Prakan, Thailand",
-        "countryFips": "TH",
-        "adm1": "TH42",
-        "precision": "city"
-      },
-      "actors": [
-        {
-          "name": "THAI",
-          "role": "initiator",
-          "code": "THAGOV"
-        },
-        {
-          "name": "THAILAND",
-          "role": "target",
-          "code": "THA"
-        }
-      ],
-      "confidence": "unconfirmed",
-      "severity": 4,
-      "intensity": 2,
-      "reportCount": 1,
-      "distinctPublishers": 1,
-      "provenance": [
-        {
-          "sourceId": "gdelt",
-          "sourceName": "GDELT 2.0 Event Database",
-          "sourceTier": 1,
-          "url": "https://www.channelnewsasia.com/asia/thai-airways-ceo-fired-bangkok-floods-6426691",
-          "publisher": "channelnewsasia.com",
-          "publishedAt": "2026-10-02T15:30:00.000Z",
-          "retrievedAt": "2026-10-02T15:41:09.867Z"
         }
       ]
     }
